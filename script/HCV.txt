@@ -1,0 +1,28 @@
+Name = HCV
+Type = CTBN
+
+HCV [S | A | C]
+Treat [N | Y | F]
+life [Alive | Dead]
+
+Sus{HCV: S, Treat: N, life:Alive}
+Acute{HCV: A, Treat: N, life:Alive}
+C{HCV: C, Treat: N, life:Alive}
+Cinf{HCV: C, life:Alive}
+Treating{HCV: C, Treat: Y, life:Alive}    
+Failure{HCV: C, Treat: F, life:Alive}    
+Alive{life:Alive}
+Dead{life:Dead}
+
+Sus -- Infect -> Acute
+Acute -- Chronic -> C
+C -- Treat -> Treating
+
+Acute -- Recover|A -> Sus
+
+Treating -- Fail|T -> Failure
+Treating -- Recover|T -> Sus
+
+Alive -- Death -> Dead
+Failure -- Death|F -> Dead
+C -- Death|C -> Dead
