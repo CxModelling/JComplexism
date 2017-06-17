@@ -1,4 +1,4 @@
-package abmodel;
+package main.abmodel;
 
 /**
  * Basic agent for agent based model

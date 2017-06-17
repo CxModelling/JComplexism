@@ -1,4 +1,4 @@
-package abmodel.behaviour;
+package main.abmodel.behaviour;
 
 /**
  * Created by TimeWz on 2017/6/16.
