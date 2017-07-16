@@ -1,4 +1,4 @@
-package main.abmodel;
+package hgm.abmodel;
 
 /**
  *

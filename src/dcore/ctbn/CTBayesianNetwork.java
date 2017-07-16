@@ -1,6 +1,6 @@
 package dcore.ctbn;
 
-import dcore.AbsDynamicModel;
+import dcore.AbsDCore;
 import dcore.State;
 import dcore.Transition;
 import org.json.JSONObject;
@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * Created by TimeWz on 2017/2/8.
  */
-public class ModelCTBN extends AbsDynamicModel {
+public class CTBayesianNetwork extends AbsDCore {
     private final Map<String, State> States;
     private final Map<String, State> WellDefinedStates;
     private final Map<String, Transition> Transitions;
@@ -21,10 +21,10 @@ public class ModelCTBN extends AbsDynamicModel {
     private final Map<State, Map<State, State>> Links;
 
 
-    public ModelCTBN(String name,
-                     Map<String, State> states, Map<String, Transition> transitions,
-                     Map<String, State> wellDefinedStates, Map<State, List<State>> subsets,
-                     Map<State, List<Transition>> targets, Map<State, Map<State, State>> links) {
+    public CTBayesianNetwork(String name,
+                             Map<String, State> states, Map<String, Transition> transitions,
+                             Map<String, State> wellDefinedStates, Map<State, List<State>> subsets,
+                             Map<State, List<Transition>> targets, Map<State, Map<State, State>> links) {
         super(name);
 
         States = states;

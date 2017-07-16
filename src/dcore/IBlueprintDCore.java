@@ -7,8 +7,9 @@ import pcore.ParameterCore;
  *
  * Created by TimeWz on 2016/12/22.
  */
-public interface IBlueprint<M extends AbsDynamicModel> {
+public interface IBlueprintDCore<M extends AbsDCore> {
+    String getName();
     boolean isCompatible(ParameterCore pc);
-    M generateModel(ParameterCore pc, String mn);
+    M generateModel(ParameterCore pc);
     JSONObject toJSON();
 }

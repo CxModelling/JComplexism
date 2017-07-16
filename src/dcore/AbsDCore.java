@@ -10,10 +10,10 @@ import java.util.Map;
  *
  * Created by TimeWz on 2017/1/25.
  */
-public abstract class AbsDynamicModel {
+public abstract class AbsDCore {
     private final String Name;
 
-    public AbsDynamicModel(String name) {
+    public AbsDCore(String name) {
         Name = name;
     }
 

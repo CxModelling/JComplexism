@@ -1,15 +1,11 @@
 package test;
 
+import dcore.AbsDCore;
 import dcore.State;
 import dcore.Transition;
 import dcore.ctbn.BlueprintCTBN;
-import dcore.ctbn.ModelCTBN;
-import main.Utils;
+import hgm.Director;
 import org.junit.Test;
-import pcore.ParameterCore;
-import pcore.SimulationModel;
-
-import java.io.File;
 
 /**
  *
@@ -19,13 +15,13 @@ public class CTBNTest {
 
     @Test
     public void buildCTBN() throws Exception {
-        String path = new File("script/pSIR.txt").getCanonicalPath();
-        String s = Utils.loadText(path);
+        Director da = new Director();
 
-        SimulationModel sm = new SimulationModel(s);
-        ParameterCore pc = sm.sampleCore();
+        da.loadPCore("pSIR", "script/pSIR.txt");
 
-        BlueprintCTBN bp = new BlueprintCTBN("SIR_bn");
+
+
+        BlueprintCTBN bp = da.createCTBN("SIR_bn");
 
         bp.addMicrostate("sir", new String[]{"S", "I", "R"});
         bp.addMicrostate("life", new String[]{"Alive", "Dead"});
@@ -44,12 +40,14 @@ public class CTBNTest {
         bp.linkStateTransition("Inf", "Recov");
         bp.linkStateTransition("Alive", "Die");
 
-        ModelCTBN mod = bp.generateModel(pc, "Test1");
+        AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
         State st = mod.getState("Sus");
         System.out.println(st);
         for (Transition tr: st.getNextTransitions()) {
             System.out.println(tr);
         }
+
+        System.out.println(mod.getState("Sus").isa(mod.getState("Alive")));
 
     }
 }

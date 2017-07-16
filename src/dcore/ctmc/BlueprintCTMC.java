@@ -1,6 +1,6 @@
 package dcore.ctmc;
 
-import dcore.IBlueprint;
+import dcore.IBlueprintDCore;
 import dcore.State;
 import dcore.Transition;
 import org.json.JSONObject;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  *
  * Created by TimeWz on 25/01/2017.
  */
-public class BlueprintCTMC implements IBlueprint<ModelCTMC> {
+public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
 
     private String Name;
     private Map<String, String> States;
@@ -81,7 +81,7 @@ public class BlueprintCTMC implements IBlueprint<ModelCTMC> {
     }
 
     @Override
-    public ModelCTMC generateModel(ParameterCore pc, String mn) {
+    public CTMarkovChain generateModel(ParameterCore pc) {
         Map<String, State> sts = new HashMap<>();
         Map<String, Transition> trs = new HashMap<>();
         Map<State, List<Transition>> tars = new HashMap<>();
@@ -97,7 +97,7 @@ public class BlueprintCTMC implements IBlueprint<ModelCTMC> {
             tars.put(sts.get(ent.getKey()),
                     ent.getValue().stream().map(trs::get).collect(Collectors.toList()));
         }
-        ModelCTMC mod = new ModelCTMC(mn, sts, trs, tars);
+        CTMarkovChain mod = new CTMarkovChain(Name, sts, trs, tars);
         sts.values().forEach(st -> st.setModel(mod));
         return mod;
     }

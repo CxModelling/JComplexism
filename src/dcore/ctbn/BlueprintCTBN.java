@@ -1,9 +1,10 @@
 package dcore.ctbn;
 
-import dcore.IBlueprint;
+import dcore.IBlueprintDCore;
 import dcore.State;
 import dcore.Transition;
-import org.apache.commons.math3.util.Pair;
+
+import hgm.util.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pcore.ParameterCore;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
  *
  * Created by TimeWz on 2017/2/8.
  */
-public class BlueprintCTBN implements IBlueprint<ModelCTBN> {
+public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
     private String Name;
     private LinkedHashMap<String, String[]> Microstates;
     private Map<String, int[]> States;
@@ -126,7 +127,7 @@ public class BlueprintCTBN implements IBlueprint<ModelCTBN> {
     }
 
     @Override
-    public ModelCTBN generateModel(ParameterCore pc, String mn) {
+    public CTBayesianNetwork generateModel(ParameterCore pc) {
         Map<String, MicroNode> mss = makeMic();
 
         Map<String, int[]> stm = makeStateMap(mss);
@@ -150,7 +151,7 @@ public class BlueprintCTBN implements IBlueprint<ModelCTBN> {
         Map<State, List<Transition>> tas = makeTargets(sts, sub, trs);
         Map<State, Map<State, State>> links = makeLinks(sts, wds, stm, mst);
 
-        ModelCTBN model = new ModelCTBN(mn, sts, trs, wds, sub, tas, links);
+        CTBayesianNetwork model = new CTBayesianNetwork(Name, sts, trs, wds, sub, tas, links);
         sts.values().forEach(st -> st.setModel(model));
         return model;
     }

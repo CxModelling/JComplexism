@@ -1,4 +1,4 @@
-package main.abmodel.behaviour;
+package hgm.abmodel.behaviour;
 
 /**
  * Created by TimeWz on 2017/6/16.

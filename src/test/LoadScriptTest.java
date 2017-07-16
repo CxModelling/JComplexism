@@ -1,12 +1,9 @@
 package test;
 
 import org.junit.Test;
-import main.Utils;
-import pcore.DirectedAcyclicGraph;
+import hgm.util.IO;
 import pcore.ParameterCore;
 import pcore.SimulationModel;
-
-import java.io.File;
 
 /**
  *
@@ -15,15 +12,13 @@ import java.io.File;
 public class LoadScriptTest {
     @Test
     public void loadScript() throws Exception {
-        String path = new File("script/pSIR.txt").getCanonicalPath();
-        String s = Utils.loadText(path);
+        String s = IO.loadText("script/pSIR.txt");
         System.out.println(s);
     }
 
     @Test
     public void usePCore() throws Exception {
-        String path = new File("script/pSIR.txt").getCanonicalPath();
-        String s = Utils.loadText(path);
+        String s = IO.loadText("script/pSIR.txt");
 
         SimulationModel sm = new SimulationModel(s);
         ParameterCore pc = sm.sampleCore();

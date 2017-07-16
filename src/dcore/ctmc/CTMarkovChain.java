@@ -1,6 +1,6 @@
 package dcore.ctmc;
 
-import dcore.AbsDynamicModel;
+import dcore.AbsDCore;
 import dcore.State;
 import dcore.Transition;
 import org.json.JSONObject;
@@ -12,14 +12,14 @@ import java.util.Map;
  *
  * Created by TimeWz on 2017/1/2.
  */
-public class ModelCTMC extends AbsDynamicModel {
+public class CTMarkovChain extends AbsDCore {
 
     private Map<String, State> States;
     private Map<String, Transition> Transitions;
     private Map<State, List<Transition>> Targets;
 
-    public ModelCTMC(String name, Map<String, State> sts, Map<String, Transition> trs,
-                     Map<State, List<Transition>> tars) {
+    public CTMarkovChain(String name, Map<String, State> sts, Map<String, Transition> trs,
+                         Map<State, List<Transition>> tars) {
         super(name);
         States = sts;
         Transitions = trs;
