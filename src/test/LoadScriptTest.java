@@ -1,7 +1,7 @@
 package test;
 
 import org.junit.Test;
-import hgm.util.IO;
+import hgm.utils.IO;
 import pcore.ParameterCore;
 import pcore.SimulationModel;
 

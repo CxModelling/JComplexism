@@ -4,7 +4,7 @@ import dcore.IBlueprintDCore;
 import dcore.State;
 import dcore.Transition;
 
-import hgm.util.Pair;
+import hgm.utils.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pcore.ParameterCore;

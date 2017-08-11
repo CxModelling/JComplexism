@@ -1,4 +1,4 @@
-package hgm.util;
+package hgm.utils;
 
 /**
  *

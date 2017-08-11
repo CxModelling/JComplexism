@@ -17,7 +17,7 @@ public class CTBNTest {
     public void buildCTBN() throws Exception {
         Director da = new Director();
 
-        da.loadPCore("pSIR", "script/pSIR.txt");
+        da.loadPCore("script/pSIR.txt");
 
 
 
