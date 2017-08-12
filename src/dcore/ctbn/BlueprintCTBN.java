@@ -107,6 +107,11 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
     }
 
     @Override
+    public String getName() {
+        return Name;
+    }
+
+    @Override
     public boolean isCompatible(ParameterCore pc) {
         IDistribution dist;
         for (Map.Entry<String, Pair<String, String>> ent: Transitions.entrySet()) {

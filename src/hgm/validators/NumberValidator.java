@@ -17,10 +17,10 @@ public class NumberValidator implements IValidator {
     }
 
     @Override
-    public void Check(Object val) throws ValidationError {
+    public void check(Object val) throws ValidationError {
         double v;
         try {
-            v = (double) val;
+            v = Double.parseDouble(val.toString());
         } catch (ClassCastException e) {
             throw new ValidationError("Not a number");
         }

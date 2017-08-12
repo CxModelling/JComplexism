@@ -20,7 +20,7 @@ public class FileValidator implements IValidator {
     }
 
     @Override
-    public void Check(Object val) throws ValidationError {
+    public void check(Object val) throws ValidationError {
         String path = val.toString();
         File file = new File(path);
         if (!file.exists()) {
@@ -29,7 +29,8 @@ public class FileValidator implements IValidator {
 
         Matcher m = Pattern.compile(".*/.*?(\\..*)").matcher(path);
         if (m.matches()) {
-            if (FilenameExtension != null & !m.group(1).equals(FilenameExtension)) {
+            if (FilenameExtension != null &
+                    !m.group(1).equals(FilenameExtension)) {
                 throw new ValidationError("Unmatched filename extension");
             }
         } else {

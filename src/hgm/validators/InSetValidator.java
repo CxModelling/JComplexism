@@ -26,7 +26,7 @@ public class InSetValidator implements IValidator {
     }
 
     @Override
-    public void Check(Object val) throws ValidationError {
+    public void check(Object val) throws ValidationError {
         if (!Inclusion.contains(val)) throw new ValidationError("Invalidate Object");
 
     }
