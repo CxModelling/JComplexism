@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
  *
  * Created by TimeWz on 2017/8/11.
  */
-public class FileValidator implements IValidator {
+public class FileValidator implements IValidator<String> {
     public String FilenameExtension;
 
     public FileValidator(String ext) {
@@ -36,5 +36,17 @@ public class FileValidator implements IValidator {
         } else {
             throw new ValidationError("Invalidate filename");
         }
+    }
+
+    @Override
+    public String adjust(Object val) throws ValidationError {
+        check(val);
+        return (String) val;
+
+    }
+
+    @Override
+    public String getDefault() {
+        return null;
     }
 }

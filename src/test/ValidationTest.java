@@ -1,7 +1,7 @@
 package test;
 
 
-import hgm.validators.NumberValidator;
+import hgm.validators.DoubleValidator;
 import hgm.validators.ValidationError;
 import org.junit.Test;
 /**
@@ -11,7 +11,7 @@ import org.junit.Test;
 public class ValidationTest {
     @Test
     public void validateNumber() {
-        NumberValidator Vld = new NumberValidator(0, 5);
+        DoubleValidator Vld = new DoubleValidator(0, 5);
 
         try {
             Vld.check(1);
