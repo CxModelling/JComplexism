@@ -61,6 +61,11 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
     }
 
     @Override
+    public String getName() {
+        return Name;
+    }
+
+    @Override
     public boolean isCompatible(ParameterCore pc) {
         IDistribution dist;
         for (Map.Entry<String, String> ent: TransitionBy.entrySet()) {

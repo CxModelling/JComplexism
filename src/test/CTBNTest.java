@@ -7,6 +7,9 @@ import dcore.ctbn.BlueprintCTBN;
 import hgm.Director;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * Created by TimeWz on 2017/6/16.
@@ -17,9 +20,7 @@ public class CTBNTest {
     public void buildCTBN() throws Exception {
         Director da = new Director();
 
-        da.loadPCore("pSIR", "script/pSIR.txt");
-
-
+        da.loadPCore("script/pSIR.txt");
 
         BlueprintCTBN bp = da.createCTBN("SIR_bn");
 
@@ -48,6 +49,9 @@ public class CTBNTest {
         }
 
         System.out.println(mod.getState("Sus").isa(mod.getState("Alive")));
+        List<String> ss = new ArrayList<>();
+        ss.add("Inf");
+        System.out.println(mod.getAccessibleStates(ss));
 
     }
 }

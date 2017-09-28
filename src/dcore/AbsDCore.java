@@ -2,8 +2,11 @@ package dcore;
 
 
 import org.json.JSONObject;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -32,6 +35,30 @@ public abstract class AbsDCore {
     public abstract Map<String, State> getStateSpace();
 
     public abstract Map<String, State> getWellDefinedStateSpace();
+
+    public Set<State> getAccessibleStates(List<String> st) {
+        HashSet<State> acc = new HashSet<>(), wait = new HashSet<>(), ed = new HashSet<>();
+        for (String s : st) {
+            if (getWellDefinedStateSpace().containsKey(s)) {
+                wait.add(getState(s));
+            }
+        }
+        State s1;
+        while (!wait.isEmpty()) {
+            for (State s: wait) {
+                acc.add(s);
+                ed.add(s);
+                for (Transition tr: s.getNextTransitions()) {
+                    s1 = s.exec(tr);
+                    if (!ed.contains(s1)) {
+                        wait.add(s1);
+                    }
+                }
+            }
+            wait.removeAll(ed);
+        }
+        return acc;
+    }
 
     public Transition getTransition(String tr) {
         return getTransitionSpace().get(tr);

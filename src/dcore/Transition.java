@@ -2,7 +2,6 @@ package dcore;
 
 
 import pcore.distribution.IDistribution;
-import net.sourceforge.jdistlib.rng.RandomEngine;
 
 /**
  *
@@ -25,10 +24,6 @@ public class Transition {
 
     public State getState() {
         return State;
-    }
-
-    public void setSeed(RandomEngine rng) {
-        Dist.setRandomEngine(rng);
     }
 
     public String getName() {
