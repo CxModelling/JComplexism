@@ -50,6 +50,10 @@ public abstract class AbsSimModel implements JSONString{
         return Obs.get(s);
     }
 
+    public mcore.Meta getMeta() {
+        return Meta;
+    }
+
     public abstract void clear();
 
     public abstract void reset(double ti);
