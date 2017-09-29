@@ -23,7 +23,8 @@ public class ConstantModelTest{
             @Override
             public void doRequest(Request req) {
                 super.doRequest(req);
-                System.out.println(req.toString());
+                if (req.getNode().equals("Summary"))
+                    System.out.println(req.toString());
             }
         };
         Models.append(new ConstantModel("A1", new Meta("P1", "D1", "K"), 0.6));

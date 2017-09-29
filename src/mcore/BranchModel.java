@@ -35,10 +35,10 @@ public abstract class BranchModel extends AbsSimModel<Y0> {
 
     @Override
     public void exec() {
-        Requests.getRequests().forEach(this::doRequest);
         Models.values().stream()
                 .filter(v -> v.tte() == tte())
                 .forEach(AbsSimModel::exec);
+        Requests.getRequests().forEach(this::doRequest);
         dropNext();
     }
 
