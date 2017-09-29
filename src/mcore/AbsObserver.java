@@ -1,5 +1,6 @@
 package mcore;
 
+import hgm.util.DataFrame;
 import org.json.JSONArray;
 
 import java.io.FileWriter;
@@ -10,9 +11,9 @@ import java.util.*;
  *
  * Created by TimeWz on 2017/2/10.
  */
-public abstract class AbsObserver implements Cloneable{
+public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
     protected LinkedHashMap<String, Double> Last, Current;
-    private ArrayList<Map<String, Double>> TimeSeries;
+    private List<Map<String, Double>> TimeSeries;
 
     public AbsObserver(){
         TimeSeries = new ArrayList<>();
@@ -38,9 +39,9 @@ public abstract class AbsObserver implements Cloneable{
 
     }
 
-    public abstract void initialiseObservation(AbsSimModel model, double ti);
+    public abstract void initialiseObservation(T model, double ti);
 
-    public abstract  void updateObservation(AbsSimModel model, double ti);
+    public abstract  void updateObservation(T model, double ti);
 
     public void pushObservation(double ti) {
         Current.put("Time", ti);
@@ -57,35 +58,16 @@ public abstract class AbsObserver implements Cloneable{
         return Current;
     }
 
-    public ArrayList<Map<String, Double>> getTimeSeries() {
+    public List<Map<String, Double>> getTimeSeries() {
         return TimeSeries;
     }
 
-    public void outputCSV(String file){
-        StringBuilder sb = new StringBuilder();
-        sb.append("Time");
+    public Map<String, Double> getEntry(int i) {
+        return TimeSeries.get(i);
+    }
 
-        Last.keySet().stream().filter(key -> !Objects.equals(key, "Time"))
-                .forEach(key -> sb.append(",").append(key));
-
-        for (Map<String, Double> data: TimeSeries) {
-            sb.append('\n').append(data.get("Time"));
-            data.entrySet().stream().filter(e -> !e.getKey().equals("Time"))
-                    .forEach(e -> sb.append(',').append(e.getValue()));
-        }
-
-        try
-        {
-            FileWriter writer = new FileWriter(file);
-            writer.append(sb);
-            writer.flush();
-            writer.close();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-
+    public DataFrame getObservation() {
+        return new DataFrame(TimeSeries, "Time");
     }
 
     public double getValue(double time, String s){
@@ -97,22 +79,6 @@ public abstract class AbsObserver implements Cloneable{
         return Double.NaN;
     }
 
-    public void outputJSON(String file){
-        JSONArray json = new JSONArray(TimeSeries);
-
-        try
-        {
-            FileWriter writer = new FileWriter(file);
-            writer.append(json.toString());
-            writer.flush();
-            writer.close();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-
-    }
 
     public void print(){
         StringBuilder sb = new StringBuilder();

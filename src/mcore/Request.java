@@ -8,19 +8,24 @@ import org.apache.commons.math3.util.Pair;
  * Created by TimeWz on 10/02/2017.
  */
 public class Request implements Comparable<Request> {
-    public final static Request NullRequest =
-            new Request("", "", null, Double.POSITIVE_INFINITY);
-
     private String Address;
     private String Node;
     private Event Evt;
     private double Time;
 
-    public Request(String address, String node, Event event, double time) {
-        Address = address;
+    public Request(Event event, double time, String node, String adr) {
+        Address = adr;
         Node = node;
         Evt = event;
         Time = time;
+    }
+
+    public Request(Event event, double time, String node) {
+        this(event, time, node, "");
+    }
+
+    public Request(Event event, double time) {
+        this(event, time, "");
     }
 
     public Request up(String adr) {
@@ -31,13 +36,17 @@ public class Request implements Comparable<Request> {
             new_adr = adr + "@" + Address;
         }
 
-        return new Request(new_adr, Node, Evt, Time);
+        return new Request(Evt, Time, Node, new_adr);
     }
 
     Pair<String, Request> down() {
         String[] sp = Address.split("@", 2);
+        try {
+            return new Pair<>(sp[0], new Request(Evt, Time, Node, sp[1]));
+        } catch (IndexOutOfBoundsException e) {
+            return new Pair<>(Address, new Request(Evt, Time, Node));
+        }
 
-        return new Pair<>(sp[0], new Request(sp[1], Node, Evt, Time));
     }
 
     boolean reached() {
@@ -62,7 +71,12 @@ public class Request implements Comparable<Request> {
 
     @Override
     public String toString() {
-        return String.format("%s, %s, %s, %.4f", Address, Node, Evt, Time);
+        if (Address.isEmpty()) {
+            return String.format("_, %s, %s, %.4f", Node, Evt, Time);
+        } else {
+            return String.format("%s, %s, %s, %.4f", Address, Node, Evt, Time);
+        }
+
     }
 
     @Override

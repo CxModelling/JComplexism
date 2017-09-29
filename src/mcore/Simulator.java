@@ -3,6 +3,7 @@ package mcore;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -21,10 +22,17 @@ public class Simulator {
         Receptor = new RequestSet();
     }
 
-    public void simulate(IY0 y0, double fr, double to, double dt) {
+    public Simulator(AbsSimModel model) {
+        this(model, true);
+    }
+
+    public void simulate(Y0 y0, double fr, double to, double dt) {
         Time = fr;
         Model.initialise(Time, y0);
-        if (Record) Model.initialiseObservation(fr);
+        if (Record) {
+            Model.initialiseObservation(fr);
+            Model.pushObservation(fr);
+        }
         update(to, dt);
     }
 
@@ -56,7 +64,7 @@ public class Simulator {
             ti = Receptor.getTime();
             if (ti > end) break;
             tx = ti;
-            Model.fetch(Receptor.getRequests());
+            Model.fetch(Receptor.getRequests().stream().map(e->e.down().getValue()).collect(Collectors.toList()));
             Model.exec();
             Model.dropNext();
             Receptor.clear();
@@ -84,7 +92,7 @@ public class Simulator {
         Record = true;
     }
 
-    public static List<Map<String, Double>> simulate(AbsSimModel model, IY0 y0,
+    public static List<Map<String, Double>> simulate(AbsSimModel model, Y0 y0,
                                                      double fr, double to, double dt,
                                                      boolean rec) {
         Simulator sim = new Simulator(model, rec);

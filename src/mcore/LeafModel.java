@@ -8,7 +8,7 @@ import java.util.List;
  *
  * Created by TimeWz on 2017/2/10.
  */
-public abstract class LeafModel extends AbsSimModel {
+public abstract class LeafModel extends AbsSimModel<Double> {
     public LeafModel(String name, AbsObserver obs, Meta meta) {
         super(name, obs, meta);
     }
@@ -22,6 +22,6 @@ public abstract class LeafModel extends AbsSimModel {
     @Override
     public void exec() {
         Requests.getRequests().forEach(this::doRequest);
-        Requests.clear();
+        dropNext();
     }
 }

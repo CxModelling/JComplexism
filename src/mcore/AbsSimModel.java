@@ -11,9 +11,9 @@ import java.util.Map;
  *
  * Created by TimeWz on 2017/2/10.
  */
-public abstract class AbsSimModel implements JSONString{
+public abstract class AbsSimModel<T> implements JSONString{
     private final String Name;
-    private AbsObserver Obs;
+    protected AbsObserver Obs;
     private double TimeEnd;
     private final Meta Meta;
     protected RequestSet Requests;
@@ -31,7 +31,7 @@ public abstract class AbsSimModel implements JSONString{
         return Obs;
     };
 
-    public void initialise(double ti, IY0 y0) {
+    public void initialise(double ti, Y0 y0) {
         readY0(y0, ti);
         reset(ti);
         dropNext();
@@ -58,7 +58,7 @@ public abstract class AbsSimModel implements JSONString{
 
     public abstract void reset(double ti);
 
-    public abstract void readY0(IY0 y0, double ti);
+    public abstract void readY0(Y0<T> y0, double ti);
 
     public abstract void listen(String src_m, String src_v, String tar_p);
 

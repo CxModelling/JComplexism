@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
  */
 public class RequestSet {
     private List<Request> Requests;
-
     private double Time;
 
     public RequestSet() {
@@ -61,13 +60,13 @@ public class RequestSet {
         }
     }
 
-    public void appendSRC(String adr, String ag, Event evt, double ti) {
+    public void appendSRC(String ag, Event evt, double ti) {
         if (ti < Time) {
             Requests.clear();
-            Requests.add(new Request(adr, ag, evt, ti));
+            Requests.add(new Request(evt, ti, ag));
             Time = ti;
         } else if (ti == Time) {
-            Requests.add(new Request(adr, ag, evt, ti));
+            Requests.add(new Request(evt, ti, ag));
         }
     }
 
@@ -77,7 +76,7 @@ public class RequestSet {
             Requests.clear();
             Requests.addAll(requests);
             Time = ti;
-        } else {
+        } else if (ti == Time) {
             Requests.addAll(requests);
         }
     }
@@ -88,17 +87,6 @@ public class RequestSet {
 
     public boolean isEmpty() {
         return Requests.isEmpty();
-    }
-
-    public void merge(RequestSet rqs, String ag) {
-        double ti = rqs.getTime();
-        if (ti < Time) {
-            Requests.clear();
-            Requests.addAll(rqs.Requests);
-            Time = ti;
-        } else {
-            Requests.addAll(rqs.Requests);
-        }
     }
 
 }
