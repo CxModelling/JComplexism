@@ -1,6 +1,4 @@
-Name = SIR_bn
-Type = CTBN
-
+CTBN SIR_bn {
 life[Alive | Dead]
 sir[S | I | R]
 
@@ -15,3 +13,4 @@ Sus -- Infect(beta) -> Inf
 Inf -- Recov(gamma) -> Rec
 
 Alive -- Die # from state Alive to transition Die
+}

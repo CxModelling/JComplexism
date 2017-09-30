@@ -143,6 +143,10 @@ public class Director {
         return getPCore(pc).sampleCore();
     }
 
+    public ParameterCore generatePCore(String pc, Map<String, Double> cond) {
+        return getPCore(pc).sampleCore(cond);
+    }
+
     public AbsDCore generateDCore(String dc, String pc) {
         return generateDCore(dc, generatePCore(pc));
     }

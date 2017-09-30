@@ -49,4 +49,19 @@ public class IO {
     }
 
 
+    public static void saveJSON(String path, JSONObject js) {
+        save(path, js.toString());
+    }
+
+    public static void save(String path, String dat) {
+        try {
+            FileWriter writer = new FileWriter(path);
+            writer.append(dat);
+            writer.flush();
+            writer.close();
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
