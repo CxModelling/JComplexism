@@ -29,5 +29,7 @@ public abstract class AbsModifier implements Cloneable {
 
     public abstract boolean update(double value);
 
+    public abstract AbsModifier clone();
+
 
 }

@@ -1,6 +1,6 @@
 package hgm.multimodel;
 
-import hgm.util.DataFrame;
+import hgm.utils.DataFrame;
 import mcore.AbsObserver;
 import mcore.AbsSimModel;
 
