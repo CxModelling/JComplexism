@@ -11,7 +11,15 @@ import java.util.*;
  * Created by TimeWz on 2017/8/12.
  */
 public abstract class AbsNetwork extends HashMap<Agent, Set<Agent>> {
+    private final String Name;
 
+    protected AbsNetwork(String name) {
+        Name = name;
+    }
+
+    public String getName() {
+        return Name;
+    }
 
     public void addAgent(Agent ag) {
         put(ag, new HashSet<>());

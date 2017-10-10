@@ -1,5 +1,6 @@
 package mcore;
 
+import hgm.utils.AdapterJSONObject;
 import org.json.JSONObject;
 import org.json.JSONString;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  *
  * Created by TimeWz on 2017/2/10.
  */
-public abstract class AbsSimModel<T> implements JSONString{
+public abstract class AbsSimModel<T> implements AdapterJSONObject{
     private final String Name;
     protected AbsObserver Obs;
     private double TimeEnd;
@@ -99,8 +100,6 @@ public abstract class AbsSimModel<T> implements JSONString{
     public abstract void fetch(List<Request> rqs);
 
     public abstract void exec();
-
-    public abstract JSONObject toJson();
 
     public abstract void doRequest(Request req);
 

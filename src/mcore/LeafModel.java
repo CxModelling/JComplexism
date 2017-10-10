@@ -1,7 +1,5 @@
 package mcore;
 
-import org.apache.commons.math3.analysis.function.Abs;
-
 import java.util.List;
 
 /**
@@ -23,5 +21,11 @@ public abstract class LeafModel extends AbsSimModel<Double> {
     public void exec() {
         Requests.getRequests().forEach(this::doRequest);
         dropNext();
+    }
+
+
+    @Override
+    public String toJSONString() {
+        return toJson().toString();
     }
 }

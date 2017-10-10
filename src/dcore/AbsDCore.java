@@ -1,6 +1,7 @@
 package dcore;
 
 
+import hgm.utils.AdapterJSONObject;
 import org.json.JSONObject;
 
 import java.util.HashSet;
@@ -13,7 +14,7 @@ import java.util.Set;
  *
  * Created by TimeWz on 2017/1/25.
  */
-public abstract class AbsDCore {
+public abstract class AbsDCore implements AdapterJSONObject {
     private final String Name;
 
     public AbsDCore(String name) {

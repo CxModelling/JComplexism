@@ -28,7 +28,7 @@ public class DistributionTrait implements ITrait {
     }
 
     @Override
-    public void fill(Map<String, Object> info, double ti) {
+    public void fill(Map<String, Object> info) {
         info.putIfAbsent(Name, Dist.sample());
     }
 

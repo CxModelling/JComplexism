@@ -1,17 +1,35 @@
 package hgm.abmodel;
 
+import hgm.abmodel.behaviour.AbsBehaviour;
 import mcore.*;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  *
  * Created by TimeWz on 2017/6/16.
  */
 public class AgentBasedModel extends LeafModel {
+    private final Population Agents;
+    private Map<String, AbsBehaviour> Behaviours;
+
     public AgentBasedModel(String name, AbsObserver obs, mcore.Meta meta) {
         super(name, obs, meta);
+        Agents = new Population();
+        Behaviours = new LinkedHashMap<>();
+    }
+
+
+    public AbsBehaviour getBehaviours(String be) {
+        return Behaviours.get(be);
+    }
+
+    public Population getPopulation() {
+        return Agents;
     }
 
     @Override
@@ -45,17 +63,12 @@ public class AgentBasedModel extends LeafModel {
     }
 
     @Override
-    public JSONObject toJson() {
-        return null;
-    }
-
-    @Override
     public void doRequest(Request req) {
 
     }
 
     @Override
-    public String toJSONString() {
+    public JSONObject toJSON() {
         return null;
     }
 }

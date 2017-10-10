@@ -64,7 +64,7 @@ public class CTMarkovChain extends AbsDCore {
     @Override
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
-
+        // todo
         return json;
     }
 }

@@ -1,6 +1,7 @@
 package hgm.abmodel.network;
 
 import hgm.abmodel.Agent;
+import org.apache.commons.math3.analysis.function.Abs;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,12 +13,17 @@ import java.util.Set;
  */
 
 public class NetworkSet extends HashMap<String, AbsNetwork> {
-    public NetworkSet() {
+    private Map<String, AbsNetwork> Networks;
 
+    public NetworkSet() {
+        Networks = new HashMap<>();
+    }
+
+    public void append(AbsNetwork net) {
+        Networks.put(net.getName(), net);
     }
 
     public void reform(String net) {
-
         try{
             this.get(net).reform();
         } catch (NullPointerException e){

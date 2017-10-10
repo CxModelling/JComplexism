@@ -306,8 +306,4 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
 
         return js;
     }
-
-    public void println() {
-
-    }
 }

@@ -8,13 +8,15 @@ import dcore.State;
 import dcore.Transition;
 import hgm.abmodel.modifier.AbsModifier;
 import hgm.abmodel.modifier.ModifierSet;
+import hgm.utils.AdapterJSONObject;
 import mcore.Event;
+import org.json.JSONObject;
 
 /**
  * Basic agent for agent based model
  * Created by TimeWz on 2017/6/16.
  */
-public class Agent {
+public class Agent implements AdapterJSONObject{
     private final String Name;
     private Map<String, Object> Info;
     private State State;
@@ -22,13 +24,17 @@ public class Agent {
     private ModifierSet Mods;
     private Event Next;
 
-    public Agent(String name, State st) {
+    public Agent(String name, State st, Map<String, Object> info) {
         Name = name;
-        Info = new HashMap<>();
+        Info = info;
         State = st;
         Transitions = new HashMap<>();
         Mods = new ModifierSet();
         Next = Event.NullEvent;
+    }
+
+    public Agent(String name, State st) {
+        this(name, st, new HashMap<>());
     }
 
     public String getName() {
@@ -196,4 +202,9 @@ public class Agent {
         return ag;
     }
 
+    @Override
+    public JSONObject toJSON() {
+        //todo
+        return null;
+    }
 }
