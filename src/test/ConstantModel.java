@@ -26,7 +26,7 @@ public class ConstantModel extends LeafModel {
 
             }
         }, meta);
-        Timer = new ClockTicker(0, 0, dt);
+        Timer = new ClockTicker(dt);
     }
 
     @Override
@@ -62,11 +62,6 @@ public class ConstantModel extends LeafModel {
     }
 
     @Override
-    public JSONObject toJson() {
-        return null;
-    }
-
-    @Override
     public void doRequest(Request req) {
         Timer.update(req.getTime());
         System.out.println(req.getEvent());
@@ -74,7 +69,7 @@ public class ConstantModel extends LeafModel {
     }
 
     @Override
-    public String toJSONString() {
+    public JSONObject toJSON() {
         return null;
     }
 }

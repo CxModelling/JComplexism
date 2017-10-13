@@ -82,7 +82,7 @@ public class Director {
 
     public void restoreDCore(JSONObject js) {
         try {
-            addDCore(DCoreFactory.buildFromJSON(js));
+            addDCore((new DCoreFactory()).createFromJSON(js));
         } catch (ScriptException e) {
             e.printStackTrace();
         }

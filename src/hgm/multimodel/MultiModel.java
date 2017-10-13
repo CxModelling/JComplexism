@@ -54,7 +54,9 @@ public class MultiModel extends BranchModel{
     }
 
     @Override
-    public JSONObject toJson() {
+    public JSONObject toJSON() {
+
+        // todo
         return null;
     }
 
@@ -76,11 +78,6 @@ public class MultiModel extends BranchModel{
             mod.pushObservation(ti);
         }
         super.pushObservation(ti);
-    }
-
-    @Override
-    public String toJSONString() {
-        return null;
     }
 
     public hgm.multimodel.Summariser getSummariser() {

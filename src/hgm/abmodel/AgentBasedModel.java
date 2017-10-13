@@ -1,5 +1,6 @@
 package hgm.abmodel;
 
+import dcore.AbsDCore;
 import hgm.abmodel.behaviour.AbsBehaviour;
 import mcore.*;
 import org.json.JSONObject;
@@ -17,9 +18,9 @@ public class AgentBasedModel extends LeafModel {
     private final Population Agents;
     private Map<String, AbsBehaviour> Behaviours;
 
-    public AgentBasedModel(String name, AbsObserver obs, mcore.Meta meta) {
-        super(name, obs, meta);
-        Agents = new Population();
+    public AgentBasedModel(String name, AbsDCore dc, mcore.Meta meta, String prefix) {
+        super(name, new ObserverABM(), meta);
+        Agents = new Population(dc, prefix);
         Behaviours = new LinkedHashMap<>();
     }
 

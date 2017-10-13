@@ -13,6 +13,8 @@ import java.util.*;
 public class Summariser extends LeafModel {
 
 
+
+
     private class Task {
         String Selector, Parameter, NewName;
 
@@ -52,11 +54,6 @@ public class Summariser extends LeafModel {
     @Override
     public void findNext() {
         Requests.append(new Request(Event.NullEvent, Clock.getNext()));
-    }
-
-    @Override
-    public JSONObject toJson() {
-        return null;
     }
 
     @Override
@@ -106,7 +103,8 @@ public class Summariser extends LeafModel {
     }
 
     @Override
-    public String toJSONString() {
+    public JSONObject toJSON() {
+        // todo
         return null;
     }
 

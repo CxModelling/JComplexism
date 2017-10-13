@@ -23,9 +23,4 @@ public abstract class LeafModel extends AbsSimModel<Double> {
         dropNext();
     }
 
-
-    @Override
-    public String toJSONString() {
-        return toJson().toString();
-    }
 }

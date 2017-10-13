@@ -2,6 +2,7 @@ package hgm.abmodel.trait;
 
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import pcore.distribution.DistributionManager;
 import pcore.distribution.IDistribution;
@@ -30,6 +31,12 @@ public class DistributionTrait implements ITrait {
     @Override
     public void fill(Map<String, Object> info) {
         info.putIfAbsent(Name, Dist.sample());
+    }
+
+    @Override
+    public JSONArray toJSON() {
+        // todo
+        return null;
     }
 
 
