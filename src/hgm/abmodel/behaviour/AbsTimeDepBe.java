@@ -2,10 +2,10 @@ package hgm.abmodel.behaviour;
 
 import mcore.AbsSimModel;
 import mcore.Event;
-import mcore.Clock;
 import hgm.abmodel.Agent;
 import hgm.abmodel.AgentBasedModel;
 import hgm.abmodel.behaviour.trigger.Trigger;
+import mcore.Ticker.ClockTicker;
 
 /**
  *
@@ -13,10 +13,10 @@ import hgm.abmodel.behaviour.trigger.Trigger;
  */
 public abstract class AbsTimeDepBe extends AbsBehaviour {
 
-    protected Clock Ticker;
+    protected ClockTicker Ticker;
     protected Event Next;
 
-    AbsTimeDepBe(String name, Trigger tri, Clock clock) {
+    AbsTimeDepBe(String name, Trigger tri, ClockTicker clock) {
         super(name, tri);
         Ticker = clock;
         Next = Event.NullEvent;

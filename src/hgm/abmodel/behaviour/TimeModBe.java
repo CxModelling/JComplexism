@@ -1,9 +1,9 @@
 package hgm.abmodel.behaviour;
 
-import mcore.Clock;
 import hgm.abmodel.Agent;
 import hgm.abmodel.behaviour.trigger.Trigger;
 import hgm.abmodel.modifier.AbsModifier;
+import mcore.Ticker.ClockTicker;
 
 /**
  *
@@ -12,7 +12,7 @@ import hgm.abmodel.modifier.AbsModifier;
 public abstract class TimeModBe extends AbsTimeDepBe {
     protected final AbsModifier ModPrototype;
 
-    public TimeModBe(String name, Trigger tri, Clock clock, AbsModifier mod) {
+    public TimeModBe(String name, Trigger tri, ClockTicker clock, AbsModifier mod) {
         super(name, tri, clock);
         ModPrototype = mod;
     }

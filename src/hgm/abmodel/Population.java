@@ -9,7 +9,7 @@ import hgm.abmodel.trait.TraitSet;
 import hgm.utils.AdapterJSONObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import pcore.ParameterCore;
+
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -94,9 +94,9 @@ public class Population implements AdapterJSONObject {
         return ags;
     }
 
+
     public double count(State st) {
-        // todo
-        return 0;
+        return Agents.values().stream().filter(e->e.isa(st)).count();
     }
 
 
@@ -107,12 +107,18 @@ public class Population implements AdapterJSONObject {
     }
 
     public JSONArray getTraitArray() {
-        // todo
-        return null;
+        JSONArray js = new JSONArray();
+        for (Agent ag: Agents.values()) {
+            js.put(ag.getInfo());
+        }
+        return js;
     }
 
-    public JSONObject getSnipshot() {
-        // todo
-        return null;
+    public JSONArray getSnapshot() {
+        JSONArray js = new JSONArray();
+        for (Agent ag: Agents.values()) {
+            js.put(ag.toSnapshot());
+        }
+        return js;
     }
 }

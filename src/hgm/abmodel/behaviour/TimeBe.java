@@ -1,15 +1,15 @@
 package hgm.abmodel.behaviour;
 
-import mcore.Clock;
 import hgm.abmodel.Agent;
 import hgm.abmodel.behaviour.trigger.Trigger;
+import mcore.Ticker.ClockTicker;
 
 /**
  *
  * Created by TimeWz on 2017/2/15.
  */
 public abstract class TimeBe extends AbsTimeDepBe {
-    public TimeBe(String name, Clock clock) {
+    public TimeBe(String name, ClockTicker clock) {
         super(name, Trigger.NullTrigger, clock);
     }
 

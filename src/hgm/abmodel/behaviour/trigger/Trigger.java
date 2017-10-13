@@ -12,9 +12,6 @@ import hgm.abmodel.Agent;
 public class Trigger {
     public final static Trigger NullTrigger = new Trigger();
 
-    Trigger() {
-
-    }
 
     public boolean checkTransition(Agent ag, Transition tr) {
         return false;

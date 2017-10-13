@@ -1,5 +1,6 @@
 package test;
 
+import mcore.Ticker.ClockTicker;
 import mcore.*;
 import org.json.JSONObject;
 
@@ -11,7 +12,7 @@ import java.util.Collection;
  */
 public class ConstantModel extends LeafModel {
 
-    private Clock Timer;
+    private ClockTicker Timer;
 
     public ConstantModel(String name, mcore.Meta meta, double dt) {
         super(name, new AbsObserver() {
@@ -25,7 +26,7 @@ public class ConstantModel extends LeafModel {
 
             }
         }, meta);
-        Timer = new Clock(0, 0, dt);
+        Timer = new ClockTicker(0, 0, dt);
     }
 
     @Override

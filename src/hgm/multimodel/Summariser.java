@@ -1,5 +1,6 @@
 package hgm.multimodel;
 
+import mcore.Ticker.ClockTicker;
 import mcore.*;
 import org.json.JSONObject;
 
@@ -23,13 +24,13 @@ public class Summariser extends LeafModel {
     }
 
 
-    private Clock Clock;
+    private ClockTicker Clock;
     private List<Task> Tasks;
     private LinkedHashMap<String, Double> Summary;
 
     public Summariser(String name, double dt) {
         super(name, null, null);
-        Clock = new Clock(dt);
+        Clock = new ClockTicker(dt);
         Tasks = new ArrayList<>();
         Summary = new LinkedHashMap<>();
     }

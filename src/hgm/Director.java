@@ -1,7 +1,7 @@
 package hgm;
 
 import dcore.AbsDCore;
-import dcore.DCoreBuilder;
+import dcore.DCoreFactory;
 import dcore.IBlueprintDCore;
 import dcore.ctbn.BlueprintCTBN;
 import dcore.ctmc.BlueprintCTMC;
@@ -82,7 +82,7 @@ public class Director {
 
     public void restoreDCore(JSONObject js) {
         try {
-            addDCore(DCoreBuilder.buildFromJSON(js));
+            addDCore(DCoreFactory.buildFromJSON(js));
         } catch (ScriptException e) {
             e.printStackTrace();
         }

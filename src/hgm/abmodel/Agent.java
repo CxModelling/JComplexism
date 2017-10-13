@@ -60,6 +60,10 @@ public class Agent implements AdapterJSONObject{
         return Info.containsKey(s);
     }
 
+    public Map<String, Object> getInfo() {
+        return Info;
+    }
+
     public Object getInfo(String i) {
         return Info.get(i);
     }
@@ -204,6 +208,11 @@ public class Agent implements AdapterJSONObject{
 
     @Override
     public JSONObject toJSON() {
+        //todo
+        return null;
+    }
+
+    public JSONObject toSnapshot() {
         //todo
         return null;
     }
