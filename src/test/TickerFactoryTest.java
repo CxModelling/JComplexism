@@ -16,7 +16,7 @@ public class TickerFactoryTest {
 
     @Test
     public void createStepTicker() throws Exception {
-        AbsTicker tick = Fact.creatTicker(new JSONObject("{'Type': 'StepTicker', 'Args': {'ts':[1,3,6]}}"));
+        AbsTicker tick = Fact.createTicker(new JSONObject("{'Type': 'StepTicker', 'Args': {'ts':[1,3,6]}}"));
         System.out.println("Ticker:");
         System.out.println(tick);
 
@@ -33,7 +33,7 @@ public class TickerFactoryTest {
 
     @Test
     public void createClockTicker() throws Exception {
-        AbsTicker tick = Fact.creatTicker(new JSONObject("{'Type': 'ClockTicker', 'Args': {'dt':0.7}}"));
+        AbsTicker tick = Fact.createTicker(new JSONObject("{'Type': 'ClockTicker', 'Args': {'dt':0.7}}"));
         System.out.println("Ticker:");
         System.out.println(tick);
 
@@ -50,7 +50,7 @@ public class TickerFactoryTest {
 
     @Test
     public void createAppointmentTicker() throws Exception {
-        AbsTicker tick = Fact.creatTicker(new JSONObject("{'Type': 'AppointmentTicker', 'Args': {'queue':[]}}"));
+        AbsTicker tick = Fact.createTicker(new JSONObject("{'Type': 'AppointmentTicker', 'Args': {'queue':[]}}"));
         ((AppointmentTicker) tick).makeAnAppointment(1);
         System.out.println("Ticker:");
         System.out.println(tick);

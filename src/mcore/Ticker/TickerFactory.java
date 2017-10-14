@@ -11,7 +11,7 @@ import org.json.JSONObject;
  */
 public class TickerFactory {
 
-    public AbsTicker creatTicker(JSONObject js) throws NotRecoverableFromJSONException {
+    public AbsTicker createTicker(JSONObject js) throws NotRecoverableFromJSONException {
         String type = js.getString("Type");
 
         switch (type) {
@@ -27,7 +27,9 @@ public class TickerFactory {
 
     private StepTicker createStepTicker(JSONObject js) throws NotRecoverableFromJSONException {
         try {
-            return new StepTicker(FnJSON.toDoubleList(js.getJSONArray("ts")));
+            StepTicker ticker = new StepTicker(FnJSON.toDoubleList(js.getJSONArray("ts")));
+            if (js.has("t")) ticker.initialise(js.getDouble("t"));
+            return ticker;
         } catch (NullPointerException e) {
             throw new NotRecoverableFromJSONException("Ill-defined ticker");
         }
@@ -39,6 +41,7 @@ public class TickerFactory {
             for (double t: FnJSON.toDoubleList(js.getJSONArray("queue"))) {
                 ticker.makeAnAppointment(t);
             }
+            if (js.has("t")) ticker.initialise(js.getDouble("t"));
             return ticker;
         } catch (NullPointerException e) {
             throw new NotRecoverableFromJSONException("Ill-defined ticker");
@@ -47,7 +50,9 @@ public class TickerFactory {
 
     private ClockTicker createClockTicker(JSONObject js) throws NotRecoverableFromJSONException {
         try {
-            return new ClockTicker(js.getDouble("dt"));
+            ClockTicker ticker = new ClockTicker(js.getDouble("dt"));
+            if (js.has("t")) ticker.initialise(js.getDouble("t"));
+            return ticker
         } catch (NullPointerException e) {
             throw new NotRecoverableFromJSONException("Ill-defined ticker");
         }
