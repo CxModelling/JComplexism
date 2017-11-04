@@ -24,7 +24,7 @@ public class Creator<T> {
         Args = args;
     }
 
-    public T create(String name, JSONObject args, Workshop ws) {
+    public T create(String name, JSONObject args, Workshop ws) throws InstantiationError{
         List<Class> classes = new ArrayList<>();
         classes.add(String.class);
         List<Object> values = new ArrayList<>();
@@ -47,7 +47,7 @@ public class Creator<T> {
         try {
             return Cls.getConstructor(classArr).newInstance(valueArr);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new VerifyError();
+            throw new InstantiationError("Object creation failed");
         }
     }
 

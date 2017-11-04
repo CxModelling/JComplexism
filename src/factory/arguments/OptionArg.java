@@ -34,7 +34,7 @@ public class OptionArg extends AbsArgument{
             return value;
         } else {
             try {
-                return ((Map) ws.getResource((String) value)).get(value);
+                return ((Map) ws.getResource(Source)).get(value);
             } catch (NullPointerException e1) {
                 throw new NoSuchElementException("No such value");
             }

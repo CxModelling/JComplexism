@@ -48,11 +48,21 @@ public class Workshop {
         Creators.put(tp, cr);
     }
 
-    public Object create(JSONObject js) {
+    public Object create(JSONObject js) throws InstantiationError {
         String name = js.getString("Name");
         String type = js.getString("Type");
         JSONObject args = js.getJSONObject("Args");
+        return create(name, type, args);
+    }
+
+    public Object create(String name, String type, JSONObject args) throws InstantiationError {
         Creator cr = Creators.get(type);
         return cr.create(name, args, this);
+    }
+
+    public void listCreators() {
+        for (String cr: Creators.keySet()) {
+            System.out.println(cr);
+        }
     }
 }
