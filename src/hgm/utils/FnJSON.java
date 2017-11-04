@@ -10,6 +10,14 @@ import java.util.*;
  * Created by TimeWz on 2017/10/13.
  */
 public class FnJSON {
+    public static List<Object> toObjectList(JSONArray js) {
+        List<Object> arr = new ArrayList<>();
+        for (int i=0; i<js.length(); i++) {
+            arr.add(js.get(i));
+        }
+        return arr;
+    }
+
     public static List<Double> toDoubleList(JSONArray js) {
         List<Double> arr = new ArrayList<>();
         for (int i=0; i<js.length(); i++) {

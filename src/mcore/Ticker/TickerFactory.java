@@ -52,7 +52,7 @@ public class TickerFactory {
         try {
             ClockTicker ticker = new ClockTicker(js.getDouble("dt"));
             if (js.has("t")) ticker.initialise(js.getDouble("t"));
-            return ticker
+            return ticker;
         } catch (NullPointerException e) {
             throw new NotRecoverableFromJSONException("Ill-defined ticker");
         }
