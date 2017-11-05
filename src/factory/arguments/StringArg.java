@@ -22,4 +22,9 @@ public class StringArg extends AbsArgument{
     public Object correct(Object value, Workshop ws) throws NoSuchElementException{
         return value;
     }
+
+    @Override
+    public Object parse(String value) {
+        return value;
+    }
 }

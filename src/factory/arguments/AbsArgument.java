@@ -23,6 +23,8 @@ public abstract class AbsArgument {
 
     public abstract Object correct(Object value, Workshop ws) throws NoSuchElementException;
 
+    public abstract Object parse(String value);
+
     public String toString() {
         return Name + "(" + getType().getSimpleName() + ")";
     }

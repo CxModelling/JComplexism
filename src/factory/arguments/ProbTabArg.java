@@ -39,4 +39,9 @@ public class ProbTabArg extends AbsArgument{
         }
         return value;
     }
+
+    @Override
+    public Object parse(String value) {
+        return FnJSON.toDoubleMap(new JSONObject(value));
+    }
 }

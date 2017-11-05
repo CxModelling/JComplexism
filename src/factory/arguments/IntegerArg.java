@@ -30,4 +30,9 @@ public class IntegerArg extends AbsArgument{
         }
         return value;
     }
+
+    @Override
+    public Object parse(String value) {
+        return Integer.parseInt(value);
+    }
 }

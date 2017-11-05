@@ -29,4 +29,9 @@ public class DoubleArg extends AbsArgument{
         }
         return value;
     }
+
+    @Override
+    public Object parse(String value) {
+        return Double.parseDouble(value);
+    }
 }

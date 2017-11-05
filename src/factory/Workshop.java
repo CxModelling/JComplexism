@@ -44,7 +44,7 @@ public class Workshop {
     }
 
     public <T> void register(String tp, Class<T> cls, AbsArgument[] args) {
-        Creator<T> cr = new Creator<>(tp, cls, args);
+        Creator cr = new Creator(tp, cls, args);
         Creators.put(tp, cr);
     }
 
@@ -56,6 +56,11 @@ public class Workshop {
     }
 
     public Object create(String name, String type, JSONObject args) throws InstantiationError {
+        Creator cr = Creators.get(type);
+        return cr.create(name, args, this);
+    }
+
+    public Object create(String name, String type, String[] args) throws InstantiationError {
         Creator cr = Creators.get(type);
         return cr.create(name, args, this);
     }

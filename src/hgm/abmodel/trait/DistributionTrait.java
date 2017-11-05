@@ -20,7 +20,7 @@ public class DistributionTrait implements ITrait {
     }
 
     public DistributionTrait(String name, String di) {
-        this(name, DistributionManager.getInstance().parseDistribution(di));
+        this(name, DistributionManager.parseDistribution(di));
     }
 
     public DistributionTrait(String name, IDistribution di) {

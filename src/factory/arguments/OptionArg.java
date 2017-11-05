@@ -40,4 +40,9 @@ public class OptionArg extends AbsArgument{
             }
         }
     }
+
+    @Override
+    public Object parse(String value) {
+        return value;
+    }
 }

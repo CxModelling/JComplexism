@@ -37,4 +37,9 @@ public class ListArg extends AbsArgument{
         }
         return value;
     }
+
+    @Override
+    public Object parse(String value) {
+        return FnJSON.toObjectList(new JSONArray(value));
+    }
 }
