@@ -1,7 +1,7 @@
 package dcore;
 
 
-import hgm.utils.AdapterJSONObject;
+import utils.json.AdapterJSONObject;
 import org.json.JSONObject;
 
 import java.util.*;

@@ -1,11 +1,11 @@
 package test;
 
-import factory.Creator;
-import factory.Workshop;
-import factory.arguments.AbsArgument;
-import factory.arguments.DoubleArg;
-import factory.arguments.IntegerArg;
-import factory.arguments.StringArg;
+import utils.factory.Creator;
+import utils.factory.Workshop;
+import utils.factory.arguments.AbsArgument;
+import utils.factory.arguments.DoubleArg;
+import utils.factory.arguments.IntegerArg;
+import utils.factory.arguments.StringArg;
 import junit.framework.TestCase;
 import org.json.JSONObject;
 

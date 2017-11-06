@@ -1,6 +1,6 @@
 package mcore.Ticker;
 
-import hgm.utils.AdapterJSONObject;
+import utils.json.AdapterJSONObject;
 import org.json.JSONObject;
 
 /**

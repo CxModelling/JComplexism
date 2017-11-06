@@ -1,6 +1,6 @@
 package mcore;
 
-import hgm.utils.DataFrame;
+import utils.dataframe.DataFrame;
 
 import java.util.*;
 

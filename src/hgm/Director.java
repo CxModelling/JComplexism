@@ -7,12 +7,12 @@ import dcore.ctbn.BlueprintCTBN;
 import dcore.ctmc.BlueprintCTMC;
 import hgm.abmodel.BlueprintABM;
 import hgm.multimodel.ModelLayout;
-import hgm.utils.IO;
 import mcore.IMCoreBlueprint;
 import org.json.JSONObject;
 import pcore.ParameterCore;
 import pcore.ScriptException;
 import pcore.SimulationModel;
+import utils.IO;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -8,7 +8,7 @@ import dcore.State;
 import dcore.Transition;
 import hgm.abmodel.modifier.AbsModifier;
 import hgm.abmodel.modifier.ModifierSet;
-import hgm.utils.AdapterJSONObject;
+import utils.json.AdapterJSONObject;
 import mcore.Event;
 import org.json.JSONObject;
 

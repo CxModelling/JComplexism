@@ -1,7 +1,7 @@
 package mcore.Ticker;
 
-import hgm.utils.FnJSON;
-import hgm.utils.NotRecoverableFromJSONException;
+import utils.json.FnJSON;
+import utils.json.NotRecoverableFromJSONException;
 import org.json.JSONObject;
 
 

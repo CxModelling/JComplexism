@@ -1,7 +1,6 @@
 package dcore;
 
-import hgm.utils.AdapterJSONObject;
-import org.json.JSONObject;
+import utils.json.AdapterJSONObject;
 import pcore.ParameterCore;
 
 /**

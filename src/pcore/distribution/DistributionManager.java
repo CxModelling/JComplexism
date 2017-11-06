@@ -1,13 +1,10 @@
 package pcore.distribution;
 
-import factory.Workshop;
-import factory.arguments.AbsArgument;
-import factory.arguments.DoubleArg;
-import org.apache.commons.math3.distribution.*;
+import utils.factory.Workshop;
+import utils.factory.arguments.AbsArgument;
+import utils.factory.arguments.DoubleArg;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.HashMap;
 
 
 /**

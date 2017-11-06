@@ -6,7 +6,7 @@ import hgm.abmodel.network.AbsNetwork;
 import hgm.abmodel.network.NetworkSet;
 import hgm.abmodel.trait.ITrait;
 import hgm.abmodel.trait.TraitSet;
-import hgm.utils.AdapterJSONObject;
+import utils.json.AdapterJSONObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
