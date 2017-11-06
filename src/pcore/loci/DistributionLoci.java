@@ -120,7 +120,7 @@ public class DistributionLoci extends Loci {
     public JSONObject toJSON() {
         JSONObject js = new JSONObject();
         js.put("Type", "Distribution");
-        js.put("Name", Distribution);
+        js.put("Def", Distribution);
         js.put("Parents", new JSONArray(getParents()));
         return js;
     }

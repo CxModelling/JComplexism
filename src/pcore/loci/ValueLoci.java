@@ -67,7 +67,7 @@ public class ValueLoci extends Loci {
     public JSONObject toJSON() {
         JSONObject js = new JSONObject();
         js.put("Type", "Value");
-        js.put("Name", Value+"");
+        js.put("Def", Value+"");
         return js;
     }
 }

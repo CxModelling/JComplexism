@@ -47,6 +47,10 @@ public class DirectedAcyclicGraph implements AdapterJSONObject {
         return Order;
     }
 
+    public int getDepth() {
+        return Depth;
+    }
+
     public List<String> getRoots() {
         return Roots;
     }
@@ -62,20 +66,21 @@ public class DirectedAcyclicGraph implements AdapterJSONObject {
         return Pathways;
     }
 
+    public Set<LinkedList<String>> getPathways(String from, String to) {
+        if (Pathways == null) {
+            findPathways();
+        }
+        return Pathways.get(from).stream().filter(s -> s.getLast().equals(to)).collect(Collectors.toSet());
+    }
+
     public Map<String, Double> sample() {
         return sample(NullCon);
     }
 
     public Map<String, Double> sample(Map<String, Double> cond) {
         Map<String, Double> vs = new HashMap<>();
-        double value;
         for (String loci: Order) {
-            if (cond.containsKey(loci)) {
-                value = cond.get(loci);
-            } else {
-                value = Locus.get(loci).sample(vs);
-            }
-            vs.put(loci, value);
+            vs.put(loci, (cond.containsKey(loci))? cond.get(loci): Locus.get(loci).sample(vs));
         }
         return vs;
     }
