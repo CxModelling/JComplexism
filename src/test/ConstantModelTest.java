@@ -2,6 +2,7 @@ package test;
 
 import hgm.multimodel.MultiModel;
 import hgm.multimodel.Y0s;
+import junit.framework.TestCase;
 import mcore.*;
 import org.junit.Test;
 
@@ -9,16 +10,14 @@ import org.junit.Test;
  *
  * Created by TimeWz on 29/09/2017.
  */
-public class ConstantModelTest{
-    @Test
-    public void buildConstantModel() throws Exception {
+public class ConstantModelTest extends TestCase {
+    public void testBuildConstantModel() throws Exception {
         LeafModel Mod = new ConstantModel("A", new Meta("P1", "D1", "K"), 0.3);
 
         Simulator.simulate(Mod, null, 0, 3, 1, true);
     }
 
-    @Test
-    public void buildBranchModel() throws Exception {
+    public void testBuildBranchModel() throws Exception {
         MultiModel Models = new MultiModel("X", new Meta("PX", "DX", "KX"), 1.0) {
             @Override
             public void doRequest(Request req) {

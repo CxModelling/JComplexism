@@ -1,9 +1,10 @@
-package utils;
+package fitter;
 
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pcore.Gene;
+import utils.IO;
 import utils.json.AdapterJSONObject;
 
 import java.util.*;

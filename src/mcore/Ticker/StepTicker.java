@@ -10,10 +10,14 @@ import java.util.List;
 public class StepTicker extends AbsTicker {
     private final List<Double> Ts;
 
-
-    public StepTicker(List<Double> ts) {
-        super();
+    public StepTicker(String name, List<Double> ts) {
+        super(name);
         Ts = ts;
+    }
+
+    public StepTicker(String name, List<Double> ts, Double t) {
+        this(name, ts);
+        initialise(t);
     }
 
     @Override

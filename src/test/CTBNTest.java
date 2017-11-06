@@ -1,10 +1,11 @@
 package test;
 
 import dcore.AbsDCore;
+import dcore.IBlueprintDCore;
 import dcore.State;
-import dcore.Transition;
 import dcore.ctbn.BlueprintCTBN;
 import hgm.Director;
+import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,10 +15,9 @@ import java.util.List;
  *
  * Created by TimeWz on 2017/6/16.
  */
-public class CTBNTest {
+public class CTBNTest extends TestCase {
 
-    @Test
-    public void buildCTBN() throws Exception {
+    public void testBuildCTBN() throws Exception {
         Director da = new Director();
 
         da.loadPCore("script/pSIR.txt");
@@ -44,9 +44,25 @@ public class CTBNTest {
         AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
         State st = mod.getState("Sus");
         System.out.println(st);
-        for (Transition tr: st.getNextTransitions()) {
-            System.out.println(tr);
-        }
+        st.getNextTransitions().forEach(System.out::println);
+
+        System.out.println(mod.getState("Sus").isa(mod.getState("Alive")));
+        List<String> ss = new ArrayList<>();
+        ss.add("Inf");
+        System.out.println(mod.getAccessibleStates(ss));
+
+    }
+
+    public void testLoadCTBN() throws Exception {
+        Director da = new Director();
+
+        da.loadPCore("script/pSIR.txt");
+        da.loadDCore("script/SIR_BN.txt");
+        da.re
+        AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
+        State st = mod.getState("Sus");
+        System.out.println(st);
+        st.getNextTransitions().forEach(System.out::println);
 
         System.out.println(mod.getState("Sus").isa(mod.getState("Alive")));
         List<String> ss = new ArrayList<>();

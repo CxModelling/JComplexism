@@ -1,6 +1,6 @@
 package test;
 
-import org.junit.Test;
+import junit.framework.TestCase;
 import pcore.ParameterCore;
 import pcore.SimulationModel;
 import utils.IO;
@@ -9,15 +9,15 @@ import utils.IO;
  *
  * Created by TimeWz on 2017/6/16.
  */
-public class LoadScriptTest {
-    @Test
-    public void loadScript() throws Exception {
+public class LoadScriptTest extends TestCase{
+
+    public void testLoadScript() throws Exception {
         String s = IO.loadText("script/pSIR.txt");
         System.out.println(s);
     }
 
-    @Test
-    public void usePCore() throws Exception {
+
+    public void testUsePCore() throws Exception {
         String s = IO.loadText("script/pSIR.txt");
 
         SimulationModel sm = new SimulationModel(s);

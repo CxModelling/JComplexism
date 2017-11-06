@@ -9,8 +9,10 @@ import org.json.JSONObject;
  */
 public abstract class AbsTicker implements AdapterJSONObject {
     protected double Last;
+    private final String Name;
 
-    public AbsTicker() {
+    public AbsTicker(String name) {
+        Name = name;
         Last = -1;
     }
 
