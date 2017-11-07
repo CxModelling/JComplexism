@@ -1,6 +1,8 @@
 package dcore.ctbn;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -28,8 +30,23 @@ public class MicroNode {
         }
     }
 
+    public MicroState get(String s) {
+        for (MicroState ms: MicroStates) {
+            if (ms.toString().equals(s)) {
+                return ms;
+            }
+        }
+        return MicroState.NullState;
+    }
+
     public List<MicroState> getMicroStates() {
         return MicroStates;
+    }
+
+    public Set<MicroState> getSpace() {
+        Set<MicroState> sp = new HashSet<>(MicroStates);
+        sp.add(MicroState.NullState);
+        return sp;
     }
 
     public String toString() {

@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pcore.ParameterCore;
 import pcore.distribution.IDistribution;
+import utils.json.AdapterJSONObject;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,12 +19,25 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 2017/2/8.
  */
 public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
+    private class PseudoTransition implements AdapterJSONObject {
+        String To, Dist;
+        PseudoTransition(String to, String dist) {
+            To = to;
+            Dist = dist;
+        }
+
+        @Override
+        public JSONObject toJSON() {
+            return new JSONObject("{'To':"+To+", 'Dist':"+Dist+"}");
+        }
+    }
+
+
     private String Name;
     private LinkedHashMap<String, String[]> Microstates;
-    private Map<String, int[]> States;
-    private Map<String, Pair<String, String>> Transitions;
+    private Map<String, Map<String, String>> States;
+    private Map<String, PseudoTransition> Transitions;
     private Map<String, List<String>>Targets;
-    private boolean MicLock;
 
     public BlueprintCTBN(String name) {
         Name = name;
@@ -31,47 +45,27 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
         States = new TreeMap<>();
         Transitions = new TreeMap<>();
         Targets = new TreeMap<>();
-        MicLock = false;
     }
 
     public boolean addMicrostate(String mst, String[] arr) {
         if (Microstates.containsKey(mst)) return false;
-        if (MicLock) return false;
 
         Microstates.put(mst, arr);
         return true;
     }
 
-    public boolean addState(String state, int[] sts) {
+    public boolean addState(String state, Map<String, String> sts) {
         if (States.containsKey(state)) return false;
-        if (sts.length != Microstates.size()) return false;
 
-        int[] mss = new int[Microstates.size()];
-        int i = 0;
-        for (String[] val: Microstates.values()) {
-            if (sts[i] < val.length) {
-                mss[i] = sts[i];
-            } else {
-                mss[i] = -1;
+        Map<String, String> mss = new HashMap<>();
+        String v;
+        for (Map.Entry<String, String[]> ent: Microstates.entrySet()) {
+            if (sts.containsKey(ent.getKey())) {
+                v = sts.get(ent.getKey());
+                if (Arrays.asList(ent.getValue()).indexOf(v) >= 0) {
+                    mss.put(ent.getKey(), v);
+                }
             }
-            i ++;
-        }
-
-        States.put(state, mss);
-        Targets.put(state, new ArrayList<>());
-        return true;
-    }
-
-    public boolean addState(String state, String[] sts) {
-        if (States.containsKey(state)) return false;
-        if (sts.length != Microstates.size()) return false;
-
-        int[] mss = new int[Microstates.size()];
-        int i = 0;
-        for (String[] val: Microstates.values()) {
-            mss[i] = Arrays.asList(val).indexOf(sts[i]);
-
-            i ++;
         }
 
         States.put(state, mss);
@@ -91,7 +85,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
         if (!States.containsKey(to)) {
             return false;
         }
-        Transitions.put(tr, new Pair<>(to, dist));
+        Transitions.put(tr, new PseudoTransition(to, dist));
         return true;
     }
 
@@ -106,6 +100,22 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
         return true;
     }
 
+    public boolean linkStateTransitions(String state, String[] trs) {
+        boolean all = true;
+        for (String tr: trs) {
+            all &= linkStateTransition(state, tr);
+        }
+        return all;
+    }
+
+    public boolean linkStatesTransition(String[] sts, String tr) {
+        boolean all = true;
+        for (String state: sts) {
+            all &= linkStateTransition(state, tr);
+        }
+        return all;
+    }
+
     @Override
     public String getName() {
         return Name;
@@ -114,16 +124,16 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
     @Override
     public boolean isCompatible(ParameterCore pc) {
         IDistribution dist;
-        for (Map.Entry<String, Pair<String, String>> ent: Transitions.entrySet()) {
+        for (Map.Entry<String, PseudoTransition> ent: Transitions.entrySet()) {
             try {
-                dist = pc.getDistribution(ent.getValue().getSecond());
+                dist = pc.getDistribution(ent.getValue().Dist);
                 if (dist.getLower() < 0) {
-                    System.out.println("Distribution "+ ent.getValue().getSecond() +
+                    System.out.println("Distribution "+ ent.getValue().Dist +
                         " is not non-negative");
                     return false;
                 }
             } catch (NullPointerException e) {
-                System.out.println("Distribution "+ ent.getValue().getSecond() +
+                System.out.println("Distribution "+ ent.getValue().Dist +
                         " does not exist");
                 return false;
             }
@@ -132,8 +142,17 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
     }
 
     @Override
+    public String[] getRequiredDistributions() {
+        Set<String> dis = Transitions.values().stream()
+                .map(e -> e.Dist)
+                .collect(Collectors.toSet());
+
+        return (String[]) dis.toArray();
+    }
+
+    @Override
     public CTBayesianNetwork generateModel(ParameterCore pc) {
-        Map<String, MicroNode> mss = makeMic();
+        Map<String, MicroNode> mss = makeMicro();
 
         Map<String, int[]> stm = makeStateMap(mss);
 
@@ -188,7 +207,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
         return tas;
     }
 
-    private Map<String, MicroNode> makeMic() {
+    private Map<String, MicroNode> makeMicro() {
         Map<String, MicroNode> mss = new LinkedHashMap<>();
         for (Map.Entry<String, String[]> ent: Microstates.entrySet()) {
             mss.put(ent.getKey(), new MicroNode(ent.getKey(), Arrays.asList(ent.getValue())));
@@ -198,7 +217,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
 
     private Map<String, int[]> makeStateMap(Map<String, MicroNode> mss) {
         Map<String, int[]> sts = new HashMap<>();
-        for (int[] ind: product(mss)) {
+        for (List<MicroState> ind: product(mss)) {
             sts.put(Arrays.toString(ind), ind);
         }
         String ind;
@@ -254,55 +273,52 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
         return true;
     }
 
-    private Set<int[]> product(Map<String, MicroNode> mss){
-        List<Set<Integer>> Ser = new ArrayList<>();
-        for (Map.Entry<String, MicroNode> mic: mss.entrySet()){
-            Set<Integer> s = new HashSet<>();
-            for (int i = 0; i < mic.getValue().getMicroStates().size(); i++) {
-                s.add(i);
-            }
-            s.add(-1);
-            Ser.add(s);
-        }
+    private Set<List<MicroState>> product(Map<String, MicroNode> mss) {
+        List<Set<MicroState>> ser = mss.values().stream()
+                .map(MicroNode::getSpace)
+                .collect(Collectors.toList());
 
-        Set<int[]> Pro = new HashSet<>();
-        for (int i: Ser.remove(0)) {
-            Pro.add(new int[]{i});
+        List<MicroState> lms;
+        Set<List<MicroState>> prod = new HashSet<>();
+        for (MicroState ms: ser.remove(0)) {
+            lms = new ArrayList<>();
+            lms.add(ms);
+            prod.add(lms);
         }
-        while (Ser.size() > 0){
-            Pro = product(Ser.remove(0), Pro);
+        while (ser.size() > 0) {
+            prod = expand(ser.remove(0), prod);
         }
-        return Pro;
+        return prod;
     }
 
-    private Set<int[]> product(Set<Integer> ser, Set<int[]> pro){
-        Set<int[]> S2 = new HashSet<>();
-        for (int[] pr: pro){
-            for(int s: ser){
-                int[] p = new int[pr.length+1];
-                System.arraycopy(pr, 0, p, 0, pr.length);
-                p[pr.length] = s;
-                S2.add(p);
+    private Set<List<MicroState>> expand(Set<MicroState> sms, Set<List<MicroState>> prod) {
+        Set<List<MicroState>> slms = new HashSet<>();
+        List<MicroState> lms;
+
+        for (List<MicroState> pro: prod) {
+            for (MicroState ms: sms) {
+                lms = new ArrayList<>(pro);
+                lms.add(ms);
+                slms.add(lms);
             }
         }
-        return S2;
+        return slms;
     }
+
 
     @Override
     public JSONObject toJSON() {
         JSONObject js = new JSONObject();
-        try {
-            js.put("ModelType", "CTBN");
-            js.put("ModelName", Name);
-            js.put("Microstates", Microstates);
-            js.put("States", States);
-            js.put("Transitions", Transitions);
-            js.put("Targets", Targets);
-            js.put("Order", Microstates.keySet());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
+        js.put("ModelType", "CTBN");
+        js.put("ModelName", Name);
+        js.put("Microstates", Microstates);
+
+        js.put("States", States);
+        js.put("Transitions", Transitions.entrySet()
+                .stream().collect(Collectors.toMap(Map.Entry::getKey, e-> e.getValue().toJSON())));
+        js.put("Targets", Targets);
+        js.put("Order", Microstates.keySet());
 
         return js;
     }
