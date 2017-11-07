@@ -26,7 +26,7 @@ public class ConstantModel extends LeafModel {
 
             }
         }, meta);
-        Timer = new ClockTicker(dt);
+        Timer = new ClockTicker("", dt);
     }
 
     @Override

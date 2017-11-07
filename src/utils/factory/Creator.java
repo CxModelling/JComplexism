@@ -38,15 +38,16 @@ public class Creator<T> {
         for (int i = 0; i < classes.size(); i++) {
             classArr[i] = classes.get(i);
         }
-
+        // System.out.println(Arrays.toString(Cls.getConstructors()));
+        // System.out.println(Arrays.toString(classArr));
         try {
             return Cls.getConstructor(classArr);
         } catch (NoSuchMethodException e) {
-            throw new InstantiationError("Object creation failed");
+            throw new InstantiationError("Constructor did not been identified");
         }
     }
 
-    private Constructor getConstructor(JSONObject args) {
+    private Constructor<T> getConstructor(JSONObject args) {
         List<Class> classes = new ArrayList<>();
         classes.add(String.class);
         String key;
@@ -68,7 +69,7 @@ public class Creator<T> {
         }
     }
 
-    public java.lang.Object create(String name, JSONObject args, Workshop ws) throws InstantiationError{
+    public T create(String name, JSONObject args, Workshop ws) {
         List<Object> values = new ArrayList<>();
         values.add(name);
         String key;
@@ -88,10 +89,17 @@ public class Creator<T> {
             return Con.newInstance(valueArr);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new InstantiationError("Object creation failed");
+        } catch (IllegalArgumentException ignored) {
+
+        }
+        try {
+            return getConstructor(args).newInstance(valueArr);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e1) {
+            throw new InstantiationError("Object creation failed");
         }
     }
 
-    public Object create(String name, String[] args, Workshop ws) throws InstantiationError{
+    public T create(String name, String[] args, Workshop ws) throws InstantiationError{
         if (args.length != Args.length) {
             throw new InstantiationError("Object creation failed");
         }

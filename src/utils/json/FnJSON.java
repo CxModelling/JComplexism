@@ -34,6 +34,30 @@ public class FnJSON {
         return arr;
     }
 
+    public static Object[] toObjectArray(JSONArray js) {
+        Object[] arr = new Object[js.length()];
+        for (int i=0; i<js.length(); i++) {
+            arr[i] = js.get(i);
+        }
+        return arr;
+    }
+
+    public static double[] toDoubleArray(JSONArray js) {
+        double[] arr = new double[js.length()];
+        for (int i=0; i<js.length(); i++) {
+            arr[i] = js.getDouble(i);
+        }
+        return arr;
+    }
+
+    public static String[] toStringArray(JSONArray js) {
+        String[] arr = new String[js.length()];
+        for (int i=0; i<js.length(); i++) {
+            arr[i] = js.getString(i);
+        }
+        return arr;
+    }
+
     public static Map<String, Object> toObjectMap(JSONObject js) {
         Map<String, Object> map = new HashMap<>();
         Iterator it = js.keys();

@@ -58,7 +58,7 @@ public class CTBNTest extends TestCase {
 
         da.loadPCore("script/pSIR.txt");
         da.loadDCore("script/SIR_BN.txt");
-        da.re
+
         AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
         State st = mod.getState("Sus");
         System.out.println(st);

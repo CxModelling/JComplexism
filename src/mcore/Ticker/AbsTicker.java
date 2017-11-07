@@ -34,11 +34,13 @@ public abstract class AbsTicker implements AdapterJSONObject {
 
     abstract JSONObject getArguments();
 
+    abstract String getType();
+
     @Override
     public JSONObject toJSON() {
         JSONObject js = new JSONObject(), args = getArguments();
         args.put("t", Last);
-        js.put("Type", this.getClass().getSimpleName());
+        js.put("Type", getType());
         js.put("Args", args);
         return js;
     }

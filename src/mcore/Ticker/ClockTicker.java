@@ -10,8 +10,18 @@ public class ClockTicker extends AbsTicker {
     private double By;
 
     public ClockTicker(double dt) {
-        super();
+        this("", dt);
+    }
+
+    public ClockTicker(String name, Double dt) {
+        super(name);
         By = dt;
+    }
+
+    public ClockTicker(String name, Double dt, Double t) {
+        super(name);
+        By = dt;
+        initialise(t);
     }
 
     @Override
@@ -26,5 +36,10 @@ public class ClockTicker extends AbsTicker {
         JSONObject js = new JSONObject();
         js.put("dt", By);
         return js;
+    }
+
+    @Override
+    String getType() {
+        return "Clock";
     }
 }

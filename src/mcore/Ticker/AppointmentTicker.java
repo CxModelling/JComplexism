@@ -1,6 +1,7 @@
 package mcore.Ticker;
 
 import org.json.JSONObject;
+import utils.json.AdapterJSONObject;
 
 import java.util.*;
 
@@ -11,9 +12,15 @@ import java.util.*;
 public class AppointmentTicker extends AbsTicker {
     private LinkedList<Double> Queue;
 
-    public AppointmentTicker() {
-        super();
+    public AppointmentTicker(String name,List<Double> queue) {
+        super(name);
         Queue = new LinkedList<>();
+        Queue.addAll(queue);
+    }
+
+    public AppointmentTicker(String name, List<Double> queue, Double t) {
+        this(name, queue);
+        initialise(t);
     }
 
     public void makeAnAppointment(double t) {
@@ -24,7 +31,7 @@ public class AppointmentTicker extends AbsTicker {
     public void update(double now) {
         super.update(now);
         if (Queue.isEmpty()) return;
-        while(Queue.getFirst() < now) Queue.removeFirst();
+        while (Queue.getFirst() < now) Queue.removeFirst();
     }
 
     @Override
@@ -41,6 +48,11 @@ public class AppointmentTicker extends AbsTicker {
         JSONObject js = new JSONObject();
         js.put("queue", Queue);
         return js;
+    }
+
+    @Override
+    String getType() {
+        return "Appointment";
     }
 
 

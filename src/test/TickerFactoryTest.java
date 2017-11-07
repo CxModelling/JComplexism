@@ -1,22 +1,21 @@
 package test;
 
 import junit.framework.TestCase;
-import mcore.Ticker.AbsTicker;
-import mcore.Ticker.AppointmentTicker;
-import mcore.Ticker.TickerFactory;
+import mcore.Ticker.*;
 import org.json.JSONObject;
 import org.junit.Test;
+import utils.factory.Workshop;
 
 /**
  *
  * Created by TimeWz on 2017/10/13.
  */
 public class TickerFactoryTest {
-    private TickerFactory Fact = new TickerFactory();
+
 
     @Test
     public void createStepTicker() throws Exception {
-        AbsTicker tick = Fact.createTicker(new JSONObject("{'Type': 'StepTicker', 'Args': {'ts':[1,3,6]}}"));
+        AbsTicker tick = TickerFactory.create(new JSONObject("{'Type': 'Step', 'Args': {'ts':[1,3,6], 't':0}}"));
         System.out.println("Ticker:");
         System.out.println(tick);
 
@@ -33,7 +32,7 @@ public class TickerFactoryTest {
 
     @Test
     public void createClockTicker() throws Exception {
-        AbsTicker tick = Fact.createTicker(new JSONObject("{'Type': 'ClockTicker', 'Args': {'dt':0.7}}"));
+        AbsTicker tick = TickerFactory.create(new JSONObject("{'Type': 'Clock', 'Args': {'dt':0.7}}"));
         System.out.println("Ticker:");
         System.out.println(tick);
 
@@ -50,7 +49,7 @@ public class TickerFactoryTest {
 
     @Test
     public void createAppointmentTicker() throws Exception {
-        AbsTicker tick = Fact.createTicker(new JSONObject("{'Type': 'AppointmentTicker', 'Args': {'queue':[]}}"));
+        AbsTicker tick = TickerFactory.create(new JSONObject("{'Type': 'Appointment', 'Args': {'queue':[]}}"));
         ((AppointmentTicker) tick).makeAnAppointment(1);
         System.out.println("Ticker:");
         System.out.println(tick);

@@ -13,13 +13,27 @@ import java.util.NoSuchElementException;
  * Created by TimeWz on 2017/11/3.
  */
 public class ListArg extends AbsArgument{
-    public ListArg(String name) {
+
+    private String Type;
+    public ListArg(String name, String type) {
         super(name);
+        Type = type;
+    }
+
+    public ListArg(String name) {
+        this(name, "Double");
     }
 
     @Override
     public Class getType() {
-        return List.class;
+        switch (Type) {
+            case "Double":
+                return List.class;
+            case "String":
+                return List.class;
+            default:
+                return List.class;
+        }
     }
 
     @Override
@@ -29,12 +43,26 @@ public class ListArg extends AbsArgument{
                 value = ws.getResource((String) value);
             } catch (NullPointerException e1) {
                 try {
-                    value = FnJSON.toObjectList(new JSONArray(value));
+                    value = new JSONArray(value);
                 } catch (JSONException e2) {
                     throw new NoSuchElementException("No such value");
                 }
             }
         }
+        if (value instanceof JSONArray) {
+            switch (Type) {
+                case "Double":
+                    value = FnJSON.toDoubleList((JSONArray) value);
+                    break;
+                case "String":
+                    value = FnJSON.toStringList((JSONArray) value);
+                    break;
+                default:
+                    value = FnJSON.toStringList((JSONArray) value);
+                    break;
+            }
+        }
+
         return value;
     }
 

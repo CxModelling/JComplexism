@@ -15,7 +15,7 @@ import org.json.JSONObject;
 public class CreatorTest extends TestCase {
 
     public void testToString() throws Exception {
-        Workshop ws = Workshop.getWorkshop("Test");
+        Workshop ws = new Workshop();
         AbsArgument[] args = new AbsArgument[]{
                 new StringArg("S"),
                 new IntegerArg("I"),

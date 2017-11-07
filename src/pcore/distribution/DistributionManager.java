@@ -13,7 +13,7 @@ import java.text.DecimalFormat;
  */
 public class DistributionManager {
     private static DecimalFormat df = new DecimalFormat("0.0");
-    private static Workshop Distributions = Workshop.getWorkshop("Distributions");
+    private static Workshop Distributions = new Workshop();
 
     static {
         df.setMaximumFractionDigits(6);

@@ -27,6 +27,10 @@ public class IntegerArg extends AbsArgument{
                 throw new NoSuchElementException("No such value");
             }
         }
+
+        if (value instanceof Double) {
+            return ((Double) value).intValue();
+        }
         return value;
     }
 

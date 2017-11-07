@@ -14,7 +14,7 @@ import org.json.JSONObject;
  * Created by TimeWz on 2017/10/13.
  */
 public class TickerFactory {
-    private static Workshop Factory = Workshop.getWorkshop("Tickers");
+    private static Workshop<AbsTicker> Factory = new Workshop<>();
 
     static {
 
@@ -28,6 +28,10 @@ public class TickerFactory {
 
         ags = new AbsArgument[]{new DoubleArg("dt"), new DoubleArg("t")};
         Factory.register("Clock", ClockTicker.class, ags);
+    }
+
+    public static AbsTicker create(JSONObject js) {
+        return Factory.create(js);
     }
 
 }

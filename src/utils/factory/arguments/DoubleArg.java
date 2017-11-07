@@ -27,6 +27,9 @@ public class DoubleArg extends AbsArgument{
                 throw new NoSuchElementException("No such value");
             }
         }
+        if (value instanceof Integer) {
+            return ((Integer) value).doubleValue();
+        }
         return value;
     }
 

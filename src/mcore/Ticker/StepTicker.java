@@ -1,7 +1,11 @@
 package mcore.Ticker;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -12,7 +16,8 @@ public class StepTicker extends AbsTicker {
 
     public StepTicker(String name, List<Double> ts) {
         super(name);
-        Ts = ts;
+        Ts = new ArrayList<>();
+        Ts.addAll(ts);
     }
 
     public StepTicker(String name, List<Double> ts, Double t) {
@@ -34,5 +39,10 @@ public class StepTicker extends AbsTicker {
         JSONObject js = new JSONObject();
         js.put("ts", Ts);
         return js;
+    }
+
+    @Override
+    String getType() {
+        return "Step";
     }
 }
