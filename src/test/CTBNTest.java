@@ -1,14 +1,12 @@
 package test;
 
 import dcore.AbsDCore;
-import dcore.IBlueprintDCore;
 import dcore.State;
 import dcore.ctbn.BlueprintCTBN;
 import hgm.Director;
 import junit.framework.TestCase;
-import org.junit.Test;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -27,11 +25,11 @@ public class CTBNTest extends TestCase {
         bp.addMicrostate("sir", new String[]{"S", "I", "R"});
         bp.addMicrostate("life", new String[]{"Alive", "Dead"});
 
-        bp.addState("Sus", new int[]{0, 0});
-        bp.addState("Inf", new int[]{1, 0});
-        bp.addState("Rec", new int[]{2, 0});
-        bp.addState("Alive", new int[]{-1, 0});
-        bp.addState("Dead", new int[]{-1, 1});
+        bp.addState("Sus", new HashMap<String, String>() {{put("sir", "S"); put("life", "Alive");}});
+        bp.addState("Inf", new HashMap<String, String>() {{put("sir", "I"); put("life", "Alive");}});
+        bp.addState("Rec", new HashMap<String, String>() {{put("sir", "R"); put("life", "Alive");}});
+        bp.addState("Alive", new HashMap<String, String>() {{put("life", "Alive");}});
+        bp.addState("Dead", new HashMap<String, String>() {{put("life", "Dead");}});
 
         bp.addTransition("Die", "Dead");
         bp.addTransition("Infect", "Inf", "beta");
@@ -46,7 +44,8 @@ public class CTBNTest extends TestCase {
         System.out.println(st);
         st.getNextTransitions().forEach(System.out::println);
 
-        System.out.println(mod.getState("Sus").isa(mod.getState("Alive")));
+        assertFalse(mod.getState("Alive").isa(mod.getState("Sus")));
+        assertTrue(mod.getState("Sus").isa(mod.getState("Alive")));
         List<String> ss = new ArrayList<>();
         ss.add("Inf");
         System.out.println(mod.getAccessibleStates(ss));

@@ -4,8 +4,6 @@ import dcore.IBlueprintDCore;
 import dcore.State;
 import dcore.Transition;
 
-import utils.dataframe.Pair;
-import org.json.JSONException;
 import org.json.JSONObject;
 import pcore.ParameterCore;
 import pcore.distribution.IDistribution;
@@ -154,10 +152,10 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
     public CTBayesianNetwork generateModel(ParameterCore pc) {
         Map<String, MicroNode> mss = makeMicro();
 
-        Map<String, int[]> stm = makeStateMap(mss);
+        Map<String, List<MicroState>> stm = makeStateMap(mss);
 
         Map<String, String> mst = stm.entrySet().stream()
-                .collect(Collectors.toMap(e -> Arrays.toString(e.getValue()), Map.Entry::getKey));
+                .collect(Collectors.toMap(e -> formName(e.getValue()), Map.Entry::getKey));
 
         Map<String, State> sts = stm.keySet().stream()
                 .map(State::new)
@@ -165,11 +163,11 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
 
         Map<String, State> wds = findWellDefined(stm, sts);
 
-        Map<State, List<State>> sub = makeSubsets(stm, sts, wds);
+        Map<State, List<State>> sub = makeSubsets(stm, sts, sts);
 
         Map<String, Transition> trs = Transitions.entrySet().stream()
-                .map(tr-> new Transition(tr.getKey(), sts.get(tr.getValue().getKey()),
-                        pc.getDistribution(tr.getValue().getValue())))
+                .map(tr-> new Transition(tr.getKey(), sts.get(tr.getValue().To),
+                        pc.getDistribution(tr.getValue().Dist)))
                 .collect(Collectors.toMap(Transition::getName, tr->tr));
 
         Map<State, List<Transition>> tas = makeTargets(sts, sub, trs);
@@ -181,7 +179,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
     }
 
     private Map<State,Map<State, State>> makeLinks(Map<String, State> sts, Map<String, State> wds,
-                                                   Map<String, int[]> stm, Map<String, String> mst) {
+                                                   Map<String, List<MicroState>> stm, Map<String, String> mst) {
         Map<State,Map<State, State>> lks = new LinkedHashMap<>();
         for (Map.Entry<String, State> fe: wds.entrySet()) {
             Map<State, State> lik = new HashMap<>();
@@ -215,35 +213,29 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
         return mss;
     }
 
-    private Map<String, int[]> makeStateMap(Map<String, MicroNode> mss) {
-        Map<String, int[]> sts = new HashMap<>();
+    private Map<String, List<MicroState>> makeStateMap(Map<String, MicroNode> mss) {
+        Map<String, List<MicroState>> sts = new HashMap<>();
         for (List<MicroState> ind: product(mss)) {
-            sts.put(Arrays.toString(ind), ind);
+            sts.put(formName(ind), ind);
         }
         String ind;
-        for (Map.Entry<String, int[]> ent: States.entrySet()) {
-            ind = Arrays.toString(ent.getValue());
+        for (Map.Entry<String, Map<String, String>> ent: States.entrySet()) {
+            ind = formName(ent.getValue());
             sts.put(ent.getKey(), sts.get(ind));
             sts.remove(ind);
         }
         return sts;
     }
 
-    private Map<String, State> findWellDefined(Map<String, int[]> stm, Map<String, State> sts) {
+    private Map<String, State> findWellDefined(Map<String, List<MicroState>> stm, Map<String, State> sts) {
         Map<String, State> wd = new HashMap<>();
-        boolean b;
-        for (Map.Entry<String, int[]> ent: stm.entrySet()) {
-            b = true;
-            for (int i: ent.getValue()) {
-                if (i < 0) b = false;
-
-            }
-            if (b) wd.put(ent.getKey(), sts.get(ent.getKey()));
-        }
+        stm.entrySet().stream()
+                .filter(ent -> ent.getValue().stream().filter(e-> e==MicroState.NullState).count() == 0)
+                .forEach(ent -> wd.put(ent.getKey(), sts.get(ent.getKey())));
         return wd;
     }
 
-    private Map<State, List<State>> makeSubsets(Map<String, int[]> stm, Map<String, State> sts, Map<String, State> wds) {
+    private Map<State, List<State>> makeSubsets(Map<String, List<MicroState>> stm, Map<String, State> sts, Map<String, State> wds) {
         List<State> sub;
         Map<State, List<State>> subs = new HashMap<>();
         for (Map.Entry<String, State> ent: wds.entrySet()) {
@@ -257,20 +249,46 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
         return subs;
     }
 
-    private String transit(int[] fr, int[] by) {
-        int[] to = fr.clone();
-        for (int i = 0; i < to.length; i++) {
-            to[i] = (by[i] >= 0)? by[i]: to[i];
+    private String transit(List<MicroState> fr, List<MicroState> by) {
+        List<MicroState> to = new ArrayList<>(fr);
+
+        for (int i = 0; i < to.size(); i++) {
+            if (by.get(i) != MicroState.NullState) {
+                to.set(i, by.get(i));
+            }
         }
-        return Arrays.toString(to);
+        return formName(to);
     }
 
-    private boolean matchMic(int[] a, int[] b) {
-        for (int i = 0; i < a.length; i++) {
-            if (b[i] < 0) continue;
-            if (a[i] != b[i]) return false;
+    private boolean matchMic(List<MicroState> a, List<MicroState> b) {
+        for (int i = 0; i < a.size(); i++) {
+            if (b.get(i) == MicroState.NullState) continue;
+            if (a.get(i) != b.get(i)) return false;
         }
         return true;
+    }
+
+    private String formName(List<MicroState> lms) {
+        List<String> pairs = new ArrayList<>();
+        int i = 0;
+        MicroState ms;
+        for (String k: Microstates.keySet()) {
+            ms = lms.get(i);
+            if (ms != MicroState.NullState) {
+                pairs.add(k+"="+ms.toString());
+            }
+            i++;
+        }
+        return "[" + pairs.stream().collect(Collectors.joining(", ")) + "]";
+    }
+
+    private String formName(Map<String, String> lms) {
+        List<String> pairs = Microstates.keySet().stream()
+                .filter(lms::containsKey).map(k -> k + "=" + lms.get(k))
+                .collect(Collectors.toList());
+
+        return "[" + pairs.stream().collect(Collectors.joining(", ")) + "]";
+
     }
 
     private Set<List<MicroState>> product(Map<String, MicroNode> mss) {

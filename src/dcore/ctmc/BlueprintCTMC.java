@@ -86,6 +86,11 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
     }
 
     @Override
+    public String[] getRequiredDistributions() {
+        return (String[]) TransitionBy.values().toArray();
+    }
+
+    @Override
     public CTMarkovChain generateModel(ParameterCore pc) {
         Map<String, State> sts = new HashMap<>();
         Map<String, Transition> trs = new HashMap<>();

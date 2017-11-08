@@ -40,6 +40,6 @@ public class State {
     }
 
     public String toString() {
-        return "State(" + Name + ")";
+        return Name;
     }
 }
