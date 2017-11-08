@@ -6,6 +6,7 @@ import dcore.Transition;
 
 import org.json.JSONObject;
 import pcore.ParameterCore;
+import pcore.ScriptException;
 import pcore.distribution.IDistribution;
 import utils.json.AdapterJSONObject;
 
@@ -32,23 +33,27 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
 
 
     private String Name;
-    private LinkedHashMap<String, String[]> Microstates;
+    private LinkedHashMap<String, String[]> MicroStates;
     private Map<String, Map<String, String>> States;
     private Map<String, PseudoTransition> Transitions;
     private Map<String, List<String>>Targets;
 
     public BlueprintCTBN(String name) {
         Name = name;
-        Microstates = new LinkedHashMap<>();
+        MicroStates = new LinkedHashMap<>();
         States = new TreeMap<>();
         Transitions = new TreeMap<>();
         Targets = new TreeMap<>();
     }
 
-    public boolean addMicrostate(String mst, String[] arr) {
-        if (Microstates.containsKey(mst)) return false;
+    public BlueprintCTBN(JSONObject js) throws ScriptException {
+        //todo
+    }
 
-        Microstates.put(mst, arr);
+    public boolean addMicroState(String mst, String[] arr) {
+        if (MicroStates.containsKey(mst)) return false;
+
+        MicroStates.put(mst, arr);
         return true;
     }
 
@@ -57,7 +62,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
 
         Map<String, String> mss = new HashMap<>();
         String v;
-        for (Map.Entry<String, String[]> ent: Microstates.entrySet()) {
+        for (Map.Entry<String, String[]> ent: MicroStates.entrySet()) {
             if (sts.containsKey(ent.getKey())) {
                 v = sts.get(ent.getKey());
                 if (Arrays.asList(ent.getValue()).indexOf(v) >= 0) {
@@ -207,7 +212,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
 
     private Map<String, MicroNode> makeMicro() {
         Map<String, MicroNode> mss = new LinkedHashMap<>();
-        for (Map.Entry<String, String[]> ent: Microstates.entrySet()) {
+        for (Map.Entry<String, String[]> ent: MicroStates.entrySet()) {
             mss.put(ent.getKey(), new MicroNode(ent.getKey(), Arrays.asList(ent.getValue())));
         }
         return mss;
@@ -272,7 +277,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
         List<String> pairs = new ArrayList<>();
         int i = 0;
         MicroState ms;
-        for (String k: Microstates.keySet()) {
+        for (String k: MicroStates.keySet()) {
             ms = lms.get(i);
             if (ms != MicroState.NullState) {
                 pairs.add(k+"="+ms.toString());
@@ -283,7 +288,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
     }
 
     private String formName(Map<String, String> lms) {
-        List<String> pairs = Microstates.keySet().stream()
+        List<String> pairs = MicroStates.keySet().stream()
                 .filter(lms::containsKey).map(k -> k + "=" + lms.get(k))
                 .collect(Collectors.toList());
 
@@ -330,13 +335,13 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
 
         js.put("ModelType", "CTBN");
         js.put("ModelName", Name);
-        js.put("Microstates", Microstates);
+        js.put("Microstates", MicroStates);
 
         js.put("States", States);
         js.put("Transitions", Transitions.entrySet()
                 .stream().collect(Collectors.toMap(Map.Entry::getKey, e-> e.getValue().toJSON())));
         js.put("Targets", Targets);
-        js.put("Order", Microstates.keySet());
+        js.put("Order", MicroStates.keySet());
 
         return js;
     }

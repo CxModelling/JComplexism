@@ -3,8 +3,10 @@ package dcore.ctmc;
 import dcore.IBlueprintDCore;
 import dcore.State;
 import dcore.Transition;
+import dcore.ctbn.BlueprintCTBN;
 import org.json.JSONObject;
 import pcore.ParameterCore;
+import pcore.ScriptException;
 import pcore.distribution.IDistribution;
 
 import java.util.ArrayList;
@@ -31,6 +33,10 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
         TransitionTo = new HashMap<>();
         TransitionBy = new HashMap<>();
         Target = new HashMap<>();
+    }
+
+    public BlueprintCTMC(JSONObject js) throws ScriptException{
+
     }
 
     public void addState(String name, String detail) {

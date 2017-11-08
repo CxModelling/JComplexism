@@ -48,8 +48,11 @@ public class Director {
     }
 
     public void loadPCore(String path) {
-        String script = IO.loadText(path);
-        readPCore(script);
+        if (path.endsWith(".json")) {
+            restorePCore(IO.loadJSON(path));
+        } else {
+            readPCore(IO.loadText(path));
+        }
     }
 
     public void restorePCore(JSONObject js) {
@@ -58,10 +61,6 @@ public class Director {
         } catch (ScriptException e) {
             e.printStackTrace();
         }
-    }
-
-    public void restorePCore(String js) {
-        restorePCore(new JSONObject(js));
     }
 
     public void listPCores() {
@@ -77,12 +76,24 @@ public class Director {
     }
 
     public void loadDCore(String path) {
-        restoreDCore(IO.loadJSON(path));
+        if (path.endsWith(".json")) {
+            restoreDCore(IO.loadJSON(path));
+        } else {
+            readDCore(IO.loadText(path));
+        }
+    }
+
+    public void readDCore(String script) {
+        try {
+            addDCore(DCoreFactory.createFromScripts(script));
+        } catch (ScriptException e) {
+            e.printStackTrace();
+        }
     }
 
     public void restoreDCore(JSONObject js) {
         try {
-            addDCore((new DCoreFactory()).createFromJSON(js));
+            addDCore(DCoreFactory.createFromJSON(js));
         } catch (ScriptException e) {
             e.printStackTrace();
         }

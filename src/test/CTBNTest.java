@@ -22,8 +22,8 @@ public class CTBNTest extends TestCase {
 
         BlueprintCTBN bp = da.createCTBN("SIR_bn");
 
-        bp.addMicrostate("sir", new String[]{"S", "I", "R"});
-        bp.addMicrostate("life", new String[]{"Alive", "Dead"});
+        bp.addMicroState("sir", new String[]{"S", "I", "R"});
+        bp.addMicroState("life", new String[]{"Alive", "Dead"});
 
         bp.addState("Sus", new HashMap<String, String>() {{put("sir", "S"); put("life", "Alive");}});
         bp.addState("Inf", new HashMap<String, String>() {{put("sir", "I"); put("life", "Alive");}});
@@ -41,15 +41,15 @@ public class CTBNTest extends TestCase {
 
         AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
         State st = mod.getState("Sus");
-        System.out.println(st);
-        st.getNextTransitions().forEach(System.out::println);
+        assertEquals(st.getName(), "Sus");
 
         assertFalse(mod.getState("Alive").isa(mod.getState("Sus")));
         assertTrue(mod.getState("Sus").isa(mod.getState("Alive")));
         List<String> ss = new ArrayList<>();
         ss.add("Inf");
-        System.out.println(mod.getAccessibleStates(ss));
+        assertEquals(mod.getAccessibleStates(ss).size(), 4);
 
+        System.out.println(bp.toJSON());
     }
 
     public void testLoadCTBN() throws Exception {
