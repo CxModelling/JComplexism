@@ -24,9 +24,8 @@ public class CTBayesianNetwork extends AbsDCore {
     public CTBayesianNetwork(String name,
                              Map<String, State> states, Map<String, Transition> transitions,
                              Map<String, State> wellDefinedStates, Map<State, List<State>> subsets,
-                             Map<State, List<Transition>> targets, Map<State, Map<State, State>> links) {
-        super(name);
-
+                             Map<State, List<Transition>> targets, Map<State, Map<State, State>> links, JSONObject js) {
+        super(name, js);
         States = states;
         Transitions = transitions;
         WellDefinedStates = wellDefinedStates;
@@ -66,10 +65,4 @@ public class CTBayesianNetwork extends AbsDCore {
         return Links.get(st).get(tr.getState());
     }
 
-    @Override
-    public JSONObject toJSON() {
-        //todo
-        JSONObject js = new JSONObject();
-        return js;
-    }
 }

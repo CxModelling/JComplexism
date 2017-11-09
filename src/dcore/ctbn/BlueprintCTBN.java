@@ -4,6 +4,7 @@ import dcore.IBlueprintDCore;
 import dcore.State;
 import dcore.Transition;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import pcore.ParameterCore;
 import pcore.ScriptException;
@@ -38,6 +39,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
     private Map<String, Map<String, String>> States;
     private Map<String, PseudoTransition> Transitions;
     private Map<String, List<String>>Targets;
+    private JSONObject JS;
 
     public BlueprintCTBN(String name) {
         Name = name;
@@ -45,16 +47,20 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
         States = new TreeMap<>();
         Transitions = new TreeMap<>();
         Targets = new TreeMap<>();
+        JS = null;
     }
 
     public BlueprintCTBN(JSONObject js) throws ScriptException {
         this(js.getString("ModelName"));
         JSONObject sub, temp;
-        sub = js.getJSONObject("Microstates");
-        Iterator<?> keys = sub.keys();
+        JSONArray order;
+        Iterator<?> keys;
 
-        while(keys.hasNext()) {
-            String key = (String)keys.next();
+        order = js.getJSONArray("Order");
+
+        sub = js.getJSONObject("Microstates");
+        for (int i = 0; i < order.length(); i++) {
+            String key = order.getString(i);
             addMicroState(key, FnJSON.toStringArray(sub.getJSONArray(key)));
         }
 
@@ -79,6 +85,8 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
             String key = (String) keys.next();
             linkStateTransitions(key, FnJSON.toStringArray(sub.getJSONArray(key)));
         }
+
+        JS = js;
     }
 
     public boolean addMicroState(String mst, String[] arr) {
@@ -209,7 +217,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
         Map<State, List<Transition>> tas = makeTargets(sts, sub, trs);
         Map<State, Map<State, State>> links = makeLinks(sts, wds, stm, mst);
 
-        CTBayesianNetwork model = new CTBayesianNetwork(Name, sts, trs, wds, sub, tas, links);
+        CTBayesianNetwork model = new CTBayesianNetwork(Name, sts, trs, wds, sub, tas, links, toJSON());
         sts.values().forEach(st -> st.setModel(model));
         return model;
     }
@@ -362,18 +370,23 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
 
     @Override
     public JSONObject toJSON() {
-        JSONObject js = new JSONObject();
+        if (JS == null) {
+            buildJSON();
+        }
+        return JS;
+    }
 
-        js.put("ModelType", "CTBN");
-        js.put("ModelName", Name);
-        js.put("Microstates", MicroStates);
+    public void buildJSON() {
+        JS  = new JSONObject();
 
-        js.put("States", States);
-        js.put("Transitions", Transitions.entrySet()
+        JS.put("ModelType", "CTBN");
+        JS.put("ModelName", Name);
+        JS.put("Microstates", MicroStates);
+
+        JS.put("States", States);
+        JS.put("Transitions", Transitions.entrySet()
                 .stream().collect(Collectors.toMap(Map.Entry::getKey, e-> e.getValue().toJSON())));
-        js.put("Targets", Targets);
-        js.put("Order", MicroStates.keySet());
-
-        return js;
+        JS.put("Targets", Targets);
+        JS.put("Order", MicroStates.keySet());
     }
 }

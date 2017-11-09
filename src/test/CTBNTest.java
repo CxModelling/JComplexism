@@ -5,6 +5,8 @@ import dcore.State;
 import dcore.ctbn.BlueprintCTBN;
 import hgm.Director;
 import junit.framework.TestCase;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +61,30 @@ public class CTBNTest extends TestCase {
         da.loadDCore("script/SIR_BN.txt");
 
         AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
+        State st = mod.getState("Sus");
+        assertEquals(st.getName(), "Sus");
+
+        assertFalse(mod.getState("Alive").isa(mod.getState("Sus")));
+        assertTrue(mod.getState("Sus").isa(mod.getState("Alive")));
+        List<String> ss = new ArrayList<>();
+        ss.add("Inf");
+        assertEquals(mod.getAccessibleStates(ss).size(), 4);
+
+
+    }
+
+    public void testJosnifyCTBN() throws Exception {
+        Director da = new Director();
+
+        da.loadPCore("script/pSIR.txt");
+        da.loadDCore("script/SIR_BN.txt");
+
+        AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
+        JSONObject js = mod.toJSON();
+        js.put("ModelName", "SIR_bn_Copy");
+        da.restoreDCore(js);
+
+        mod = da.generateDCore("SIR_bn_Copy", "pSIR");
         State st = mod.getState("Sus");
         assertEquals(st.getName(), "Sus");
 

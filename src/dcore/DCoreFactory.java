@@ -17,11 +17,13 @@ import java.util.stream.Collectors;
  */
 public class DCoreFactory {
     public static IBlueprintDCore createFromJSON(JSONObject js) throws ScriptException  {
+        IBlueprintDCore bp;
         if (js.getString("ModelType").equals("CTBN")) {
-            return new BlueprintCTBN(js);
+            bp = new BlueprintCTBN(js);
         } else {
-            return new BlueprintCTMC(js);
+            bp = new BlueprintCTMC(js);
         }
+        return bp;
     }
 
     public static IBlueprintDCore createFromScripts(String script) throws ScriptException {
@@ -59,10 +61,12 @@ public class DCoreFactory {
         if (js.getString("ModelType").equals("CTBN")) {
             // Identify microstates
             r = Pattern.compile("(\\w+)\\[(\\S+)\\]");
+            List<String> order = new ArrayList<>();
             JSONObject mss = new JSONObject(), sts = new JSONObject();
             for (String l: lines) {
                 m = r.matcher(l);
                 if (m.find()) {
+                    order.add(m.group(1));
                     mss.put(m.group(1), new JSONArray("['"+m.group(2).replace("|", "','")+"']"));
                 }
             }
@@ -81,6 +85,7 @@ public class DCoreFactory {
                     sts.put(m.group(1), args);
                 }
             }
+            js.put("Order", order);
             js.put("Microstates", mss);
             js.put("States", sts);
 

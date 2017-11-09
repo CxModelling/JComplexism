@@ -3,7 +3,6 @@ package dcore.ctmc;
 import dcore.IBlueprintDCore;
 import dcore.State;
 import dcore.Transition;
-import dcore.ctbn.BlueprintCTBN;
 import org.json.JSONObject;
 import pcore.ParameterCore;
 import pcore.ScriptException;
@@ -23,14 +22,17 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
     private Map<String, String> States;
     private Map<String, String> TransitionTo;
     private Map<String, String> TransitionBy;
-    private Map<String, List<String>> Target;
+    private Map<String, List<String>> Targets;
+
+    private JSONObject JS;
 
     public BlueprintCTMC(String name) {
         Name = name;
         States = new HashMap<>();
         TransitionTo = new HashMap<>();
         TransitionBy = new HashMap<>();
-        Target = new HashMap<>();
+        Targets = new HashMap<>();
+        JS = null;
     }
 
     public BlueprintCTMC(JSONObject js) throws ScriptException{
@@ -54,12 +56,13 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
             String key = (String) keys.next();
             linkStateTransitions(key, FnJSON.toStringArray(sub.getJSONArray(key)));
         }
+        JS = js;
     }
 
     public void addState(String name, String detail) {
         if (States.containsKey(name)) return;
         States.put(name, detail);
-        Target.put(name, new ArrayList<>());
+        Targets.put(name, new ArrayList<>());
     }
 
     public void addState(String name) {
@@ -80,7 +83,7 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
     public boolean linkStateTransition(String st, String tr) {
         addState(st);
         if (!TransitionTo.containsKey(tr)) return false;
-        Target.get(st).add(tr);
+        Targets.get(st).add(tr);
         return true;
     }
 
@@ -135,17 +138,32 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
             trs.put(ent.getKey(), new Transition(ent.getKey(),
                     sts.get(ent.getValue()), pc.getDistribution(TransitionBy.get(ent.getKey()))));
         }
-        for (Map.Entry<String, List<String>> ent: Target.entrySet()) {
+        for (Map.Entry<String, List<String>> ent: Targets.entrySet()) {
             tars.put(sts.get(ent.getKey()),
                     ent.getValue().stream().map(trs::get).collect(Collectors.toList()));
         }
-        CTMarkovChain mod = new CTMarkovChain(Name, sts, trs, tars);
+        CTMarkovChain mod = new CTMarkovChain(Name, sts, trs, tars, toJSON());
         sts.values().forEach(st -> st.setModel(mod));
         return mod;
     }
 
     @Override
     public JSONObject toJSON() {
-        return null;
+        if (JS == null) {
+            buildJSON();
+        }
+        return JS;
+    }
+
+    public void buildJSON() {
+        JS  = new JSONObject();
+
+        JS.put("ModelType", "CTMC");
+        JS.put("ModelName", Name);
+        JS.put("States", States);
+        JS.put("Transitions", TransitionTo.keySet().stream()
+                .collect(Collectors.toMap(e->e, e -> new JSONObject("{'Dist': "+TransitionBy.get(e)+", 'To': "+TransitionTo.get(e)+"}"))));
+
+        JS.put("Targets", Targets);
     }
 }

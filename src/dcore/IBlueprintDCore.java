@@ -1,5 +1,6 @@
 package dcore;
 
+import org.json.JSONObject;
 import utils.json.AdapterJSONObject;
 import pcore.ParameterCore;
 
@@ -12,4 +13,5 @@ public interface IBlueprintDCore<M extends AbsDCore> extends AdapterJSONObject {
     boolean isCompatible(ParameterCore pc);
     String[] getRequiredDistributions();
     M generateModel(ParameterCore pc);
+    void buildJSON();
 }

@@ -19,8 +19,8 @@ public class CTMarkovChain extends AbsDCore {
     private Map<State, List<Transition>> Targets;
 
     public CTMarkovChain(String name, Map<String, State> sts, Map<String, Transition> trs,
-                         Map<State, List<Transition>> tars) {
-        super(name);
+                         Map<State, List<Transition>> tars, JSONObject js) {
+        super(name, js);
         States = sts;
         Transitions = trs;
         Targets = tars;
@@ -61,10 +61,4 @@ public class CTMarkovChain extends AbsDCore {
         return tr.getState();
     }
 
-    @Override
-    public JSONObject toJSON() {
-        JSONObject json = new JSONObject();
-        // todo
-        return json;
-    }
 }

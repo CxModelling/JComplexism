@@ -5,6 +5,7 @@ import utils.json.AdapterJSONObject;
 import org.json.JSONObject;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -13,9 +14,11 @@ import java.util.*;
  */
 public abstract class AbsDCore implements AdapterJSONObject {
     private final String Name;
+    private String JS;
 
-    public AbsDCore(String name) {
+    public AbsDCore(String name, JSONObject js) {
         Name = name;
+        JS = js.toString();
     }
 
     public String getName() {
@@ -36,12 +39,10 @@ public abstract class AbsDCore implements AdapterJSONObject {
 
     public Set<State> getAccessibleStates(List<String> st) {
         HashSet<State> acc = new HashSet<>(), ed = new HashSet<>();
-        LinkedList<State> wait = new LinkedList<>();
-        for (String s : st) {
-            if (getWellDefinedStateSpace().containsKey(s)) {
-                wait.add(getState(s));
-            }
-        }
+        LinkedList<State> wait = st.stream()
+                .filter(s -> getWellDefinedStateSpace().containsKey(s))
+                .map(this::getState).collect(Collectors.toCollection(LinkedList::new));
+
         State s1, s;
         while (!wait.isEmpty()) {
             s = wait.pop();
@@ -70,5 +71,7 @@ public abstract class AbsDCore implements AdapterJSONObject {
 
     public abstract State exec(State st, Transition tr);
 
-    public abstract JSONObject toJSON();
+    public JSONObject toJSON() {
+        return new JSONObject(JS);
+    }
 }
