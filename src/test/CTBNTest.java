@@ -60,13 +60,14 @@ public class CTBNTest extends TestCase {
 
         AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
         State st = mod.getState("Sus");
-        System.out.println(st);
-        st.getNextTransitions().forEach(System.out::println);
+        assertEquals(st.getName(), "Sus");
 
-        System.out.println(mod.getState("Sus").isa(mod.getState("Alive")));
+        assertFalse(mod.getState("Alive").isa(mod.getState("Sus")));
+        assertTrue(mod.getState("Sus").isa(mod.getState("Alive")));
         List<String> ss = new ArrayList<>();
         ss.add("Inf");
-        System.out.println(mod.getAccessibleStates(ss));
+        assertEquals(mod.getAccessibleStates(ss).size(), 4);
+
 
     }
 }

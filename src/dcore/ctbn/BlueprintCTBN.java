@@ -9,6 +9,7 @@ import pcore.ParameterCore;
 import pcore.ScriptException;
 import pcore.distribution.IDistribution;
 import utils.json.AdapterJSONObject;
+import utils.json.FnJSON;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,7 +48,37 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
     }
 
     public BlueprintCTBN(JSONObject js) throws ScriptException {
-        //todo
+        this(js.getString("ModelName"));
+        JSONObject sub, temp;
+        sub = js.getJSONObject("Microstates");
+        Iterator<?> keys = sub.keys();
+
+        while(keys.hasNext()) {
+            String key = (String)keys.next();
+            addMicroState(key, FnJSON.toStringArray(sub.getJSONArray(key)));
+        }
+
+        sub = js.getJSONObject("States");
+        keys = sub.keys();
+        while(keys.hasNext()) {
+            String key = (String) keys.next();
+            addState(key, FnJSON.toStringMap(sub.getJSONObject(key)));
+        }
+
+        sub = js.getJSONObject("Transitions");
+        keys = sub.keys();
+        while(keys.hasNext()) {
+            String key = (String) keys.next();
+            temp = sub.getJSONObject(key);
+            addTransition(key, temp.getString("To"), temp.getString("Dist"));
+        }
+
+        sub = js.getJSONObject("Targets");
+        keys = sub.keys();
+        while(keys.hasNext()) {
+            String key = (String) keys.next();
+            linkStateTransitions(key, FnJSON.toStringArray(sub.getJSONArray(key)));
+        }
     }
 
     public boolean addMicroState(String mst, String[] arr) {

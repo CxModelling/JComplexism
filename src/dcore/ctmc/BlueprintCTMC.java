@@ -8,11 +8,9 @@ import org.json.JSONObject;
 import pcore.ParameterCore;
 import pcore.ScriptException;
 import pcore.distribution.IDistribution;
+import utils.json.FnJSON;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +34,26 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
     }
 
     public BlueprintCTMC(JSONObject js) throws ScriptException{
+        this(js.getString("ModelName"));
+        JSONObject sub, temp;
+        Iterator<?> keys;
 
+        FnJSON.toStringList(js.getJSONArray("States")).forEach(this::addState);
+
+        sub = js.getJSONObject("Transitions");
+        keys = sub.keys();
+        while(keys.hasNext()) {
+            String key = (String) keys.next();
+            temp = sub.getJSONObject(key);
+            addTransition(key, temp.getString("To"), temp.getString("Dist"));
+        }
+
+        sub = js.getJSONObject("Targets");
+        keys = sub.keys();
+        while(keys.hasNext()) {
+            String key = (String) keys.next();
+            linkStateTransitions(key, FnJSON.toStringArray(sub.getJSONArray(key)));
+        }
     }
 
     public void addState(String name, String detail) {
@@ -60,10 +77,19 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
         TransitionBy.put(name, by);
     }
 
-    public void linkStateToTransition(String st, String tr) {
+    public boolean linkStateTransition(String st, String tr) {
         addState(st);
-        if (!TransitionTo.containsKey(tr)) return;
+        if (!TransitionTo.containsKey(tr)) return false;
         Target.get(st).add(tr);
+        return true;
+    }
+
+    public boolean linkStateTransitions(String state, String[] trs) {
+        boolean all = true;
+        for (String tr: trs) {
+            all &= linkStateTransition(state, tr);
+        }
+        return all;
     }
 
     @Override
