@@ -23,6 +23,10 @@ public class Workshop<T> {
         return Resources.get(name);
     }
 
+    public boolean hasResource(String name) {
+        return Resources.containsKey(name);
+    }
+
     public void clearResource() {
         Resources.clear();
     }

@@ -106,7 +106,7 @@ public class Population implements AdapterJSONObject {
         return null;
     }
 
-    public JSONArray getTraitArray() {
+    public JSONArray getTraitsArray() {
         JSONArray js = new JSONArray();
         for (Agent ag: Agents.values()) {
             js.put(ag.getInfo());
