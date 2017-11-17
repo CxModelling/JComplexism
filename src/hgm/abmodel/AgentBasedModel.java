@@ -5,10 +5,8 @@ import hgm.abmodel.behaviour.AbsBehaviour;
 import mcore.*;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+
 
 /**
  *
@@ -16,14 +14,27 @@ import java.util.Map;
  */
 public class AgentBasedModel extends LeafModel {
     private final Population Agents;
+    private AbsDCore DCore;
     private Map<String, AbsBehaviour> Behaviours;
 
     public AgentBasedModel(String name, AbsDCore dc, mcore.Meta meta, String prefix) {
         super(name, new ObserverABM(), meta);
         Agents = new Population(dc, prefix);
         Behaviours = new LinkedHashMap<>();
+        DCore = dc;
     }
 
+    public void addObsState(String state) {
+        ((ObserverABM) getObserver()).addObsState(DCore.getState(state));
+    }
+
+    public void addObsTransition(String transition) {
+        ((ObserverABM) getObserver()).addObsTransition(DCore.getTransition(transition));
+    }
+
+    public void addObsBehaviour(String behaviour) {
+        ((ObserverABM) getObserver()).addObsBehaviour(Behaviours.get(behaviour));
+    }
 
     public AbsBehaviour getBehaviours(String be) {
         return Behaviours.get(be);
@@ -56,6 +67,11 @@ public class AgentBasedModel extends LeafModel {
     @Override
     public void listen(Collection<String> src_m, String src_v, String tar_p) {
 
+    }
+
+    @Override
+    public boolean impulseForeign(AbsSimModel fore, double ti) {
+        return false;
     }
 
     @Override

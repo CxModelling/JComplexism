@@ -13,12 +13,11 @@ import java.util.stream.Stream;
  */
 public class ModelSelector extends HashMap<String, AbsSimModel> {
 
-
-    public ModelSelector(Map<String, AbsSimModel> vs) {
+    ModelSelector(Map<String, AbsSimModel> vs) {
         super(vs);
     }
 
-    public ModelSelector select_all(String sel) {
+    ModelSelector select_all(String sel) {
         List<Predicate<AbsSimModel>> filters = parseSelector(sel);
         Stream<AbsSimModel> vs = values().stream();
         for (Predicate<AbsSimModel> f: filters) {
@@ -27,12 +26,23 @@ public class ModelSelector extends HashMap<String, AbsSimModel> {
         return new ModelSelector(vs.collect(Collectors.toMap(AbsSimModel::getName, e->e)));
     }
 
+
+
     public double sum(String key) {
         return this.values().stream().mapToDouble(e-> e.get(key)).sum();
     }
 
+    public Map<String, Double> sum() {
+        Set<String> pars = new LinkedHashSet<>();
+        for (AbsSimModel mod: values()) {
+            for (Object k: mod.getLastObservations().keySet()) {
+                pars.add(k.toString());
+            }
+        }
+        return pars.stream().collect(Collectors.toMap(e-> e, this::sum));
+    }
+
     private List<Predicate<AbsSimModel>> parseSelector(String sel) {
-        Map<String, String> sels = new HashMap<>();
         List<Predicate<AbsSimModel>> filters = new ArrayList<>();
 
         Pattern pat = Pattern.compile("PC\\s*=\\s*(\\w+)");

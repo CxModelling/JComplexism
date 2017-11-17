@@ -72,6 +72,10 @@ public abstract class BranchModel extends AbsSimModel<Y0> {
         return Models;
     }
 
+    public AbsSimModel getModel(String m) {
+        return Models.get(m);
+    }
+
     public ModelSelector selectAll(String sel) {
         return (new ModelSelector(Models)).select_all(sel);
     }

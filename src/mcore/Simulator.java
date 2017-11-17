@@ -9,29 +9,29 @@ import java.util.stream.Collectors;
  *
  * Created by TimeWz on 2017/2/10.
  */
-public class Simulator {
-    private AbsSimModel Model;
+public class Simulator<T> {
+    private AbsSimModel<T> Model;
     private double Time;
     private RequestSet Receptor;
     private boolean Record;
 
-    public Simulator(AbsSimModel model, boolean rec) {
+    public Simulator(AbsSimModel<T> model, boolean rec) {
         Model = model;
         Time = 0;
         Record = rec;
         Receptor = new RequestSet();
     }
 
-    public Simulator(AbsSimModel model) {
+    public Simulator(AbsSimModel<T> model) {
         this(model, true);
     }
 
-    public void simulate(Y0 y0, double fr, double to, double dt) {
+    public void simulate(Y0<T> y0, double fr, double to, double dt) {
         Time = fr;
         Model.initialise(Time, y0);
         if (Record) {
-            Model.initialiseObservation(fr);
-            Model.pushObservation(fr);
+            Model.initialiseObservations(fr);
+            Model.pushObservations(fr);
         }
         update(to, dt);
     }
@@ -43,12 +43,11 @@ public class Simulator {
             f = t;
             t = ts.poll();
             if (Record) {
-                Model.updateObservation(f);
                 step(f, (f+t)/2);
-                Model.updateObservation((f+t)/2);
-                Model.pushObservation(t);
+                Model.captureMidTermObservations(t);
                 step((f+t)/2, t);
-                Model.updateObservation(t);
+                Model.updateObservations(t);
+                Model.pushObservations(t);
             } else {
                 step(f, t);
             }
@@ -92,18 +91,18 @@ public class Simulator {
         Record = true;
     }
 
-    public static List<Map<String, Double>> simulate(AbsSimModel model, Y0 y0,
+    public static <T> List<Map<String, Double>> simulate(AbsSimModel<T> model, Y0<T> y0,
                                                      double fr, double to, double dt,
                                                      boolean rec) {
-        Simulator sim = new Simulator(model, rec);
+        Simulator<T> sim = new Simulator<>(model, rec);
         sim.simulate(y0, fr, to, dt);
         return model.output();
     }
 
-    public static List<Map<String, Double>> update(AbsSimModel model,
+    public static <T> List<Map<String, Double>> update(AbsSimModel<T> model,
                                                    double fr, double to, double dt,
                                                    boolean rec) {
-        Simulator sim = new Simulator(model, rec);
+        Simulator<T> sim = new Simulator<>(model, rec);
         sim.Time = fr;
         sim.update(to, dt);
         return model.output();

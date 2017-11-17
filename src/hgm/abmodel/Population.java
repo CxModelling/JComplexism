@@ -88,17 +88,22 @@ public class Population implements AdapterJSONObject {
         List<Agent> ags = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
-            ags.add(new Agent(Prefix+(start+i), st, Traits.fill(info)));
+            Agent ag = new Agent(Prefix+(start+i), st);
+            ag.updateInfo(Traits.fill(info), true);
+            ags.add(ag);
         }
         LastID += n;
         return ags;
     }
 
 
-    public double count(State st) {
+    public long count(State st) {
         return Agents.values().stream().filter(e->e.isa(st)).count();
     }
 
+    public long count() {
+        return Agents.size();
+    }
 
     @Override
     public JSONObject toJSON() {

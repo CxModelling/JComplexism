@@ -1,10 +1,9 @@
 package test;
 
-import hgm.multimodel.MultiModel;
+import hgm.multimodel.ModelSet;
 import hgm.multimodel.Y0s;
 import junit.framework.TestCase;
 import mcore.*;
-import org.junit.Test;
 
 /**
  *
@@ -18,14 +17,7 @@ public class ConstantModelTest extends TestCase {
     }
 
     public void testBuildBranchModel() throws Exception {
-        MultiModel Models = new MultiModel("X", new Meta("PX", "DX", "KX"), 1.0) {
-            @Override
-            public void doRequest(Request req) {
-                super.doRequest(req);
-                if (req.getNode().equals("Summary"))
-                    System.out.println(req.toString());
-            }
-        };
+        ModelSet Models = new ModelSet("X", new Meta("PX", "DX", "KX"), 1.0);
         Models.append(new ConstantModel("A1", new Meta("P1", "D1", "K"), 0.6));
         Models.append(new ConstantModel("A2", new Meta("P2", "D2", "K"), 0.7));
         Y0s y0 = new Y0s();

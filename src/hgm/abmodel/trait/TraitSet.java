@@ -2,6 +2,9 @@ package hgm.abmodel.trait;
 
 import org.json.JSONArray;
 import org.json.JSONString;
+import utils.factory.Workshop;
+import utils.factory.arguments.AbsArgument;
+import utils.factory.arguments.DistributionArg;
 
 import java.util.*;
 
@@ -10,6 +13,13 @@ import java.util.*;
  * Created by TimeWz on 2017/10/10.
  */
 public class TraitSet implements JSONString {
+    private static Workshop<ITrait> Fact = new Workshop<>();
+
+    static {
+        Fact.register("Distribution", DistributionTrait.class,
+                new AbsArgument[]{new DistributionArg("dist")});
+    }
+
     private List<ITrait> Traits;
 
     public TraitSet() {

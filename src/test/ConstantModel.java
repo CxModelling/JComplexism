@@ -5,6 +5,7 @@ import mcore.*;
 import org.json.JSONObject;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  *
@@ -16,13 +17,14 @@ public class ConstantModel extends LeafModel {
 
     public ConstantModel(String name, mcore.Meta meta, double dt) {
         super(name, new AbsObserver() {
+
             @Override
-            public void initialiseObservation(AbsSimModel model, double ti) {
+            public void updateDynamicObservations(AbsSimModel model, Map flows, double ti) {
 
             }
 
             @Override
-            public void updateObservation(AbsSimModel model, double ti) {
+            protected void readStatics(AbsSimModel model, Map tab, double ti) {
 
             }
         }, meta);
@@ -52,6 +54,11 @@ public class ConstantModel extends LeafModel {
     @Override
     public void listen(Collection<String> src_m, String src_v, String tar_p) {
 
+    }
+
+    @Override
+    public boolean impulseForeign(AbsSimModel fore, double ti) {
+        return false;
     }
 
     @Override

@@ -19,13 +19,13 @@ public class DistributionTrait implements ITrait {
         this(js.getString("Name"), js.getString("Distribution"));
     }
 
-    public DistributionTrait(String name, String di) {
-        this(name, DistributionManager.parseDistribution(di));
+    public DistributionTrait(String name, String dist) {
+        this(name, DistributionManager.parseDistribution(dist));
     }
 
-    public DistributionTrait(String name, IDistribution di) {
+    public DistributionTrait(String name, IDistribution dist) {
         Name = name;
-        Dist = di;
+        Dist = dist;
     }
 
     @Override

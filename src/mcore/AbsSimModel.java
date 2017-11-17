@@ -12,13 +12,13 @@ import java.util.Map;
  */
 public abstract class AbsSimModel<T> implements AdapterJSONObject{
     private final String Name;
-    protected AbsObserver Obs;
+    protected AbsObserver<AbsSimModel<T>> Obs;
     private double TimeEnd;
     private final Meta Meta;
     protected RequestSet Requests;
 
 
-    public AbsSimModel(String name, AbsObserver obs, Meta meta) {
+    public AbsSimModel(String name, AbsObserver<AbsSimModel<T>> obs, Meta meta) {
         Name = name;
         Requests = new RequestSet();
         Meta = meta;
@@ -30,7 +30,7 @@ public abstract class AbsSimModel<T> implements AdapterJSONObject{
         return Obs;
     };
 
-    public void initialise(double ti, Y0 y0) {
+    public void initialise(double ti, Y0<T> y0) {
         readY0(y0, ti);
         reset(ti);
         dropNext();
@@ -71,6 +71,7 @@ public abstract class AbsSimModel<T> implements AdapterJSONObject{
         listen(src_m, src_v, tar_p);
     }
 
+    public abstract boolean impulseForeign(AbsSimModel fore, double ti);
 
     public List<Request> next() {
         if (Requests.isEmpty()) findNext();
@@ -102,26 +103,34 @@ public abstract class AbsSimModel<T> implements AdapterJSONObject{
     public abstract void doRequest(Request req);
 
     public void clearOutput() {
-        getObserver().renew();
+        Obs.renew();
     }
 
-    public void initialiseObservation(double ti) {
-        Obs.initialiseObservation(this, ti);
+    public void initialiseObservations(double ti) {
+        Obs.initialiseObservations(this, ti);
     }
 
-    public void updateObservation(double ti) {
-        Obs.updateObservation(this, ti);
+    public void updateObservations(double ti) {
+        Obs.observeRoutinely(this, ti);
     }
 
-    public void pushObservation(double ti) {
+    public void captureMidTermObservations(double ti) {
+        Obs.updateAtMidTerm(this, ti);
+    }
+
+    public void pushObservations(double ti) {
         Obs.pushObservation(ti);
     }
 
+    public Map<String, Double> getLastObservations() {
+        return Obs.getLast();
+    }
+
     public List<Map<String, Double>> output() {
-        return getObserver().getTimeSeries();
+        return Obs.getTimeSeries();
     }
 
     public void print() {
-        getObserver().print();
+        Obs.print();
     }
 }

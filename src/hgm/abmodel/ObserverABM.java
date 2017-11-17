@@ -5,11 +5,8 @@ import dcore.Transition;
 import hgm.abmodel.behaviour.AbsBehaviour;
 import mcore.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
+
 
 /**
  *
@@ -17,10 +14,10 @@ import java.util.stream.Collectors;
  */
 public class ObserverABM extends AbsObserver<AgentBasedModel> {
     private class Record {
-        protected String Ag;
-        protected Transition Tr;
-        protected double Time;
-        public Record(String ag, Transition tr, double ti) {
+        String Ag;
+        Transition Tr;
+        double Time;
+        Record(String ag, Transition tr, double ti) {
             Ag = ag; Tr = tr; Time = ti;
         }
     }
@@ -30,72 +27,46 @@ public class ObserverABM extends AbsObserver<AgentBasedModel> {
     private Set<AbsBehaviour> ObsBehaviours;
     private ArrayList<Record> Records;
 
-    public ObserverABM() {
+    ObserverABM() {
         ObsStates = new LinkedHashSet<>();
         ObsTransitions = new LinkedHashSet<>();
         ObsBehaviours = new LinkedHashSet<>();
         Records = new ArrayList<>();
     }
 
-    public void addObsState(State st) {
+
+    void addObsState(State st) {
         ObsStates.add(st);
     }
 
-    public void addObsTransition(Transition tr) {
+    void addObsTransition(Transition tr) {
         ObsTransitions.add(tr);
     }
 
-    public void addObsBehaviour(AbsBehaviour be) {
+    void addObsBehaviour(AbsBehaviour be) {
         ObsBehaviours.add(be);
     }
 
+
     @Override
-    public void initialiseObservation(AgentBasedModel model, double ti) {
+    protected void readStatics(AgentBasedModel model, Map<String, Double> tab, double ti) {
         for (State st: ObsStates) {
-            Current.put(st.getName(), model.getPopulation().count(st));
+            tab.put(st.getName(), 0.0 + model.getPopulation().count(st));
         }
         for (AbsBehaviour be: ObsBehaviours) {
-            be.fill(Current, model, ti);
+            be.fill(tab, model, ti);
         }
     }
 
     @Override
-    public void updateObservation(AgentBasedModel model, double ti) {
-        for (State st: ObsStates) {
-            Current.put(st.getName(), model.getPopulation().count(st));
-        }
+    public void updateDynamicObservations(AgentBasedModel model, Map<String, Double> flows, double ti) {
+        ObsTransitions.forEach(tr-> flows.put(tr.getName(), 0.0+ Records.stream().filter(e-> e.Tr==tr).count()));
+    }
 
-        double t0 = (Last.containsKey("Time"))?Last.get("Time"):Double.POSITIVE_INFINITY;
-
-        List<Record> r0 = Records.stream().filter(e->e.Time < t0).collect(Collectors.toList()),
-                     r1 = Records.stream().filter(e->e.Time >= t0).collect(Collectors.toList());
-
+    @Override
+    protected void clearFlows() {
+        super.clearFlows();
         Records.clear();
-
-        for (Transition tr: ObsTransitions) {
-            double count = 0;
-            try {
-                count = Last.get(tr.getName());
-            } catch (NullPointerException ex) {
-                count = 0;
-            } finally {
-                count += r0.stream().filter(e->e.Tr==tr).count();
-                Last.put(tr.getName(), count);
-            }
-
-            try {
-                count = Current.get(tr.getName());
-            } catch (NullPointerException ex) {
-                count = 0;
-            } finally {
-                count += r1.stream().filter(e->e.Tr==tr).count();
-                Current.put(tr.getName(), count);
-            }
-        }
-
-        for (AbsBehaviour be: ObsBehaviours) {
-            be.fill(Current, model, ti);
-        }
     }
 
     public void record(Agent ag, Transition tr, double time) {

@@ -24,17 +24,13 @@ public class Agent implements AdapterJSONObject{
     private ModifierSet Mods;
     private Event Next;
 
-    public Agent(String name, State st, Map<String, Object> info) {
+    public Agent(String name, State st) {
         Name = name;
-        Info = info;
+        Info = new HashMap<>();
         State = st;
         Transitions = new HashMap<>();
         Mods = new ModifierSet();
         Next = Event.NullEvent;
-    }
-
-    public Agent(String name, State st) {
-        this(name, st, new HashMap<>());
     }
 
     public String getName() {
