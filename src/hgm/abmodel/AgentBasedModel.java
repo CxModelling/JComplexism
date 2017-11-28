@@ -1,6 +1,7 @@
 package hgm.abmodel;
 
 import dcore.AbsDCore;
+import dcore.Transition;
 import hgm.abmodel.behaviour.AbsBehaviour;
 import mcore.*;
 import org.json.JSONObject;
@@ -81,7 +82,22 @@ public class AgentBasedModel extends LeafModel {
 
     @Override
     public void doRequest(Request req) {
+        String nod = req.getNode();
+        Event evt = req.getEvent();
+        double time = req.getTime();
 
+        if (Behaviours.containsKey(nod)) {
+            AbsBehaviour be = Behaviours.get(nod);
+            be.exec(this, evt);
+        } else {
+            Agent ag = Agents.get(nod);
+            Transition tr = (Transition) evt.getValue();
+            ((ObserverABM) getObserver()).record(ag, tr, time);
+            // check transition self.check_tr(ag, tr)
+            ag.exec(evt);
+            // impulse transition self.impulse_tr(bes, ag, time)
+            ag.update(time);
+        }
     }
 
     @Override
