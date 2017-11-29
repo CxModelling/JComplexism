@@ -165,6 +165,7 @@ public class ModelSet extends BranchModel{
         super.updateObservations(ti);
     }
 
+
     @Override
     public void captureMidTermObservations(double ti) {
         Models.values().forEach(m->m.captureMidTermObservations(ti));

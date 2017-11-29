@@ -16,16 +16,16 @@ public class ConstantModel extends LeafModel {
     private ClockTicker Timer;
 
     public ConstantModel(String name, mcore.Meta meta, double dt) {
-        super(name, new AbsObserver() {
+        super(name, new AbsObserver<ConstantModel>() {
 
             @Override
-            public void updateDynamicObservations(AbsSimModel model, Map flows, double ti) {
+            public void updateDynamicObservations(ConstantModel model, Map<String, Double> flows, double ti) {
 
             }
 
             @Override
-            protected void readStatics(AbsSimModel model, Map tab, double ti) {
-
+            protected void readStatics(ConstantModel model, Map<String, Double> tab, double ti) {
+                tab.put("A", ti);
             }
         }, meta);
         Timer = new ClockTicker("", dt);

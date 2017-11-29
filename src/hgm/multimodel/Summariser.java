@@ -98,7 +98,7 @@ public class Summariser extends LeafModel {
     void summarise(double time) {
         Map<String, Double> obs;
         String k;
-        if (time == LastObservation && !Summary.isEmpty()) {
+        if (time == LastObservation) {
             return;
         }
         for (String sel: ToBeSummarised) {
@@ -106,7 +106,7 @@ public class Summariser extends LeafModel {
             for (Map.Entry<String, Double> ent: obs.entrySet()) {
                 if (ent.getKey().equals("Time")) continue;
                 k = (sel.equals("*")? "": sel+"@") + ent.getKey();
-                Summary.putIfAbsent(k, ent.getValue());
+                Summary.put(k, ent.getValue());
             }
         }
         Summary.put("Time", time);
