@@ -26,6 +26,7 @@ public class ObsMM extends AbsObserver<ModelSet> {
     @Override
     protected void readStatics(ModelSet model, Map<String, Double> tab, double ti) {
         Summariser s = model.getSummariser();
+        boolean l = tab == getLast();
         try {
             tab.putAll(s.getImpulses());
 
@@ -34,7 +35,7 @@ public class ObsMM extends AbsObserver<ModelSet> {
                 sub = new ArrayList<>();
 
                 for (AbsSimModel m: model.selectAll(sel).values()) {
-                    sub.add(m.getObserver().getNewest());
+                    sub.add((l)? m.getObserver().getLast(): m.getObserver().getMid());
                 }
 
                 fillTables(sel, tab, sub);

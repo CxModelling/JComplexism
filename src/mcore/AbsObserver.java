@@ -92,12 +92,8 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         return Last;
     }
 
-    public Map<String, Double> getNewest() {
-        if (Mid.size() > 1) {
-            return Mid;
-        } else {
-            return Last;
-        }
+    public Map<String, Double> getMid() {
+        return Mid;
     }
 
     public List<Map<String, Double>> getTimeSeries() {
