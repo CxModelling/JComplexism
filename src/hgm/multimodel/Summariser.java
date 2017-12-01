@@ -3,7 +3,10 @@ package hgm.multimodel;
 
 import mcore.Ticker.ClockTicker;
 import mcore.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import utils.json.AdapterJSONObject;
+
 import java.util.*;
 
 
@@ -13,7 +16,7 @@ import java.util.*;
  */
 public class Summariser extends LeafModel {
 
-    private class Task {
+    private class Task implements AdapterJSONObject {
         String Selector, Parameter, NewName;
 
         Task(String selector, String parameter, String newName) {
@@ -21,32 +24,41 @@ public class Summariser extends LeafModel {
             Parameter = parameter;
             NewName = newName;
         }
+
+        Task(JSONObject js) {
+            this(js.getString("Selector"), js.getString("Parameter"), js.getString("NewName"));
+        }
+
+        @Override
+        public JSONObject toJSON() {
+            return new JSONObject("{'Selector': "+ Selector +
+                    ", 'Parameter': "+ Parameter + ", 'NewName': " + NewName + "}");
+        }
     }
 
     private ClockTicker Clock;
     private List<Task> Tasks;
-    private List<String> ToBeSummarised;
-    private double LastObservation;
     private ModelSet MM;
     private LinkedHashMap<String, Double> Impulses;
-    private LinkedHashMap<String, Double> Summary;
 
     Summariser(String name, double dt) {
         super(name, null, null);
         Clock = new ClockTicker(dt);
         Tasks = new ArrayList<>();
-        ToBeSummarised = new ArrayList<>();
-        Summary = new LinkedHashMap<>();
         Impulses = new LinkedHashMap<>();
-        LastObservation = -1;
+    }
+
+    Summariser(String name, JSONObject js) {
+        this(name, js.getJSONObject("Timer").getJSONObject("Args").getDouble("dt"));
+        JSONArray tasks = js.getJSONArray("Tasks");
+
+        for (int i = 0; i < tasks.length(); i++) {
+            Tasks.add(new Task(tasks.getJSONObject(i)));
+        }
     }
 
     public void setModel(ModelSet mm) {
         MM = mm;
-    }
-
-    void addObsModel(String selector) {
-        ToBeSummarised.add(selector);
     }
 
     @Override
@@ -60,7 +72,7 @@ public class Summariser extends LeafModel {
 
     @Override
     public void clear() {
-        Summary.clear();
+        Impulses.clear();
     }
 
     @Override
@@ -70,7 +82,7 @@ public class Summariser extends LeafModel {
 
     @Override
     public void reset(double ti) {
-        Summary = new LinkedHashMap<>();
+        Impulses = new LinkedHashMap<>();
         Clock.initialise(ti);
     }
 
@@ -87,34 +99,12 @@ public class Summariser extends LeafModel {
 
     void readTasks() {
         for (Task tk: Tasks) {
-            Summary.put(tk.NewName, MM.selectAll(tk.Selector).sum(tk.Parameter));
+            Impulses.put(tk.NewName, MM.selectAll(tk.Selector).sum(tk.Parameter));
         }
     }
 
     LinkedHashMap<String, Double> getImpulses() {
         return Impulses;
-    }
-
-    void summarise(double time) {
-        Map<String, Double> obs;
-        String k;
-        if (time == LastObservation) {
-            return;
-        }
-        for (String sel: ToBeSummarised) {
-            obs = MM.selectAll(sel).sum();
-            for (Map.Entry<String, Double> ent: obs.entrySet()) {
-                if (ent.getKey().equals("Time")) continue;
-                k = (sel.equals("*")? "": sel+"@") + ent.getKey();
-                Summary.put(k, ent.getValue());
-            }
-        }
-        Summary.put("Time", time);
-        LastObservation = time;
-    }
-
-    LinkedHashMap<String, Double> getSummary() {
-        return Summary;
     }
 
     @Override
@@ -142,7 +132,9 @@ public class Summariser extends LeafModel {
 
     @Override
     public JSONObject toJSON() {
-        // todo
+        JSONObject js = new JSONObject();
+        js.put("Tasks", Tasks.stream().map(Task::toJSON));
+        js.put("Timer",  Clock.toJSON());
         return null;
     }
 

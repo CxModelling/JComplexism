@@ -45,6 +45,11 @@ public class ModelSelector extends HashMap<String, AbsSimModel> {
     private List<Predicate<AbsSimModel>> parseSelector(String sel) {
         List<Predicate<AbsSimModel>> filters = new ArrayList<>();
 
+        if (this.containsKey(sel)) {
+            filters.add(e -> e.getName().equals(sel));
+            return filters;
+        }
+
         Pattern pat = Pattern.compile("PC\\s*=\\s*(\\w+)");
         Matcher mat = pat.matcher(sel);
 

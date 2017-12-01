@@ -92,6 +92,14 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         return Last;
     }
 
+    public Map<String, Double> getNewest() {
+        if (Mid.size() > 1) {
+            return Mid;
+        } else {
+            return Last;
+        }
+    }
+
     public List<Map<String, Double>> getTimeSeries() {
         return TimeSeries;
     }
@@ -137,7 +145,7 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         StringBuilder sb = new StringBuilder();
         sb.append("Time");
 
-        Last.keySet().stream().filter(key -> !Objects.equals(key, "Time"))
+        TimeSeries.get(0).keySet().stream().filter(key -> !Objects.equals(key, "Time"))
                 .forEach(key -> sb.append("\t").append(key));
 
         for (Map<String, Double> data: TimeSeries) {

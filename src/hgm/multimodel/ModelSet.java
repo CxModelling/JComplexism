@@ -25,15 +25,14 @@ public class ModelSet extends BranchModel{
 
     public void addObsModel(String sel) {
         if (selectAll(sel).size() > 0) {
-            Summariser.addObsModel(sel);
+            ((ObsMM) getObserver()).addObservedSelector(sel);
         }
     }
 
     @Override
     public void clear() {
-        for (AbsSimModel mod: Models.values()) {
-            mod.clear();
-        }
+        Models.values().forEach(AbsSimModel::clear);
+        Summariser.clear();
     }
 
     @Override
@@ -116,7 +115,11 @@ public class ModelSet extends BranchModel{
 
     @Override
     public void findNext() {
-        Models.values().forEach(AbsSimModel::next);
+        for (Map.Entry<String, AbsSimModel> ent: Models.entrySet()) {
+            for (Object req: ent.getValue().next()) {
+                Requests.append(((Request) req));
+            }
+        }
         Summariser.findNext();
         Requests.appendSRC("Summary", null, Summariser.tte());
     }
@@ -135,7 +138,6 @@ public class ModelSet extends BranchModel{
             crossImpulse(ti);
             Summariser.doRequest(req);
             Summariser.dropNext();
-
         }
     }
 

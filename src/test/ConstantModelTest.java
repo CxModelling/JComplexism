@@ -19,9 +19,10 @@ public class ConstantModelTest extends TestCase {
     public void testBuildBranchModel() throws Exception {
         ModelSet Models = new ModelSet("X", new Meta("PX", "DX", "KX"), 1.0);
         Models.append(new ConstantModel("A1", new Meta("P1", "D1", "K"), 0.6));
-        Models.append(new ConstantModel("A2", new Meta("P2", "D2", "K"), 0.7));
+        Models.append(new ConstantModel("A2", new Meta("P2", "D2", "K"), 0.3));
         Models.addObsModel("A1");
         Models.addObsModel("A2");
+        Models.addObsModel("*");
         Y0s y0 = new Y0s();
         y0.put("A1", new Y0());
         y0.put("A2", new Y0());

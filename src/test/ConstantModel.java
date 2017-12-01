@@ -14,6 +14,7 @@ import java.util.Map;
 public class ConstantModel extends LeafModel {
 
     private ClockTicker Timer;
+    private double Last;
 
     public ConstantModel(String name, mcore.Meta meta, double dt) {
         super(name, new AbsObserver<ConstantModel>() {
@@ -25,10 +26,11 @@ public class ConstantModel extends LeafModel {
 
             @Override
             protected void readStatics(ConstantModel model, Map<String, Double> tab, double ti) {
-                tab.put("A", ti);
+                tab.put("A", model.Last);
             }
         }, meta);
         Timer = new ClockTicker("", dt);
+        Last = 0;
     }
 
     @Override
@@ -72,7 +74,7 @@ public class ConstantModel extends LeafModel {
     public void doRequest(Request req) {
         Timer.update(req.getTime());
         System.out.println(req.getEvent());
-
+        Last = req.getTime();
     }
 
     @Override
