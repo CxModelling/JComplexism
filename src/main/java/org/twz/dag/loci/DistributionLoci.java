@@ -118,9 +118,8 @@ public class DistributionLoci extends Loci {
 
     @Override
     public JSONObject toJSON() {
-        JSONObject js = new JSONObject();
+        JSONObject js = super.toJSON();
         js.put("Type", "Distribution");
-        js.put("Def", Distribution);
         js.put("Parents", new JSONArray(getParents()));
         return js;
     }

@@ -126,9 +126,8 @@ public class FunctionLoci extends Loci {
 
     @Override
     public JSONObject toJSON() {
-        JSONObject js = new JSONObject();
+        JSONObject js = super.toJSON();
         js.put("Type", "Function");
-        js.put("Def", Function);
         js.put("Parents", new JSONArray(getParents()));
         return js;
     }
