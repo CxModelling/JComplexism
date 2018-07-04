@@ -1,10 +1,10 @@
-package org.twz.cx.mcore.Ticker;
+package org.twz.cx.element.Ticker;
 
 import org.twz.io.AdapterJSONObject;
 import org.json.JSONObject;
 
 /**
- * ClockTicker object providing time to trigger an event
+ * StepTicker object providing time to trigger an event
  * Created by TimeWz on 2017/10/12.
  */
 public abstract class AbsTicker implements AdapterJSONObject {

@@ -24,10 +24,10 @@ public class Request implements Comparable<Request> {
         Where.add(loc);
     }
 
-    public Request(Event event, String node, List<String> loc) {
+    public Request(Event event, String node, LinkedList<String> loc) {
         Todo = event;
         Who = node;
-        Where = new LinkedList<>(loc);
+        Where = loc;
     }
 
     public String getMessage() {
@@ -57,11 +57,7 @@ public class Request implements Comparable<Request> {
     }
 
 
-    public Pair<String, Request> downScale() throws IllegalAccessException {
-        if (reached()) {
-            throw new IllegalAccessException();
-        }
-
+    public Pair<String, Request> downScale() {
         String gp = getGroup();
         LinkedList<String> new_adr = new LinkedList<>(Where);
         new_adr.pollLast();
@@ -70,6 +66,10 @@ public class Request implements Comparable<Request> {
 
     boolean reached() {
         return Where.size() == 1;
+    }
+
+    public Disclosure disclose() {
+        return new Disclosure(getMessage(), Who, new LinkedList<>(Where));
     }
 
     @Override

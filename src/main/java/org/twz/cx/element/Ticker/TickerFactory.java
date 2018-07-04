@@ -1,4 +1,4 @@
-package org.twz.cx.mcore.Ticker;
+package org.twz.cx.element.Ticker;
 
 import org.twz.factory.Workshop;
 import org.twz.factory.arguments.AbsArgument;
@@ -19,13 +19,13 @@ public class TickerFactory {
         AbsArgument[] ags;
 
         ags = new AbsArgument[]{new ListArg("ts"), new DoubleArg("t")};
-        Factory.register("Step", StepTicker.class, ags);
+        Factory.register("Schedule", ScheduleTicker.class, ags);
 
         ags = new AbsArgument[]{new ListArg("queue"), new DoubleArg("t")};
         Factory.register("Appointment", AppointmentTicker.class, ags);
 
         ags = new AbsArgument[]{new DoubleArg("dt"), new DoubleArg("t")};
-        Factory.register("Clock", ClockTicker.class, ags);
+        Factory.register("Step", StepTicker.class, ags);
     }
 
     public static AbsTicker create(JSONObject js) {

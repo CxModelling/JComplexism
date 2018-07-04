@@ -1,4 +1,4 @@
-package org.twz.cx.mcore.Ticker;
+package org.twz.cx.element.Ticker;
 
 import org.json.JSONObject;
 

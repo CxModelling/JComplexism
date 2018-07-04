@@ -1,11 +1,11 @@
 package org.twz.cx.abmodel.behaviour;
 
+import org.twz.cx.element.Ticker.StepTicker;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.element.Event;
 import org.twz.cx.abmodel.Agent;
 import org.twz.cx.abmodel.AgentBasedModel;
 import org.twz.cx.abmodel.behaviour.trigger.Trigger;
-import org.twz.cx.mcore.Ticker.ClockTicker;
 
 /**
  *
@@ -13,10 +13,10 @@ import org.twz.cx.mcore.Ticker.ClockTicker;
  */
 public abstract class AbsTimeDepBe extends AbsBehaviour {
 
-    protected ClockTicker Ticker;
+    protected StepTicker Ticker;
     protected Event Next;
 
-    AbsTimeDepBe(String name, Trigger tri, ClockTicker clock) {
+    AbsTimeDepBe(String name, Trigger tri, StepTicker clock) {
         super(name, tri);
         Ticker = clock;
         Next = Event.NullEvent;

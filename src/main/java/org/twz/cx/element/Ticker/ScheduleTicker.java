@@ -1,4 +1,4 @@
-package org.twz.cx.mcore.Ticker;
+package org.twz.cx.element.Ticker;
 
 import org.json.JSONObject;
 
@@ -9,16 +9,16 @@ import java.util.List;
  *
  * Created by TimeWz on 2017/10/13.
  */
-public class StepTicker extends AbsTicker {
+public class ScheduleTicker extends AbsTicker {
     private final List<Double> Ts;
 
-    public StepTicker(String name, List<Double> ts) {
+    public ScheduleTicker(String name, List<Double> ts) {
         super(name);
         Ts = new ArrayList<>();
         Ts.addAll(ts);
     }
 
-    public StepTicker(String name, List<Double> ts, Double t) {
+    public ScheduleTicker(String name, List<Double> ts, Double t) {
         this(name, ts);
         initialise(t);
     }

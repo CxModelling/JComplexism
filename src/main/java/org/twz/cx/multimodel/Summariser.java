@@ -3,7 +3,7 @@ package org.twz.cx.multimodel;
 
 import org.twz.cx.element.Event;
 import org.twz.cx.element.Request;
-import org.twz.cx.mcore.Ticker.ClockTicker;
+import org.twz.cx.element.Ticker.StepTicker;
 import org.twz.cx.mcore.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,14 +38,14 @@ public class Summariser extends LeafModel {
         }
     }
 
-    private ClockTicker Clock;
+    private StepTicker Clock;
     private List<Task> Tasks;
     private ModelSet MM;
     private LinkedHashMap<String, Double> Impulses;
 
     Summariser(String name, double dt) {
         super(name, null, null);
-        Clock = new ClockTicker(dt);
+        Clock = new StepTicker(dt);
         Tasks = new ArrayList<>();
         Impulses = new LinkedHashMap<>();
     }

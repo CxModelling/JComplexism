@@ -1,6 +1,6 @@
 import org.twz.cx.element.Event;
 import org.twz.cx.element.Request;
-import org.twz.cx.mcore.Ticker.ClockTicker;
+import org.twz.cx.element.Ticker.StepTicker;
 import org.twz.cx.mcore.*;
 import org.json.JSONObject;
 
@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class ConstantModel extends LeafModel {
 
-    private ClockTicker Timer;
+    private StepTicker Timer;
     private double Last;
 
     public ConstantModel(String name, org.twz.cx.mcore.Meta meta, double dt) {
@@ -29,7 +29,7 @@ public class ConstantModel extends LeafModel {
                 tab.put("A", model.Last);
             }
         }, meta);
-        Timer = new ClockTicker("", dt);
+        Timer = new StepTicker("", dt);
         Last = 0;
     }
 
