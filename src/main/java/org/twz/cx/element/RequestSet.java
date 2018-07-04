@@ -1,4 +1,7 @@
-package org.twz.cx.mcore;
+package org.twz.cx.element;
+
+import org.twz.cx.element.Event;
+import org.twz.cx.element.Request;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +12,12 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 10/02/2017.
  */
 public class RequestSet {
+    private final String Location;
     private List<Request> Requests;
     private double Time;
 
     public RequestSet() {
+        Location = "";
         Time = Double.POSITIVE_INFINITY;
         Requests = new ArrayList<>();
     }
@@ -28,7 +33,7 @@ public class RequestSet {
 
     public List<Request> up(String adr) {
         return Requests.stream()
-                .map(e-> e.up(adr))
+                .map(e-> e.upScale(adr))
                 .collect(Collectors.toList());
     }
 
@@ -63,10 +68,10 @@ public class RequestSet {
     public void appendSRC(String ag, Event evt, double ti) {
         if (ti < Time) {
             Requests.clear();
-            Requests.add(new Request(evt, ti, ag));
+            Requests.add(new Request(evt, ag, Location));
             Time = ti;
         } else if (ti == Time) {
-            Requests.add(new Request(evt, ti, ag));
+            Requests.add(new Request(evt, ag, Location));
         }
     }
 

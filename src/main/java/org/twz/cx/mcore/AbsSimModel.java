@@ -1,5 +1,7 @@
 package org.twz.cx.mcore;
 
+import org.twz.cx.element.Request;
+import org.twz.cx.element.RequestSet;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.Collection;

@@ -1,6 +1,6 @@
 package org.twz.cx.abmodel.behaviour;
 
-import org.twz.cx.mcore.Event;
+import org.twz.cx.element.Event;
 import org.twz.cx.abmodel.AgentBasedModel;
 import org.twz.cx.abmodel.behaviour.trigger.Trigger;
 

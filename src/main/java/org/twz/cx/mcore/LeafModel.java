@@ -1,5 +1,7 @@
 package org.twz.cx.mcore;
 
+import org.twz.cx.element.Request;
+
 import java.util.List;
 
 /**

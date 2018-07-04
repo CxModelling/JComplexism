@@ -1,6 +1,8 @@
 package org.twz.cx.multimodel;
 
 
+import org.twz.cx.element.Event;
+import org.twz.cx.element.Request;
 import org.twz.cx.mcore.Ticker.ClockTicker;
 import org.twz.cx.mcore.*;
 import org.json.JSONArray;
@@ -77,7 +79,7 @@ public class Summariser extends LeafModel {
 
     @Override
     public void findNext() {
-        Requests.append(new Request(Event.NullEvent, Clock.getNext()));
+        Requests.append(new Request(Event.NullEvent, "Summary", "*"));
     }
 
     @Override

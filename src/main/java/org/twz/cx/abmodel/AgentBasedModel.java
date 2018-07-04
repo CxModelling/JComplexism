@@ -1,5 +1,7 @@
 package org.twz.cx.abmodel;
 
+import org.twz.cx.element.Event;
+import org.twz.cx.element.Request;
 import org.twz.statespace.AbsDCore;
 import org.twz.statespace.Transition;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
@@ -82,8 +84,8 @@ public class AgentBasedModel extends LeafModel {
 
     @Override
     public void doRequest(Request req) {
-        String nod = req.getNode();
-        Event evt = req.getEvent();
+        String nod = req.Who;
+        Event evt = req.Todo;
         double time = req.getTime();
 
         if (Behaviours.containsKey(nod)) {

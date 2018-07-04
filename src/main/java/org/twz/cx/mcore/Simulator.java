@@ -1,5 +1,7 @@
 package org.twz.cx.mcore;
 
+import org.twz.cx.element.RequestSet;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +65,7 @@ public class Simulator<T> {
             ti = Receptor.getTime();
             if (ti > end) break;
             tx = ti;
-            Model.fetch(Receptor.getRequests().stream().map(e->e.down().getValue()).collect(Collectors.toList()));
+            // todo Model.fetch(Receptor.getRequests().stream().map(e->e.downScale().getValue()).collect(Collectors.toList()));
             Model.exec();
             Model.dropNext();
             Receptor.clear();

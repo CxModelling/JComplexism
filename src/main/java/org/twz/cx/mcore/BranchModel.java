@@ -1,6 +1,7 @@
 package org.twz.cx.mcore;
 
-import org.apache.commons.math3.util.Pair;
+import org.twz.dataframe.Pair;
+import org.twz.cx.element.Request;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,12 +49,16 @@ public abstract class BranchModel extends AbsSimModel<Y0> {
         Pair<String, Request> pr;
         Request rq;
         for (Request req: rqs) {
-            pr = req.down();
-            rq = pr.getSecond();
-            if (!nest.containsKey(rq.getAddress())) {
-                nest.put(rq.getAddress(), new ArrayList<>());
+            try {
+                pr = req.downScale();
+                rq = pr.getSecond();
+                if (!nest.containsKey(rq.getAddress())) {
+                    nest.put(rq.getAddress(), new ArrayList<>());
+                }
+                nest.get(rq.getAddress()).add(pr.getValue());
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
-            nest.get(rq.getAddress()).add(pr.getValue());
         }
         //System.out.println(nest);
         //System.out.println(Models.keySet());

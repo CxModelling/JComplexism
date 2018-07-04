@@ -1,6 +1,6 @@
 package org.twz.cx.abmodel.behaviour;
 
-import org.twz.cx.mcore.Event;
+import org.twz.cx.element.Event;
 import org.twz.statespace.Transition;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.abmodel.Agent;

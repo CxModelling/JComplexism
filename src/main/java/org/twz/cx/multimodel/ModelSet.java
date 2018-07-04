@@ -1,5 +1,6 @@
 package org.twz.cx.multimodel;
 
+import org.twz.cx.element.Request;
 import org.twz.cx.multimodel.entries.RelationEntry;
 import org.twz.cx.mcore.*;
 import org.json.JSONObject;
@@ -132,7 +133,7 @@ public class ModelSet extends BranchModel{
 
     @Override
     public void doRequest(Request req) {
-        if (req.getNode().equals("Summary")) {
+        if (req.Who.equals("Summary")) {
             double ti = req.getTime();
             crossImpulse(ti);
             Summariser.doRequest(req);

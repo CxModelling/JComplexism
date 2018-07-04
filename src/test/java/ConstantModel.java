@@ -1,3 +1,5 @@
+import org.twz.cx.element.Event;
+import org.twz.cx.element.Request;
 import org.twz.cx.mcore.Ticker.ClockTicker;
 import org.twz.cx.mcore.*;
 import org.json.JSONObject;
@@ -71,7 +73,7 @@ public class ConstantModel extends LeafModel {
     @Override
     public void doRequest(Request req) {
         Timer.update(req.getTime());
-        System.out.println(req.getEvent());
+        System.out.println(req.Todo);
         Last = req.getTime();
     }
 

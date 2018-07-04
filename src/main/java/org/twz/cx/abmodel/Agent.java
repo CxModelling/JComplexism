@@ -9,7 +9,7 @@ import org.twz.statespace.Transition;
 import org.twz.cx.abmodel.modifier.AbsModifier;
 import org.twz.cx.abmodel.modifier.ModifierSet;
 import org.twz.io.AdapterJSONObject;
-import org.twz.cx.mcore.Event;
+import org.twz.cx.element.Event;
 import org.json.JSONObject;
 
 /**
