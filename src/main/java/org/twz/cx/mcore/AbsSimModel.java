@@ -1,10 +1,10 @@
 package org.twz.cx.mcore;
 
-import org.twz.cx.element.Request;
-import org.twz.cx.element.RequestSet;
+import org.json.JSONArray;
+import org.twz.cx.element.*;
 import org.twz.io.AdapterJSONObject;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,19 +12,23 @@ import java.util.Map;
  *
  * Created by TimeWz on 2017/2/10.
  */
-public abstract class AbsSimModel<T> implements AdapterJSONObject{
+public abstract class AbsSimModel implements AdapterJSONObject{
     private final String Name;
-    protected AbsObserver<AbsSimModel<T>> Obs;
+    protected final AbsObserver<AbsSimModel> Obs;
+    protected final IY0 ProtoY0;
+    protected final Schedule Scheduler;
+    private List<IEventListener> Listeners;
+    protected Map<String, Object> Environment;
     private double TimeEnd;
-    private final Meta Meta;
-    protected RequestSet Requests;
 
 
-    public AbsSimModel(String name, AbsObserver<AbsSimModel<T>> obs, Meta meta) {
+    public AbsSimModel(String name, Map<String, Object> env, AbsObserver<AbsSimModel> obs, IY0 protoY0) {
         Name = name;
-        Requests = new RequestSet();
-        Meta = meta;
+        Scheduler = new Schedule(name);
         Obs = obs;
+        Environment = env;
+        Listeners = new ArrayList<>();
+        ProtoY0 = protoY0;
         TimeEnd = Double.NaN;
     }
 
@@ -32,53 +36,75 @@ public abstract class AbsSimModel<T> implements AdapterJSONObject{
         return Obs;
     }
 
-    public void initialise(double ti, Y0<T> y0) {
+    public void initialise(double ti, JSONArray y0) {
+        initialise(ti, ProtoY0.adaptTo(y0));
+    }
+
+    public void initialise(double ti, IY0 y0) {
+        y0.matchModelInfo(this);
         readY0(y0, ti);
-        reset(ti);
-        dropNext();
+        preset(ti);
     }
 
     public void initialise(double ti) {
-        reset(ti);
-        dropNext();
+        preset(ti);
     }
 
     public String getName() {
         return Name;
     }
 
-    public Double get(String s) {
-        return Obs.get(s);
+    public Object get(String s) {
+        return Environment.get(s);
     }
 
-    public org.twz.cx.mcore.Meta getMeta() {
-        return Meta;
+    Schedule getScheduler() {
+        return Scheduler;
     }
 
-    public abstract void clear();
+    public Double getDouble(String s) {
+        return (Double) Environment.get(s);
+    }
+
+    public String getString(String s) {
+        return (String) Environment.get(s);
+    }
+
+    public void preset(double ti) {
+        reset(ti);
+    }
 
     public abstract void reset(double ti);
 
-    public abstract void readY0(Y0<T> y0, double ti);
+    public abstract void readY0(IY0 y0, double ti);
 
-    public abstract void listen(String src_m, String src_v, String tar_p);
+    public abstract List<Request> collectRequests() throws Exception ;
 
-    public abstract void listen(Collection<String> src_m, String src_v, String tar_p);
+    public abstract void findNext();
 
-    public void listen(String src_m, String src_v, String tar_p, String tar_sub) {
-        listen(src_m, src_v, tar_p);
+    public void request(Event evt, String who) {
+        Scheduler.appendRequestFromSource(evt, who);
     }
 
-    public void listen(Collection<String> src_m, String src_v, String tar_p, String tar_sub) {
-        listen(src_m, src_v, tar_p);
+    public abstract void doRequest(Request req);
+
+    public abstract void validateRequests();
+
+    public abstract void fetchRequests(List<Request> requests);
+
+    public abstract void executeRequests();
+
+    public void disclose(String msg, String who, Map<String, Object> args) {
+        Scheduler.appendDisclosureFromSource(msg, who, args);
     }
 
-    public abstract boolean impulseForeign(AbsSimModel fore, double ti);
-
-    public List<Request> next() {
-        if (Requests.isEmpty()) findNext();
-        return Requests.up(Name);
+    public void disclose(String msg, String who) {
+        Scheduler.appendDisclosureFromSource(msg, who);
     }
+
+    public abstract List<Disclosure> collectDisclosure();
+
+    public abstract void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti);
 
     public double getTimeEnd() {
         return TimeEnd;
@@ -88,21 +114,26 @@ public abstract class AbsSimModel<T> implements AdapterJSONObject{
         TimeEnd = timeEnd;
     }
 
-    public double tte() {
-        return Requests.getTime();
+    public abstract void addListener(IEventListener listener);
+
+    public <E extends IY0> boolean triggerExternalImpulses(Disclosure dis, AbsSimModel model, double ti) {
+        boolean shocked = false;
+
+        for (IEventListener el: Listeners) {
+            boolean needs = el.needs(dis, this);
+            if (needs) {
+                el.applyShock(dis, model, this, ti);
+                shocked = true;
+            }
+        }
+        return shocked;
     }
 
-    public void dropNext() {
-        Requests.clear();
+    public void exitCycle() {
+        if (! Scheduler.isWaitingForValidation()) {
+            Scheduler.collectionCompleted();
+        }
     }
-
-    public abstract void findNext();
-
-    public abstract void fetch(List<Request> rqs);
-
-    public abstract void exec();
-
-    public abstract void doRequest(Request req);
 
     public void clearOutput() {
         Obs.renew();
@@ -131,6 +162,8 @@ public abstract class AbsSimModel<T> implements AdapterJSONObject{
     public List<Map<String, Double>> output() {
         return Obs.getTimeSeries();
     }
+
+    public abstract Double getSnapshot(String key, double ti);
 
     public void print() {
         Obs.print();

@@ -20,7 +20,7 @@ public class AgentBasedModel extends LeafModel {
     private AbsDCore DCore;
     private Map<String, AbsBehaviour> Behaviours;
 
-    public AgentBasedModel(String name, AbsDCore dc, org.twz.cx.mcore.Meta meta, String prefix) {
+    public AgentBasedModel(String name, AbsDCore dc, String prefix) {
         super(name, new ObserverABM(), meta);
         Agents = new Population(dc, prefix);
         Behaviours = new LinkedHashMap<>();
@@ -48,33 +48,8 @@ public class AgentBasedModel extends LeafModel {
     }
 
     @Override
-    public void clear() {
-
-    }
-
-    @Override
     public void reset(double ti) {
 
-    }
-
-    @Override
-    public void readY0(Y0<Double> y0, double ti) {
-
-    }
-
-    @Override
-    public void listen(String src_m, String src_v, String tar_p) {
-
-    }
-
-    @Override
-    public void listen(Collection<String> src_m, String src_v, String tar_p) {
-
-    }
-
-    @Override
-    public boolean impulseForeign(AbsSimModel fore, double ti) {
-        return false;
     }
 
     @Override

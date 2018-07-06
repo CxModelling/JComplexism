@@ -16,7 +16,7 @@ import java.util.*;
  *
  * Created by TimeWz on 29/09/2017.
  */
-public class Summariser extends LeafModel {
+public class Summariser extends ModelAtom {
 
     private class Task implements AdapterJSONObject {
         String Selector, Parameter, NewName;
@@ -73,13 +73,8 @@ public class Summariser extends LeafModel {
     }
 
     @Override
-    public void clear() {
-        Impulses.clear();
-    }
-
-    @Override
     public void findNext() {
-        Requests.append(new Request(Event.NullEvent, "Summary", "*"));
+        request(Event.NullEvent, "Summary");
     }
 
     @Override
@@ -89,7 +84,7 @@ public class Summariser extends LeafModel {
     }
 
     @Override
-    public void readY0(Y0 y0, double ti) {
+    public void readY0(IY0 y0, double ti) {
 
     }
 

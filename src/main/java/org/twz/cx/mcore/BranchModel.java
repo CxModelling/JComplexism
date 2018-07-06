@@ -1,68 +1,144 @@
 package org.twz.cx.mcore;
 
-import org.twz.dataframe.Pair;
+import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
  * Created by TimeWz on 2017/2/10.
  */
-public abstract class BranchModel extends AbsSimModel<Y0> {
+public abstract class BranchModel extends AbsSimModel {
     protected Map<String, AbsSimModel> Models;
 
-    public BranchModel(String name, AbsObserver obs, Meta meta) {
-        super(name, obs, meta);
+    public BranchModel(String name, Map<String, Object> env, AbsObserver<AbsSimModel> obs, IY0 protoY0) {
+        super(name, env, obs, protoY0);
         Models = new HashMap<>();
     }
 
     @Override
-    public void readY0(Y0<Y0> y0s, double ti) {
-        for (Map.Entry<String, Y0> y0: y0s.entrySet()) {
-            Models.get(y0.getKey()).readY0(y0.getValue(), ti);
+    public void preset(double ti) {
+        Models.values().forEach(m -> m.preset(ti));
+    }
+
+    @Override
+    public void reset(double ti) {
+        Models.values().forEach(m -> m.reset(ti));
+    }
+
+    @Override
+    public List<Request> collectRequests() {
+        if (Scheduler.isWaitingForCollection()) {
+            findNext();
+            for (AbsSimModel m: Models.values()) {
+                try {
+                    m.collectRequests();
+                    Scheduler.appendLowerSchedule(m.getScheduler());
+                } catch (Exception ignored) {
+
+                }
+            }
+            Scheduler.collectionCompleted();
+        }
+        return Scheduler.getRequests();
+    }
+
+    @Override
+    public void validateRequests() {
+        // todo;
+    }
+
+    @Override
+    public void fetchRequests(List<Request> requests) {
+        Scheduler.fetchRequest(requests);
+
+        Map<String, List<Request>> lower = Scheduler.popLowerRequests();
+
+        for(Map.Entry<String, List<Request>> ent: lower.entrySet()) {
+            Models.get(ent.getKey()).fetchRequests(ent.getValue());
+        }
+        if (lower.size() > 0 | Scheduler.getRequests().size() > 0) {
+            Scheduler.validationCompleted();
         }
     }
 
     @Override
-    public void fetch(List<Request> rqs) {
-        Requests.clear();
-        Requests.add(rqs);
-        passDown();
+    public void executeRequests() {
+        Models.values().forEach(AbsSimModel::executeRequests);
+
+        if (Scheduler.isWaitingForExecution()) {
+            Scheduler.getRequests().forEach(this::doRequest);
+            Scheduler.executionCompleted();
+        }
     }
 
     @Override
-    public void exec() {
-        Models.values().stream()
-                .filter(v -> v.tte() == tte())
-                .forEach(AbsSimModel::exec);
-        Requests.getRequests().forEach(this::doRequest);
-        dropNext();
+    public List<Disclosure> collectDisclosure() {
+        List<Disclosure> dss = Scheduler.popDisclosures();
+        for (AbsSimModel m: Models.values()) {
+            dss.addAll(m.collectDisclosure().stream()
+                    .map(d -> d.upScale(getName()))
+                    .collect(Collectors.toList()));
+        }
+        return dss;
     }
 
-    public void passDown() {
-        List<Request> rqs = Requests.popLowerRequests();
-        Map<String, List<Request>> nest = new HashMap<>();
-        Pair<String, Request> pr;
-        Request rq;
-        for (Request req: rqs) {
-            try {
-                pr = req.downScale();
-                rq = pr.getSecond();
-                if (!nest.containsKey(rq.getAddress())) {
-                    nest.put(rq.getAddress(), new ArrayList<>());
+    @Override
+    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) {
+        ds_ms.entrySet().stream()
+                .filter(e -> e.getValue() != this)
+                .forEach(e -> triggerExternalImpulses(e.getKey(), e.getValue(), ti));
+
+        if (Scheduler.getDisclosures().isEmpty()) Scheduler.cycleCompleted();
+
+        for (Map.Entry<String, AbsSimModel> ent: Models.entrySet()) {
+            Map<Disclosure, AbsSimModel> ds = new HashMap<>();
+            for (Map.Entry<Disclosure, AbsSimModel> dm: ds_ms.entrySet()) {
+                if (dm.getKey().getGroup().equals(ent.getKey())) {
+                    if (!dm.getKey().getSource().equals(ent.getKey())) {
+                        ds.put(dm.getKey().downScale().getSecond(), dm.getValue());
+                    }
+                } else {
+                    ds.put(dm.getKey().siblingScale(), dm.getValue());
                 }
-                nest.get(rq.getAddress()).add(pr.getValue());
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            }
+            if (!ds.isEmpty()) {
+                ent.getValue().fetchDisclosures(ds, ti);
             }
         }
-        //System.out.println(nest);
-        //System.out.println(Models.keySet());
-        nest.forEach((key, value) -> Models.get(key).fetch(value));
+    }
+
+    @Override
+    public void exitCycle() {
+        Models.values().forEach(AbsSimModel::exitCycle);
+        super.exitCycle();
+    }
+
+    @Override
+    public void initialiseObservations(double ti) {
+        Models.values().forEach(m->m.initialiseObservations(ti));
+        super.initialiseObservations(ti);
+    }
+
+    @Override
+    public void updateObservations(double ti) {
+        Models.values().forEach(m->m.updateObservations(ti));
+        super.updateObservations(ti);
+    }
+
+    @Override
+    public void captureMidTermObservations(double ti) {
+        Models.values().forEach(m->m.captureMidTermObservations(ti));
+        super.captureMidTermObservations(ti);
+    }
+
+    @Override
+    public void pushObservations(double ti) {
+        Models.values().forEach(m->m.pushObservations(ti));
+        super.pushObservations(ti);
     }
 
     public AbsSimModel select(String sel) {

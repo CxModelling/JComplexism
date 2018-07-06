@@ -29,7 +29,7 @@ public class ModelSelector extends HashMap<String, AbsSimModel> {
 
 
     public double sum(String key) {
-        return this.values().stream().mapToDouble(e-> e.get(key)).sum();
+        return this.values().stream().mapToDouble(e-> e.getDouble(key)).sum();
     }
 
     public Map<String, Double> sum() {
@@ -50,10 +50,10 @@ public class ModelSelector extends HashMap<String, AbsSimModel> {
             return filters;
         }
 
-        Pattern pat = Pattern.compile("PC\\s*=\\s*(\\w+)");
-        Matcher mat = pat.matcher(sel);
+        Pattern pat; // = Pattern.compile("PC\\s*=\\s*(\\w+)");
+        Matcher mat; // = pat.matcher(sel);
 
-        if (mat.find()) {
+/*        if (mat.find()) {
             String arg = mat.group(1);
             filters.add(e -> e.getMeta().getPC().equals(arg));
         }
@@ -77,7 +77,7 @@ public class ModelSelector extends HashMap<String, AbsSimModel> {
         if (mat.find()) {
             String arg = mat.group(1);
             filters.add(e -> e.getMeta().getPrototype().equals(arg));
-        }
+        }*/
 
         pat = Pattern.compile("#(\\w+)");
         mat = pat.matcher(sel);
