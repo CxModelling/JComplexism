@@ -15,28 +15,28 @@ import java.util.*;
  *
  * Created by TimeWz on 2017/6/16.
  */
-public class AgentBasedModel extends LeafModel {
+public class ABModel extends AbsAgentBasedModel {
     private final Population Agents;
     private AbsDCore DCore;
     private Map<String, AbsBehaviour> Behaviours;
 
-    public AgentBasedModel(String name, AbsDCore dc, String prefix) {
-        super(name, new ObserverABM(), meta);
+    public ABModel(String name, AbsDCore dc, String prefix) {
+        super(name, new StSpObserver(), meta);
         Agents = new Population(dc, prefix);
         Behaviours = new LinkedHashMap<>();
         DCore = dc;
     }
 
     public void addObsState(String state) {
-        ((ObserverABM) getObserver()).addObsState(DCore.getState(state));
+        ((StSpObserver) getObserver()).addObsState(DCore.getState(state));
     }
 
     public void addObsTransition(String transition) {
-        ((ObserverABM) getObserver()).addObsTransition(DCore.getTransition(transition));
+        ((StSpObserver) getObserver()).addObsTransition(DCore.getTransition(transition));
     }
 
     public void addObsBehaviour(String behaviour) {
-        ((ObserverABM) getObserver()).addObsBehaviour(Behaviours.get(behaviour));
+        ((StSpObserver) getObserver()).addObsBehaviour(Behaviours.get(behaviour));
     }
 
     public AbsBehaviour getBehaviours(String be) {
@@ -69,7 +69,7 @@ public class AgentBasedModel extends LeafModel {
         } else {
             Agent ag = Agents.get(nod);
             Transition tr = (Transition) evt.getValue();
-            ((ObserverABM) getObserver()).record(ag, tr, time);
+            ((StSpObserver) getObserver()).record(ag, tr, time);
             // check transition self.check_tr(ag, tr)
             ag.exec(evt);
             // impulse transition self.impulse_tr(bes, ag, time)

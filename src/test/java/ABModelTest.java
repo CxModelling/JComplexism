@@ -1,6 +1,6 @@
 import org.twz.statespace.AbsDCore;
 import org.twz.cx.Director;
-import org.twz.cx.abmodel.AgentBasedModel;
+import org.twz.cx.abmodel.ABModel;
 import junit.framework.TestCase;
 import org.twz.cx.mcore.Simulator;
 
@@ -8,14 +8,14 @@ import org.twz.cx.mcore.Simulator;
  *
  * Created by TimeWz on 2017/11/10.
  */
-public class AgentBasedModelTest extends TestCase {
+public class ABModelTest extends TestCase {
     Director da = new Director();
     {
         da.loadPCore("script/pSIR.txt");
         da.loadDCore("script/SIR_BN.txt");
     }
     AbsDCore dc = da.generateDCore("SIR_bn", "pSIR");
-    AgentBasedModel abm = new AgentBasedModel("Test", dc, null, "Ag");
+    ABModel abm = new ABModel("Test", dc, null, "Ag");
 
     {
         abm.addObsState("Sus");

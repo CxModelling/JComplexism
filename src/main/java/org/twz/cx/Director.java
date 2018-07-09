@@ -5,7 +5,7 @@ import org.twz.statespace.DCoreFactory;
 import org.twz.statespace.IBlueprintDCore;
 import org.twz.statespace.ctbn.BlueprintCTBN;
 import org.twz.statespace.ctmc.BlueprintCTMC;
-import org.twz.cx.abmodel.BlueprintABM;
+import org.twz.cx.abmodel.ABMBlueprint;
 import org.twz.cx.multimodel.ModelLayout;
 import org.twz.cx.mcore.IMCoreBlueprint;
 import org.json.JSONObject;
@@ -140,8 +140,8 @@ public class Director {
         return bp;
     }
 
-    public BlueprintABM createABM(String name, String pc, String dc) {
-        BlueprintABM bp = new BlueprintABM(name, pc, dc);
+    public ABMBlueprint createABM(String name, String pc, String dc) {
+        ABMBlueprint bp = new ABMBlueprint(name, pc, dc);
         addMCore(name, bp);
         return bp;
     }

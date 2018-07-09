@@ -12,7 +12,7 @@ import java.util.*;
  *
  * Created by TimeWz on 2017/6/16.
  */
-public class ObserverABM extends AbsObserver<AgentBasedModel> {
+public class StSpObserver extends AbsObserver<ABModel> {
     private class Record {
         String Ag;
         Transition Tr;
@@ -27,7 +27,7 @@ public class ObserverABM extends AbsObserver<AgentBasedModel> {
     private Set<AbsBehaviour> ObsBehaviours;
     private ArrayList<Record> Records;
 
-    ObserverABM() {
+    StSpObserver() {
         ObsStates = new LinkedHashSet<>();
         ObsTransitions = new LinkedHashSet<>();
         ObsBehaviours = new LinkedHashSet<>();
@@ -49,17 +49,17 @@ public class ObserverABM extends AbsObserver<AgentBasedModel> {
 
 
     @Override
-    protected void readStatics(AgentBasedModel model, Map<String, Double> tab, double ti) {
+    protected void readStatics(ABModel model, Map<String, Double> tab, double ti) {
         for (State st: ObsStates) {
             tab.put(st.getName(), 0.0 + model.getPopulation().count(st));
         }
         for (AbsBehaviour be: ObsBehaviours) {
-            be.fill(tab, model, ti);
+            be.fillData(tab, model, ti);
         }
     }
 
     @Override
-    public void updateDynamicObservations(AgentBasedModel model, Map<String, Double> flows, double ti) {
+    public void updateDynamicObservations(ABModel model, Map<String, Double> flows, double ti) {
         ObsTransitions.forEach(tr-> flows.put(tr.getName(), 0.0+ Records.stream().filter(e-> e.Tr==tr).count()));
     }
 
@@ -69,7 +69,7 @@ public class ObserverABM extends AbsObserver<AgentBasedModel> {
         Records.clear();
     }
 
-    public void record(Agent ag, Transition tr, double time) {
+    public void record(AbsAgent ag, Transition tr, double time) {
         Records.add(new Record(ag.getName(), tr, time));
     }
 }

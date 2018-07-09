@@ -6,12 +6,12 @@ import org.twz.cx.mcore.IMCoreBlueprint;
  *
  * Created by TimeWz on 2017/6/16.
  */
-public class BlueprintABM implements IMCoreBlueprint{
+public class ABMBlueprint implements IMCoreBlueprint{
     private String Name;
     private String TargetPCore;
     private String TargetDCore;
 
-    public BlueprintABM(String name, String pc, String dc) {
+    public ABMBlueprint(String name, String pc, String dc) {
         Name = name;
         TargetPCore = pc;
         TargetDCore = dc;
