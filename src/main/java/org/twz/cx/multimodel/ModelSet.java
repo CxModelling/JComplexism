@@ -43,22 +43,6 @@ public class ModelSet extends BranchModel{
         Summariser.reset(ti);
     }
 
-    @Override
-    public void listen(String src_m, String src_v, String tar_p) {
-
-    }
-
-    @Override
-    public void listen(Collection<String> src_m, String src_v, String tar_p) {
-
-    }
-
-    @Override
-    public boolean impulseForeign(AbsSimModel fore, double ti) {
-        // todo multilevel models
-        return false;
-    }
-
 
     public void link(String src, String tar) {
         link(new RelationEntry(src), new RelationEntry(tar));

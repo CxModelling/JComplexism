@@ -1,7 +1,7 @@
 package org.twz.cx.abmodel.network;
 
 
-import org.twz.cx.abmodel.Agent;
+import org.twz.cx.abmodel.AbsAgent;
 import org.twz.statistic.Statistics;
 
 import java.util.*;
@@ -10,7 +10,7 @@ import java.util.*;
  *
  * Created by TimeWz on 2017/8/12.
  */
-public abstract class AbsNetwork extends HashMap<Agent, Set<Agent>> {
+public abstract class AbsNetwork extends HashMap<AbsAgent, Set<AbsAgent>> {
     private final String Name;
 
     protected AbsNetwork(String name) {
@@ -21,21 +21,21 @@ public abstract class AbsNetwork extends HashMap<Agent, Set<Agent>> {
         return Name;
     }
 
-    public void addAgent(Agent ag) {
+    public void addAgent(AbsAgent ag) {
         put(ag, new HashSet<>());
         setConnection(ag);
     }
 
-    public void removeAgent(Agent ag) {
-        for (Set<Agent> nes: this.values()) {
+    public void removeAgent(AbsAgent ag) {
+        for (Set<AbsAgent> nes: this.values()) {
             nes.remove(ag);
         }
         remove(ag);
     }
 
-    public abstract void setConnection(Agent ag);
+    public abstract void setConnection(AbsAgent ag);
 
-    protected void connect(Agent ag1, Agent ag2) {
+    protected void connect(AbsAgent ag1, AbsAgent ag2) {
         get(ag1).add(ag2);
         get(ag2).add(ag1);
     }
@@ -48,7 +48,7 @@ public abstract class AbsNetwork extends HashMap<Agent, Set<Agent>> {
         return Statistics.var(values().stream().mapToDouble(Set::size).toArray());
     }
 
-    public Set<Agent> getNeighbours(Agent ag) {
+    public Set<AbsAgent> getNeighbours(AbsAgent ag) {
         return get(ag);
     }
 

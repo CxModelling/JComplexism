@@ -1,6 +1,6 @@
 package org.twz.cx.abmodel.network;
 
-import org.twz.cx.abmodel.Agent;
+import org.twz.cx.abmodel.AbsAgent;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,15 +34,15 @@ public class NetworkSet extends HashMap<String, AbsNetwork> {
         this.values().forEach(AbsNetwork::reform);
     }
 
-    public void addAgent(Agent ag) {
+    public void addAgent(AbsAgent ag) {
         this.values().forEach(e->e.addAgent(ag));
     }
 
-    public void removeAgent(Agent ag) {
+    public void removeAgent(AbsAgent ag) {
         this.values().forEach(e->e.removeAgent(ag));
     }
 
-    public Set<Agent> getNeighbours(Agent ag, String net) {
+    public Set<AbsAgent> getNeighbours(AbsAgent ag, String net) {
         try {
             return new HashSet<>(get(net).getNeighbours(ag));
         } catch (NullPointerException e) {
@@ -51,16 +51,16 @@ public class NetworkSet extends HashMap<String, AbsNetwork> {
         }
     }
 
-    public Map<String, Set<Agent>> getNeighbours(Agent ag) {
-        HashMap<String, Set<Agent>> nes = new HashMap<>();
+    public Map<String, Set<AbsAgent>> getNeighbours(AbsAgent ag) {
+        HashMap<String, Set<AbsAgent>> nes = new HashMap<>();
         for (Entry<String, AbsNetwork> ent: entrySet()) {
            nes.put(ent.getKey(), getNeighbours(ag, ent.getKey()));
         }
         return nes;
     }
 
-    public Set<Agent> getNeighbourSet(Agent ag) {
-        HashSet<Agent> nes = new HashSet<>();
+    public Set<AbsAgent> getNeighbourSet(AbsAgent ag) {
+        HashSet<AbsAgent> nes = new HashSet<>();
         for (Entry<String, AbsNetwork> ent: entrySet()) {
             nes.addAll(getNeighbours(ag, ent.getKey()));
         }

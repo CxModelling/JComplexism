@@ -24,25 +24,19 @@ public class Population implements AdapterJSONObject {
     private long LastID;
     private String Prefix;
     private AbsDCore DCore;
-    private TraitSet Traits;
     private NetworkSet Networks;
-    private Map<String, Agent> Agents;
+    private Map<String, AbsAgent> Agents;
 
     public Population(AbsDCore dc, String prefix) {
         LastID = 0;
         Prefix = prefix;
         DCore = dc;
-        Traits = new TraitSet();
         Networks = new NetworkSet();
         Agents = new LinkedHashMap<>();
     }
 
     public Population(AbsDCore dc) {
         this(dc, "Ag");
-    }
-
-    public void addTrait(ITrait trait) {
-        Traits.append(trait);
     }
 
     public void addNetwork(AbsNetwork net) {

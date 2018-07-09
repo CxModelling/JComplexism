@@ -29,9 +29,10 @@ public class LocRateModifier extends AbsModifier {
     }
 
     @Override
-    public boolean update(double value) {
-        if (value != Value & value >= 0) {
-            Value = value;
+    public boolean update(Object value) {
+        double val = (double) value;
+        if (val != Value & val >= 0) {
+            Value = val;
             return true;
         } else {
             return false;

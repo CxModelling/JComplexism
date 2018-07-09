@@ -10,13 +10,17 @@ import java.util.Map;
 public abstract class ModelAtom implements AdapterJSONObject {
     private final String Name;
     protected Map<String, Object> Parameters, Attributes;
-    private Event Next;
+    protected Event Next;
 
     public ModelAtom(String name, Map<String, Object> parameters) {
         Name = name;
         Parameters = parameters;
         Attributes = new HashMap<>();
         Next = Event.NullEvent;
+    }
+
+    public ModelAtom(String name) {
+        this(name, null);
     }
 
     public String getName() {

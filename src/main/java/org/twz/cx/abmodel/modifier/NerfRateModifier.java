@@ -29,8 +29,9 @@ public class NerfRateModifier extends AbsModifier {
     }
 
     @Override
-    public boolean update(double value) {
-        if (value >0 ^ Value) {
+    public boolean update(Object value) {
+        double val = (double) value;
+        if (val > 0 ^ Value) {
             Value = !Value;
             return true;
         } else {
