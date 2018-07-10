@@ -2,7 +2,6 @@ package org.twz.cx.multimodel;
 
 
 import org.twz.cx.element.Event;
-import org.twz.cx.element.Request;
 import org.twz.cx.element.Ticker.StepTicker;
 import org.twz.cx.mcore.*;
 import org.json.JSONArray;
@@ -40,11 +39,11 @@ public class Summariser extends ModelAtom {
 
     private StepTicker Clock;
     private List<Task> Tasks;
-    private ModelSet MM;
+    private BranchModel MM;
     private LinkedHashMap<String, Double> Impulses;
 
     Summariser(String name, double dt) {
-        super(name, null, null);
+        super(name);
         Clock = new StepTicker(dt);
         Tasks = new ArrayList<>();
         Impulses = new LinkedHashMap<>();
@@ -59,7 +58,7 @@ public class Summariser extends ModelAtom {
         }
     }
 
-    public void setModel(ModelSet mm) {
+    public void setModel(BranchModel mm) {
         MM = mm;
     }
 
@@ -72,26 +71,37 @@ public class Summariser extends ModelAtom {
         }
     }
 
+
+
     @Override
-    public void findNext() {
-        request(Event.NullEvent, "Summary");
+    public Event findNext() {
+        return new Event("summarise", Clock.getNext());
     }
 
     @Override
-    public void reset(double ti) {
+    public void updateTo(double ti) {
+        Clock.update(ti);
+    }
+
+    @Override
+    public void executeEvent() {
+        readTasks();
+    }
+
+    @Override
+    public void initialise(double ti, AbsSimModel model) {
+        readTasks();
+    }
+
+    @Override
+    public void reset(double ti, AbsSimModel model) {
         Impulses = new LinkedHashMap<>();
         Clock.initialise(ti);
     }
 
     @Override
-    public void readY0(IY0 y0, double ti) {
+    public void shock(double ti, Object source, String target, Object value) {
 
-    }
-
-    @Override
-    public void doRequest(Request req) {
-        Clock.update(req.getTime());
-        readTasks();
     }
 
     void readTasks() {
@@ -104,28 +114,16 @@ public class Summariser extends ModelAtom {
         return Impulses;
     }
 
-    @Override
     public void listen(String src_model, String src_value, String par_tar) {
         if (par_tar == null) {
             if (src_model.equals("*")) {
                 par_tar = src_value;
             } else {
-                par_tar = src_model + "@" + src_value;
+                par_tar = src_model + "." + src_value;
             }
         }
         Tasks.add(new Task(src_model, src_value, par_tar));
     }
-
-    @Override
-    public void listen(Collection<String> src_m, String src_v, String par_tar) {
-
-    }
-
-    @Override
-    public boolean impulseForeign(AbsSimModel fore, double ti) {
-        return false;
-    }
-
 
     @Override
     public JSONObject toJSON() {

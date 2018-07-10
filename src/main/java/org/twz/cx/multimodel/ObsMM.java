@@ -9,7 +9,7 @@ import java.util.*;
  *
  * Created by TimeWz on 29/09/2017.
  */
-public class ObsMM extends AbsObserver<ModelSet> {
+public class ObsMM extends AbsObserver<MultiModel> {
 
     private List<String> Observed;
 
@@ -23,7 +23,7 @@ public class ObsMM extends AbsObserver<ModelSet> {
     }
 
     @Override
-    protected void readStatics(ModelSet model, Map<String, Double> tab, double ti) {
+    protected void readStatics(MultiModel model, Map<String, Double> tab, double ti) {
         Summariser s = model.getSummariser();
         boolean l = tab == getLast();
         try {

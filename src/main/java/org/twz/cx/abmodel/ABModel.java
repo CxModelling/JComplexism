@@ -16,69 +16,48 @@ import java.util.*;
  * Created by TimeWz on 2017/6/16.
  */
 public class ABModel extends AbsAgentBasedModel {
-    private final Population Agents;
-    private AbsDCore DCore;
-    private Map<String, AbsBehaviour> Behaviours;
 
-    public ABModel(String name, AbsDCore dc, String prefix) {
-        super(name, new StSpObserver(), meta);
-        Agents = new Population(dc, prefix);
-        Behaviours = new LinkedHashMap<>();
-        DCore = dc;
-    }
 
-    public void addObsState(String state) {
-        ((StSpObserver) getObserver()).addObsState(DCore.getState(state));
-    }
-
-    public void addObsTransition(String transition) {
-        ((StSpObserver) getObserver()).addObsTransition(DCore.getTransition(transition));
-    }
-
-    public void addObsBehaviour(String behaviour) {
-        ((StSpObserver) getObserver()).addObsBehaviour(Behaviours.get(behaviour));
-    }
-
-    public AbsBehaviour getBehaviours(String be) {
-        return Behaviours.get(be);
-    }
-
-    public Population getPopulation() {
-        return Agents;
-    }
-
-    @Override
-    public void reset(double ti) {
-
-    }
-
-    @Override
-    public void findNext() {
-
-    }
-
-    @Override
-    public void doRequest(Request req) {
-        String nod = req.Who;
-        Event evt = req.Todo;
-        double time = req.getTime();
-
-        if (Behaviours.containsKey(nod)) {
-            AbsBehaviour be = Behaviours.get(nod);
-            be.exec(this, evt);
-        } else {
-            Agent ag = Agents.get(nod);
-            Transition tr = (Transition) evt.getValue();
-            ((StSpObserver) getObserver()).record(ag, tr, time);
-            // check transition self.check_tr(ag, tr)
-            ag.exec(evt);
-            // impulse transition self.impulse_tr(bes, ag, time)
-            ag.update(time);
-        }
+    public ABModel(String name, Map env, org.twz.cx.abmodel.Population pop, IY0 protoY0) {
+        super(name, env, pop, new ABMObserver(), protoY0);
     }
 
     @Override
     public JSONObject toJSON() {
+        return null;
+    }
+
+    @Override
+    public void readY0(IY0 y0, double ti) {
+        Collection<JSONObject> entries = y0.get();
+        JSONObject ajs;
+        Map<String, Object> atr;
+        for (JSONObject entry : entries) {
+            ajs = entry.getJSONObject("attributes");
+            atr = new HashMap<>();
+            Iterator<?> keys = ajs.keys();
+
+            while( keys.hasNext() ) {
+                String key = (String)keys.next();
+                atr.put(key, ajs.get(key));
+            }
+
+            makeAgents(entry.getInt("n"), ti, atr);
+        }
+    }
+
+    @Override
+    public void validateRequests() {
+
+    }
+
+    @Override
+    public void addListener(IEventListener listener) {
+
+    }
+
+    @Override
+    public Double getSnapshot(String key, double ti) {
         return null;
     }
 }

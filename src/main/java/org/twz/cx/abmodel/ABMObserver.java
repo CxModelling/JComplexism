@@ -70,7 +70,7 @@ public class ABMObserver extends AbsObserver<ABModel> {
         Records.clear();
     }
 
-    public void record(AbsAgent ag, Transition tr, double time) {
+    public void record(AbsAgent ag, Object tr, double time) {
         Records.add(new Record(ag.getName(), tr, time));
     }
 }

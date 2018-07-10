@@ -65,7 +65,7 @@ public abstract class ModelAtom implements AdapterJSONObject {
         updateTo(ti);
     }
 
-    protected abstract void updateTo(double ti);
+    public abstract void updateTo(double ti);
 
     public abstract void executeEvent();
 

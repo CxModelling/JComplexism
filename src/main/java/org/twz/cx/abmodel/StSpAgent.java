@@ -55,7 +55,7 @@ public class StSpAgent extends AbsAgent {
     }
 
     @Override
-    protected void updateTo(double ti) {
+    public void updateTo(double ti) {
         Transitions = Transitions.entrySet().stream()
                 .filter(e-> e.getValue() > ti)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
