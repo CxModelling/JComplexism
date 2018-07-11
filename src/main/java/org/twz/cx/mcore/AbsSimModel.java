@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public abstract class AbsSimModel implements AdapterJSONObject{
     private final String Name;
-    protected final AbsObserver<AbsSimModel> Obs;
+    protected final AbsObserver Obs;
     protected final IY0 ProtoY0;
     protected final Schedule Scheduler;
     private List<IEventListener> Listeners;
@@ -22,7 +22,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
     private double TimeEnd;
 
 
-    public AbsSimModel(String name, Map<String, Object> env, AbsObserver<AbsSimModel> obs, IY0 protoY0) {
+    public AbsSimModel(String name, Map<String, Object> env, AbsObserver obs, IY0 protoY0) {
         Name = name;
         Scheduler = new Schedule(name);
         Obs = obs;

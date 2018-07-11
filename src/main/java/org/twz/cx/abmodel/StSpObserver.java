@@ -51,7 +51,7 @@ public class StSpObserver extends AbsObserver<ABModel> {
     @Override
     protected void readStatics(ABModel model, Map<String, Double> tab, double ti) {
         for (State st: ObsStates) {
-            tab.put(st.getName(), 0.0 + model.getPopulation().count(st));
+            tab.put(st.getName(), 0.0 + model.getPopulation().count("st", st));
         }
         for (AbsBehaviour be: ObsBehaviours) {
             be.fillData(tab, model, ti);

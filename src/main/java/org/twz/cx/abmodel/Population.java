@@ -26,6 +26,9 @@ public class Population<T extends AbsAgent> implements AdapterJSONObject {
         Networks = new NetworkSet();
     }
 
+    public AbsBreeder<T> getEva() {
+        return Eva;
+    }
 
     public void addNetwork(AbsNetwork net) {
         Networks.append(net);

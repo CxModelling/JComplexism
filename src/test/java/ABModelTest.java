@@ -15,7 +15,7 @@ public class ABModelTest extends TestCase {
         da.loadDCore("script/SIR_BN.txt");
     }
     AbsDCore dc = da.generateDCore("SIR_bn", "pSIR");
-    ABModel abm = new ABModel("Test", dc, null, "Ag");
+    StSpABModel abm = new ABModel("Test", dc, null, "Ag");
 
     {
         abm.addObsState("Sus");

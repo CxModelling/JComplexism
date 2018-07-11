@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by TimeWz on 2017/2/10.
  */
 public abstract class LeafModel extends AbsSimModel {
-    public LeafModel(String name, Map<String, Object> env, AbsObserver<AbsSimModel> obs, IY0 protoY0) {
+    public LeafModel(String name, Map<String, Object> env, AbsObserver obs, IY0 protoY0) {
         super(name, env, obs, protoY0);
     }
 
