@@ -40,6 +40,10 @@ public abstract class ModelAtom implements AdapterJSONObject {
         Attributes.put(key, value);
     }
 
+    public void updateAttributes(Map<String, Object> atr) {
+        Attributes.putAll(atr);
+    }
+
     public Event getNext() {
         if (Next == Event.NullEvent) {
             Next = findNext();

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public abstract class BranchModel extends AbsSimModel {
     protected Map<String, AbsSimModel> Models;
 
-    public BranchModel(String name, Map<String, Object> env, AbsObserver<AbsSimModel> obs, IY0 protoY0) {
+    public BranchModel(String name, Map<String, Object> env, AbsObserver obs, IY0 protoY0) {
         super(name, env, obs, protoY0);
         Models = new HashMap<>();
     }

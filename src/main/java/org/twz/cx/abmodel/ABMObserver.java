@@ -2,7 +2,6 @@ package org.twz.cx.abmodel;
 
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.mcore.AbsObserver;
-import org.twz.statespace.Transition;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -33,6 +32,7 @@ public class ABMObserver extends AbsObserver<ABModel> {
         ObsBehaviours = new LinkedHashSet<>();
         Records = new ArrayList<>();
         ObsFunctions = new LinkedHashSet<>();
+        ObsEvents = new LinkedHashSet<>();
     }
 
 
