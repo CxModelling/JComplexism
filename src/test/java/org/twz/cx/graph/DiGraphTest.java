@@ -8,17 +8,10 @@ package org.twz.cx.graph;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.graph.DiGraph;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.junit.Assert.*;
 
 public class DiGraphTest {
     private DiGraph<String> DG, DAG;
-
-
 
     @Before
     public void setUp() throws Exception {

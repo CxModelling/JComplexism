@@ -4,11 +4,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ *
  * Created by TimeWz on 07/08/2018.
  */
 public class DiGraph<T> implements Cloneable {
-    private Map<String, T> Nodes;
-    private Map<String, List<String>> Successor, Predecessor;
+    protected Map<String, T> Nodes;
+    protected Map<String, List<String>> Successor, Predecessor;
 
     public DiGraph() {
         Nodes = new HashMap<>();
@@ -18,6 +19,10 @@ public class DiGraph<T> implements Cloneable {
 
     public T getNode(String node) {
         return Nodes.get(node);
+    }
+
+    public boolean has(String node) {
+        return Nodes.containsKey(node);
     }
 
     public List<String> getParents(String node) {
@@ -99,6 +104,8 @@ public class DiGraph<T> implements Cloneable {
             Nodes.put(name, node);
             Successor.putIfAbsent(name, new ArrayList<>());
             Predecessor.putIfAbsent(name, new ArrayList<>());
+        } else if (node != null){
+            Nodes.replace(name, node);
         }
     }
 

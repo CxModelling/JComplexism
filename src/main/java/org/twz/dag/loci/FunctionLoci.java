@@ -21,7 +21,7 @@ public class FunctionLoci extends Loci {
     private final String Function;
     private final Expression E;
 
-    public FunctionLoci(String name, String function) throws ScriptException {
+    public FunctionLoci(String name, String function) {
         super(name);
         Function = function;
         E = new Expression(function);
