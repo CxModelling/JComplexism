@@ -4,6 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.twz.dag.BayesNet;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -14,16 +17,22 @@ import static org.junit.Assert.assertTrue;
 public class BayesNetTest {
 
     private BayesNet BN;
+    private Map<String, Double> Exo;
+
 
     @Before
     public void setUp() throws Exception {
         BN = new BayesNet("test");
         BN.appendLoci("age ~ unif(0, 100)");
         BN.appendLoci("sex");
-        BN.appendLoci("beta1 = 10");
+        BN.appendLoci("beta1 = 0.1");
         BN.appendLoci("beta2 = 10");
         BN.appendLoci("mu = age*beta1 + sex*beta2");
         BN.appendLoci("y ~ norm(mu, sd)");
+
+        Exo = new HashMap<>();
+        Exo.put("sd", 0.5);
+        Exo.put("sex", 1.0);
     }
 
     @Test
@@ -32,4 +41,8 @@ public class BayesNetTest {
     }
 
 
+    @Test
+    public void sampleGene() throws Exception {
+        System.out.println(BN.sample(Exo));
+    }
 }

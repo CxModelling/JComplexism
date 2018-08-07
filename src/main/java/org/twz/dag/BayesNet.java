@@ -26,6 +26,10 @@ public class BayesNet implements AdapterJSONObject {
         return Name;
     }
 
+    public DiGraph<Loci> getDAG() {
+        return DAG;
+    }
+
     public void appendLoci(String name, Loci loci) {
         if (isFrozen()) return;
         DAG.addNode(name, loci);
@@ -85,6 +89,27 @@ public class BayesNet implements AdapterJSONObject {
         }
         appendLoci(nd, loci);
     }
+
+    public Loci getLoci(String loc) {
+        return DAG.getNode(loc);
+    }
+
+    public Gene sample(Map<String, Double> inp) {
+        Loci loci;
+        Gene gene = new Gene(inp);
+        for (String s : getOrder()) {
+            loci = DAG.getNode(s);
+            if (loci instanceof ExoValueLoci) {
+               continue;
+            } else {
+                loci.fill(gene);
+                gene.addLogPriorProb(loci.evaluate(gene.getLocus()));
+            }
+        }
+        return gene;
+    }
+
+
 
     private List<String> toList(JSONArray ja) {
         List<String> l = new ArrayList<>();
