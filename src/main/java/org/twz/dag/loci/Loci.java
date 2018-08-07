@@ -1,9 +1,11 @@
 package org.twz.dag.loci;
 
 import org.json.JSONObject;
+import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Gene;
 import org.twz.io.AdapterJSONObject;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,5 +34,10 @@ public abstract class Loci implements AdapterJSONObject {
         js.put("Name", this.Name);
         js.put("Def", this.getDefinition());
         return js;
+    }
+
+    public static List<String> parseParents(String fn) {
+        Expression e = new Expression(fn);
+        return Arrays.asList(e.getMissingUserDefinedArguments());
     }
 }

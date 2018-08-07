@@ -1,4 +1,4 @@
-package org.twz.factory;
+package org.twz.cx.factory;
 
 /**
  * Created by TimeWz on 2017/11/3.

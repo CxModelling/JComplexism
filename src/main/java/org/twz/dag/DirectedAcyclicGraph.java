@@ -266,7 +266,7 @@ public class DirectedAcyclicGraph implements AdapterJSONObject {
                     node = new JSONObject();
                     node.put("Type", "Distribution");
                     node.put("Def", pair[1]);
-                    node.put("Parents", DistributionLoci.parseParents(pair[1]));
+                    node.put("Parents", Loci.parseParents(pair[1]));
                     if (!com.equals("")) node.put("Note", com);
                     nodes.put(pair[0], node);
                 } else if (def.contains("=")) {
@@ -279,14 +279,14 @@ public class DirectedAcyclicGraph implements AdapterJSONObject {
                     } catch (Exception e) {
                         node.put("Type", "Function");
                         node.put("Def", pair[1]);
-                        node.put("Parents", FunctionLoci.parseParents(pair[1]));
+                        node.put("Parents", Loci.parseParents(pair[1]));
                     } finally {
                         if (!com.equals("")) node.put("Note", com);
                         nodes.put(pair[0], node);
                     }
                 }
             }
-        } catch (ScriptException e) {
+        } catch (Error e) {
             e.printStackTrace();
         }
 

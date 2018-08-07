@@ -1,6 +1,7 @@
 package org.twz.dag.loci;
 
 import org.json.JSONObject;
+import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Gene;
 import org.twz.dag.ScriptException;
 
@@ -19,10 +20,8 @@ public class ValueLoci extends Loci {
 
     public ValueLoci(String name, String val) throws ScriptException {
         super(name);
-        double v;
-        try {
-            v = Double.parseDouble(val);
-        } catch (Exception e) {
+        double v = (new Expression(val)).calculate();
+        if (Double.isNaN(v)) {
             throw new ScriptException(val);
         }
         Value = v;

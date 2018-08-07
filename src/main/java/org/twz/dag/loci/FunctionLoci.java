@@ -2,6 +2,7 @@ package org.twz.dag.loci;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Gene;
 import org.twz.dag.ScriptException;
 
@@ -16,77 +17,29 @@ import java.util.regex.Pattern;
  * Created by TimeWz on 2017/4/16.
  */
 public class FunctionLoci extends Loci {
-    private final static int Max = 100;
-
-    private static ScriptEngine engine = (new ScriptEngineManager())
-            .getEngineByName("JavaScript");
-
-
     private final List<String> Parents;
-    private final String Function, ReformedFunction;
+    private final String Function;
+    private final Expression E;
 
     public FunctionLoci(String name, String function) throws ScriptException {
         super(name);
         Function = function;
-        ReformedFunction = reformFunction();
-        Parents = parseParents(ReformedFunction);
+        E = new Expression(function);
+        Parents = Arrays.asList(E.getMissingUserDefinedArguments());
+        Parents.forEach(e->E.defineArgument(e, Double.NaN));
     }
 
     public FunctionLoci(String name, String function, Collection<String> parents) {
         super(name);
         Function = function;
-        ReformedFunction = reformFunction();
+        E = new Expression(function);
         Parents = new ArrayList<>(parents);
+        Parents.forEach(e->E.defineArgument(e, Double.NaN));
     }
 
     @Override
     public List<String> getParents() {
         return Parents;
-    }
-
-
-    private String reformFunction() {
-        String fn = Function.replaceAll("\\s+", "");
-
-        Set<String> fns = new HashSet<>();
-        Pattern pat = Pattern.compile("(\\w+)\\(");
-        Matcher mat = pat.matcher(Function);
-        while(mat.find()) {
-            fns.add(mat.group(1));
-        }
-
-        for (String s: fns) {
-            fn = fn.replaceAll(s+"\\(", "Math."+s+"(");
-        }
-
-        return fn;
-    }
-
-    public static List<String> parseParents(String fn) throws ScriptException {
-        List<String> parents = new ArrayList<>();
-        String f = fn;
-        int pas = 0;
-        while (pas < Max) {
-            try {
-                engine.eval(f);
-                break;
-            } catch (javax.script.ScriptException e) {
-                String mes = e.getMessage();
-                mes = mes.split("\"")[1];
-                if (parents.contains(mes)) {
-                    throw new ScriptException(mes);
-                }
-                parents.add(mes);
-                pas ++;
-                f = f.replaceAll("\\b"+mes+"\\b", "0.87");
-            }
-        }
-
-        if (pas == Max) {
-            throw new ScriptException(fn);
-        }
-
-        return parents;
     }
 
     @Override
@@ -96,16 +49,8 @@ public class FunctionLoci extends Loci {
 
     @Override
     public double sample(Map<String, Double> pas) {
-        String f = Function;
-        for (String par: Parents) {
-            f = f.replaceAll("\\b"+par+"\\b", pas.get(par).toString());
-        }
-        try {
-            return (Double) engine.eval(f);
-        } catch (javax.script.ScriptException e) {
-            return 0;
-        }
-
+        Parents.forEach(e->E.setArgumentValue(e, pas.get(e)));
+        return E.calculate();
     }
 
     @Override

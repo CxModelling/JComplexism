@@ -2,19 +2,30 @@ package org.twz.dag.loci;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Gene;
+import org.twz.dag.ScriptException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PseudoLoci extends Loci {
-    public PseudoLoci(String name) {
+    private final List<String> Parents;
+    private final String Function;
+
+    public PseudoLoci(String name, String func) {
         super(name);
+        Expression e = new Expression(func);
+        Parents = Arrays.asList(e.getMissingUserDefinedArguments());
+        Function = "f(" + Parents.stream().collect(Collectors.joining(","));
+
     }
 
     @Override
     public List<String> getParents() {
-        return null;
+        return Parents;
     }
 
     @Override
@@ -24,7 +35,7 @@ public class PseudoLoci extends Loci {
 
     @Override
     public double sample(Map<String, Double> pas) {
-        return 0;
+        return Double.NaN;
     }
 
     @Override
@@ -34,7 +45,7 @@ public class PseudoLoci extends Loci {
 
     @Override
     public String getDefinition() {
-        return null;
+        return Function;
     }
 
     @Override
