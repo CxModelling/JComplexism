@@ -53,6 +53,13 @@ public class DistributionLoci extends Loci {
     }
 
     @Override
+    public double sample(Gene gene) {
+        Map<String, Double> pas = new HashMap<>();
+        Parents.forEach(p->pas.put(p, gene.get(p)));
+        return sample(pas);
+    }
+
+    @Override
     public void fill(Gene gene) {
         IDistribution dist = findDistribution(gene.getLocus());
         double v = dist.sample();

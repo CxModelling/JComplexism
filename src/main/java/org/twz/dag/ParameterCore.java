@@ -1,5 +1,6 @@
 package org.twz.dag;
 
+import org.twz.dag.actor.SimulationActor;
 import org.twz.prob.IDistribution;
 
 import java.util.ArrayList;
@@ -14,16 +15,86 @@ import java.util.stream.Collectors;
  */
 public class ParameterCore extends Gene {
 
-    private Map<String, IDistribution> Distributions;
+    private final String Nickname;
+    private SimulationGroup SG;
+    private ParameterCore Parent;
+    private Map<String, SimulationActor> Actors;
+    private Map<String, ParameterCore> Children;
+    private Map<String, List<SimulationActor>> ChildrenActors;
 
-    public ParameterCore(Map<String, Double> fixed, Map<String, IDistribution> dis) {
-        super(fixed);
-        Distributions = dis;
+
+    public ParameterCore(String nickname, SimulationGroup sg, Map<String, Double> fixed, double prior) {
+        super(fixed, prior);
+        Nickname = nickname;
+        SG = sg;
+        Children = new HashMap<>();
+        Actors = new HashMap<>();
+        ChildrenActors = new HashMap<>();
     }
 
-    public IDistribution getDistribution(String key) {
-        return Distributions.get(key);
+    public String getGroupName() {
+        return SG.getName();
     }
+
+    @Override
+    public double get(String s) {
+        try {
+            return super.get(s);
+        } catch (NullPointerException e) {
+            return Parent.get(s);
+        }
+    }
+
+    public ParameterCore breed(String nickname, String group, Map<String, Double> exo) {
+        try {
+            return Children.get(nickname);
+        } catch (IndexOutOfBoundsException e) {
+            ParameterCore chd = SG.breed(nickname, group, exo, this);
+            Children.put(nickname, chd);
+            return chd;
+        }
+    }
+
+    public ParameterCore breed(String nickname, String group) {
+        return breed(nickname, group, null);
+    }
+
+    public ParameterCore genSibling(String nickname, Map<String, Double> exo) {
+        return Parent.breed(nickname, getGroupName(), exo);
+    }
+
+    public ParameterCore genSibling(String nickname) {
+        return Parent.breed(nickname, getGroupName());
+    }
+
+    public ParameterCore genPrototype(String group, Map<String, Double> exo) {
+        return SG.breed("Proto", group, exo, this);
+    }
+
+    public ParameterCore genPrototype(String group) {
+        return SG.breed("Proto", group, null, this);
+    }
+
+    public void detachFromParent(boolean collect) {
+        if (Parent == null) {
+            return;
+        }
+        Parent.removeChild(Nickname);
+        if (collect) {
+            getLocus().putAll(Parent.getLocus());
+        }
+        Parent = null;
+    }
+
+    public void detachFromParent() {
+        detachFromParent(false);
+    }
+
+    public ParameterCore removeChild(String k) {
+        return Children.remove(k);
+    }
+
+    public List<>
 
     public String toJSON() {
         String sb = "{";
@@ -34,45 +105,10 @@ public class ParameterCore extends Gene {
         return sb;
     }
 
-    public Gene realiseAll() {
-        Map<String, Double> locus = new HashMap<>();
-        locus.putAll(this.getLocus());
-        for (Map.Entry<String, IDistribution> ent: Distributions.entrySet()) {
-            locus.put(ent.getKey(), ent.getValue().sample());
-        }
-        return new Gene(locus);
-    }
-
-    public Gene fixLeaves() {
-        Map<String, Double> locus = new HashMap<>();
-        locus.putAll(this.getLocus());
-        for (Map.Entry<String, IDistribution> ent: Distributions.entrySet()) {
-            locus.put(ent.getKey(), ent.getValue().getMean());
-        }
-        return new Gene(locus);
-    }
 
     public ParameterCore clone() {
         return (ParameterCore) super.clone();
     }
 
-    public List<String> findDifference(ParameterCore pc) {
-        List<String> diff = new ArrayList<>();
-        for (Map.Entry<String, IDistribution> ent: Distributions.entrySet()) {
-            if (!pc.Distributions.containsKey(ent.getKey())) {
-                diff.add(ent.getKey());
-            } else if (!pc.getDistribution(ent.getKey()).getName().equals(ent.getValue().getName())) {
-                diff.add(ent.getKey());
-            }
-        }
-        for (Map.Entry<String, Double> ent: getLocus().entrySet()) {
-            if (!pc.getLocus().containsKey(ent.getKey())) {
-                diff.add(ent.getKey());
-            } else if (pc.get(ent.getKey()) != ent.getValue()) {
-                diff.add(ent.getKey());
-            }
-        }
-        return diff;
-    }
 
 }

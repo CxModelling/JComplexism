@@ -7,9 +7,10 @@ import org.twz.dag.loci.Loci;
 import java.util.*;
 
 /**
+ *
  * Created by TimeWz on 08/08/2018.
  */
-public class SimulationGroup {
+class SimulationGroup {
     private String Name;
     private SimulationCore SC;
     private Set<String> Listening, Waiting, BeFixed, BeRandom, BeActor;
@@ -28,6 +29,10 @@ public class SimulationGroup {
         Children = new ArrayList<>();
     }
 
+    public String getName() {
+        return Name;
+    }
+
     public void setSimulationCore(SimulationCore sc) {
         SC = sc;
         // todo
@@ -37,5 +42,20 @@ public class SimulationGroup {
 
     }
 
-    public ParameterCore generate()
+    public ParameterCore generate(String nickname, Map<String, Double> exo,
+                                  ParameterCore parent, boolean actors) {
+
+    }
+
+    public void setResponse(Set<String> imp, Set<String> fixed, Set<String> actors, boolean hoist, ParameterCore pc) {
+
+    }
+
+    public SimulationActor setChildActors(ParameterCore pa, String group) {
+
+    }
+
+    public ParameterCore breed(String nickname, String group, Map<String, Double> exo, ParameterCore parent) {
+
+    }
 }

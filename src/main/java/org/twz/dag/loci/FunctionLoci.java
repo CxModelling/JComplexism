@@ -54,6 +54,12 @@ public class FunctionLoci extends Loci {
     }
 
     @Override
+    public double sample(Gene gene) {
+        Parents.forEach(e->E.setArgumentValue(e, gene.get(e)));
+        return E.calculate();
+    }
+
+    @Override
     public void fill(Gene gene) {
         gene.put(getName(), sample(gene.getLocus()));
     }

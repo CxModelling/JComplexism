@@ -1,8 +1,6 @@
 package org.twz.dag.actor;
 
-import org.twz.dag.ScriptException;
-
-import java.util.Map;
+import org.twz.dag.Gene;
 
 /**
  *
@@ -15,5 +13,5 @@ public abstract class SimulationActor {
         Field = field;
     }
 
-    public abstract double sample(Map<String, Double> pas);
+    public abstract double sample(Gene pas);
 }

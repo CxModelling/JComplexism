@@ -1,5 +1,6 @@
 package org.twz.dag.actor;
 
+import org.twz.dag.Gene;
 import org.twz.dag.loci.Loci;
 
 import java.util.ArrayList;
@@ -23,11 +24,12 @@ public class CompoundActor extends SimulationActor {
     }
 
     @Override
-    public double sample(Map<String, Double> pas) {
-        pas = new HashMap<>(pas);
+    public double sample(Gene pas) {
+        Map<String, Double> ps = new HashMap<>();
         for (Loci loci : Flow) {
-            pas.put(loci.getName(), loci.sample(pas));
+            ps.put(loci.getName(), loci.sample(pas));
         }
+        End.getParents().stream().filter(p->!ps.containsKey(p)).forEach(p->ps.put(p, pas.get(p)));
         return End.sample(pas);
     }
 

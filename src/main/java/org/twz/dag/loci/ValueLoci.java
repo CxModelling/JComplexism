@@ -48,6 +48,11 @@ public class ValueLoci extends Loci {
     }
 
     @Override
+    public double sample(Gene gene) {
+        return Value;
+    }
+
+    @Override
     public void fill(Gene gene) {
         gene.put(getName(), Value);
     }

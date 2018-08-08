@@ -39,6 +39,11 @@ public class PseudoLoci extends Loci {
     }
 
     @Override
+    public double sample(Gene gene) {
+        return Double.NaN;
+    }
+
+    @Override
     public void fill(Gene gene) {
 
     }

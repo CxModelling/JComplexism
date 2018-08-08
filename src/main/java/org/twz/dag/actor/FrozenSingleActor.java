@@ -1,5 +1,6 @@
 package org.twz.dag.actor;
 
+import org.twz.dag.Gene;
 import org.twz.dag.loci.DistributionLoci;
 import org.twz.dag.loci.Loci;
 import org.twz.prob.IDistribution;
@@ -25,7 +26,7 @@ public class FrozenSingleActor extends SimulationActor {
     }
 
     @Override
-    public double sample(Map<String, Double> pas) {
+    public double sample(Gene pas) {
         return Distribution.sample();
     }
 

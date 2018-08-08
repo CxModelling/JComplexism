@@ -1,6 +1,7 @@
 package org.twz.dag.actor;
 
 
+import org.twz.dag.Gene;
 import org.twz.dag.loci.Loci;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ public class SingleActor extends SimulationActor {
     }
 
     @Override
-    public double sample(Map<String, Double> pas) {
+    public double sample(Gene pas) {
         return Distribution.sample(pas);
     }
 

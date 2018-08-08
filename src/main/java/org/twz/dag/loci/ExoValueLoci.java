@@ -29,6 +29,11 @@ public class ExoValueLoci extends Loci {
     }
 
     @Override
+    public double sample(Gene gene) {
+        return 0;
+    }
+
+    @Override
     public void fill(Gene gene) {
 
     }
