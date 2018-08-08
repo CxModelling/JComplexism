@@ -8,18 +8,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * NodeGroup is used to analysis relation of nodes in a BayesNet
  * Created by TimeWz on 07/08/2018.
  */
 public class NodeGroup {
     private String Name;
     private List<NodeGroup> Children;
-    private List<String> Nodes, Fixed, Random, Actors;
+    private List<String> Nodes, Exo, Fixed, Random, Actors;
 
-    public NodeGroup(String name, String[] fixed) {
+    public NodeGroup(String name, String[] nodes) {
         Name = name;
         Children = new ArrayList<>();
-        Nodes = new ArrayList<>(Arrays.asList(fixed));
-        Fixed = new ArrayList<>(Arrays.asList(fixed));
+        Nodes = new ArrayList<>(Arrays.asList(nodes));
+        Exo = new ArrayList<>();
+        Fixed = new ArrayList<>();
         Random = new ArrayList<>();
         Actors = new ArrayList<>();
     }
@@ -28,15 +30,15 @@ public class NodeGroup {
         Children.add(ng);
     }
 
-    void push(String node) {
+    private void push(String node) {
         Nodes.add(node);
     }
 
-    void pop(String node) {
+    private void pop(String node) {
         Nodes.remove(node);
     }
 
-    boolean needs(String node, DiGraph<Loci> g) {
+    private boolean needs(String node, DiGraph<Loci> g) {
         for (String s : Nodes) {
             if (g.getAncestors(s).contains(node)) return true;
             if (g.getDescendants(s).contains(node)) return true;
@@ -44,16 +46,18 @@ public class NodeGroup {
         return Children.stream().anyMatch(ch->ch.needs(node, g));
     }
 
-    boolean canBePassedDown(String node, DiGraph<Loci> g) {
+    private boolean canBePassedDown(String node, DiGraph<Loci> g) {
         List<String> des = g.getDescendants(node);
         return !Nodes.stream().anyMatch(des::contains);
     }
 
-    void passDown(String node, DiGraph<Loci> g) {
+    private void passDown(String node, DiGraph<Loci> g) {
         push(node);
         if (!canBePassedDown(node, g)) return;
 
-        List<NodeGroup> needed = Children.stream().filter(ch->ch.needs(node, g)).collect(Collectors.toList());
+        List<NodeGroup> needed = Children.stream()
+                .filter(ch->ch.needs(node, g))
+                .collect(Collectors.toList());
 
         if (needed.size() == 1) {
             pop(node);
@@ -61,25 +65,27 @@ public class NodeGroup {
         }
     }
 
-    boolean canBeRaisedUp(String node, DiGraph<Loci> g) {
+    private boolean canBeRaisedUp(String node, DiGraph<Loci> g) {
         List<String> anc = g.getAncestors(node);
-        return !Nodes.stream().anyMatch(anc::contains);
+        anc.retainAll(Nodes);
+        return anc.isEmpty();
     }
 
-    void raiseUp(String node, DiGraph<Loci> g) {
+    private void raiseUp(String node, DiGraph<Loci> g) {
         for (NodeGroup child : Children) {
-            if (!child.has(node)) continue;
-            if (child.canBeRaisedUp(node, g)) {
+            if (child.has(node)) {
                 child.raiseUp(node, g);
-                child.pop(node);
-                push(node);
+                if (child.canBeRaisedUp(node, g)) {
+                    child.pop(node);
+                    push(node);
+                    return;
+                }
             }
         }
     }
 
-    boolean has(String node) {
-        if (Nodes.contains(node)) return true;
-        return Children.stream().anyMatch(ch->ch.has(node));
+    private boolean has(String node) {
+        return Nodes.contains(node) || Children.stream().anyMatch(ch -> ch.has(node));
     }
 
     public String getName() {
@@ -106,13 +112,53 @@ public class NodeGroup {
         return Actors;
     }
 
-    public Set<String> getAllFixed() {
-        Set<String> fixed = new HashSet<>(Fixed);
+    private Set<String> getAllNodes() {
+        Set<String> fixed = new HashSet<>(Nodes);
         for (NodeGroup child : Children) {
-            fixed.addAll(child.getAllFixed());
+            fixed.addAll(child.getAllNodes());
         }
         return fixed;
     }
+
+    public void allocateNodes(BayesNet bn) {
+        allocateNodes(bn, new HashSet<>(), new HashSet<>(bn.getDAG().getLeaves()));
+    }
+
+    public void allocateNodes(BayesNet bn, Set<String> random, Set<String> out) {
+        NodeReport nr = new NodeReport(bn, this);
+        Exo.addAll(nr.Exo);
+        Fixed.addAll(nr.Fixed);
+        Random.addAll(nr.Random);
+
+        for (String s : nr.FixedRandom) {
+            if (random.contains(s)) {
+                Random.add(s);
+            } else {
+                Fixed.add(s);
+            }
+        }
+
+        for (String s : nr.FixedRandomActor) {
+            if (out.contains(s)) {
+                Actors.add(s);
+            } else if (random.contains(s)) {
+                Random.add(s);
+            } else {
+                Fixed.add(s);
+            }
+        }
+
+        for (String s : nr.RandomActor) {
+            if (out.contains(s)) {
+                Actors.add(s);
+            } else {
+                Random.add(s);
+            }
+        }
+
+        Children.forEach(n->n.allocateNodes(bn, random, out));
+    }
+
 
     @Override
     public String toString() {
@@ -123,18 +169,43 @@ public class NodeGroup {
                 '}';
     }
 
+    private void analyseTypes(BayesNet bn, int i) {
+        NodeReport nr = new NodeReport(bn, this);
+        nr.print(i);
+        Children.forEach(n->n.analyseTypes(bn, i+1));
+    }
+
+    public void analyseTypes(BayesNet bn) {
+        analyseTypes(bn, 0);
+    }
+
     public void print() {
         System.out.println(toString());
         Children.forEach(NodeGroup::print);
     }
 
+    public void printBlueprint() {
+        System.out.println("NodeGroup{" +
+                "Name='" + Name +
+                ", Exo=" + Exo.stream().collect(Collectors.joining(", ")) +
+                ", Fixed=" + Fixed.stream().collect(Collectors.joining(", ")) +
+                ", Random=" + Random.stream().collect(Collectors.joining(", ")) +
+                ", Actor=" + Actors.stream().collect(Collectors.joining(", ")) +
+                '}');
+        Children.forEach(NodeGroup::printBlueprint);
+    }
+
     public static void form_hierarchy(BayesNet bn, NodeGroup root) {
-        Set<String> all_fixed = root.getAllFixed();
-        List<String> all_floated = bn.getOrder().stream().filter(s -> !all_fixed.contains(s)).collect(Collectors.toList());
+        Set<String> all_fixed = root.getAllNodes();
+        List<String> all_floated = bn.getOrder();
+        all_floated.removeAll(all_fixed);
         Collections.reverse(all_floated);
         all_floated.forEach(node->root.passDown(node, bn.getDAG()));
-        root.print();
         Collections.reverse(all_floated);
         all_floated.forEach(node->root.raiseUp(node, bn.getDAG()));
     }
+
+
+
+
 }

@@ -69,7 +69,7 @@ public class DiGraph<T> implements Cloneable {
 
     public List<String> getDescendants(String node) {
         Set<String> des = new HashSet<>(), temp;
-        List<String> querying = getParents(node);
+        List<String> querying = getChildren(node);
 
         while(!querying.isEmpty()) {
             des.addAll(querying);

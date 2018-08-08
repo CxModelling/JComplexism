@@ -52,6 +52,11 @@ public class BayesNetHierarchyTest {
         NG.print();
         NodeGroup.form_hierarchy(BN, NG);
         NG.print();
+        System.out.println("--------------------------------------");
+        NG.analyseTypes(BN);
+        System.out.println("--------------------------------------");
+        NG.allocateNodes(BN);
+        NG.printBlueprint();
     }
 
 
