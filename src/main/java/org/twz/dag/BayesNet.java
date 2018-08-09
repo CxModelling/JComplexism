@@ -9,6 +9,7 @@ import org.twz.io.AdapterJSONObject;
 import java.util.*;
 
 /**
+ *
  * Created by TimeWz on 07/08/2018.
  */
 public class BayesNet implements AdapterJSONObject {
@@ -20,6 +21,16 @@ public class BayesNet implements AdapterJSONObject {
         Name = name;
         DAG = new DiGraph<>();
         frozen=false;
+    }
+
+    public BayesNet(JSONObject js) {
+        this(js.getString("Name"));
+
+        JSONArray nodes = js.getJSONArray("Nodes");
+        for (int i = 0; i < nodes.length(); i++) {
+            appendLoci(nodes.getJSONObject(i));
+        }
+        complete();
     }
 
     public String getName() {
@@ -99,9 +110,7 @@ public class BayesNet implements AdapterJSONObject {
         Gene gene = new Gene(inp);
         for (String s : getOrder()) {
             loci = DAG.getNode(s);
-            if (loci instanceof ExoValueLoci) {
-               continue;
-            } else {
+            if (!(loci instanceof ExoValueLoci)) {
                 loci.fill(gene);
                 gene.addLogPriorProb(loci.evaluate(gene.getLocus()));
             }
@@ -150,7 +159,7 @@ public class BayesNet implements AdapterJSONObject {
         }
 
         js.put("Nodes", nodes);
-        js.put("Order", Collections.singletonList(getOrder()));
+        js.put("Order", getOrder());
 
         return js;
     }

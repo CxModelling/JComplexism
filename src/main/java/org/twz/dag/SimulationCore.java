@@ -33,6 +33,11 @@ public class SimulationCore implements AdapterJSONObject, Cloneable {
         findSGs();
     }
 
+    public SimulationCore(JSONObject js) {
+        this(new BayesNet(js.getJSONObject("BayesianNetwork")), new NodeGroup(js.getJSONObject("Blueprint")),
+                js.getBoolean("Hoist"));
+    }
+
     public String getName() {
         return Name;
     }
@@ -78,8 +83,9 @@ public class SimulationCore implements AdapterJSONObject, Cloneable {
         JSONObject js = new JSONObject();
         js.put("Name", Name);
         js.put("BayesianNetwork", BN.toJSON());
-        js.put("Blueprint", "todo"); //todo
+        js.put("Blueprint", RootNG.toJSON());
         js.put("Root", RootSG);
+        js.put("Hoist", Hoist);
         return js;
     }
 

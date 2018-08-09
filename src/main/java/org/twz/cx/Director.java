@@ -40,12 +40,9 @@ public class Director {
     }
 
     public void readPCore(String script) {
-        try {
+
             // todo
             // addPCore(new SimulationCore(script));
-        } catch (ScriptException e) {
-            e.printStackTrace();
-        }
     }
 
     public void loadPCore(String path) {
@@ -57,11 +54,7 @@ public class Director {
     }
 
     public void restorePCore(JSONObject js) {
-        try {
-            addPCore(new SimulationCore(js));
-        } catch (ScriptException e) {
-            e.printStackTrace();
-        }
+        addPCore(new SimulationCore(js));
     }
 
     public void listPCores() {

@@ -1,8 +1,12 @@
 package org.twz.dag.util;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.twz.dag.BayesNet;
 import org.twz.dag.loci.Loci;
 import org.twz.graph.DiGraph;
+import org.twz.io.AdapterJSONObject;
+import org.twz.io.FnJSON;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -11,7 +15,7 @@ import java.util.stream.Collectors;
  * NodeGroup is used to analysis relation of nodes in a BayesNet
  * Created by TimeWz on 07/08/2018.
  */
-public class NodeGroup {
+public class NodeGroup implements AdapterJSONObject {
     private String Name;
     private Set<NodeGroup> Children;
     private Set<String> Nodes, Exo, Fixed, Random, Actors;
@@ -24,6 +28,25 @@ public class NodeGroup {
         Fixed = new HashSet<>();
         Random = new HashSet<>();
         Actors = new HashSet<>();
+    }
+
+    public NodeGroup(JSONObject js) {
+        Name = js.getString("Name");
+        Children = new HashSet<>();
+        Nodes = FnJSON.toStringSet(js.getJSONArray("Nodes"));
+        Exo = FnJSON.toStringSet(js.getJSONArray("Exo"));
+        Fixed = FnJSON.toStringSet(js.getJSONArray("Fixed"));
+        Random = FnJSON.toStringSet(js.getJSONArray("Random"));
+        Actors = FnJSON.toStringSet(js.getJSONArray("Actors"));
+
+        JSONArray chd = js.getJSONArray("Children");
+        for (int i = 0; i < chd.length(); i++) {
+            Children.add(new NodeGroup(chd.getJSONObject(i)));
+        }
+    }
+
+    public NodeGroup(String script) {
+        this(new JSONObject(script));
     }
 
     public void appendChildren(NodeGroup ng) {
@@ -210,6 +233,16 @@ public class NodeGroup {
     }
 
 
-
-
+    @Override
+    public JSONObject toJSON() {
+        JSONObject js = new JSONObject();
+        js.put("Name", Name);
+        js.put("Nodes", Nodes);
+        js.put("Exo", Exo);
+        js.put("Fixed", Fixed);
+        js.put("Random", Random);
+        js.put("Actors", Actors);
+        js.put("Children", Children.stream().map(NodeGroup::toJSON).collect(Collectors.toList()));
+        return js;
+    }
 }

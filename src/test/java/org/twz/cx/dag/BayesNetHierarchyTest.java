@@ -49,8 +49,10 @@ public class BayesNetHierarchyTest {
 
     @Test
     public void formHei() throws Exception {
+        System.out.println("---------- Predefined nodes ----------");
         NG.print();
         NodeGroup.form_hierarchy(BN, NG);
+        System.out.println("---------- Hierarchy check -----------");
         NG.print();
         System.out.println("--------------------------------------");
         NG.analyseTypes(BN);

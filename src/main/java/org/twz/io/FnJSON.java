@@ -34,6 +34,30 @@ public class FnJSON {
         return arr;
     }
 
+    public static Set<Object> toObjectSet(JSONArray js) {
+        Set<Object> arr = new HashSet<>();
+        for (int i=0; i<js.length(); i++) {
+            arr.add(js.get(i));
+        }
+        return arr;
+    }
+
+    public static Set<Double> toDoubleSet(JSONArray js) {
+        Set<Double> arr = new HashSet<>();
+        for (int i=0; i<js.length(); i++) {
+            arr.add(js.getDouble(i));
+        }
+        return arr;
+    }
+
+    public static Set<String> toStringSet(JSONArray js) {
+        Set<String> arr = new HashSet<>();
+        for (int i=0; i<js.length(); i++) {
+            arr.add(js.getString(i));
+        }
+        return arr;
+    }
+
     public static Object[] toObjectArray(JSONArray js) {
         Object[] arr = new Object[js.length()];
         for (int i=0; i<js.length(); i++) {
