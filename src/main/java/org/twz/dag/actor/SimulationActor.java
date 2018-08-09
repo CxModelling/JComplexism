@@ -2,6 +2,8 @@ package org.twz.dag.actor;
 
 import org.twz.dag.Gene;
 
+import java.util.Map;
+
 /**
  *
  * Created by TimeWz on 08/08/2018.
@@ -14,4 +16,11 @@ public abstract class SimulationActor {
     }
 
     public abstract double sample(Gene pas);
+
+    public abstract void fill(Gene pas);
+
+    public void update(Map<String, Double> pas) {}
+
+    public void update(Gene gene) {}
+
 }

@@ -4,14 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Gene;
-import org.twz.dag.ScriptException;
 import org.twz.prob.DistributionManager;
 import org.twz.prob.IDistribution;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 /**
  *
@@ -48,15 +44,18 @@ public class DistributionLoci extends Loci {
     }
 
     @Override
+    public double evaluate(Gene gene) {
+        return findDistribution(gene).logpdf(gene.get(getName()));
+    }
+
+    @Override
     public double sample(Map<String, Double> pas) {
         return findDistribution(pas).sample();
     }
 
     @Override
     public double sample(Gene gene) {
-        Map<String, Double> pas = new HashMap<>();
-        Parents.forEach(p->pas.put(p, gene.get(p)));
-        return sample(pas);
+        return findDistribution(gene).sample();
     }
 
     @Override
@@ -71,6 +70,17 @@ public class DistributionLoci extends Loci {
         String f = Distribution;
         for (String par : Parents) {
             f = f.replaceAll("\\b" + par + "\\b", pas.get(par).toString());
+        }
+
+        f = f.replaceAll("\\s+", "");
+
+        return DistributionManager.parseDistribution(f);
+    }
+
+    public IDistribution findDistribution(Gene pas) {
+        String f = Distribution;
+        for (String par : Parents) {
+            f = f.replaceAll("\\b" + par + "\\b","" + pas.get(par));
         }
 
         f = f.replaceAll("\\s+", "");

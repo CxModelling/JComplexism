@@ -1,12 +1,14 @@
 package org.twz.dag;
 
+import org.twz.dag.actor.FrozenSingleActor;
+import org.twz.dag.actor.Sampler;
 import org.twz.dag.actor.SimulationActor;
+import org.twz.dag.loci.Loci;
+import org.twz.graph.DiGraph;
 import org.twz.prob.IDistribution;
+import org.twz.prob.Sample;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -18,9 +20,9 @@ public class ParameterCore extends Gene {
     private final String Nickname;
     private SimulationGroup SG;
     private ParameterCore Parent;
-    private Map<String, SimulationActor> Actors;
+    Map<String, SimulationActor> Actors;
     private Map<String, ParameterCore> Children;
-    private Map<String, List<SimulationActor>> ChildrenActors;
+    Map<String, Map<String, SimulationActor>> ChildrenActors;
 
 
     public ParameterCore(String nickname, SimulationGroup sg, Map<String, Double> fixed, double prior) {
@@ -30,6 +32,10 @@ public class ParameterCore extends Gene {
         Children = new HashMap<>();
         Actors = new HashMap<>();
         ChildrenActors = new HashMap<>();
+    }
+
+    public void setParent(ParameterCore parent) {
+        Parent = parent;
     }
 
     public String getGroupName() {
@@ -94,7 +100,97 @@ public class ParameterCore extends Gene {
         return Children.remove(k);
     }
 
-    public List<>
+    public List<String> listSamplers() {
+        List<String> li = new ArrayList<>(Actors.keySet());
+        if (Parent != null) {
+            li.addAll(Parent.ChildrenActors.get(getGroupName()).keySet());
+        }
+        return li;
+    }
+
+    public Map<String, Sampler> getSamplers() {
+        Map<String, Sampler> li = new HashMap<>();
+        for (Map.Entry<String, SimulationActor> entry : Actors.entrySet()) {
+            li.put(entry.getKey(), new Sampler(entry.getValue(), this));
+        }
+
+        if (Parent != null) {
+            for (Map.Entry<String, SimulationActor> entry : Parent.ChildrenActors.get(getGroupName()).entrySet()) {
+                li.put(entry.getKey(), new Sampler(entry.getValue(), this));
+            }
+        }
+        return li;
+    }
+
+    public Sampler getSampler(String sampler) {
+        try {
+            return new Sampler(Actors.get(sampler), this);
+        } catch (IndexOutOfBoundsException e) {
+            return new Sampler(Parent.ChildrenActors.get(getGroupName()).get(sampler), this);
+        }
+    }
+
+    public ParameterCore getChild(String chd) {
+        return Children.get(chd);
+    }
+
+    public SimulationActor getChildActor(String group, String name) {
+        return ChildrenActors.get(group).get(name);
+    }
+
+    public void impulse(Map<String, Double> imp) {
+        DiGraph<Loci> g = SG.getSC().getBN().getDAG();
+        Set<String> shocked = new HashSet<>();
+
+        for (String s : imp.keySet()) {
+            shocked.addAll(g.getDescendants(s));
+        }
+
+        shocked.removeAll(imp.keySet());
+        setResponse(imp, shocked);
+    }
+
+    private void setResponse(Map<String, Double> imp, Set<String> shocked) {
+        List<String> shock_l = shocked.stream().filter(this::has).collect(Collectors.toList()),
+                shock_a = Actors.entrySet().stream()
+                        .filter(e->shocked.contains(e.getKey()) && e.getValue() instanceof FrozenSingleActor)
+                        .map(Map.Entry::getKey).collect(Collectors.toList());
+
+        Map<String, List<String>> shock_h = new HashMap<>();
+
+        for (Map.Entry<String, Map<String, SimulationActor>> entry : ChildrenActors.entrySet()) {
+            shock_h.put(entry.getKey(), entry.getValue().entrySet().stream()
+                    .filter(e->shocked.contains(e.getKey()) && e.getValue() instanceof FrozenSingleActor)
+                    .map(Map.Entry::getKey).collect(Collectors.toList()));
+        }
+
+
+        SG.setResponse(imp, shock_l, shock_a, shock_h, this);
+
+        Children.values().forEach(ch->ch.setResponse(imp, shocked));
+    }
+
+    private void freeze() {
+        for (SimulationActor act : Actors.values()) {
+            act.fill(this);
+        }
+
+        if (Parent != null) {
+            for (SimulationActor act : Parent.ChildrenActors.get(getGroupName()).values()) {
+                act.fill(this);
+            }
+        }
+    }
+
+    public void resetSC(SimulationCore sc) {
+        SG = sc.get(SG.getName());
+        Children.values().forEach(ch->ch.resetSC(sc));
+    }
+
+    public double getDeepLogPrior() {
+        return getLogPriorProb() + Children.values().stream()
+                .mapToDouble(ParameterCore::getDeepLogPrior).sum();
+    }
 
     public String toJSON() {
         String sb = "{";
@@ -105,6 +201,15 @@ public class ParameterCore extends Gene {
         return sb;
     }
 
+    private void deepPrint(int ind) {
+        String prefix = new String(new char[ind]).replace("\0", "  ");
+        System.out.println(prefix + Nickname + "(" + toString() + ")");
+        Children.values().forEach(ch->ch.deepPrint(ind+1));
+    }
+
+    public void deepPrint() {
+        deepPrint(0);
+    }
 
     public ParameterCore clone() {
         return (ParameterCore) super.clone();

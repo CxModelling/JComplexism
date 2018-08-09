@@ -7,8 +7,6 @@ import org.twz.statespace.Transition;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.twz.dag.ParameterCore;
-import org.twz.dag.ScriptException;
-import org.twz.prob.IDistribution;
 import org.twz.io.AdapterJSONObject;
 import org.twz.io.FnJSON;
 
@@ -165,15 +163,9 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
 
     @Override
     public boolean isCompatible(ParameterCore pc) {
-        IDistribution dist;
         for (Map.Entry<String, PseudoTransition> ent: Transitions.entrySet()) {
             try {
-                dist = pc.getDistribution(ent.getValue().Dist);
-                if (dist.getLower() < 0) {
-                    System.out.println("Distribution "+ ent.getValue().Dist +
-                        " is not non-negative");
-                    return false;
-                }
+                pc.getSampler(ent.getValue().Dist);
             } catch (NullPointerException e) {
                 System.out.println("Distribution "+ ent.getValue().Dist +
                         " does not exist");
@@ -211,7 +203,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
 
         Map<String, Transition> trs = Transitions.entrySet().stream()
                 .map(tr-> new Transition(tr.getKey(), sts.get(tr.getValue().To),
-                        pc.getDistribution(tr.getValue().Dist)))
+                        pc.getSampler(tr.getValue().Dist)))
                 .collect(Collectors.toMap(Transition::getName, tr->tr));
 
         Map<State, List<Transition>> tas = makeTargets(sts, sub, trs);

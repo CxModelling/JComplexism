@@ -1,7 +1,6 @@
 import junit.framework.TestCase;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.ScriptException;
-import org.twz.dag.SimulationModel;
 import org.twz.io.IO;
 
 /**

@@ -1,5 +1,10 @@
 package org.twz.dag;
 
+import org.json.JSONObject;
+import org.twz.dag.loci.Loci;
+import org.twz.graph.DiGraph;
+import org.twz.io.AdapterJSONObject;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -9,12 +14,12 @@ import java.util.Set;
  *
  * Created by TimeWz on 2017/4/23.
  */
-public class CausalDiagram implements IParameterModel {
+public class CausalDiagram implements AdapterJSONObject {
 
-    private final DirectedAcyclicGraph DAG;
+    DiGraph<Loci> DAG;
 
-    public CausalDiagram(DirectedAcyclicGraph DAG) {
-        this.DAG = DAG;
+    public CausalDiagram(BayesNet bn) {
+        DAG = bn.getDAG();
     }
 
     // Parents + children and coparents
@@ -56,7 +61,7 @@ public class CausalDiagram implements IParameterModel {
     }
 
     @Override
-    public DirectedAcyclicGraph getDAG() {
-        return DAG;
+    public JSONObject toJSON() {
+        return null;
     }
 }

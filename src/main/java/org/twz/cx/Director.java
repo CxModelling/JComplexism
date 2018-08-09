@@ -1,5 +1,6 @@
 package org.twz.cx;
 
+import org.twz.dag.SimulationCore;
 import org.twz.statespace.AbsDCore;
 import org.twz.statespace.DCoreFactory;
 import org.twz.statespace.IBlueprintDCore;
@@ -11,7 +12,6 @@ import org.twz.cx.mcore.IMCoreBlueprint;
 import org.json.JSONObject;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.ScriptException;
-import org.twz.dag.SimulationModel;
 import org.twz.io.IO;
 
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import java.util.Map;
  * Created by TimeWz on 2017/6/16.
  */
 public class Director {
-    private Map<String, SimulationModel> PCores;
+    private Map<String, SimulationCore> PCores;
     private Map<String, IBlueprintDCore> DCores;
     private Map<String, IMCoreBlueprint> MCores;
     private Map<String, ModelLayout> Layouts;
@@ -35,13 +35,14 @@ public class Director {
         Layouts = new HashMap<>();
     }
 
-    public void addPCore(SimulationModel pc) {
+    public void addPCore(SimulationCore pc) {
         PCores.putIfAbsent(pc.getName(), pc);
     }
 
     public void readPCore(String script) {
         try {
-            addPCore(new SimulationModel(script));
+            // todo
+            // addPCore(new SimulationCore(script));
         } catch (ScriptException e) {
             e.printStackTrace();
         }
@@ -57,7 +58,7 @@ public class Director {
 
     public void restorePCore(JSONObject js) {
         try {
-            addPCore(new SimulationModel(js));
+            addPCore(new SimulationCore(js));
         } catch (ScriptException e) {
             e.printStackTrace();
         }
@@ -67,7 +68,7 @@ public class Director {
         System.out.println(PCores.keySet().toString());
     }
 
-    public SimulationModel getPCore(String name) {
+    public SimulationCore getPCore(String name) {
         return PCores.get(name);
     }
 
@@ -147,11 +148,11 @@ public class Director {
     }
 
     public ParameterCore generatePCore(String pc) {
-        return getPCore(pc).sampleCore();
+        return getPCore(pc).generate(pc, null);
     }
 
     public ParameterCore generatePCore(String pc, Map<String, Double> cond) {
-        return getPCore(pc).sampleCore(cond);
+        return getPCore(pc).generate(pc, cond);
     }
 
     public AbsDCore generateDCore(String dc, String pc) {

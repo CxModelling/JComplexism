@@ -13,17 +13,17 @@ import java.util.stream.Collectors;
  */
 public class NodeGroup {
     private String Name;
-    private List<NodeGroup> Children;
-    private List<String> Nodes, Exo, Fixed, Random, Actors;
+    private Set<NodeGroup> Children;
+    private Set<String> Nodes, Exo, Fixed, Random, Actors;
 
     public NodeGroup(String name, String[] nodes) {
         Name = name;
-        Children = new ArrayList<>();
-        Nodes = new ArrayList<>(Arrays.asList(nodes));
-        Exo = new ArrayList<>();
-        Fixed = new ArrayList<>();
-        Random = new ArrayList<>();
-        Actors = new ArrayList<>();
+        Children = new HashSet<>();
+        Nodes = new HashSet<>(Arrays.asList(nodes));
+        Exo = new HashSet<>();
+        Fixed = new HashSet<>();
+        Random = new HashSet<>();
+        Actors = new HashSet<>();
     }
 
     public void appendChildren(NodeGroup ng) {
@@ -92,23 +92,27 @@ public class NodeGroup {
         return Name;
     }
 
-    public List<NodeGroup> getChildren() {
+    public Set<NodeGroup> getChildren() {
         return Children;
     }
 
-    public List<String> getNodes() {
+    public Set<String> getNodes() {
         return Nodes;
     }
 
-    public List<String> getFixed() {
+    public Set<String> getExo() {
+        return Exo;
+    }
+
+    public Set<String> getFixed() {
         return Fixed;
     }
 
-    public List<String> getRandom() {
+    public Set<String> getRandom() {
         return Random;
     }
 
-    public List<String> getActors() {
+    public Set<String> getActors() {
         return Actors;
     }
 

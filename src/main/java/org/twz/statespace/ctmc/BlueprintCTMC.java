@@ -1,5 +1,6 @@
 package org.twz.statespace.ctmc;
 
+import org.twz.prob.ISampler;
 import org.twz.statespace.IBlueprintDCore;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
@@ -102,15 +103,9 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
 
     @Override
     public boolean isCompatible(ParameterCore pc) {
-        IDistribution dist;
         for (Map.Entry<String, String> ent: TransitionBy.entrySet()) {
             try {
-                dist = pc.getDistribution(ent.getValue());
-                if (dist.getLower() < 0) {
-                    System.out.println("Distribution "+ ent.getValue() +
-                            " is not non-negative");
-                    return false;
-                }
+                pc.getSampler(ent.getValue());
             } catch (NullPointerException e) {
                 System.out.println("Distribution "+ ent.getValue() +
                         " does not exist");
@@ -136,7 +131,7 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
         }
         for (Map.Entry<String, String> ent: TransitionTo.entrySet()) {
             trs.put(ent.getKey(), new Transition(ent.getKey(),
-                    sts.get(ent.getValue()), pc.getDistribution(TransitionBy.get(ent.getKey()))));
+                    sts.get(ent.getValue()), pc.getSampler(TransitionBy.get(ent.getKey()))));
         }
         for (Map.Entry<String, List<String>> ent: Targets.entrySet()) {
             tars.put(sts.get(ent.getKey()),

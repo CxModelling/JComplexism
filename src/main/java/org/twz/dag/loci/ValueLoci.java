@@ -43,6 +43,11 @@ public class ValueLoci extends Loci {
     }
 
     @Override
+    public double evaluate(Gene gene) {
+        return 0;
+    }
+
+    @Override
     public double sample(Map<String, Double> pas) {
         return Value;
     }

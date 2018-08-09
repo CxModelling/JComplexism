@@ -4,6 +4,7 @@ package org.twz.statespace;
 import org.twz.io.AdapterJSONObject;
 import org.json.JSONObject;
 import org.twz.prob.IDistribution;
+import org.twz.prob.ISampler;
 
 /**
  *
@@ -12,9 +13,9 @@ import org.twz.prob.IDistribution;
 public class Transition implements AdapterJSONObject {
     private final String Name;
     private final State State;
-    private final IDistribution Dist;
+    private final ISampler Dist;
 
-    public Transition(String name, State state, IDistribution dist) {
+    public Transition(String name, State state, ISampler dist) {
         Name = name;
         State = state;
         Dist = dist;

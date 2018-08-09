@@ -1,5 +1,6 @@
 package org.twz.dag;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,7 +15,12 @@ public class Gene implements Cloneable {
     private Map<String, Double> Locus;
 
     public Gene(Map<String, Double> locus, double pp) {
-        Locus = new HashMap<>(locus);
+        try {
+            Locus = new HashMap<>(locus);
+        } catch (NullPointerException e) {
+            Locus = new HashMap<>();
+        }
+
         LogPriorProb = pp;
         LogLikelihood = 0;
     }
@@ -38,6 +44,16 @@ public class Gene implements Cloneable {
     public void put(String s, double d) {
         Locus.put(s, d);
         LogLikelihood = 0;
+    }
+
+    public boolean has(String s) {
+        return Locus.containsKey(s);
+    }
+
+    public void removeAll(Collection<String> ls) {
+        for (String l : ls) {
+            Locus.remove(l);
+        }
     }
 
     public double getLogPriorProb() {

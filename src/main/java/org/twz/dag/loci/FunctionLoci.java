@@ -4,13 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Gene;
-import org.twz.dag.ScriptException;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 /**
  *
@@ -46,6 +41,12 @@ public class FunctionLoci extends Loci {
     public double evaluate(Map<String, Double> pas) {
         return 0;
     }
+
+    @Override
+    public double evaluate(Gene gene) {
+        return 0;
+    }
+
 
     @Override
     public double sample(Map<String, Double> pas) {

@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Gene;
-import org.twz.dag.ScriptException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +31,12 @@ public class PseudoLoci extends Loci {
     public double evaluate(Map<String, Double> pas) {
         return 0;
     }
+
+    @Override
+    public double evaluate(Gene gene) {
+        return 0;
+    }
+
 
     @Override
     public double sample(Map<String, Double> pas) {

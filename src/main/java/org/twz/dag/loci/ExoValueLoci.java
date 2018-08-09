@@ -24,6 +24,11 @@ public class ExoValueLoci extends Loci {
     }
 
     @Override
+    public double evaluate(Gene gene) {
+        return 0;
+    }
+
+    @Override
     public double sample(Map<String, Double> pas) {
         return 0;
     }

@@ -26,6 +26,7 @@ public abstract class Loci implements AdapterJSONObject {
 
     public abstract List<String> getParents();
     public abstract double evaluate(Map<String, Double> pas);
+    public abstract double evaluate(Gene gene);
     public abstract double sample(Map<String, Double> pas);
     public abstract double sample(Gene gene);
     public abstract void fill(Gene gene);

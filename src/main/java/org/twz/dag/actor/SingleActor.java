@@ -24,6 +24,11 @@ public class SingleActor extends SimulationActor {
     }
 
     @Override
+    public void fill(Gene pas) {
+        Distribution.fill(pas);
+    }
+
+    @Override
     public String toString() {
         return Field + " (" + Distribution.getDefinition() + ")";
     }

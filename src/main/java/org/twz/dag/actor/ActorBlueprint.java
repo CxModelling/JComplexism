@@ -7,6 +7,8 @@ import java.util.List;
  * Created by TimeWz on 08/08/2018.
  */
 public class ActorBlueprint {
+    public static final String Compound = "c", Single = "s", Frozen = "f";
+
     public String Actor, Type, TypeH;
     public List<String> Flow;
 

@@ -1,5 +1,4 @@
 import junit.framework.TestCase;
-import org.twz.dag.DirectedAcyclicGraph;
 import org.twz.dag.ScriptException;
 import org.twz.io.IO;
 

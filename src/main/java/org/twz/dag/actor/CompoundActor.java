@@ -34,6 +34,14 @@ public class CompoundActor extends SimulationActor {
     }
 
     @Override
+    public void fill(Gene pas) {
+        for (Loci loci : Flow) {
+            pas.put(loci.getName(), loci.sample(pas));
+        }
+        End.fill(pas);
+    }
+
+    @Override
     public String toString() {
         return Field + " (" +
                 Flow.stream().map(Loci::getDefinition)
