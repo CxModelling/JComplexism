@@ -33,8 +33,9 @@ public class SimulationCore implements AdapterJSONObject, Cloneable {
         findSGs();
     }
 
-    public SimulationCore(JSONObject js) {
-        this(new BayesNet(js.getJSONObject("BayesianNetwork")), new NodeGroup(js.getJSONObject("Blueprint")),
+    public SimulationCore(JSONObject js) throws ScriptException {
+        this(new BayesNet(js.getJSONObject("BayesianNetwork")),
+                new NodeGroup(js.getJSONObject("Blueprint")),
                 js.getBoolean("Hoist"));
     }
 
@@ -68,6 +69,7 @@ public class SimulationCore implements AdapterJSONObject, Cloneable {
 
         SimulationGroup sg = new SimulationGroup(ng.getName(), listen, ng.getExo(), ng.getFixed(), ng.getRandom(), ng.getActors());
         sg.Children.addAll(ng.getChildren().stream().map(NodeGroup::getName).collect(Collectors.toSet()));
+        sg.setSimulationCore(this);
         SGs.put(ng.getName(), sg);
 
         ng.getChildren().forEach(d->toSG(d, g));

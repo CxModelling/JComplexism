@@ -1,4 +1,4 @@
-package org.twz.cx.factory;
+package org.twz.factory;
 
 
 import org.twz.cx.element.Ticker.AbsTicker;

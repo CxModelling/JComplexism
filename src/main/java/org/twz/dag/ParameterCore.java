@@ -52,9 +52,9 @@ public class ParameterCore extends Gene {
     }
 
     public ParameterCore breed(String nickname, String group, Map<String, Double> exo) {
-        try {
+        if (Children.containsKey(nickname)) {
             return Children.get(nickname);
-        } catch (IndexOutOfBoundsException e) {
+        } else {
             ParameterCore chd = SG.breed(nickname, group, exo, this);
             Children.put(nickname, chd);
             return chd;
@@ -164,7 +164,6 @@ public class ParameterCore extends Gene {
                     .map(Map.Entry::getKey).collect(Collectors.toList()));
         }
 
-
         SG.setResponse(imp, shock_l, shock_a, shock_h, this);
 
         Children.values().forEach(ch->ch.setResponse(imp, shocked));
@@ -188,8 +187,7 @@ public class ParameterCore extends Gene {
     }
 
     public double getDeepLogPrior() {
-        return getLogPriorProb() + Children.values().stream()
-                .mapToDouble(ParameterCore::getDeepLogPrior).sum();
+        return getLogPriorProb() + Children.values().stream().mapToDouble(ParameterCore::getDeepLogPrior).sum();
     }
 
     public String toJSON() {

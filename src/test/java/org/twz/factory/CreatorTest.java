@@ -1,4 +1,4 @@
-package org.twz.cx.factory;
+package org.twz.factory;
 
 import org.twz.factory.Workshop;
 import org.twz.factory.arguments.AbsArgument;
@@ -7,7 +7,7 @@ import org.twz.factory.arguments.IntegerArg;
 import org.twz.factory.arguments.StringArg;
 import junit.framework.TestCase;
 import org.json.JSONObject;
-import org.twz.cx.factory.PseudoType;
+import org.twz.factory.PseudoType;
 
 /**
  * Created by TimeWz on 2017/11/3.

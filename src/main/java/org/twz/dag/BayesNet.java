@@ -16,6 +16,7 @@ public class BayesNet implements AdapterJSONObject {
     private final String Name;
     private boolean frozen;
     private DiGraph<Loci> DAG;
+    private List<String> Order;
 
     public BayesNet(String name) {
         Name = name;
@@ -23,14 +24,18 @@ public class BayesNet implements AdapterJSONObject {
         frozen=false;
     }
 
-    public BayesNet(JSONObject js) {
+    public BayesNet(JSONObject js) throws ScriptException {
         this(js.getString("Name"));
 
         JSONArray nodes = js.getJSONArray("Nodes");
         for (int i = 0; i < nodes.length(); i++) {
             appendLoci(nodes.getJSONObject(i));
         }
-        complete();
+        try {
+            complete();
+        } catch (InvalidPropertiesFormatException e) {
+            throw new ScriptException("Cyclic sub-graph found");
+        }
     }
 
     public String getName() {
@@ -118,6 +123,16 @@ public class BayesNet implements AdapterJSONObject {
         return gene;
     }
 
+    public double evaluate(Gene gene) {
+        Loci loci;
+        double li = 0;
+        for (String s : getOrder()) {
+            loci = DAG.getNode(s);
+            li += loci.evaluate(gene);
+        }
+        gene.setLogPriorProb(li);
+        return li;
+    }
 
 
     private List<String> toList(JSONArray ja) {
@@ -129,19 +144,25 @@ public class BayesNet implements AdapterJSONObject {
     }
 
     public List<String> getOrder() {
-        try {
-            return DAG.getOrder();
-        } catch (InvalidPropertiesFormatException e) {
-            return null;
+        if (isFrozen()) {
+            return Order;
+        } else {
+            try {
+                return DAG.getOrder();
+            } catch (InvalidPropertiesFormatException e) {
+                return null;
+            }
         }
     }
 
-    public void complete() {
+    public void complete() throws InvalidPropertiesFormatException {
         frozen = true;
+        Order = DAG.getOrder();
     }
 
     private void defrost() {
         frozen = false;
+        Order = null;
     }
 
     public boolean isFrozen() {

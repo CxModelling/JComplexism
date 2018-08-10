@@ -45,7 +45,7 @@ public class Director {
             // addPCore(new SimulationCore(script));
     }
 
-    public void loadPCore(String path) {
+    public void loadPCore(String path) throws ScriptException {
         if (path.endsWith(".json")) {
             restorePCore(IO.loadJSON(path));
         } else {
@@ -53,7 +53,7 @@ public class Director {
         }
     }
 
-    public void restorePCore(JSONObject js) {
+    public void restorePCore(JSONObject js) throws ScriptException {
         addPCore(new SimulationCore(js));
     }
 

@@ -23,7 +23,7 @@ class SimulationGroup implements AdapterJSONObject {
     Set<String> Children;
     private List<ActorBlueprint> Bps;
 
-    public SimulationGroup(String name, Set<String> listening, Set<String> waiting,
+    SimulationGroup(String name, Set<String> listening, Set<String> waiting,
                            Set<String> fixed, Set<String> random, Set<String> actor) {
         Name = name;
         Listening = listening;

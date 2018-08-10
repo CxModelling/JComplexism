@@ -1,3 +1,4 @@
+import org.twz.dag.ScriptException;
 import org.twz.statespace.AbsDCore;
 import org.twz.statespace.State;
 import org.twz.statespace.ctbn.BlueprintCTBN;
@@ -18,7 +19,11 @@ public class CTBNTest extends TestCase {
     public void testBuildCTBN() {
         Director da = new Director();
 
-        da.loadPCore("script/pSIR.txt");
+        try {
+            da.loadPCore("test/resources/script/pSIR.txt");
+        } catch (ScriptException e) {
+            e.printStackTrace();
+        }
 
         BlueprintCTBN bp = da.createCTBN("SIR_bn");
 
@@ -55,8 +60,12 @@ public class CTBNTest extends TestCase {
     public void testLoadCTBN() {
         Director da = new Director();
 
-        da.loadPCore("script/pSIR.txt");
-        da.loadDCore("script/SIR_BN.txt");
+        try {
+            da.loadPCore("test/resources/script/pSIR.txt");
+        } catch (ScriptException e) {
+            e.printStackTrace();
+        }
+        da.loadDCore("test/resources/script/SIR_BN.txt");
 
         AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
         State st = mod.getState("Sus");
@@ -71,7 +80,7 @@ public class CTBNTest extends TestCase {
 
     }
 
-    public void testJosnifyCTBN() {
+    public void testJosnifyCTBN() throws ScriptException {
         Director da = new Director();
 
         da.loadPCore("script/pSIR.txt");
