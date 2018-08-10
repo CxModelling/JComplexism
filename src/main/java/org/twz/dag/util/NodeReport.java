@@ -108,7 +108,7 @@ public class NodeReport {
         System.out.println(h + "Can be random: " + s);
 
         s.clear();
-        s.addAll(FixedRandom);
+        s.addAll(RandomActor);
         s.addAll(FixedRandomActor);
         System.out.println(h + "Can be actors: " + s);
     }

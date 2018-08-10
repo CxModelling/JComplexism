@@ -60,7 +60,7 @@ public class DistributionLoci extends Loci {
 
     @Override
     public void fill(Gene gene) {
-        IDistribution dist = findDistribution(gene.getLocus());
+        IDistribution dist = findDistribution(gene);
         double v = dist.sample();
         gene.put(getName(), v);
         gene.addLogPriorProb(dist.logpdf(v));

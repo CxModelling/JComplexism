@@ -80,6 +80,10 @@ public class SimulationCore implements AdapterJSONObject, Cloneable {
         return SGs.get(RootSG).generate(nickname, exo, null, true);
     }
 
+    public ParameterCore generate(String nickname) {
+        return SGs.get(RootSG).generate(nickname, null, null, true);
+    }
+
     @Override
     public JSONObject toJSON() {
         JSONObject js = new JSONObject();

@@ -3,6 +3,7 @@ package org.twz.dag;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.twz.dag.loci.*;
+import org.twz.dag.util.NodeGroup;
 import org.twz.graph.DiGraph;
 import org.twz.io.AdapterJSONObject;
 
@@ -135,6 +136,8 @@ public class BayesNet implements AdapterJSONObject {
     }
 
 
+
+
     private List<String> toList(JSONArray ja) {
         List<String> l = new ArrayList<>();
         for (int i = 0; i < ja.length(); i++) {
@@ -163,6 +166,22 @@ public class BayesNet implements AdapterJSONObject {
     private void defrost() {
         frozen = false;
         Order = null;
+    }
+
+    public SimulationCore toSimulationCore() {
+        NodeGroup ng = new NodeGroup("root", new String[]{});
+        ng.allocateNodes(this);
+        return new SimulationCore(this, ng, true);
+    }
+
+    public SimulationCore toSimulationCore(NodeGroup root, boolean hoist) {
+        root.allocateNodes(this);
+        return new SimulationCore(this, root, hoist);
+    }
+
+    public SimulationCore toSimulationCore(NodeGroup root, String[] random, String[] out, boolean hoist) {
+        root.allocateNodes(this, new HashSet<>(Arrays.asList(random)), new HashSet<>(Arrays.asList(out)));
+        return new SimulationCore(this, root, hoist);
     }
 
     public boolean isFrozen() {

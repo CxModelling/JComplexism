@@ -7,7 +7,6 @@ package org.twz.graph;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.twz.graph.DiGraph;
 import static org.junit.Assert.*;
 
 public class DiGraphTest {

@@ -16,9 +16,12 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 07/08/2018.
  */
 public class NodeGroup implements AdapterJSONObject {
+    private static int Initialised = 0, AllNodesRead = 1, RolesChecked = 2;
+
     private String Name;
     private Set<NodeGroup> Children;
     private Set<String> Nodes, Exo, Fixed, Random, Actors;
+    private int Status;
 
     public NodeGroup(String name, String[] nodes) {
         Name = name;
@@ -28,6 +31,7 @@ public class NodeGroup implements AdapterJSONObject {
         Fixed = new HashSet<>();
         Random = new HashSet<>();
         Actors = new HashSet<>();
+        Status = Initialised;
     }
 
     public NodeGroup(JSONObject js) {
@@ -43,6 +47,7 @@ public class NodeGroup implements AdapterJSONObject {
         for (int i = 0; i < chd.length(); i++) {
             Children.add(new NodeGroup(chd.getJSONObject(i)));
         }
+        Status = RolesChecked;
     }
 
     public NodeGroup(String script) {
@@ -147,11 +152,37 @@ public class NodeGroup implements AdapterJSONObject {
         return fixed;
     }
 
+    public void form_hierarchy(BayesNet bn) {
+        if (Status == NodeGroup.Initialised) {
+            Set<String> all_fixed = getAllNodes();
+            List<String> all_floated = bn.getOrder();
+            all_floated.removeAll(all_fixed);
+            Collections.reverse(all_floated);
+            all_floated.forEach(node->passDown(node, bn.getDAG()));
+            Collections.reverse(all_floated);
+            all_floated.forEach(node->raiseUp(node, bn.getDAG()));
+            finishNodeReading();
+        }
+    }
+
+    private void finishNodeReading() {
+        Status = NodeGroup.AllNodesRead;
+        Children.forEach(NodeGroup::finishNodeReading);
+    }
+
+    private void finishNodeAllocating() {
+        Status = NodeGroup.RolesChecked;
+        Children.forEach(NodeGroup::finishNodeAllocating);
+    }
+
     public void allocateNodes(BayesNet bn) {
         allocateNodes(bn, new HashSet<>(), new HashSet<>(bn.getDAG().getLeaves()));
     }
 
     public void allocateNodes(BayesNet bn, Set<String> random, Set<String> out) {
+        form_hierarchy(bn);
+        if (Status == NodeGroup.RolesChecked) return;
+
         NodeReport nr = new NodeReport(bn, this);
         Exo.addAll(nr.Exo);
         Fixed.addAll(nr.Fixed);
@@ -184,6 +215,7 @@ public class NodeGroup implements AdapterJSONObject {
         }
 
         Children.forEach(n->n.allocateNodes(bn, random, out));
+        finishNodeAllocating();
     }
 
 
@@ -197,6 +229,7 @@ public class NodeGroup implements AdapterJSONObject {
     }
 
     private void analyseTypes(BayesNet bn, int i) {
+        form_hierarchy(bn);
         NodeReport nr = new NodeReport(bn, this);
         nr.print(i);
         Children.forEach(n->n.analyseTypes(bn, i+1));
@@ -214,24 +247,13 @@ public class NodeGroup implements AdapterJSONObject {
     public void printBlueprint() {
         System.out.println("NodeGroup{" +
                 "Name='" + Name +
-                ", Exo=" + Exo.stream().collect(Collectors.joining(", ")) +
-                ", Fixed=" + Fixed.stream().collect(Collectors.joining(", ")) +
-                ", Random=" + Random.stream().collect(Collectors.joining(", ")) +
-                ", Actor=" + Actors.stream().collect(Collectors.joining(", ")) +
+                ((Exo.isEmpty())? "":"| Exo=" + Exo.stream().collect(Collectors.joining(", "))) +
+                ((Fixed.isEmpty())? "":"| Fixed=" + Fixed.stream().collect(Collectors.joining(", "))) +
+                ((Random.isEmpty())? "":"| Random=" + Random.stream().collect(Collectors.joining(", "))) +
+                ((Actors.isEmpty())? "":"| Actor=" + Actors.stream().collect(Collectors.joining(", "))) +
                 '}');
         Children.forEach(NodeGroup::printBlueprint);
     }
-
-    public static void form_hierarchy(BayesNet bn, NodeGroup root) {
-        Set<String> all_fixed = root.getAllNodes();
-        List<String> all_floated = bn.getOrder();
-        all_floated.removeAll(all_fixed);
-        Collections.reverse(all_floated);
-        all_floated.forEach(node->root.passDown(node, bn.getDAG()));
-        Collections.reverse(all_floated);
-        all_floated.forEach(node->root.raiseUp(node, bn.getDAG()));
-    }
-
 
     @Override
     public JSONObject toJSON() {

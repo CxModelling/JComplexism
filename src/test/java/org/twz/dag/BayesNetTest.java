@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
+ *
  * Created by TimeWz on 07/08/2018.
  */
 public class BayesNetTest {

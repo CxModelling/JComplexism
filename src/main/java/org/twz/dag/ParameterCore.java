@@ -85,6 +85,8 @@ public class ParameterCore extends Gene {
         if (Parent == null) {
             return;
         }
+        Actors.putAll(Parent.ChildrenActors.get(getGroupName()));
+
         Parent.removeChild(Nickname);
         if (collect) {
             getLocus().putAll(Parent.getLocus());
@@ -169,7 +171,7 @@ public class ParameterCore extends Gene {
         Children.values().forEach(ch->ch.setResponse(imp, shocked));
     }
 
-    private void freeze() {
+    void freeze() {
         for (SimulationActor act : Actors.values()) {
             act.fill(this);
         }
@@ -181,7 +183,7 @@ public class ParameterCore extends Gene {
         }
     }
 
-    public void resetSC(SimulationCore sc) {
+    void resetSC(SimulationCore sc) {
         SG = sc.get(SG.getName());
         Children.values().forEach(ch->ch.resetSC(sc));
     }

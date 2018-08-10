@@ -11,6 +11,16 @@ import java.util.ArrayList;
  * Created by TimeWz on 2015/12/4.
  */
 public class IO {
+    public static int DoublePrecision = 4;
+
+    public static String doubleFormat(double d, int i) {
+        return String.format("%." + i + "f", d);
+    }
+
+    public static String doubleFormat(double d) {
+        return doubleFormat(d, DoublePrecision);
+    }
+
     public static void writeText(String data, String file){
         try {
             FileWriter writer = new FileWriter(file);

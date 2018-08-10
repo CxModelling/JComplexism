@@ -62,7 +62,7 @@ public class FunctionLoci extends Loci {
 
     @Override
     public void fill(Gene gene) {
-        gene.put(getName(), sample(gene.getLocus()));
+        gene.put(getName(), sample(gene));
     }
 
     @Override

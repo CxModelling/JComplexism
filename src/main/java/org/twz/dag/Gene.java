@@ -1,5 +1,7 @@
 package org.twz.dag;
 
+import org.twz.io.IO;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,14 +105,14 @@ public class Gene implements Cloneable {
     }
 
     public String toString() {
-        String sb = "Gene{";
+        String sb = "{";
         sb += Locus.entrySet().stream()
-                .map(e -> e.getKey() + ": " + e.getValue())
-                .collect(Collectors.joining(","));
-        sb += "}, ";
-        sb += "LogPrior:" + LogPriorProb;
+                .map(e -> e.getKey() + ": " + IO.doubleFormat(e.getValue()))
+                .collect(Collectors.joining(", "));
+        sb += ", ";
+        sb += "LogPrior:" + IO.doubleFormat(LogPriorProb);
         if (isEvaluated()) {
-            sb += ",LogLikelihood:" + LogLikelihood;
+            sb += ",LogLikelihood:" + IO.doubleFormat(LogLikelihood);
         }
         sb += "}";
         return sb;
