@@ -19,11 +19,13 @@ public class CTBNTest extends TestCase {
     public void testBuildCTBN() {
         Director da = new Director();
 
+
         try {
-            da.loadPCore("test/resources/script/pSIR.txt");
+            da.loadPCore("src/test/resources/script/pSIR.txt");
         } catch (ScriptException e) {
             e.printStackTrace();
         }
+
 
         BlueprintCTBN bp = da.createCTBN("SIR_bn");
 
