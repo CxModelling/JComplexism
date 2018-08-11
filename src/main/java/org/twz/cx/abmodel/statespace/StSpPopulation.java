@@ -1,7 +1,7 @@
-package org.twz.cx.abmodel;
+package org.twz.cx.abmodel.statespace;
 
-import java.util.List;
-import java.util.Map;
+import org.twz.cx.abmodel.AbsBreeder;
+import org.twz.cx.abmodel.Population;
 
 public class StSpPopulation extends Population<StSpAgent> {
     public StSpPopulation(AbsBreeder<StSpAgent> eva) {
@@ -11,7 +11,7 @@ public class StSpPopulation extends Population<StSpAgent> {
     @Override
     public long count(String key, Object value) {
         if (key.equals("st")) {
-            return ((StSpBreeder) getEva()).count(getAgents().values(), (String) value);
+            return ((StSpBreeder) getEva()).count(getAgents().values(), value);
         } else {
             return super.count(key, value);
         }

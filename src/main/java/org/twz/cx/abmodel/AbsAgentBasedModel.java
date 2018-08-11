@@ -17,18 +17,20 @@ import java.util.stream.Collectors;
 /**
  * Created by TimeWz on 09/07/2018.
  */
-public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
+public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel {
 
-    private Population<T> Population;
+    private Population<Ta> Population;
     private Map<String, AbsBehaviour> Behaviours;
 
-    public AbsAgentBasedModel(String name, Gene parameters, Population<T> pop, AbsObserver<AbsSimModel> obs, IY0 protoY0) {
+    public <Tm extends AbsAgentBasedModel> AbsAgentBasedModel(String name, Gene parameters,
+                                                              Population<Ta> pop, AbsObserver<Tm> obs, IY0 protoY0) {
         super(name, parameters, obs, protoY0);
         this.Population = pop;
         Behaviours = new LinkedHashMap<>();
     }
 
-    public AbsAgentBasedModel(String name, Map<String, Double> parameters, Population<T> pop, AbsObserver<AbsSimModel> obs, IY0 protoY0) {
+    public <Tm extends AbsAgentBasedModel> AbsAgentBasedModel(String name, Map<String, Double> parameters,
+                                                              Population<Ta> pop, AbsObserver<Tm> obs, IY0 protoY0) {
         this(name, new Gene(parameters), pop, obs, protoY0);
     }
 
@@ -37,13 +39,21 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
         Scheduler.addAtom(be);
     }
 
+    public void addObservingBehaviour(String be) {
+        addObservingBehaviour(Behaviours.get(be));
+    }
+
+    public void addObservingBehaviour(AbsBehaviour be) {
+        ((ABMObserver) getObserver()).addObsBehaviour(be);
+    }
+
     public void addNetwork(AbsNetwork net) {
         this.Population.addNetwork(net);
     }
 
     protected void makeAgents(int n, double ti, Map<String, Object> attributes) {
-        List<T> ags = this.Population.addAgents(n, attributes);
-        for (T ag: ags) {
+        List<Ta> ags = this.Population.addAgents(n, attributes);
+        for (Ta ag: ags) {
             for (AbsBehaviour be: Behaviours.values()) {
                 be.register(ag, ti);
             }
@@ -51,7 +61,7 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
         }
     }
 
-    public org.twz.cx.abmodel.Population<T> getPopulation() {
+    public org.twz.cx.abmodel.Population<Ta> getPopulation() {
         return Population;
     }
 
@@ -72,27 +82,27 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
         disclose("initialise", "*");
     }
 
-    protected List<AbsBehaviour> checkEnter(T ag) {
+    protected List<AbsBehaviour> checkEnter(Ta ag) {
         return Behaviours.values().stream().filter(be -> be.checkEnterChange(ag)).collect(Collectors.toList());
     }
 
-    protected void impulseEnter(List<AbsBehaviour> bes, T ag, double ti) {
+    protected void impulseEnter(List<AbsBehaviour> bes, Ta ag, double ti) {
         bes.forEach(be-> be.impulseEnter(this, ag, ti));
     }
 
-    protected List<AbsBehaviour> checkExit(T ag) {
+    protected List<AbsBehaviour> checkExit(Ta ag) {
         return Behaviours.values().stream().filter(be -> be.checkExitChange(ag)).collect(Collectors.toList());
     }
 
-    protected void impulseExit(List<AbsBehaviour> bes, T ag, double ti) {
+    protected void impulseExit(List<AbsBehaviour> bes, Ta ag, double ti) {
         bes.forEach(be-> be.impulseExit(this, ag, ti));
     }
 
-    protected List<Boolean> checkPreChange(T ag) {
+    protected List<Boolean> checkPreChange(Ta ag) {
         return Behaviours.values().stream().map(be -> be.checkPreChange(ag)).collect(Collectors.toList());
     }
 
-    protected List<Boolean> checkPostChange(T ag) {
+    protected List<Boolean> checkPostChange(Ta ag) {
         return Behaviours.values().stream().map(be -> be.checkPostChange(ag)).collect(Collectors.toList());
     }
 
@@ -109,15 +119,15 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
         return bes;
     }
 
-    protected void impulseChange(List<AbsBehaviour> bes, T ag, double ti) {
+    protected void impulseChange(List<AbsBehaviour> bes, Ta ag, double ti) {
         bes.forEach(be-> be.impulseExit(this, ag, ti));
     }
 
-    public List<T> birth(int n, double ti, Map<String, Object> attributes) {
-        List<T> ags = this.Population.addAgents(n, attributes);
+    public List<Ta> birth(int n, double ti, Map<String, Object> attributes) {
+        List<Ta> ags = this.Population.addAgents(n, attributes);
         List<AbsBehaviour> bes;
         int nBirth = 0;
-        for (T ag : ags) {
+        for (Ta ag : ags) {
             Behaviours.values().forEach(be->be.register(ag, ti));
             bes = checkEnter(ag);
             ag.initialise(ti, this);
@@ -133,7 +143,7 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
 
     public void kill(String id, double ti) {
         try {
-            T ag = Population.get(id);
+            Ta ag = Population.get(id);
             List<AbsBehaviour> bes = checkExit(ag);
             Scheduler.removeAtom(ag);
             Population.removeAgent(id);
@@ -155,7 +165,7 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
             be.operate(this);
         } else {
             try {
-                T ag = this.Population.get(nod);
+                Ta ag = this.Population.get(nod);
                 ag.approveEvent(todo);
                 List<Boolean> pre = checkPreChange(ag);
                 ((ABMObserver) getObserver()).record(ag, todo.getValue(), time);

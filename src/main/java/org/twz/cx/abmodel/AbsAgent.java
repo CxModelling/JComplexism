@@ -8,6 +8,7 @@ public abstract class AbsAgent extends ModelAtom {
         super(name, pars);
     }
 
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "{" + getName() + ", " +

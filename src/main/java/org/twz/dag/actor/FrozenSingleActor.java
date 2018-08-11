@@ -49,6 +49,6 @@ public class FrozenSingleActor extends SimulationActor {
 
     @Override
     public String toString() {
-        return Field + " (" + Distribution.getName() + ")";
+        return Distribution.getName();
     }
 }

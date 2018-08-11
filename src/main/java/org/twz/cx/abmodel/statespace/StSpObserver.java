@@ -1,5 +1,7 @@
-package org.twz.cx.abmodel;
+package org.twz.cx.abmodel.statespace;
 
+import org.twz.cx.abmodel.ABModel;
+import org.twz.cx.abmodel.AbsAgent;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
@@ -12,7 +14,7 @@ import java.util.*;
  *
  * Created by TimeWz on 2017/6/16.
  */
-public class StSpObserver extends AbsObserver<ABModel> {
+public class StSpObserver extends AbsObserver<StSpABModel> {
     private class Record {
         String Ag;
         Transition Tr;
@@ -34,6 +36,23 @@ public class StSpObserver extends AbsObserver<ABModel> {
         Records = new ArrayList<>();
     }
 
+    @Override
+    protected void readStatics(StSpABModel model, Map<String, Double> tab, double ti) {
+        Map<String, Object> option = new HashMap<>();
+        for (State st: ObsStates) {
+            option.put("st", st);
+            tab.put(st.getName(), 0.0 + model.getPopulation().count(option));
+        }
+        for (AbsBehaviour be: ObsBehaviours) {
+            be.fillData(tab, model, ti);
+        }
+    }
+
+    @Override
+    public void updateDynamicObservations(StSpABModel model, Map<String, Double> flows, double ti) {
+        ObsTransitions.forEach(tr-> flows.put(tr.getName(), 0.0+ Records.stream().filter(e-> e.Tr==tr).count()));
+    }
+
 
     void addObsState(State st) {
         ObsStates.add(st);
@@ -47,23 +66,6 @@ public class StSpObserver extends AbsObserver<ABModel> {
         ObsBehaviours.add(be);
     }
 
-
-    @Override
-    protected void readStatics(ABModel model, Map<String, Double> tab, double ti) {
-        Map<String, Object> option = new HashMap<>();
-        for (State st: ObsStates) {
-            option.put("st", st);
-            tab.put(st.getName(), 0.0 + model.getPopulation().count(option));
-        }
-        for (AbsBehaviour be: ObsBehaviours) {
-            be.fillData(tab, model, ti);
-        }
-    }
-
-    @Override
-    public void updateDynamicObservations(ABModel model, Map<String, Double> flows, double ti) {
-        ObsTransitions.forEach(tr-> flows.put(tr.getName(), 0.0+ Records.stream().filter(e-> e.Tr==tr).count()));
-    }
 
     @Override
     protected void clearFlows() {

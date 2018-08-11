@@ -41,4 +41,9 @@ public class Sampler implements ISampler {
         }
         return res;
     }
+
+    @Override
+    public String toString() {
+        return Actor.toString();
+    }
 }

@@ -30,6 +30,6 @@ public class SingleActor extends SimulationActor {
 
     @Override
     public String toString() {
-        return Field + " (" + Distribution.getDefinition() + ")";
+        return Distribution.getDefinition();
     }
 }

@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 
 
 /**
- * todo check variable orders
+ *
  * Created by TimeWz on 2017/4/17.
  */
 public class DistributionManager {

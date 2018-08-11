@@ -63,7 +63,7 @@ public class Director {
         }
     }
 
-    public void loadBayesNet(String path) throws ScriptException {
+    public void loadBayesNet(String path) {
         if (path.endsWith(".json")) {
             readBayesNet(IO.loadJSON(path));
         } else {

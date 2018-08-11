@@ -23,11 +23,8 @@ public class DBNCreateTest {
         Director da = new Director();
 
 
-        try {
-            da.loadBayesNet("src/test/resources/script/pSIR.txt");
-        } catch (ScriptException e) {
-            e.printStackTrace();
-        }
+        da.loadBayesNet("src/test/resources/script/pSIR.txt");
+
 
 
         BlueprintCTBN bp = da.createCTBN("SIR_bn");
@@ -66,11 +63,8 @@ public class DBNCreateTest {
     public void testLoadCTBN() {
         Director da = new Director();
 
-        try {
-            da.loadBayesNet("src/test/resources/script/pSIR.txt");
-        } catch (ScriptException e) {
-            e.printStackTrace();
-        }
+        da.loadBayesNet("src/test/resources/script/pSIR.txt");
+
         da.loadDCore("src/test/resources/script/SIR_BN.txt");
 
         AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");

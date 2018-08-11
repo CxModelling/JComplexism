@@ -80,7 +80,9 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
 
     public void dropNext() {
         Next.cancel();
-        Scheduler.await(this);
+        try {
+            Scheduler.await(this);
+        } catch (NullPointerException ignored) {}
     }
 
     public void approveEvent(Event evt) {

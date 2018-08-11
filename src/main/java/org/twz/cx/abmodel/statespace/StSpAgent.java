@@ -1,6 +1,7 @@
-package org.twz.cx.abmodel;
+package org.twz.cx.abmodel.statespace;
 
 import org.json.JSONObject;
+import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.modifier.AbsModifier;
 import org.twz.cx.abmodel.modifier.ModifierSet;
 import org.twz.cx.element.Event;

@@ -3,10 +3,7 @@ package org.twz.dag.actor;
 import org.twz.dag.Gene;
 import org.twz.dag.loci.Loci;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -43,9 +40,11 @@ public class CompoundActor extends SimulationActor {
 
     @Override
     public String toString() {
-        return Field + " (" +
-                Flow.stream().map(Loci::getDefinition)
-                        .collect(Collectors.joining("|")) + ")";
+        List<Loci> rev = new ArrayList<>(Flow);
+        Collections.reverse(rev);
+        return End.getDefinition() + "|" +
+                rev.stream().map(Loci::getDefinition)
+                        .collect(Collectors.joining("|"));
     }
 
 

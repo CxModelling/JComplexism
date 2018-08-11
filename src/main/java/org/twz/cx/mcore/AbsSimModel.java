@@ -93,7 +93,9 @@ public abstract class AbsSimModel implements AdapterJSONObject{
 
     public abstract void doRequest(Request req);
 
-    public abstract void validateRequests();
+    public void validateRequests() {
+        // todo
+    }
 
     public abstract void synchroniseRequestTime(double time);
 
