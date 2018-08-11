@@ -1,7 +1,7 @@
 package org.twz.cx.abmodel;
 
 
-import org.twz.dag.ParameterGenerator;
+import org.twz.dag.Gene;
 import org.twz.statespace.AbsDCore;
 import org.twz.statespace.State;
 
@@ -12,7 +12,7 @@ public class StSpBreeder extends AbsBreeder<StSpAgent> {
     private final AbsDCore DCore;
     private Map<String, State> WellDefined;
 
-    public StSpBreeder(String name, String group, AbsDCore dc, ParameterGenerator genPars, Map<String, Object> exo) {
+    public StSpBreeder(String name, String group, AbsDCore dc, Gene genPars, Map<String, Double> exo) {
         super(name, group, genPars, exo);
         DCore = dc;
         WellDefined = dc.getWellDefinedStateSpace();
@@ -22,8 +22,7 @@ public class StSpBreeder extends AbsBreeder<StSpAgent> {
         return DCore;
     }
 
-    @Override
-    protected StSpAgent newAgent(String name, Map<String, Object> pars, Map<String, Object> attributes) {
+    protected StSpAgent newAgent(String name, Gene pars, Map<String, Object> attributes) {
         State st = WellDefined.get(attributes.get("st"));
         StSpAgent ag = new StSpAgent(name, pars, st);
         attributes.entrySet().stream().filter(a -> !"st".equals(a.getKey())).forEach(a->ag.put(a.getKey(), a.getValue()));
@@ -39,4 +38,5 @@ public class StSpBreeder extends AbsBreeder<StSpAgent> {
         }
         return ags.stream().filter(ag -> ag.getState() == state).count();
     }
+
 }

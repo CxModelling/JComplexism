@@ -3,7 +3,11 @@ package org.twz.cx.mcore;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -14,18 +18,39 @@ public class Simulator {
     private AbsSimModel Model;
     private double Time;
     private boolean Record;
+
+    private Logger Log;
     private Map<String, AbsSimModel> LazyModels;
 
     public Simulator(AbsSimModel model, boolean rec) {
         Model = model;
         Time = 0;
         Record = rec;
+
+        Log = Logger.getLogger(model.getName());
         LazyModels = new HashMap<>();
     }
 
     public Simulator(AbsSimModel model) {
         this(model, true);
     }
+
+    public void addLogHandler(Handler han) {
+        Log.addHandler(han);
+    }
+
+    public void addLogPath(String pat) {
+        try {
+            Log.addHandler(new FileHandler(pat, 1024 * 128, 10, false));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setSeed(long seed) {
+        // todo
+    }
+
 
     public void simulate(IY0 y0, double fr, double to, double dt) {
         Time = fr;
@@ -68,7 +93,10 @@ public class Simulator {
                 if (ti > end) break;
 
                 tx = ti;
+                rs.forEach(req->Log.info(req.toLog()));
+
                 Model.fetchRequests(rs);
+                Model.synchroniseRequestTime(ti);
                 Model.executeRequests();
                 dealWithDisclosures(tx, rs);
             } catch (Exception e) {
@@ -92,6 +120,7 @@ public class Simulator {
 
         ds.addAll(Model.collectDisclosure());
         ds = ds.stream().filter(d -> !d.getSource().equals(Model.getName())).collect(Collectors.toList());
+        ds.forEach(dis->Log.info(dis.toLog()));
 
         Map<Disclosure, AbsSimModel> dm;
         while (!ds.isEmpty()) {
@@ -102,6 +131,7 @@ public class Simulator {
             Model.fetchDisclosures(dm, ti);
             ds = Model.collectDisclosure();
             ds = ds.stream().filter(d -> !d.getSource().equals(Model.getName())).collect(Collectors.toList());
+            ds.forEach(dis->Log.info(dis.toLog()));
         }
     }
 
@@ -115,6 +145,7 @@ public class Simulator {
             for (int i = where.size() - 2; i >= 0; i--) {
                 m = ((BranchModel) m).getModel(where.get(i));
             }
+            LazyModels.put(adr, m);
             return m;
         }
     }

@@ -1,6 +1,7 @@
 package org.twz.cx.abmodel;
 
-import org.twz.dag.ParameterGenerator;
+import org.twz.dag.Gene;
+import org.twz.dag.ParameterCore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +10,10 @@ import java.util.Map;
 public abstract class AbsBreeder<T extends AbsAgent> {
     private final String Name, Group;
     private final NameGenerator GenName;
-    private final ParameterGenerator GenPars;
-    private final Map<String, Object> Exo;
+    private final Gene GenPars;
+    private final Map<String, Double> Exo;
 
-    public AbsBreeder(String name, String group, ParameterGenerator genPars, Map<String, Object> exo) {
+    public AbsBreeder(String name, String group, Gene genPars, Map<String, Double> exo) {
         Name = name;
         Group = group;
         GenName = new NameGenerator(name);
@@ -26,16 +27,22 @@ public abstract class AbsBreeder<T extends AbsAgent> {
 
     public List<T> breed(int n, Map<String, Object> attributes) {
         String name;
-        Map<String, Object> pars;
+        Gene pars;
         List<T> ags = new ArrayList<>();
         while (n > 0) {
             name = GenName.getNext();
-            pars = GenPars.getParameters(Group, Exo);
-            ags.add(newAgent(name, pars, attributes));
+            if (GenPars instanceof ParameterCore) {
+                pars = ((ParameterCore) GenPars).breed(name, Group, Exo);
+            } else {
+                pars = GenPars.clone();
+            }
+            T ag = newAgent(name, pars, attributes);
+            ag.updateAttributes(attributes);
+            ags.add(ag);
             n --;
         }
         return ags;
     }
 
-    protected abstract T newAgent(String name, Map<String, Object> pars, Map<String, Object> attributes);
+    protected abstract T newAgent(String name, Gene pars, Map<String, Object> attributes);
 }

@@ -2,6 +2,8 @@ package org.twz.cx.mcore;
 
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
+import org.twz.dag.Gene;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,36 +14,55 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 2017/2/10.
  */
 public abstract class BranchModel extends AbsSimModel {
-    protected Map<String, AbsSimModel> Models;
-
-    public BranchModel(String name, Map<String, Object> env, AbsObserver obs, IY0 protoY0) {
-        super(name, env, obs, protoY0);
-        Models = new HashMap<>();
+    public BranchModel(String name, Gene pas, AbsObserver obs, IY0 protoY0) {
+        super(name, pas, obs, protoY0);
     }
+
+    public BranchModel(String name, Map<String, Double> pas, AbsObserver obs, IY0 protoY0) {
+        this(name, new Gene(pas), obs, protoY0);
+    }
+
+    public abstract Map<String, AbsSimModel> getModels();
+
+    public abstract AbsSimModel getModel(String name);
+
+    public AbsSimModel select(String sel) {
+        try {
+            return getModel(sel);
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    public ModelSelector selectAll(String sel) {
+        return (new ModelSelector(getModels())).select_all(sel);
+    }
+
+    public abstract void appendModel(AbsSimModel mod);
+
 
     @Override
     public void preset(double ti) {
-        Models.values().forEach(m -> m.preset(ti));
+        getModels().values().forEach(m -> m.preset(ti));
+        Scheduler.rescheduleAllAtoms();
     }
 
     @Override
     public void reset(double ti) {
-        Models.values().forEach(m -> m.reset(ti));
+        getModels().values().forEach(m -> m.reset(ti));
+        Scheduler.rescheduleAllAtoms();
     }
 
     @Override
     public List<Request> collectRequests() {
-        if (Scheduler.isWaitingForCollection()) {
-            findNext();
-            for (AbsSimModel m: Models.values()) {
-                try {
-                    m.collectRequests();
-                    Scheduler.appendLowerSchedule(m.getScheduler());
-                } catch (Exception ignored) {
+        Scheduler.findNext();
+        for (AbsSimModel m: getModels().values()) {
+            try {
+                m.collectRequests();
+                Scheduler.appendLowerSchedule(m.getScheduler());
+            } catch (Exception ignored) {
 
-                }
             }
-            Scheduler.collectionCompleted();
         }
         return Scheduler.getRequests();
     }
@@ -52,33 +73,36 @@ public abstract class BranchModel extends AbsSimModel {
     }
 
     @Override
+    public void synchroniseRequestTime(double time) {
+        Scheduler.setGloTime(time);
+        getModels().values().forEach(m->m.synchroniseRequestTime(time));
+    }
+
+    @Override
     public void fetchRequests(List<Request> requests) {
-        Scheduler.fetchRequest(requests);
+        Scheduler.fetchRequests(requests);
 
         Map<String, List<Request>> lower = Scheduler.popLowerRequests();
 
         for(Map.Entry<String, List<Request>> ent: lower.entrySet()) {
-            Models.get(ent.getKey()).fetchRequests(ent.getValue());
-        }
-        if (lower.size() > 0 | Scheduler.getRequests().size() > 0) {
-            Scheduler.validationCompleted();
+            getModel(ent.getKey()).fetchRequests(ent.getValue());
         }
     }
 
     @Override
     public void executeRequests() {
-        Models.values().forEach(AbsSimModel::executeRequests);
+        getModels().values().forEach(AbsSimModel::executeRequests);
 
-        if (Scheduler.isWaitingForExecution()) {
+        if (Scheduler.isExecutable()) {
             Scheduler.getRequests().forEach(this::doRequest);
-            Scheduler.executionCompleted();
+            Scheduler.toExecutionCompleted();
         }
     }
 
     @Override
     public List<Disclosure> collectDisclosure() {
         List<Disclosure> dss = Scheduler.popDisclosures();
-        for (AbsSimModel m: Models.values()) {
+        for (AbsSimModel m: getModels().values()) {
             dss.addAll(m.collectDisclosure().stream()
                     .map(d -> d.upScale(getName()))
                     .collect(Collectors.toList()));
@@ -92,9 +116,9 @@ public abstract class BranchModel extends AbsSimModel {
                 .filter(e -> e.getValue() != this)
                 .forEach(e -> triggerExternalImpulses(e.getKey(), e.getValue(), ti));
 
-        if (Scheduler.getDisclosures().isEmpty()) Scheduler.cycleCompleted();
+        if (Scheduler.getDisclosures().isEmpty()) Scheduler.toCycleCompleted();
 
-        for (Map.Entry<String, AbsSimModel> ent: Models.entrySet()) {
+        for (Map.Entry<String, AbsSimModel> ent: getModels().entrySet()) {
             Map<Disclosure, AbsSimModel> ds = new HashMap<>();
             for (Map.Entry<Disclosure, AbsSimModel> dm: ds_ms.entrySet()) {
                 if (dm.getKey().getGroup().equals(ent.getKey())) {
@@ -113,55 +137,32 @@ public abstract class BranchModel extends AbsSimModel {
 
     @Override
     public void exitCycle() {
-        Models.values().forEach(AbsSimModel::exitCycle);
+        getModels().values().forEach(AbsSimModel::exitCycle);
         super.exitCycle();
     }
 
     @Override
     public void initialiseObservations(double ti) {
-        Models.values().forEach(m->m.initialiseObservations(ti));
+        getModels().values().forEach(m->m.initialiseObservations(ti));
         super.initialiseObservations(ti);
     }
 
     @Override
     public void updateObservations(double ti) {
-        Models.values().forEach(m->m.updateObservations(ti));
+        getModels().values().forEach(m->m.updateObservations(ti));
         super.updateObservations(ti);
     }
 
     @Override
     public void captureMidTermObservations(double ti) {
-        Models.values().forEach(m->m.captureMidTermObservations(ti));
+        getModels().values().forEach(m->m.captureMidTermObservations(ti));
         super.captureMidTermObservations(ti);
     }
 
     @Override
     public void pushObservations(double ti) {
-        Models.values().forEach(m->m.pushObservations(ti));
+        getModels().values().forEach(m->m.pushObservations(ti));
         super.pushObservations(ti);
     }
 
-    public AbsSimModel select(String sel) {
-        try {
-            return Models.get(sel);
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
-
-    public Map<String, AbsSimModel> getModels() {
-        return Models;
-    }
-
-    public AbsSimModel getModel(String m) {
-        return Models.get(m);
-    }
-
-    public ModelSelector selectAll(String sel) {
-        return (new ModelSelector(Models)).select_all(sel);
-    }
-
-    public void append(AbsSimModel mod) {
-        Models.put(mod.getName(), mod);
-    }
 }

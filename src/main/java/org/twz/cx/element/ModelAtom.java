@@ -1,26 +1,34 @@
-package org.twz.cx.mcore;
+package org.twz.cx.element;
 
-import org.twz.cx.element.Event;
+import org.json.JSONObject;
+import org.twz.cx.mcore.AbsSimModel;
+import org.twz.dag.Gene;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public abstract class ModelAtom implements AdapterJSONObject {
+public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObject {
     private final String Name;
-    protected Map<String, Object> Parameters, Attributes;
-    protected Event Next;
+    protected Gene Parameters;
+    protected Map<String, Object> Attributes;
+    private Event Next;
+    private AbsScheduler Scheduler;
 
-    public ModelAtom(String name, Map<String, Object> parameters) {
+    public ModelAtom(String name, Gene parameters) {
         Name = name;
         Parameters = parameters;
         Attributes = new HashMap<>();
         Next = Event.NullEvent;
     }
 
+    public ModelAtom(String name, Map<String, Double> parameters) {
+        this(name, new Gene(parameters));
+    }
+
     public ModelAtom(String name) {
-        this(name, null);
+        this(name, new Gene());
     }
 
     public String getName() {
@@ -36,6 +44,18 @@ public abstract class ModelAtom implements AdapterJSONObject {
         }
     }
 
+    public double getParameter(String key) {
+        return Parameters.get(key);
+    }
+
+    public void setScheduler(AbsScheduler scheduler) {
+        Scheduler = scheduler;
+    }
+
+    public void detachScheduler() {
+        Scheduler = null;
+    }
+
     public void put(String key, Object value) {
         Attributes.put(key, value);
     }
@@ -45,20 +65,22 @@ public abstract class ModelAtom implements AdapterJSONObject {
     }
 
     public Event getNext() {
-        if (Next == Event.NullEvent) {
+        if (Next.isCancelled()) {
             Next = findNext();
         }
+        assert Next != null;
         return Next;
     }
 
     public double getTTE() {
-        return Next.getTime();
+        return getNext().getTime();
     }
 
     protected abstract Event findNext();
 
     public void dropNext() {
-        Next = Event.NullEvent;
+        Next.cancel();
+        Scheduler.await(this);
     }
 
     public void approveEvent(Event evt) {
@@ -81,7 +103,7 @@ public abstract class ModelAtom implements AdapterJSONObject {
 
     public boolean isCompatible(Map<String, Object> args) {
         for(Map.Entry<String, Object> ent: args.entrySet()) {
-            if (Attributes.get(ent.getKey()) == ent.getValue()) {
+            if (Attributes.get(ent.getKey()) != ent.getValue()) {
                 return false;
             }
         }
@@ -93,5 +115,18 @@ public abstract class ModelAtom implements AdapterJSONObject {
         dat.put("Name", Name);
         dat.putAll(Attributes);
         return dat;
+    }
+
+    @Override
+    public int compareTo(ModelAtom o) {
+        return Double.compare(getTTE(), o.getTTE());
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject js = new JSONObject();
+        js.put("Name", Name);
+        js.put("Attributes", new JSONObject(Attributes));
+        return js;
     }
 }

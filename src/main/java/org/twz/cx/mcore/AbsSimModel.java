@@ -2,11 +2,13 @@ package org.twz.cx.mcore;
 
 import org.json.JSONArray;
 import org.twz.cx.element.*;
+import org.twz.cx.mcore.communicator.IChecker;
+import org.twz.cx.mcore.communicator.IShocker;
+import org.twz.cx.mcore.communicator.ListenerSet;
+import org.twz.dag.Gene;
 import org.twz.io.AdapterJSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -14,26 +16,29 @@ import java.util.Map;
  */
 public abstract class AbsSimModel implements AdapterJSONObject{
     private final String Name;
-    protected final AbsObserver Obs;
+    protected final AbsObserver Observer;
     protected final IY0 ProtoY0;
-    protected final Schedule Scheduler;
-    private List<IEventListener> Listeners;
+    protected final AbsScheduler Scheduler;
+    private ListenerSet Listeners;
+    protected Gene Parameters;
     protected Map<String, Object> Environment;
     private double TimeEnd;
 
 
-    public AbsSimModel(String name, Map<String, Object> env, AbsObserver obs, IY0 protoY0) {
+    public AbsSimModel(String name, Gene pars, AbsObserver obs, IY0 protoY0) {
         Name = name;
-        Scheduler = new Schedule(name);
-        Obs = obs;
-        Environment = env;
-        Listeners = new ArrayList<>();
+        Observer = obs;
+        Parameters = pars;
+        Environment = new HashMap<>();
+        Listeners = new ListenerSet();
+
+        Scheduler = new PriorityQueueScheduler(name);
         ProtoY0 = protoY0;
         TimeEnd = Double.NaN;
     }
 
     public AbsObserver getObserver() {
-        return Obs;
+        return Observer;
     }
 
     public void initialise(double ti, JSONArray y0) {
@@ -58,7 +63,11 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Environment.get(s);
     }
 
-    Schedule getScheduler() {
+    public double getParameter(String key) {
+        return Parameters.get(key);
+    }
+
+    AbsScheduler getScheduler() {
         return Scheduler;
     }
 
@@ -74,32 +83,30 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         reset(ti);
     }
 
-    public abstract void reset(double ti);
+    public void reset(double ti) {
+        Scheduler.rescheduleAllAtoms();
+    };
 
     public abstract void readY0(IY0 y0, double ti);
 
     public abstract List<Request> collectRequests() throws Exception ;
 
-    public abstract void findNext();
-
-    public void request(Event evt, String who) {
-        Scheduler.appendRequestFromSource(evt, who);
-    }
-
     public abstract void doRequest(Request req);
 
     public abstract void validateRequests();
+
+    public abstract void synchroniseRequestTime(double time);
 
     public abstract void fetchRequests(List<Request> requests);
 
     public abstract void executeRequests();
 
     public void disclose(String msg, String who, Map<String, Object> args) {
-        Scheduler.appendDisclosureFromSource(msg, who, args);
+        Scheduler.appendDisclosure(msg, who, args);
     }
 
     public void disclose(String msg, String who) {
-        Scheduler.appendDisclosureFromSource(msg, who);
+        Scheduler.appendDisclosure(msg, who);
     }
 
     public abstract List<Disclosure> collectDisclosure();
@@ -114,58 +121,59 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         TimeEnd = timeEnd;
     }
 
-    public abstract void addListener(IEventListener listener);
+    public void addListener(IChecker impulse, IShocker response) {
+        Listeners.defineImpulseResponse(impulse, response);
+    }
 
-    public <E extends IY0> boolean triggerExternalImpulses(Disclosure dis, AbsSimModel model, double ti) {
-        boolean shocked = false;
+    public boolean triggerExternalImpulses(Disclosure dis, AbsSimModel model, double ti) {
+        return Listeners.applyShock(dis, model, this, ti);
+    }
 
-        for (IEventListener el: Listeners) {
-            boolean needs = el.needs(dis, this);
-            if (needs) {
-                el.applyShock(dis, model, this, ti);
-                shocked = true;
-            }
-        }
-        return shocked;
+    public abstract void shock(double time, Object action, String target, Object value);
+
+    public Set<IChecker> getAllImpulseCheckers() {
+        return Listeners.getAllCheckers();
     }
 
     public void exitCycle() {
-        if (! Scheduler.isWaitingForValidation()) {
-            Scheduler.collectionCompleted();
-        }
+        Scheduler.toCycleCompleted();
     }
 
     public void clearOutput() {
-        Obs.renew();
+        Observer.renew();
+    }
+
+    public void setObservationalInteval(double dt) {
+        Observer.setObservationalInteval(dt);
     }
 
     public void initialiseObservations(double ti) {
-        Obs.initialiseObservations(this, ti);
+        Observer.initialiseObservations(this, ti);
     }
 
     public void updateObservations(double ti) {
-        Obs.observeRoutinely(this, ti);
+        Observer.observeRoutinely(this, ti);
     }
 
     public void captureMidTermObservations(double ti) {
-        Obs.updateAtMidTerm(this, ti);
+        Observer.updateAtMidTerm(this, ti);
     }
 
     public void pushObservations(double ti) {
-        Obs.pushObservation(ti);
+        Observer.pushObservation(ti);
     }
 
     public Map<String, Double> getLastObservations() {
-        return Obs.getLast();
+        return Observer.getLast();
     }
 
     public List<Map<String, Double>> output() {
-        return Obs.getTimeSeries();
+        return Observer.getTimeSeries();
     }
 
     public abstract Double getSnapshot(String key, double ti);
 
     public void print() {
-        Obs.print();
+        Observer.print();
     }
 }

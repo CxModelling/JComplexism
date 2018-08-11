@@ -9,6 +9,7 @@ import org.twz.cx.mcore.AbsObserver;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafModel;
+import org.twz.dag.Gene;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,10 +22,19 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
     private Population<T> Population;
     private Map<String, AbsBehaviour> Behaviours;
 
-    public AbsAgentBasedModel(String name, Map<String, Object> env, Population<T> pop, AbsObserver<AbsSimModel> obs, IY0 protoY0) {
-        super(name, env, obs, protoY0);
+    public AbsAgentBasedModel(String name, Gene parameters, Population<T> pop, AbsObserver<AbsSimModel> obs, IY0 protoY0) {
+        super(name, parameters, obs, protoY0);
         this.Population = pop;
         Behaviours = new LinkedHashMap<>();
+    }
+
+    public AbsAgentBasedModel(String name, Map<String, Double> parameters, Population<T> pop, AbsObserver<AbsSimModel> obs, IY0 protoY0) {
+        this(name, new Gene(parameters), pop, obs, protoY0);
+    }
+
+    public void addBehaviour(AbsBehaviour be) {
+        Behaviours.put(be.getName(), be);
+        Scheduler.addAtom(be);
     }
 
     public void addNetwork(AbsNetwork net) {
@@ -37,6 +47,7 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
             for (AbsBehaviour be: Behaviours.values()) {
                 be.register(ag, ti);
             }
+            Scheduler.addAtom(ag);
         }
     }
 
@@ -48,6 +59,7 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
     public void preset(double ti) {
         Behaviours.values().forEach(be->be.initialise(ti, this));
         this.Population.getAgents().values().forEach(ag -> ag.initialise(ti, this));
+        super.preset(ti);
         disclose("initialise", "*");
     }
 
@@ -56,6 +68,7 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
     public void reset(double ti) {
         Behaviours.values().forEach(be->be.reset(ti, this));
         this.Population.getAgents().values().forEach(ag -> ag.reset(ti, this));
+        super.reset(ti);
         disclose("initialise", "*");
     }
 
@@ -63,7 +76,7 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
         return Behaviours.values().stream().filter(be -> be.checkEnterChange(ag)).collect(Collectors.toList());
     }
 
-    protected void imulseEnter(List<AbsBehaviour> bes, T ag, double ti) {
+    protected void impulseEnter(List<AbsBehaviour> bes, T ag, double ti) {
         bes.forEach(be-> be.impulseEnter(this, ag, ti));
     }
 
@@ -93,7 +106,6 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
                 bes.add(be);
             }
         }
-
         return bes;
     }
 
@@ -109,8 +121,8 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
             Behaviours.values().forEach(be->be.register(ag, ti));
             bes = checkEnter(ag);
             ag.initialise(ti, this);
-            imulseEnter(bes, ag, ti);
-            request(ag.getNext(), ag.getName());
+            impulseEnter(bes, ag, ti);
+            Scheduler.addAndScheduleAtom(ag);
             nBirth ++;
         }
         if (nBirth > 0) {
@@ -123,18 +135,13 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
         try {
             T ag = Population.get(id);
             List<AbsBehaviour> bes = checkExit(ag);
+            Scheduler.removeAtom(ag);
             Population.removeAgent(id);
             impulseExit(bes, ag, ti);
             disclose("remove agent " + id, ag.getName());
         } catch (NullPointerException ignored) {
 
         }
-    }
-
-    @Override
-    public void findNext() {
-        Behaviours.forEach((key, value) -> request(value.getNext(), key));
-        Population.getAgents().forEach((key, value) -> request(value.getNext(), key));
     }
 
     @Override
@@ -161,6 +168,16 @@ public abstract class AbsAgentBasedModel<T extends AbsAgent> extends LeafModel {
             } catch (NullPointerException ignored) {
 
             }
+        }
+    }
+
+    @Override
+    public void shock(double time, Object action, String target, Object value) {
+        try {
+            AbsBehaviour be = Behaviours.get(target);
+            be.shock(time, this, target, value);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 

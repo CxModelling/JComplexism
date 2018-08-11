@@ -1,10 +1,7 @@
 package org.twz.cx.abmodel;
 
-import org.twz.cx.element.Event;
-import org.twz.cx.element.Request;
-import org.twz.statespace.AbsDCore;
-import org.twz.statespace.Transition;
-import org.twz.cx.abmodel.behaviour.AbsBehaviour;
+
+import org.twz.dag.Gene;
 import org.twz.cx.mcore.*;
 import org.json.JSONObject;
 
@@ -18,7 +15,7 @@ import java.util.*;
 public class ABModel extends AbsAgentBasedModel {
 
 
-    public ABModel(String name, Map env, org.twz.cx.abmodel.Population pop, IY0 protoY0) {
+    public ABModel(String name, Gene env, org.twz.cx.abmodel.Population pop, IY0 protoY0) {
         super(name, env, pop, new ABMObserver(), protoY0);
     }
 
@@ -48,11 +45,6 @@ public class ABModel extends AbsAgentBasedModel {
 
     @Override
     public void validateRequests() {
-
-    }
-
-    @Override
-    public void addListener(IEventListener listener) {
 
     }
 

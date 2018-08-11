@@ -5,6 +5,7 @@ import org.twz.cx.abmodel.modifier.AbsModifier;
 import org.twz.cx.abmodel.modifier.ModifierSet;
 import org.twz.cx.element.Event;
 import org.twz.cx.mcore.AbsSimModel;
+import org.twz.dag.Gene;
 import org.twz.statespace.AbsDCore;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
@@ -17,7 +18,7 @@ public class StSpAgent extends AbsAgent {
     private Map<Transition, Double> Transitions;
     private ModifierSet Mods;
 
-    public StSpAgent(String name, Map<String, Object> pars, org.twz.statespace.State state) {
+    public StSpAgent(String name, Gene pars, org.twz.statespace.State state) {
         super(name, pars);
         State = state;
         Transitions = new HashMap<>();
@@ -83,8 +84,9 @@ public class StSpAgent extends AbsAgent {
 
     @Override
     public void executeEvent() {
-        if (Next != Event.NullEvent) {
-            State = State.exec((Transition) Next.getValue());
+        Event next = getNext();
+        if (!next.isCancelled()) {
+            State = State.exec((Transition) next.getValue());
         }
     }
 

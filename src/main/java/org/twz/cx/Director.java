@@ -1,5 +1,6 @@
 package org.twz.cx;
 
+import org.twz.dag.BayesNet;
 import org.twz.dag.SimulationCore;
 import org.twz.statespace.AbsDCore;
 import org.twz.statespace.DCoreFactory;
@@ -16,62 +17,77 @@ import org.twz.io.IO;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Logger;
 
 /**
  *
  * Created by TimeWz on 2017/6/16.
  */
 public class Director {
-    private Map<String, SimulationCore> PCores;
+    private Map<String, BayesNet> BNs;
     private Map<String, IBlueprintDCore> DCores;
     private Map<String, IMCoreBlueprint> MCores;
     private Map<String, ModelLayout> Layouts;
-
+    private Logger Log;
 
     public Director() {
-        PCores = new HashMap<>();
+        BNs = new HashMap<>();
         DCores = new HashMap<>();
         MCores = new HashMap<>();
         Layouts = new HashMap<>();
+        Log = Logger.getLogger("Main");
+        Log.addHandler(new ConsoleHandler());
     }
 
-    public void addPCore(SimulationCore pc) {
-        PCores.putIfAbsent(pc.getName(), pc);
+    public void addBayesNet(BayesNet bn) {
+        if (BNs.putIfAbsent(bn.getName(), bn) != null) {
+            Log.info("New BayesNet " + bn.getName() + " added");
+        }
+
     }
 
-    public void readPCore(String script) {
-
-            // todo
-            // addPCore(new SimulationCore(script));
-    }
-
-    public void loadPCore(String path) throws ScriptException {
-        if (path.endsWith(".json")) {
-            restorePCore(IO.loadJSON(path));
-        } else {
-            readPCore(IO.loadText(path));
+    public void readBayesNet(String script) {
+        try {
+            addBayesNet(BayesNet.buildFromScript(script));
+        } catch (ScriptException e) {
+            Log.warning("Invalidated script");
         }
     }
 
-    public void restorePCore(JSONObject js) throws ScriptException {
-        addPCore(new SimulationCore(js));
+    public void readBayesNet(JSONObject js) {
+        try {
+            addBayesNet(new BayesNet(js));
+        } catch (ScriptException e) {
+            Log.warning("Invalidated script");
+        }
     }
 
-    public void listPCores() {
-        System.out.println(PCores.keySet().toString());
+    public void loadBayesNet(String path) throws ScriptException {
+        if (path.endsWith(".json")) {
+            readBayesNet(IO.loadJSON(path));
+        } else {
+            readBayesNet(IO.loadText(path));
+        }
     }
 
-    public SimulationCore getPCore(String name) {
-        return PCores.get(name);
+    public void listBayesNets() {
+        System.out.println(BNs.keySet());
+    }
+
+    public BayesNet getBayesNet(String name) {
+        return BNs.get(name);
     }
 
     public void addDCore(IBlueprintDCore dc) {
-        DCores.putIfAbsent(dc.getName(), dc);
+        if(DCores.putIfAbsent(dc.getName(), dc)!=null) {
+            Log.info("New Dynamic Core " + dc.getName() + " added");
+        }
     }
 
     public void loadDCore(String path) {
         if (path.endsWith(".json")) {
-            restoreDCore(IO.loadJSON(path));
+            readDCore(IO.loadJSON(path));
         } else {
             readDCore(IO.loadText(path));
         }
@@ -81,11 +97,11 @@ public class Director {
         try {
             addDCore(DCoreFactory.createFromScripts(script));
         } catch (ScriptException e) {
-            e.printStackTrace();
+            Log.warning("Invalidated script");
         }
     }
 
-    public void restoreDCore(JSONObject js) {
+    public void readDCore(JSONObject js) {
         addDCore(DCoreFactory.createFromJSON(js));
     }
 
@@ -122,6 +138,12 @@ public class Director {
         return MCores.get(name);
     }
 
+    public BayesNet createBN(String name) {
+        BayesNet bn = new BayesNet(name);
+        addBayesNet(bn);
+        return bn;
+    }
+
     public BlueprintCTBN createCTBN(String name) {
         BlueprintCTBN bp = new BlueprintCTBN(name);
         addDCore(bp);
@@ -140,16 +162,12 @@ public class Director {
         return bp;
     }
 
-    public ParameterCore generatePCore(String pc) {
-        return getPCore(pc).generate(pc, null);
-    }
-
-    public ParameterCore generatePCore(String pc, Map<String, Double> cond) {
-        return getPCore(pc).generate(pc, cond);
+    public ParameterCore generatePCore(String name, String bn) {
+        return getBayesNet(bn).toSimulationCore().generate(name);
     }
 
     public AbsDCore generateDCore(String dc, String pc) {
-        return generateDCore(dc, generatePCore(pc));
+        return generateDCore(dc, generatePCore(dc, pc));
     }
 
     public AbsDCore generateDCore(String dc,ParameterCore pc) {

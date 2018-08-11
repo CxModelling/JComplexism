@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class Disclosure {
     public final String What, Who;
     public final LinkedList<String> Where;
-    private final HashMap<String, Object> Arguments;
+    private final Map<String, Object> Arguments;
 
     public Disclosure(String what, String who, LinkedList<String> where) {
         What = what;
@@ -27,12 +27,20 @@ public class Disclosure {
         Arguments = new HashMap<>();
     }
 
-    public void updatArguments(Map<String, Object> args) {
+    public void updateArguments(Map<String, Object> args) {
         Arguments.putAll(args);
     }
 
     public Object get(String key) {
         return Arguments.get(key);
+    }
+
+    public String getString(String key) {
+        return (String) Arguments.get(key);
+    }
+
+    public double getDouble(String key) {
+        return (double) Arguments.get(key);
     }
 
     public Object has(String key) {

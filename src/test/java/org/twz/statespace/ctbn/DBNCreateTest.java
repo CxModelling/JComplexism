@@ -1,10 +1,12 @@
+package org.twz.statespace.ctbn;
+
 import org.twz.dag.ScriptException;
 import org.twz.statespace.AbsDCore;
 import org.twz.statespace.State;
-import org.twz.statespace.ctbn.BlueprintCTBN;
 import org.twz.cx.Director;
-import junit.framework.TestCase;
 import org.json.JSONObject;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,14 +16,15 @@ import java.util.List;
  *
  * Created by TimeWz on 2017/6/16.
  */
-public class CTBNTest extends TestCase {
+public class DBNCreateTest {
 
+    @Test
     public void testBuildCTBN() {
         Director da = new Director();
 
 
         try {
-            da.loadPCore("src/test/resources/script/pSIR.txt");
+            da.loadBayesNet("src/test/resources/script/pSIR.txt");
         } catch (ScriptException e) {
             e.printStackTrace();
         }
@@ -59,15 +62,16 @@ public class CTBNTest extends TestCase {
         System.out.println(bp.toJSON());
     }
 
+    @Test
     public void testLoadCTBN() {
         Director da = new Director();
 
         try {
-            da.loadPCore("test/resources/script/pSIR.txt");
+            da.loadBayesNet("src/test/resources/script/pSIR.txt");
         } catch (ScriptException e) {
             e.printStackTrace();
         }
-        da.loadDCore("test/resources/script/SIR_BN.txt");
+        da.loadDCore("src/test/resources/script/SIR_BN.txt");
 
         AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
         State st = mod.getState("Sus");
@@ -82,16 +86,17 @@ public class CTBNTest extends TestCase {
 
     }
 
+    @Test
     public void testJosnifyCTBN() throws ScriptException {
         Director da = new Director();
 
-        da.loadPCore("script/pSIR.txt");
-        da.loadDCore("script/SIR_BN.txt");
+        da.loadBayesNet("src/test/resources/script/pSIR.txt");
+        da.loadDCore("src/test/resources/script/SIR_BN.txt");
 
         AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
         JSONObject js = mod.toJSON();
         js.put("ModelName", "SIR_bn_Copy");
-        da.restoreDCore(js);
+        da.readDCore(js);
 
         mod = da.generateDCore("SIR_bn_Copy", "pSIR");
         State st = mod.getState("Sus");

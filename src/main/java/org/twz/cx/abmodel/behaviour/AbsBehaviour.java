@@ -2,6 +2,7 @@ package org.twz.cx.abmodel.behaviour;
 
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.element.Event;
+import org.twz.cx.element.ModelAtom;
 import org.twz.cx.mcore.*;
 import org.twz.cx.abmodel.behaviour.trigger.Trigger;
 

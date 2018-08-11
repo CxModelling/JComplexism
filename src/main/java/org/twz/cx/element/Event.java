@@ -10,7 +10,7 @@ public class Event {
 
     private final Object Value;
     private final String Message;
-    private final double Time;
+    private double Time;
 
     public Event(Object val, String msg, double time) {
         Value = val;
@@ -32,6 +32,14 @@ public class Event {
 
     public double getTime() {
         return Time;
+    }
+
+    public void cancel() {
+        Time = Double.POSITIVE_INFINITY;
+    }
+
+    public boolean isCancelled() {
+        return Double.isInfinite(Time);
     }
 
     @Override

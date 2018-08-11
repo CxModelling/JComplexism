@@ -8,6 +8,8 @@ import org.twz.graph.DiGraph;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -214,5 +216,36 @@ public class BayesNet implements AdapterJSONObject {
 
         System.out.println("Roots:"+ DAG.getRoots());
         System.out.println("Leaves:"+ DAG.getLeaves());
+    }
+
+
+    public static BayesNet buildFromScript(String script) throws ScriptException {
+        BayesNet bn;
+
+        String[] row_lines = script.split("\n");
+
+        String pattern = "\\s*PCore\\s+(\\w+)\\s*\\{";
+
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(row_lines[0]);
+
+
+        if (m.find( )) {
+            bn = new BayesNet(m.group(1));
+        } else {
+            throw new ScriptException("Illegal script");
+        }
+
+
+        String line;
+        for (int i = 1; i < row_lines.length; i++) {
+            line = row_lines[i].replaceAll("\\s+", "");
+            line = line.replaceAll("#\\w*", "");
+            if (line.startsWith("}")) {
+                break;
+            }
+            bn.appendLoci(line);
+        }
+        return bn;
     }
 }
