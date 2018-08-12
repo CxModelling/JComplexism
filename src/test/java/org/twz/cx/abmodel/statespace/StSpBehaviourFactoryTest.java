@@ -5,8 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
-
-import org.twz.dag.ParameterCore;
 import org.twz.statespace.AbsDCore;
 
 import static org.junit.Assert.*;
@@ -23,8 +21,8 @@ public class StSpBehaviourFactoryTest {
 
         DC = Da.generateDCore("BAD", "pBAD");
 
-        StSpBehaviourFactory.appendResouce("States", DC.getStateSpace());
-        StSpBehaviourFactory.appendResouce("Transitions", DC.getTransitionSpace());
+        StSpBehaviourFactory.appendResource("States", DC.getStateSpace());
+        StSpBehaviourFactory.appendResource("Transitions", DC.getTransitionSpace());
     }
 
     @Test
@@ -40,6 +38,6 @@ public class StSpBehaviourFactoryTest {
         JSONObject js = new JSONObject("{'Name': 'foi', 'Type': 'FDShock', " +
                 "'Args': {'s_src': 'Middle', 't_tar': 'Die'}}");
         AbsBehaviour Be = StSpBehaviourFactory.create(js);
-        System.out.println(Be.toString());
+        System.out.println(Be.toJSON());
     }
 }

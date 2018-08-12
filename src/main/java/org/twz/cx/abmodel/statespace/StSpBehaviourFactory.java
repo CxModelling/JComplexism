@@ -31,7 +31,7 @@ public class StSpBehaviourFactory {
 
     }
 
-    public static void appendResouce(String key, Object res) {
+    public static void appendResource(String key, Object res) {
         Factory.appendResource(key, res);
     }
 

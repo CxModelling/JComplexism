@@ -117,7 +117,14 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
 
     @Override
     public String[] getRequiredDistributions() {
-        return (String[]) TransitionBy.values().toArray();
+        String[] res = new String[TransitionBy.size()];
+        List<String> list = new ArrayList<>(TransitionBy.values());
+
+        for (int i = 0; i < list.size(); i++) {
+            res[i] = list.get(i);
+        }
+
+        return res;
     }
 
     @Override

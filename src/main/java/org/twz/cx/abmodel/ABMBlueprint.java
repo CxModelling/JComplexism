@@ -1,6 +1,11 @@
 package org.twz.cx.abmodel;
 
+import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IMCoreBlueprint;
+import org.twz.dag.util.NodeGroup;
+import org.twz.statespace.IBlueprintDCore;
+
+import java.util.Map;
 
 /**
  *
@@ -27,5 +32,20 @@ public class ABMBlueprint implements IMCoreBlueprint{
 
     public String getTargetDCore() {
         return TargetDCore;
+    }
+
+    @Override
+    public AbsSimModel generate(String name, Map args) {
+        return null;
+    }
+
+    @Override
+    public NodeGroup getParameterHierarchy(IBlueprintDCore dc) {
+        return null;
+    }
+
+    @Override
+    public AbsSimModel generate(String name) {
+        return null;
     }
 }
