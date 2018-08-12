@@ -27,6 +27,7 @@ public class Simulator {
         Record = rec;
 
         Log = Logger.getLogger(model.getName());
+        Log.setUseParentHandlers(false);
         LazyModels = new HashMap<>();
     }
 
@@ -102,9 +103,8 @@ public class Simulator {
                 dealWithDisclosures(tx, rs);
             } catch (Exception e) {
                 dealWithDisclosures(tx, null);
-            } finally {
-                Model.exitCycle();
             }
+            Model.exitCycle();
         }
         Model.exitCycle();
         Time = end;

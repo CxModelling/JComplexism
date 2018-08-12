@@ -1,9 +1,6 @@
 package org.twz.cx.element;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ArrayListScheduler extends AbsScheduler {
     private List<ModelAtom> Atoms;
@@ -16,50 +13,59 @@ public class ArrayListScheduler extends AbsScheduler {
     }
 
     @Override
-    protected void join(ModelAtom atom) {
+    protected void joinScheduler(ModelAtom atom) {
         Atoms.add(atom);
         Waiting.add(atom);
     }
 
     @Override
-    protected void await(ModelAtom atom) {
-        Waiting.add(atom);
-    }
-
-    @Override
-    protected void requeue(ModelAtom atom) {
-        Event event = atom.getNext();
-        double time = event.getTime();
-        if (time < OwnTime) {
-            AtomRequests.clear();
-            AtomRequests.put(atom, new Request(event, atom.getName(), Location));
-        } else if (time == OwnTime) {
-            AtomRequests.put(atom, new Request(event, atom.getName(), Location));
-        }
-        Waiting.remove(atom);
-    }
-
-    @Override
-    protected void leaveQueue(ModelAtom atom) {
-        AtomRequests.remove(atom);
-        if (AtomRequests.isEmpty()) OwnTime = Double.POSITIVE_INFINITY;
+    protected void leaveScheduler(ModelAtom atom) {
         Atoms.remove(atom);
         Waiting.remove(atom);
+        popFromComing(atom);
+    }
+
+    @Override
+    protected void await(ModelAtom atom) {
+        Waiting.add(atom);
+        popFromComing(atom);
     }
 
     @Override
     public void rescheduleAllAtoms() {
-        AtomRequests.clear();
-        
+        Coming.clear();
+        OwnTime = Double.POSITIVE_INFINITY;
+        rescheduleSet(Atoms);
+        Waiting.clear();
     }
 
     @Override
     public void rescheduleWaitingAtoms() {
-
+        if (Coming.isEmpty()) {
+            rescheduleAllAtoms();
+        } else {
+            rescheduleSet(Waiting);
+            Waiting.clear();
+        }
     }
 
     @Override
-    public void extractNext() {
+    public void findComingAtoms() {
+        if (Coming.isEmpty()) {
+            rescheduleAllAtoms();
+        }
+    }
 
+    private void rescheduleSet(Collection<ModelAtom> atoms) {
+        for (ModelAtom atom: atoms) {
+            Event event = atom.getNext();
+            if (event.getTime() < OwnTime) {
+                Coming.clear();
+                Coming.add(atom);
+                OwnTime = event.getTime();
+            } else if (event.getTime() == OwnTime) {
+                Coming.add(atom);
+            }
+        }
     }
 }

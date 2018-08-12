@@ -141,7 +141,7 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         StringBuilder sb = new StringBuilder();
         sb.append("Time");
 
-        TimeSeries.get(0).keySet().stream().filter(key -> !Objects.equals(key, "Time"))
+        TimeSeries.get(TimeSeries.size()-1).keySet().stream().filter(key -> !Objects.equals(key, "Time"))
                 .forEach(key -> sb.append("\t").append(key));
 
         for (Map<String, Double> data: TimeSeries) {

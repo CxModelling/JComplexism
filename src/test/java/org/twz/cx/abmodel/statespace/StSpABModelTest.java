@@ -45,12 +45,12 @@ public class StSpABModelTest {
     @Test
     public void simulation() {
         Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("DzAB.txt");
+        //Simu.addLogPath("DzAB.txt");
         Y0 = new StSpY0();
         Y0.append(200, "ab");
 
 
         Simu.simulate(Y0, 0, 10, 1);
-        Model.print();
+        System.out.println(Model.getObserver().getObservations().toJSON());
     }
 }

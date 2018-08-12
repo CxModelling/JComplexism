@@ -5,12 +5,17 @@ import java.util.stream.Collectors;
 
 public abstract class AbsScheduler {
 
+
     protected String Location;
 
-    protected double GloTime, OwnTime;
-    protected List<Request> Requests;
+    protected double OwnTime;
+    private double GloTime;
+
+    protected Set<ModelAtom> Coming;
+    private Map<ModelAtom, Request> AtomRequests;
+    private List<Request> Requests;
     private List<Disclosure> Disclosures;
-    protected Map<ModelAtom, Request> AtomRequests;
+
     private int NumAtoms;
 
     public AbsScheduler(String location) {
@@ -18,15 +23,11 @@ public abstract class AbsScheduler {
         Requests = new ArrayList<>();
         Disclosures = new ArrayList<>();
         AtomRequests = new HashMap<>();
+        Coming = new HashSet<>();
+
         GloTime = Double.POSITIVE_INFINITY;
         OwnTime = Double.POSITIVE_INFINITY;
         NumAtoms = 0;
-    }
-
-    public void addAtom(ModelAtom atom) {
-        join(atom);
-        atom.setScheduler(this);
-        NumAtoms += 1;
     }
 
     public List<Request> getRequests() {
@@ -45,73 +46,75 @@ public abstract class AbsScheduler {
         GloTime = gloTime;
     }
 
-    protected abstract void join(ModelAtom atom);
-
-    protected abstract void await(ModelAtom atom);
-
-    public void rescheduleAtom(ModelAtom atom) {
-        requeue(atom);
-        if (atom.getTTE() < OwnTime) putBackCurrentRequests();
+    public void addAtom(ModelAtom atom) {
+        joinScheduler(atom);
+        atom.setScheduler(this);
+        NumAtoms += 1;
     }
 
-    protected abstract void requeue(ModelAtom atom);
+    protected abstract void joinScheduler(ModelAtom atom);
 
-    protected abstract void leaveQueue(ModelAtom atom);
+    protected abstract void leaveScheduler(ModelAtom atom);
 
     public void removeAtom(ModelAtom atom) {
         atom.dropNext();
         atom.detachScheduler();
-        leaveQueue(atom);
+        leaveScheduler(atom);
+        popFromComing(atom);
+
         NumAtoms -= 1;
     }
 
+    protected abstract void await(ModelAtom atom);
+
     public void addAndScheduleAtom(ModelAtom atom) {
         addAtom(atom);
-        rescheduleAtom(atom);
+        await(atom);
     }
 
     public abstract void rescheduleAllAtoms();
 
     public abstract void rescheduleWaitingAtoms();
 
-    public abstract void extractNext();
+    public abstract void findComingAtoms();
 
-    private void putBackCurrentRequests() {
-        for (ModelAtom atom : AtomRequests.keySet()) {
-            rescheduleAtom(atom);
+    public void extractCurrentRequests() {
+        for (ModelAtom atom : Coming) {
+            Event event = atom.getNext();
+            AtomRequests.put(atom, new Request(event, atom.getName(), Location));
         }
-        AtomRequests = new HashMap<>();
-        OwnTime = Double.POSITIVE_INFINITY;
     }
 
-    public int size() {
-        return Requests.size() + Disclosures.size();
+    protected void popFromComing(ModelAtom atom) {
+        Coming.remove(atom);
+        if (Coming.isEmpty()) OwnTime = Double.POSITIVE_INFINITY;
+    }
+
+    private void checkCurrentRequests() {
+        if (Coming.isEmpty() || !Coming.containsAll(AtomRequests.keySet())) {
+            findComingAtoms();
+            AtomRequests.clear();
+        }
+
+        if (AtomRequests.isEmpty()) {
+            extractCurrentRequests();
+        }
     }
 
     public void findNext() {
         rescheduleWaitingAtoms();
-        if (AtomRequests.isEmpty()) {
-            extractNext();
-        }
+        checkCurrentRequests();
         Requests = new ArrayList<>(AtomRequests.values());
-        if (OwnTime < GloTime) GloTime = OwnTime;
+        if (OwnTime < GloTime) {
+            GloTime = OwnTime;
+        }
     }
 
-    public void appendDisclosure(Disclosure dis) {
-        Disclosures.add(dis);
+    public boolean isExecutable() {
+        return GloTime == OwnTime;
     }
 
-    public void appendDisclosure(String msg, String who) {
-        Disclosures.add(new Disclosure(msg, who, Location));
-    }
-
-    public void appendDisclosure(String msg, String who, Map<String, Object> kw) {
-        Disclosure dis = new Disclosure(msg, who, Location);
-        dis.updateArguments(kw);
-        Disclosures.add(dis);
-    }
-
-    public List<Request> upScaleRequests(String loc) {
+    private List<Request> upScaleRequests(String loc) {
         return Requests.stream().map(req->req.upScale(loc)).collect(Collectors.toList());
     }
 
@@ -128,10 +131,9 @@ public abstract class AbsScheduler {
     }
 
     public void fetchRequests(List<Request> requests) {
-        Requests.stream().filter(req->!requests.contains(req)).forEach(req->req.Todo.cancel());
         Requests = requests;
     }
-    
+
     public Map<String, List<Request>> popLowerRequests() {
         Iterator<Request> it = Requests.iterator();
         Map<String, List<Request>> lower = new HashMap<>();
@@ -151,8 +153,22 @@ public abstract class AbsScheduler {
         return lower;
     }
 
-    public boolean isExecutable() {
-        return GloTime == OwnTime;
+    public int size() {
+        return Requests.size() + Disclosures.size();
+    }
+
+    public void appendDisclosure(Disclosure dis) {
+        Disclosures.add(dis);
+    }
+
+    public void appendDisclosure(String msg, String who) {
+        Disclosures.add(new Disclosure(msg, who, Location));
+    }
+
+    public void appendDisclosure(String msg, String who, Map<String, Object> kw) {
+        Disclosure dis = new Disclosure(msg, who, Location);
+        dis.updateArguments(kw);
+        Disclosures.add(dis);
     }
 
     public List<Disclosure> popDisclosures() {
@@ -168,12 +184,14 @@ public abstract class AbsScheduler {
     public void toExecutionCompleted() {
         Requests.clear();
         AtomRequests.clear();
+        Coming.clear();
         OwnTime = Double.POSITIVE_INFINITY;
     }
 
     public void toCycleCompleted() {
+        Requests.clear();
         Disclosures.clear();
-        GloTime = OwnTime;
+        GloTime = Double.POSITIVE_INFINITY;
     }
 
     @Override

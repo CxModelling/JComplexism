@@ -1,6 +1,7 @@
 package org.twz.dataframe;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.twz.io.IO;
 import org.twz.io.AdapterJSONArray;
 
@@ -19,10 +20,13 @@ public class DataFrame implements AdapterJSONArray {
         Key = key;
         Data = new LinkedHashMap<>();
 
-        List<String> cols = new ArrayList<>(dat.get(0).keySet());
+        List<String> cols = new ArrayList<>();
+        dat.forEach(d->d.keySet().stream().filter(c->!cols.contains(c)).forEach(cols::add));
+
         Data.put(Key, dat.stream().map(e->e.get(Key)).collect(Collectors.toList()));
         cols.stream().filter(col -> !col.equals(Key))
-                     .forEach(col -> Data.put(col, dat.stream().map(e -> e.get(col))
+                     .forEach(col -> Data.put(col, dat.stream()
+                             .map(e -> e.getOrDefault(col, 0.0))
                      .collect(Collectors.toList())));
     }
 
@@ -48,10 +52,14 @@ public class DataFrame implements AdapterJSONArray {
         JSONArray js = new JSONArray();
         int size = Data.get(Key).size();
 
+
+        JSONObject temp;
         for (int i=0; i < size; i++) {
-            int finalI = i;
-            js.put(Data.entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, e->e.getValue().get(finalI))));
+            temp = new JSONObject();
+            for (Map.Entry<String, List<Double>> entry : Data.entrySet()) {
+                temp.put(entry.getKey(), entry.getValue().get(i));
+            }
+            js.put(temp);
         }
         return js;
     }

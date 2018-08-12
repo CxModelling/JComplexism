@@ -16,50 +16,51 @@ public class PriorityQueueScheduler extends AbsScheduler {
     }
 
     @Override
-    protected void join(ModelAtom atom) {
+    protected void joinScheduler(ModelAtom atom) {
         AtomWaiting.add(atom);
+    }
+
+    @Override
+    protected void leaveScheduler(ModelAtom atom) {
+        AtomQueue.remove(atom);
+        AtomWaiting.remove(atom);
     }
 
     @Override
     protected void await(ModelAtom atom) {
-        AtomWaiting.add(atom);
-    }
-
-    @Override
-    protected void leaveQueue(ModelAtom atom) {
         AtomQueue.remove(atom);
-        AtomWaiting.remove(atom);
-        AtomRequests.remove(atom);
-    }
-
-    @Override
-    protected void requeue(ModelAtom atom) {
-        AtomQueue.add(atom);
-        AtomWaiting.remove(atom);
+        AtomWaiting.add(atom);
+        popFromComing(atom);
     }
 
     @Override
     public void rescheduleAllAtoms() {
         AtomQueue = new PriorityQueue<>(AtomQueue);
         AtomQueue.addAll(AtomWaiting);
-    }
-
-    @Override
-    public void rescheduleWaitingAtoms() {
-        AtomWaiting.forEach(this::rescheduleAtom);
         AtomWaiting.clear();
     }
 
     @Override
-    public void extractNext() {
+    public void rescheduleWaitingAtoms() {
+        AtomQueue.addAll(AtomWaiting);
+        AtomWaiting.clear();
+    }
+
+    @Override
+    public void findComingAtoms() {
+        OwnTime = AtomQueue.peek().getTTE();
+        if (Double.isInfinite(OwnTime)) return;
+
         while (!AtomQueue.isEmpty()) {
-            if (AtomQueue.peek().getTTE() <= OwnTime) {
+            double tte = AtomQueue.peek().getTTE();
+            if (tte == OwnTime) {
                 ModelAtom atom = AtomQueue.remove();
                 Event event = atom.getNext();
-                AtomRequests.put(atom, new Request(event, atom.getName(), Location));
                 OwnTime = event.getTime();
-                await(atom);
-            } else {
+                AtomQueue.remove(atom);
+                AtomWaiting.add(atom);
+            } else if (tte > OwnTime) {
+                System.out.println("Error"); // todo
                 return;
             }
         }
