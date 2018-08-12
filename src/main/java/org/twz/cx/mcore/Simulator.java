@@ -56,8 +56,8 @@ public class Simulator {
         try {
             Path fileToDeletePath = Paths.get(pat);
             Files.delete(fileToDeletePath);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
+
         }
 
         try {

@@ -13,8 +13,7 @@ import org.twz.statespace.AbsDCore;
 
 import static org.junit.Assert.*;
 
-public class FDShockTest {
-
+public class ReincarnationTest {
     private Director Da;
     private StSpABModel Model;
     private AbsDCore DC;
@@ -24,34 +23,32 @@ public class FDShockTest {
     @Before
     public void setUp() {
         Da = new Director();
-        Da.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
-        Da.loadDCore("src/test/resources/script/CloseSIR.txt");
+        Da.loadBayesNet("src/test/resources/script/pBAD.txt");
+        Da.loadDCore("src/test/resources/script/BAD.txt");
 
         NodeGroup NG = new NodeGroup("root", new String[0]);
-        NG.appendChildren(new NodeGroup("agent", new String[]{"beta", "gamma"}));
-        PC = Da.getBayesNet("pCloseSIR").toSimulationCore(NG, true).generate("Test");
-        DC = Da.generateDCore("CloseSIR", PC.genPrototype("agent"));
+        NG.appendChildren(new NodeGroup("agent", new String[]{"ToM", "ToO", "Die"}));
+        PC = Da.getBayesNet("pBAD").toSimulationCore(NG, true).generate("Test");
+        DC = Da.generateDCore("BAD", PC.genPrototype("agent"));
 
 
         StSpPopulation Pop = new StSpPopulation("Ag", "agent", DC, PC);
         Model = new StSpABModel("Test", PC, Pop);
-        Model.addBehaviour(new FDShock("FOI", DC.getState("Inf"), DC.getTransition("Infect")));
+        Model.addBehaviour(new Reincarnation("Life", DC.getState("Dead"), DC.getState("Young")));
 
-        Model.addObservingState("Sus");
-        Model.addObservingState("Inf");
-        Model.addObservingState("Rec");
-        Model.addObservingTransition("Infect");
-        Model.addObservingBehaviour("FOI");
+        Model.addObservingState("Alive");
+        Model.addObservingBehaviour("Life");
 
     }
 
     @Test
     public void simulation() {
         Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("FDShock.txt");
+        Simu.addLogPath("log/Reincarnation.txt");
         Y0 = new StSpY0();
-        Y0.append(950, "Sus");
-        Y0.append(50, "Inf");
+        Y0.append(50, "Young");
+        Y0.append(50, "Middle");
+        Y0.append(50, "Old");
 
         Simu.simulate(Y0, 0, 10, 1);
         Model.getObserver().getObservations().print();

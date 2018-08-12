@@ -25,7 +25,14 @@ public class StSpBreeder extends AbsBreeder<StSpAgent> {
     }
 
     protected StSpAgent newAgent(String name, Gene pars, Map<String, Object> attributes) {
-        State st = WellDefined.get(attributes.get("st"));
+        Object st_def = attributes.get("st");
+        State st;
+        if (st_def instanceof State) {
+            st = (State) st_def;
+        } else {
+            st = WellDefined.get(st_def);
+        }
+
         StSpAgent ag = new StSpAgent(name, pars, st);
         attributes.entrySet().stream().filter(a -> !"st".equals(a.getKey())).forEach(a->ag.put(a.getKey(), a.getValue()));
         return ag;

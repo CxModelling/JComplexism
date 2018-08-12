@@ -112,7 +112,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
     }
 
     protected void impulseChange(List<AbsBehaviour> bes, Ta ag, double ti) {
-        bes.forEach(be-> be.impulseExit(this, ag, ti));
+        bes.forEach(be-> be.impulseChange(this, ag, ti));
     }
 
     public List<Ta> birth(int n, double ti, Map<String, Object> attributes) {
