@@ -35,6 +35,8 @@ public class PriorityQueueScheduler extends AbsScheduler {
 
     @Override
     public void rescheduleAllAtoms() {
+        Coming.clear();
+        OwnTime = Double.POSITIVE_INFINITY;
         AtomQueue = new PriorityQueue<>(AtomQueue);
         AtomQueue.addAll(AtomWaiting);
         AtomWaiting.clear();
@@ -51,13 +53,15 @@ public class PriorityQueueScheduler extends AbsScheduler {
         OwnTime = AtomQueue.peek().getTTE();
         if (Double.isInfinite(OwnTime)) return;
 
+        Coming.clear();
         while (!AtomQueue.isEmpty()) {
             double tte = AtomQueue.peek().getTTE();
             if (tte == OwnTime) {
-                ModelAtom atom = AtomQueue.remove();
+                ModelAtom atom = AtomQueue.poll();
                 Event event = atom.getNext();
+                Coming.add(atom);
                 OwnTime = event.getTime();
-                AtomQueue.remove(atom);
+                //AtomQueue.remove(atom);
                 AtomWaiting.add(atom);
             } else if (tte > OwnTime) {
                 System.out.println("Error"); // todo

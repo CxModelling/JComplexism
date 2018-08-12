@@ -32,7 +32,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         Environment = new HashMap<>();
         Listeners = new ListenerSet();
 
-        Scheduler = new ArrayListScheduler(name);
+        Scheduler = new PriorityQueueScheduler(name);
         ProtoY0 = protoY0;
         TimeEnd = Double.NaN;
     }
