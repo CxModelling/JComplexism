@@ -146,7 +146,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
     }
 
     public void setObservationalInteval(double dt) {
-        Observer.setObservationalInteval(dt);
+        Observer.setObservationalInterval(dt);
     }
 
     public void initialiseObservations(double ti) {

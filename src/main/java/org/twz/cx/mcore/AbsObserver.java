@@ -23,8 +23,9 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         Mid = new LinkedHashMap<>();
     }
 
-    public void setObservationalInteval(double odt) {
-        if (odt > 0) ObservationalInterval = odt;
+    public void setObservationalInterval(double odt) {
+        assert odt > 0;
+        ObservationalInterval = odt;
     }
 
     public void setExactMid(boolean ex) {
@@ -57,6 +58,11 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
     public void initialiseObservations(T model, double ti) {
         renew();
         clearFlows();
+        Last.put("Time", ti);
+        if (ExactMid) {
+            Mid = new LinkedHashMap<>();
+            Mid.put("Time", ti);
+        }
         readStatics(model, Last, ti);
     }
 

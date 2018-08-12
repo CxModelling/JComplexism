@@ -39,10 +39,9 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
 
     @Override
     protected void readStatics(StSpABModel model, Map<String, Double> tab, double ti) {
-        Map<String, Object> option = new HashMap<>();
+        //Map<String, Object> option = new HashMap<>();
         for (State st: ObsStates) {
-            option.put("st", st);
-            tab.put(st.getName(), 0.0 + model.getPopulation().count(option));
+            tab.put(st.getName(), 0.0 + model.getPopulation().count("st", st));
         }
         for (AbsBehaviour be: ObsBehaviours) {
             be.fillData(tab, model, ti);

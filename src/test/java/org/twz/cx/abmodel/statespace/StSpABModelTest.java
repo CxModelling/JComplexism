@@ -51,6 +51,6 @@ public class StSpABModelTest {
 
 
         Simu.simulate(Y0, 0, 10, 1);
-        System.out.println(Model.getObserver().getObservations().toJSON());
+        System.out.println(Model.getObserver().getObservations().toJSON().toString(2));
     }
 }
