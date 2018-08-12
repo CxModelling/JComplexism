@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.behaviour;
 
+import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.element.Event;
 import org.twz.cx.element.ModelAtom;
@@ -55,4 +56,15 @@ public abstract class AbsBehaviour extends ModelAtom {
     public abstract void fillData(Map<String, Double> obs, AbsSimModel model, double ti);
 
     public abstract void match(AbsBehaviour be_src, Map<String, AbsAgent> ags_src, Map<String, AbsAgent> ags_new, double ti);
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject js = new JSONObject();
+        js.put("Name", getName());
+        js.put("Type", getClass().getSimpleName());
+        js.put("Args", getArgumentJSON());
+        return js;
+    }
+
+    protected abstract JSONObject getArgumentJSON();
 }

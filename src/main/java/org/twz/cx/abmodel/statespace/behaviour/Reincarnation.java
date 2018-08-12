@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace.behaviour;
 
+import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
@@ -75,5 +76,13 @@ public class Reincarnation extends PassiveBehaviour {
     @Override
     public String toString() {
         return String.format("Reincarnation(%s, Death:%s, Birth:%s, NBir:%s)", getName(), S_death.getName(), S_birth.getName(), BirthN);
+    }
+
+    @Override
+    protected JSONObject getArgumentJSON() {
+        JSONObject js = new JSONObject();
+        js.put("s_death", S_death.getName());
+        js.put("s_birth", S_birth.getName());
+        return js;
     }
 }

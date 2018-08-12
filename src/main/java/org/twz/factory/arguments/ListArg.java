@@ -28,9 +28,9 @@ public class ListArg extends AbsArgument{
     public Class getType() {
         switch (Type) {
             case "Double":
-                return List.class;
+                return Double.class;
             case "String":
-                return List.class;
+                return String.class;
             default:
                 return List.class;
         }

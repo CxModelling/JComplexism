@@ -34,6 +34,7 @@ public class ReincarnationTest {
 
         StSpPopulation Pop = new StSpPopulation("Ag", "agent", DC, PC);
         Model = new StSpABModel("Test", PC, Pop);
+
         Model.addBehaviour(new Reincarnation("Life", DC.getState("Dead"), DC.getState("Young")));
 
         Model.addObservingState("Alive");

@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace.behaviour;
 
+import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.abmodel.behaviour.PassiveBehaviour;
@@ -56,6 +57,13 @@ public class StateTrack extends PassiveBehaviour {
     @Override
     public void match(AbsBehaviour be_src, Map<String, AbsAgent> ags_src, Map<String, AbsAgent> ags_new, double ti) {
         Value = ((StateTrack)be_src).Value;
+    }
+
+    @Override
+    protected JSONObject getArgumentJSON() {
+        JSONObject js = new JSONObject();
+        js.put("s_src", S_src.getName());
+        return js;
     }
 
     @Override

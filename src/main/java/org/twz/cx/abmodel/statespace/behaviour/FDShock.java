@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace.behaviour;
 
+import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.abmodel.statespace.StSpABModel;
@@ -54,6 +55,14 @@ public class FDShock extends PassiveModBehaviour {
         Value = ((FDShock)be_src).Value;
         ags_new.values().forEach(ag->register(ag, ti));
 
+    }
+
+    @Override
+    protected JSONObject getArgumentJSON() {
+        JSONObject js = new JSONObject();
+        js.put("s_src", S_src.getName());
+        js.put("t_tar", T_tar.getName());
+        return js;
     }
 
     @Override
