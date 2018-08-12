@@ -1,0 +1,5 @@
+PCore pDzAB {
+    ToA ~ exp(0.1)
+    ToB ~ exp(0.05)
+    ToB_A ~ exp(0.2)
+}

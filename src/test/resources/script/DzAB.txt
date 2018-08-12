@@ -1,0 +1,20 @@
+CTBN DzAB {
+
+DzA[Yes | No]
+DzB[Yes | No]
+
+ab{DzA:No, DzB:No}
+Ab{DzA:Yes, DzB:No}
+aB{DzA:No, DzB:Yes}
+AB{DzA:Yes, DzB: Yes}
+
+a{DzA:No}
+b{DzB:No}
+A{DzA:Yes}
+B{DzB:Yes}
+
+a -- ToA -> A
+b -- ToB -> B
+Ab -- ToB_A -> B
+
+}

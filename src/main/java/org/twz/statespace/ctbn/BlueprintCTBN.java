@@ -1,5 +1,6 @@
 package org.twz.statespace.ctbn;
 
+import org.twz.dag.actor.Sampler;
 import org.twz.statespace.IBlueprintDCore;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
@@ -201,10 +202,13 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
 
         Map<State, List<State>> sub = makeSubsets(stm, sts, sts);
 
-        Map<String, Transition> trs = Transitions.entrySet().stream()
-                .map(tr-> new Transition(tr.getKey(), sts.get(tr.getValue().To),
-                        pc.getSampler(tr.getValue().Dist)))
-                .collect(Collectors.toMap(Transition::getName, tr->tr));
+        Map<String, Transition> trs = new HashMap<>();
+        for (Map.Entry<String, PseudoTransition> entry : Transitions.entrySet()) {
+            Sampler samp = pc.getSampler(entry.getValue().Dist);
+            Transition tr = new Transition(entry.getKey(), sts.get(entry.getValue().To), samp);
+            trs.put(tr.getName(), tr);
+        }
+
 
         Map<State, List<Transition>> tas = makeTargets(sts, sub, trs);
         Map<State, Map<State, State>> links = makeLinks(sts, wds, stm, mst);

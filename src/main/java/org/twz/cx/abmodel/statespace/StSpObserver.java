@@ -1,7 +1,6 @@
 package org.twz.cx.abmodel.statespace;
 
-import org.twz.cx.abmodel.ABModel;
-import org.twz.cx.abmodel.AbsAgent;
+import org.twz.cx.abmodel.*;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
@@ -27,12 +26,14 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
     private Set<State> ObsStates;
     private Set<Transition> ObsTransitions;
     private Set<AbsBehaviour> ObsBehaviours;
+    private Set<IObsFun<StSpABModel>> ObsFunctions;
     private ArrayList<Record> Records;
 
     StSpObserver() {
         ObsStates = new LinkedHashSet<>();
         ObsTransitions = new LinkedHashSet<>();
         ObsBehaviours = new LinkedHashSet<>();
+        ObsFunctions = new LinkedHashSet<>();
         Records = new ArrayList<>();
     }
 
@@ -45,6 +46,9 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
         }
         for (AbsBehaviour be: ObsBehaviours) {
             be.fillData(tab, model, ti);
+        }
+        for (IObsFun<StSpABModel> fn: ObsFunctions) {
+            fn.call(tab, model, ti);
         }
     }
 
@@ -64,6 +68,10 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
 
     void addObsBehaviour(AbsBehaviour be) {
         ObsBehaviours.add(be);
+    }
+
+    void addObsFunction(IObsFun<StSpABModel> fn) {
+        ObsFunctions.add(fn);
     }
 
 

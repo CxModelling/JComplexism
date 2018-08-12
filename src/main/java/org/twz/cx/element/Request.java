@@ -83,7 +83,7 @@ public class Request implements Comparable<Request> {
 
     public String toLog() {
         return "Request:  " +
-                Who + " want to " + getMessage() + " at " + getAddress();
+                Who + " want to " + getMessage() + " in " + getAddress() + " when " + getTime();
     }
 
     @Override

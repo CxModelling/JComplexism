@@ -1,5 +1,4 @@
-Name = BAD
-Type = CTBN
+CTBN BAD {
 
 life[Alive | Dead]
 age[Y | M | O]
@@ -13,3 +12,5 @@ Old{life:Alive, age:O}
 Alive -- Die -> Dead # from transition Die to state Dead by distribution Die
 Young -- ToM -> Middle
 Middle -- ToO -> Old
+
+}

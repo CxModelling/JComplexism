@@ -95,6 +95,6 @@ public class Disclosure {
 
     public String toLog() {
         return "Disclose: " +
-                Who + " did " + What + " at " + getAddress();
+                Who + " did " + What + " in " + getAddress();
     }
 }

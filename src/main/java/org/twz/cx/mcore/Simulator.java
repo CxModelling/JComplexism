@@ -5,9 +5,8 @@ import org.twz.cx.element.Request;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
+import java.util.logging.*;
+import java.util.logging.Formatter;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +40,9 @@ public class Simulator {
 
     public void addLogPath(String pat) {
         try {
-            Log.addHandler(new FileHandler(pat, 1024 * 128, 10, false));
+            FileHandler fh = new FileHandler(pat, 1024 * 1024, 10, false);
+            fh.setFormatter(new SimpleFormatter());
+            Log.addHandler(fh);
         } catch (IOException e) {
             e.printStackTrace();
         }

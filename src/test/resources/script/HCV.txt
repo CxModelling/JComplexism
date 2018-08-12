@@ -1,6 +1,4 @@
-Name = HCV
-Type = CTBN
-
+CTBN HCV {
 HCV [S | A | C]
 Treat [N | Y | F]
 life [Alive | Dead]
@@ -26,3 +24,4 @@ Treating -- Recover|T -> Sus
 Alive -- Death -> Dead
 Failure -- Death|F -> Dead
 C -- Death|C -> Dead
+}

@@ -24,7 +24,7 @@ public abstract class AbsScheduler {
     }
 
     public void addAtom(ModelAtom atom) {
-        leaveQueue(atom);
+        join(atom);
         atom.setScheduler(this);
         NumAtoms += 1;
     }
@@ -44,6 +44,8 @@ public abstract class AbsScheduler {
     public void setGloTime(double gloTime) {
         GloTime = gloTime;
     }
+
+    protected abstract void join(ModelAtom atom);
 
     protected abstract void await(ModelAtom atom);
 
@@ -71,8 +73,6 @@ public abstract class AbsScheduler {
     public abstract void rescheduleAllAtoms();
 
     public abstract void rescheduleWaitingAtoms();
-
-    public abstract double getTTE();
 
     public abstract void extractNext();
 

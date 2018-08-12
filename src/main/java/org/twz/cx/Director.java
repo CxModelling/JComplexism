@@ -170,7 +170,7 @@ public class Director {
         return generateDCore(dc, generatePCore(dc, pc));
     }
 
-    public AbsDCore generateDCore(String dc,ParameterCore pc) {
+    public AbsDCore generateDCore(String dc, ParameterCore pc) {
         IBlueprintDCore bp = getDCore(dc);
         if (bp.isCompatible(pc)) {
             return bp.generateModel(pc);

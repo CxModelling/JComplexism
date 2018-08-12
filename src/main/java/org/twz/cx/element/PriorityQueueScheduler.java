@@ -16,6 +16,11 @@ public class PriorityQueueScheduler extends AbsScheduler {
     }
 
     @Override
+    protected void join(ModelAtom atom) {
+        AtomWaiting.add(atom);
+    }
+
+    @Override
     protected void await(ModelAtom atom) {
         AtomWaiting.add(atom);
     }
@@ -43,11 +48,6 @@ public class PriorityQueueScheduler extends AbsScheduler {
     public void rescheduleWaitingAtoms() {
         AtomWaiting.forEach(this::rescheduleAtom);
         AtomWaiting.clear();
-    }
-
-    @Override
-    public double getTTE() {
-        return AtomQueue.peek().getTTE();
     }
 
     @Override

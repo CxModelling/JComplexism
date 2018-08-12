@@ -125,9 +125,9 @@ public class ParameterCore extends Gene {
     }
 
     public Sampler getSampler(String sampler) {
-        try {
+        if (Actors.containsKey(sampler)) {
             return new Sampler(Actors.get(sampler), this);
-        } catch (IndexOutOfBoundsException e) {
+        } else {
             return new Sampler(Parent.ChildrenActors.get(getGroupName()).get(sampler), this);
         }
     }

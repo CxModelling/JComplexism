@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel {
 
     private Population<Ta> Population;
-    private Map<String, AbsBehaviour> Behaviours;
+    protected Map<String, AbsBehaviour> Behaviours;
 
     public <Tm extends AbsAgentBasedModel> AbsAgentBasedModel(String name, Gene parameters,
                                                               Population<Ta> pop, AbsObserver<Tm> obs, IY0 protoY0) {
@@ -37,14 +37,6 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
     public void addBehaviour(AbsBehaviour be) {
         Behaviours.put(be.getName(), be);
         Scheduler.addAtom(be);
-    }
-
-    public void addObservingBehaviour(String be) {
-        addObservingBehaviour(Behaviours.get(be));
-    }
-
-    public void addObservingBehaviour(AbsBehaviour be) {
-        ((ABMObserver) getObserver()).addObsBehaviour(be);
     }
 
     public void addNetwork(AbsNetwork net) {
@@ -168,7 +160,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
                 Ta ag = this.Population.get(nod);
                 ag.approveEvent(todo);
                 List<Boolean> pre = checkPreChange(ag);
-                ((ABMObserver) getObserver()).record(ag, todo.getValue(), time);
+                record(ag, todo.getValue(), time);
                 ag.executeEvent();
                 ag.dropNext();
                 List<Boolean> post = checkPostChange(ag);
@@ -190,6 +182,8 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
             e.printStackTrace();
         }
     }
+
+    protected abstract void record(AbsAgent ag, Object todo, double time);
 
     public long size() {
         return Population.count();

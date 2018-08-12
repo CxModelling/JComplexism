@@ -1,6 +1,4 @@
-Name = CareSeeking
-Type = CTBN
-
+CTBN CareSeeking {
 dz[Lat|Yes|No]
 treat [No| Yes | Fail]
 
@@ -15,3 +13,4 @@ Latent -- Onset -> Sick
 PreTreat -- Detect -> Treating
 Treating -- Fail -> Failure
 Treating -- Cure -> Recovered
+}

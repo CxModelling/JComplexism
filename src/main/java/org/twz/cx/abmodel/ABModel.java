@@ -52,4 +52,9 @@ public class ABModel extends AbsAgentBasedModel {
     public Double getSnapshot(String key, double ti) {
         return null;
     }
+
+    @Override
+    protected void record(AbsAgent ag, Object todo, double time) {
+        ((ABMObserver) Observer).record(ag, todo, time);
+    }
 }
