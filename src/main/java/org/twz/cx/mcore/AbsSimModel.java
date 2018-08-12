@@ -85,7 +85,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
 
     public void reset(double ti) {
         Scheduler.rescheduleAllAtoms();
-    };
+    }
 
     public abstract void readY0(IY0 y0, double ti);
 

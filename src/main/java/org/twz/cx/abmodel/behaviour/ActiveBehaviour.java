@@ -9,7 +9,7 @@ public abstract class ActiveBehaviour extends AbsBehaviour {
     private AbsTicker Clock;
 
 
-    ActiveBehaviour(String name, AbsTicker clock, Trigger tri) {
+    public ActiveBehaviour(String name, AbsTicker clock, Trigger tri) {
         super(name, tri);
         Clock = clock;
     }

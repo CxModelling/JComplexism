@@ -63,4 +63,28 @@ public class DataFrame implements AdapterJSONArray {
         }
         return js;
     }
+
+    public void print() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Key);
+        sb.append("\t");
+        sb.append(Data.keySet().stream()
+                .filter(k-> !k.equals(Key))
+                .collect(Collectors.joining("\t")));
+        sb.append("\n");
+        int size = Data.get(Key).size();
+
+        for (int i=0; i < size; i++) {
+            sb.append(Data.get(Key).get(i));
+
+            for (Map.Entry<String, List<Double>> entry : Data.entrySet()) {
+                if (!entry.getKey().equals(Key)) {
+                    sb.append("\t");
+                    sb.append(entry.getValue().get(i));
+                }
+            }
+            sb.append("\n");
+        }
+        System.out.println(sb.toString());
+    }
 }

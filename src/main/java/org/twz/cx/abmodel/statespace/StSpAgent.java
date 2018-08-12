@@ -2,8 +2,8 @@ package org.twz.cx.abmodel.statespace;
 
 import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
-import org.twz.cx.abmodel.modifier.AbsModifier;
-import org.twz.cx.abmodel.modifier.ModifierSet;
+import org.twz.cx.abmodel.statespace.modifier.AbsModifier;
+import org.twz.cx.abmodel.statespace.modifier.ModifierSet;
 import org.twz.cx.element.Event;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.dag.Gene;
@@ -53,6 +53,7 @@ public class StSpAgent extends AbsAgent {
                 time = ent.getValue();
             }
         }
+        if (Double.isInfinite(time)) return Event.NullEvent;
         return new Event(tr, time);
     }
 

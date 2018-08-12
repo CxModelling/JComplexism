@@ -7,12 +7,12 @@ import org.twz.cx.mcore.AbsSimModel;
 
 public abstract class PassiveBehaviour extends AbsBehaviour {
 
-    PassiveBehaviour(String name, Trigger tri) {
+    public PassiveBehaviour(String name, Trigger tri) {
         super(name, tri);
 
     }
 
-    PassiveBehaviour(String name, AbsTicker clock) {
+    public PassiveBehaviour(String name) {
         this(name, Trigger.NullTrigger);
     }
 
@@ -24,5 +24,20 @@ public abstract class PassiveBehaviour extends AbsBehaviour {
     @Override
     public double getTTE() {
         return Double.POSITIVE_INFINITY;
+    }
+
+    @Override
+    protected Event findNext() {
+        return Event.NullEvent;
+    }
+
+    @Override
+    public void executeEvent() {
+
+    }
+
+    @Override
+    public void updateTo(double ti) {
+
     }
 }

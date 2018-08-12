@@ -1,4 +1,4 @@
-package org.twz.cx.abmodel.modifier;
+package org.twz.cx.abmodel.statespace.modifier;
 
 import org.twz.statespace.Transition;
 import org.json.JSONObject;

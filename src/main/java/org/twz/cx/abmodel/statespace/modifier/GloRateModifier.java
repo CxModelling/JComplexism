@@ -1,4 +1,4 @@
-package org.twz.cx.abmodel.modifier;
+package org.twz.cx.abmodel.statespace.modifier;
 
 import org.twz.statespace.Transition;
 
@@ -6,10 +6,10 @@ import org.twz.statespace.Transition;
  *
  * Created by timewz on 30/09/17.
  */
-public class DirectModifier extends AbsModifier {
+public class GloRateModifier extends AbsModifier {
     private double Value;
 
-    public DirectModifier(String name, Transition target) {
+    public GloRateModifier(String name, Transition target) {
         super(name, target);
         Value = Double.POSITIVE_INFINITY;
     }
@@ -21,13 +21,17 @@ public class DirectModifier extends AbsModifier {
 
     @Override
     public double modify(double tte) {
-        return Value;
+        if (Value == 0) {
+            return Double.POSITIVE_INFINITY;
+        } else {
+            return tte/Value;
+        }
     }
 
     @Override
     public boolean update(Object value) {
         double val = (double) value;
-        if (val != Value & val > 0) {
+        if (val != Value & val >= 0) {
             Value = val;
             return true;
         } else {
@@ -35,9 +39,7 @@ public class DirectModifier extends AbsModifier {
         }
     }
 
-    public DirectModifier clone() {
-        DirectModifier mod = new DirectModifier(getName(), getTarget());
-        mod.Value = Value;
-        return mod;
+    public GloRateModifier clone() {
+        return this;
     }
 }

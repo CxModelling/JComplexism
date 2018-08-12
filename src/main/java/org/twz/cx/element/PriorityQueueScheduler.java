@@ -63,8 +63,8 @@ public class PriorityQueueScheduler extends AbsScheduler {
                 OwnTime = event.getTime();
                 //AtomQueue.remove(atom);
                 AtomWaiting.add(atom);
-            } else if (tte > OwnTime) {
-                System.out.println("Error"); // todo
+            } else {
+
                 return;
             }
         }

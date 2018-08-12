@@ -1,17 +1,17 @@
-package org.twz.cx.abmodel.behaviour.modifier;
+package org.twz.cx.abmodel.statespace.modifier;
 
 import org.twz.statespace.Transition;
 
 /**
-
- * Created by TimeWz on 2017/9/7.
+ *
+ * Created by timewz on 30/09/17.
  */
 public class LocRateModifier extends AbsModifier {
     private double Value;
 
-    public LocRateModifier(String name, Transition tar) {
-        super(name, tar);
-        Value = 1;
+    public LocRateModifier(String name, Transition target) {
+        super(name, target);
+        Value = Double.POSITIVE_INFINITY;
     }
 
     @Override
@@ -21,16 +21,17 @@ public class LocRateModifier extends AbsModifier {
 
     @Override
     public double modify(double tte) {
-        if (Value > 0) {
-            return tte/Value;
-        } else {
+        if (Value == 0) {
             return Double.POSITIVE_INFINITY;
+        } else {
+            return tte/Value;
         }
     }
 
     @Override
-    public boolean update(double val) {
-        if (val != Value & val > 0) {
+    public boolean update(Object value) {
+        double val = (double) value;
+        if (val != Value & val >= 0) {
             Value = val;
             return true;
         } else {
@@ -38,11 +39,9 @@ public class LocRateModifier extends AbsModifier {
         }
     }
 
-    @Override
-    public AbsModifier clone() {
+    public LocRateModifier clone() {
         LocRateModifier mod = new LocRateModifier(getName(), getTarget());
         mod.Value = Value;
         return mod;
     }
-
 }

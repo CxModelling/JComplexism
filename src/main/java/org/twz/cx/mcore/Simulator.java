@@ -4,6 +4,9 @@ import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.*;
 import java.util.logging.Formatter;
@@ -14,6 +17,15 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 2017/2/10.
  */
 public class Simulator {
+    private class SimuFormattor extends Formatter {
+
+        @Override
+        public String format(LogRecord record) {
+            return String.format("[%s]: %s\n", record.getLevel(), record.getMessage());
+        }
+    }
+
+
     private AbsSimModel Model;
     private double Time;
     private boolean Record;
@@ -40,9 +52,17 @@ public class Simulator {
     }
 
     public void addLogPath(String pat) {
+
         try {
-            FileHandler fh = new FileHandler(pat, 1024 * 1024, 10, false);
-            fh.setFormatter(new SimpleFormatter());
+            Path fileToDeletePath = Paths.get(pat);
+            Files.delete(fileToDeletePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileHandler fh = new FileHandler(pat, false);
+            fh.setFormatter(new SimuFormattor());
             Log.addHandler(fh);
         } catch (IOException e) {
             e.printStackTrace();
