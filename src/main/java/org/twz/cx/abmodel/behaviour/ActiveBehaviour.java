@@ -33,6 +33,11 @@ public abstract class ActiveBehaviour extends AbsBehaviour {
         Clock.initialise(ti);
     }
 
+    @Override
+    public void updateTo(double ti) {
+        Clock.update(ti);
+    }
+
     protected abstract Event composeEvent(double ti);
 
     @Override

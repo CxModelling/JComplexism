@@ -4,46 +4,22 @@ import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
+import org.twz.cx.abmodel.behaviour.trigger.Trigger;
 import org.twz.cx.abmodel.statespace.StSpABModel;
-import org.twz.cx.abmodel.statespace.behaviour.trigger.StateTrigger;
 import org.twz.cx.abmodel.statespace.modifier.GloRateModifier;
 import org.twz.cx.mcore.AbsSimModel;
-import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 
 import java.util.Map;
 
-public class FDShock extends PassiveModBehaviour {
-    private final State S_src;
+public class ExternalShock extends PassiveModBehaviour {
     private final Transition T_tar;
     private double Value;
 
-    public FDShock(String name, State s_src, Transition t_tar) {
-        super(name, new GloRateModifier(name, t_tar), new StateTrigger(s_src));
-        S_src = s_src;
+    public ExternalShock(String name, Transition t_tar) {
+        super(name, new GloRateModifier(name, t_tar), Trigger.NullTrigger);
         T_tar = t_tar;
         Value = 0;
-    }
-
-    @Override
-    public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) {
-        StSpABModel m = (StSpABModel) model;
-        Value = evaluate(m);
-        shock(m, ti);
-    }
-
-    @Override
-    public void impulseEnter(AbsAgentBasedModel model, AbsAgent ag, double ti) {
-        StSpABModel m = (StSpABModel) model;
-        Value = evaluate(m);
-        shock(m, ti);
-    }
-
-    @Override
-    public void impulseExit(AbsAgentBasedModel model, AbsAgent ag, double ti) {
-        StSpABModel m = (StSpABModel) model;
-        Value = evaluate(m);
-        shock(m, ti);
     }
 
     @Override
@@ -53,15 +29,13 @@ public class FDShock extends PassiveModBehaviour {
 
     @Override
     public void match(AbsBehaviour be_src, Map<String, AbsAgent> ags_src, Map<String, AbsAgent> ags_new, double ti) {
-        Value = ((FDShock)be_src).Value;
+        Value = ((ExternalShock)be_src).Value;
         ags_new.values().forEach(ag->register(ag, ti));
-
     }
 
     @Override
     protected JSONObject getArgumentJSON() {
         JSONObject js = new JSONObject();
-        js.put("s_src", S_src.getName());
         js.put("t_tar", T_tar.getName());
         return js;
     }
@@ -69,8 +43,9 @@ public class FDShock extends PassiveModBehaviour {
     @Override
     public void initialise(double ti, AbsSimModel model) {
         StSpABModel m = (StSpABModel) model;
-        Value = evaluate(m);
-        shock(m, ti);
+        if (ModProto.update(Value)) {
+            m.getPopulation().getAgents().values().forEach(ag->ag.modify(getName(), ti));
+        }
     }
 
     @Override
@@ -80,22 +55,15 @@ public class FDShock extends PassiveModBehaviour {
 
     @Override
     public void shock(double ti, Object source, String target, Object value) {
-
-    }
-
-    private double evaluate(StSpABModel model) {
-        double a = model.getPopulation().count("st", S_src);
-        return a/model.getPopulation().count();
-    }
-
-    private void shock(StSpABModel model, double ti) {
+        Value = (Double) value;
         if (ModProto.update(Value)) {
+            StSpABModel model = (StSpABModel) source;
             model.getPopulation().getAgents().values().forEach(ag->ag.modify(getName(), ti));
         }
     }
 
     @Override
     public String toString() {
-        return String.format("FDShock(%s, %s on %s, by %s)", getName(), S_src.getName(), T_tar.getName(), Value);
+        return String.format("ExternalShock(%s, on %s, by %s)", getName(), T_tar.getName(), Value);
     }
 }

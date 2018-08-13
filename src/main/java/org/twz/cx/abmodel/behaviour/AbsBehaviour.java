@@ -2,6 +2,7 @@ package org.twz.cx.abmodel.behaviour;
 
 import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
+import org.twz.cx.abmodel.AbsAgentBasedModel;
 import org.twz.cx.element.Event;
 import org.twz.cx.element.ModelAtom;
 import org.twz.cx.mcore.*;
@@ -39,21 +40,21 @@ public abstract class AbsBehaviour extends ModelAtom {
         return Tri.checkChange(pre, post);
     }
 
-    public abstract void impulseChange(AbsSimModel model, AbsAgent ag, double ti);
+    public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) {}
 
     public boolean checkEnterChange(AbsAgent ag) {
         return Tri.checkEnter(ag);
     }
 
-    public abstract void impulseEnter(AbsSimModel model, AbsAgent ag, double ti);
+    public void impulseEnter(AbsAgentBasedModel model, AbsAgent ag, double ti) {}
 
     public boolean checkExitChange(AbsAgent ag) {
         return Tri.checkExit(ag);
     }
 
-    public abstract void impulseExit(AbsSimModel model, AbsAgent ag, double ti);
+    public void impulseExit(AbsAgentBasedModel model, AbsAgent ag, double ti) {}
 
-    public abstract void fillData(Map<String, Double> obs, AbsSimModel model, double ti);
+    public abstract void fillData(Map<String, Double> obs, AbsAgentBasedModel model, double ti);
 
     public abstract void match(AbsBehaviour be_src, Map<String, AbsAgent> ags_src, Map<String, AbsAgent> ags_new, double ti);
 

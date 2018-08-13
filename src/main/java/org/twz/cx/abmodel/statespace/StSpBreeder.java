@@ -45,7 +45,7 @@ public class StSpBreeder extends AbsBreeder<StSpAgent> {
         } else {
             state = DCore.getState((String) st);
         }
-        return ags.stream().filter(ag -> ag.getState() == state).count();
+        return ags.stream().filter(ag -> ag.getState().isa(state)).count();
     }
 
 }
