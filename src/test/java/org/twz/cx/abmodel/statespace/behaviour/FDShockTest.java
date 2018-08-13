@@ -48,7 +48,7 @@ public class FDShockTest {
     @Test
     public void simulation() {
         Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("FDShock.txt");
+        Simu.addLogPath("log/FDShock.txt");
         Y0 = new StSpY0();
         Y0.append(950, "Sus");
         Y0.append(50, "Inf");

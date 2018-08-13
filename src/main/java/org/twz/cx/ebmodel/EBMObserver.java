@@ -1,16 +1,13 @@
 package org.twz.cx.ebmodel;
 
 import org.twz.cx.mcore.AbsObserver;
-import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IObsFun;
-import org.twz.io.IO;
-import org.twz.prob.T;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class EBMObserver extends AbsObserver<AbsEquationBasedModel> {
+public class EBMObserver extends AbsObserver<EquationBasedModel> {
     List<String> Stocks;
     List<IObsFun> StockFns, FlowFns;
 
@@ -33,12 +30,12 @@ public class EBMObserver extends AbsObserver<AbsEquationBasedModel> {
     }
 
     @Override
-    protected void readStatics(AbsEquationBasedModel model, Map tab, double ti) {
+    protected void readStatics(EquationBasedModel model, Map tab, double ti) {
         //todo
     }
 
     @Override
-    public void updateDynamicObservations(AbsEquationBasedModel model, Map flows, double ti) {
+    public void updateDynamicObservations(EquationBasedModel model, Map flows, double ti) {
 //todo
     }
 }

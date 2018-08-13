@@ -8,32 +8,30 @@ import org.twz.cx.mcore.IObsFun;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafModel;
 import org.twz.dag.Gene;
-import org.twz.io.FnJSON;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class AbsEquationBasedModel extends LeafModel {
+public class EquationBasedModel extends LeafModel {
     private AbsEquations Equations;
     private Map<String, Double> Y;
 
-    public AbsEquationBasedModel(String name, AbsEquations eqs, Gene pars,IY0 protoY0) {
+    public EquationBasedModel(String name, AbsEquations eqs, Gene pars, IY0 protoY0) {
         this(name, eqs, pars, new EBMObserver(), protoY0);
     }
 
-    public AbsEquationBasedModel(String name, AbsEquations eqs, Map<String, Double> pars, IY0 protoY0) {
+    public EquationBasedModel(String name, AbsEquations eqs, Map<String, Double> pars, IY0 protoY0) {
         this(name, eqs, pars, new EBMObserver(), protoY0);
     }
 
-    public AbsEquationBasedModel(String name, AbsEquations eqs, Gene pars, EBMObserver obs, IY0 protoY0) {
+    public EquationBasedModel(String name, AbsEquations eqs, Gene pars, EBMObserver obs, IY0 protoY0) {
         super(name, pars, obs, protoY0);
         Equations = eqs;
         Y = new HashMap<>();
         Scheduler.addAtom(eqs);
     }
 
-    public AbsEquationBasedModel(String name, AbsEquations eqs, Map<String, Double> pars, EBMObserver obs, IY0 protoY0) {
+    public EquationBasedModel(String name, AbsEquations eqs, Map<String, Double> pars, EBMObserver obs, IY0 protoY0) {
         super(name, pars, obs, protoY0);
         Equations = eqs;
         Y = new HashMap<>();
@@ -80,8 +78,8 @@ public class AbsEquationBasedModel extends LeafModel {
     }
 
     @Override
-    public void shock(double ti, Object action, String target, Object value) {
-        Equations.shock(ti, action, target, value);
+    public void shock(double ti, AbsSimModel model, String action, JSONObject value) {
+        Equations.shock(ti, model, action, value);
         Y = Equations.getDictY();
     }
 

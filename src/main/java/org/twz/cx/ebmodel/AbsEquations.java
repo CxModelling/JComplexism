@@ -4,7 +4,6 @@ import org.twz.cx.element.Event;
 import org.twz.cx.element.ModelAtom;
 import org.twz.cx.element.Ticker.AbsTicker;
 import org.twz.cx.element.Ticker.StepTicker;
-import org.twz.cx.mcore.AbsSimModel;
 import org.twz.dag.Gene;
 
 import java.util.Map;

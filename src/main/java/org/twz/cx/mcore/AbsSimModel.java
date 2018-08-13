@@ -1,6 +1,7 @@
 package org.twz.cx.mcore;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.twz.cx.element.*;
 import org.twz.cx.mcore.communicator.IChecker;
 import org.twz.cx.mcore.communicator.IShocker;
@@ -131,7 +132,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Listeners.applyShock(dis, model, this, ti);
     }
 
-    public abstract void shock(double time, Object action, String target, Object value);
+    public abstract void shock(double time, AbsSimModel model, String action, JSONObject value);
 
     public Set<IChecker> getAllImpulseCheckers() {
         return Listeners.getAllCheckers();

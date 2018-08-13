@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel;
 
+import org.json.JSONObject;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.abmodel.behaviour.ActiveBehaviour;
 import org.twz.cx.abmodel.network.AbsNetwork;
@@ -174,10 +175,10 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
     }
 
     @Override
-    public void shock(double time, Object action, String target, Object value) {
+    public void shock(double time, AbsSimModel model, String action, JSONObject value) {
         try {
-            AbsBehaviour be = Behaviours.get(target);
-            be.shock(time, this, target, value);
+            AbsBehaviour be = Behaviours.get(action);
+            be.shock(time, this, action, value);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
