@@ -1,4 +1,4 @@
-package org.twz.cx.abmodel;
+package org.twz.cx.mcore;
 
 import org.twz.cx.mcore.AbsSimModel;
 

@@ -2,6 +2,7 @@ package org.twz.cx.abmodel;
 
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.mcore.AbsObserver;
+import org.twz.cx.mcore.IObsFun;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
