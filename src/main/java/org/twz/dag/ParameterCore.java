@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 2017/4/22.
  */
 public class ParameterCore extends Gene {
+    public static ParameterCore NullParameters = new ParameterCore("Null", null, new HashMap<>(), 0);
 
     private final String Nickname;
     private SimulationGroup SG;

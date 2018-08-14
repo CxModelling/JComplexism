@@ -1,9 +1,9 @@
 package org.twz.cx.ebmodel;
 
-import org.twz.dag.ParameterCore;
+import org.twz.dag.Gene;
 
 import java.util.Map;
 
 public interface EBMMeasurement {
-    void call(Map<String, Double> tab, double ti, double[] ys, ParameterCore pc, Map<String, Object> x);
+    void call(Map<String, Double> tab, double ti, double[] ys, Gene pc, Map<String, Double> x);
 }

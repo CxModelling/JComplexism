@@ -7,6 +7,7 @@ import org.twz.cx.mcore.communicator.IChecker;
 import org.twz.cx.mcore.communicator.IShocker;
 import org.twz.cx.mcore.communicator.ListenerSet;
 import org.twz.dag.Gene;
+import org.twz.dag.ParameterCore;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.*;
@@ -21,16 +22,16 @@ public abstract class AbsSimModel implements AdapterJSONObject{
     protected final IY0 ProtoY0;
     protected final AbsScheduler Scheduler;
     private ListenerSet Listeners;
-    protected Gene Parameters;
-    protected Map<String, Object> Environment;
+    protected ParameterCore Parameters;
+    protected JSONObject Environment;
     private double TimeEnd;
 
 
-    public AbsSimModel(String name, Gene pars, AbsObserver obs, IY0 protoY0) {
+    public AbsSimModel(String name, ParameterCore pars, AbsObserver obs, IY0 protoY0) {
         Name = name;
         Observer = obs;
         Parameters = pars;
-        Environment = new HashMap<>();
+        Environment = new JSONObject();
         Listeners = new ListenerSet();
 
         Scheduler = AbsScheduler.getScheduler(name); //new PriorityQueueScheduler(name);
@@ -64,20 +65,24 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Environment.get(s);
     }
 
+    public String getString(String s) {
+        return Environment.getString(s);
+    }
+
+    public Double getDouble(String s) {
+        return Environment.getDouble(s);
+    }
+
     public double getParameter(String key) {
         return Parameters.get(key);
     }
 
+    public Gene getParameters() {
+        return Parameters;
+    }
+
     AbsScheduler getScheduler() {
         return Scheduler;
-    }
-
-    public Double getDouble(String s) {
-        return (Double) Environment.get(s);
-    }
-
-    public String getString(String s) {
-        return (String) Environment.get(s);
     }
 
     public void preset(double ti) {
@@ -174,7 +179,9 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Observer.getTimeSeries();
     }
 
-    public abstract Double getSnapshot(String key, double ti);
+    public Double getSnapshot(String key, double ti) {
+        return Observer.get(key);
+    }
 
     public void print() {
         Observer.print();

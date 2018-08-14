@@ -105,10 +105,10 @@ public class StSpAgent extends AbsAgent {
     }
 
     @Override
-    public void shock(double ti, Object source, String target, Object value) {
-        AbsModifier mod = Mods.get(target);
+    public void shock(double ti, AbsSimModel model, String action, JSONObject value) {
+        AbsModifier mod = Mods.get(action);
         if (mod.update(value)) {
-            modify(target, ti);
+            modify(action, ti);
         }
     }
 

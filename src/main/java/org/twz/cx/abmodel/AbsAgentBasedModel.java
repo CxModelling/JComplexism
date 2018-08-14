@@ -11,6 +11,7 @@ import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafModel;
 import org.twz.dag.Gene;
+import org.twz.dag.ParameterCore;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
     private Population<Ta> Population;
     protected Map<String, AbsBehaviour> Behaviours;
 
-    public <Tm extends AbsAgentBasedModel> AbsAgentBasedModel(String name, Gene parameters,
+    public <Tm extends AbsAgentBasedModel> AbsAgentBasedModel(String name, ParameterCore parameters,
                                                               Population<Ta> pop, AbsObserver<Tm> obs, IY0 protoY0) {
         super(name, parameters, obs, protoY0);
         this.Population = pop;
@@ -32,7 +33,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
 
     public <Tm extends AbsAgentBasedModel> AbsAgentBasedModel(String name, Map<String, Double> parameters,
                                                               Population<Ta> pop, AbsObserver<Tm> obs, IY0 protoY0) {
-        this(name, new Gene(parameters), pop, obs, protoY0);
+        this(name, new ParameterCore(name, null, parameters, 0), pop, obs, protoY0);
     }
 
     public void addBehaviour(AbsBehaviour be) {

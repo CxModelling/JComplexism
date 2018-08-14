@@ -78,11 +78,6 @@ public class DDShock extends PassiveModBehaviour {
 
     }
 
-    @Override
-    public void shock(double ti, Object source, String target, Object value) {
-
-    }
-
     private double evaluate(StSpABModel model) {
         return model.getPopulation().count("st", S_src);
     }

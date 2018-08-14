@@ -47,14 +47,14 @@ public class AgentImport extends PassiveBehaviour {
     }
 
     @Override
-    public void shock(double ti, Object source, String target, Object value) {
-        double v = Math.floor((Double) value);
+    public void shock(double ti, AbsSimModel source, String target, JSONObject value) {
+        int v = value.getInt("n");
         if (v > 0) {
             AbsAgentBasedModel model = (AbsAgentBasedModel) source;
             Map<String, Object> atr = new HashMap<>();
             atr.put("st", S_birth);
-            model.birth(1, ti, atr);
-            BirthN ++;
+            model.birth(v, ti, atr);
+            BirthN += v;
         }
 
     }

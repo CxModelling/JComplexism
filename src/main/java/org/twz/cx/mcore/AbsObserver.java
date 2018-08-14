@@ -154,7 +154,7 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
             sb.append('\n').append(String.format( "%4.1f", data.get("Time")));
 
             data.entrySet().stream().filter(e -> !e.getKey().equals("Time"))
-                    .forEach(e -> sb.append('\t').append(String.format( "%5.3f", e.getValue())));
+                    .forEach(e -> sb.append('\t').append(String.format( "%.3f", e.getValue())));
         }
 
         System.out.println(sb);

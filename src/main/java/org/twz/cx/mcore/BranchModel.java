@@ -3,6 +3,7 @@ package org.twz.cx.mcore;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
 import org.twz.dag.Gene;
+import org.twz.dag.ParameterCore;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,12 +15,12 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 2017/2/10.
  */
 public abstract class BranchModel extends AbsSimModel {
-    public BranchModel(String name, Gene pas, AbsObserver obs, IY0 protoY0) {
-        super(name, pas, obs, protoY0);
+    public BranchModel(String name, ParameterCore pars, AbsObserver obs, IY0 protoY0) {
+        super(name, pars, obs, protoY0);
     }
 
-    public BranchModel(String name, Map<String, Double> pas, AbsObserver obs, IY0 protoY0) {
-        this(name, new Gene(pas), obs, protoY0);
+    public BranchModel(String name, Map<String, Double> pars, AbsObserver obs, IY0 protoY0) {
+        this(name, new ParameterCore(name, null, pars, 0), obs, protoY0);
     }
 
     public abstract Map<String, AbsSimModel> getModels();

@@ -5,21 +5,20 @@ import org.twz.cx.mcore.AbsSimModel;
 import org.twz.dag.Gene;
 import org.twz.io.AdapterJSONObject;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObject {
     private final String Name;
     protected Gene Parameters;
-    protected Map<String, Object> Attributes;
+    protected JSONObject Attributes;
     private Event Next;
     private AbsScheduler Scheduler;
 
     public ModelAtom(String name, Gene parameters) {
         Name = name;
         Parameters = parameters;
-        Attributes = new HashMap<>();
+        Attributes = new JSONObject();
         Next = Event.NullEvent;
     }
 
@@ -35,17 +34,24 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         return Name;
     }
 
-    public Object get(String key) {
-        try {
-            return Attributes.get(key);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public Object get(String s) {
+        return Attributes.get(s);
+    }
+
+    public String getString(String s) {
+        return Attributes.getString(s);
+    }
+
+    public Double getDouble(String s) {
+        return Attributes.getDouble(s);
     }
 
     public double getParameter(String key) {
         return Parameters.get(key);
+    }
+
+    public Gene getParameters() {
+        return Parameters;
     }
 
     public void setScheduler(AbsScheduler scheduler) {
@@ -61,7 +67,7 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
     }
 
     public void updateAttributes(Map<String, Object> atr) {
-        Attributes.putAll(atr);
+        atr.forEach((k, v) -> Attributes.put(k, v));
     }
 
     public Event getNext() {
@@ -101,7 +107,7 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
 
     public abstract void reset(double ti, AbsSimModel model);
 
-    public abstract void shock(double ti, Object source, String target, Object value);
+    public abstract void shock(double ti, AbsSimModel model, String action, JSONObject value);
 
     public boolean isCompatible(Map<String, Object> args) {
         for(Map.Entry<String, Object> ent: args.entrySet()) {
@@ -115,7 +121,10 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
     public Map<String, Object> toData() {
         Map<String, Object> dat = new LinkedHashMap<>();
         dat.put("Name", Name);
-        dat.putAll(Attributes);
+        String[] ks = JSONObject.getNames(Attributes);
+        for (String key : ks) {
+            dat.put(key, Attributes.get(key));
+        }
         return dat;
     }
 
@@ -128,7 +137,7 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
     public JSONObject toJSON() {
         JSONObject js = new JSONObject();
         js.put("Name", Name);
-        js.put("Attributes", new JSONObject(Attributes));
+        js.put("Attributes", Attributes);
         return js;
     }
 }

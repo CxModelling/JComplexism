@@ -101,7 +101,7 @@ public class Summariser extends ModelAtom {
     }
 
     @Override
-    public void shock(double ti, Object source, String target, Object value) {
+    public void shock(double ti, AbsSimModel source, String target, JSONObject value) {
 
     }
 

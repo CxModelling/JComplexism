@@ -2,7 +2,7 @@ package org.twz.cx.mcore;
 
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
-import org.twz.dag.Gene;
+import org.twz.dag.ParameterCore;
 
 import java.util.List;
 import java.util.Map;
@@ -12,12 +12,16 @@ import java.util.Map;
  * Created by TimeWz on 2017/2/10.
  */
 public abstract class LeafModel extends AbsSimModel {
-    public LeafModel(String name, Gene pars, AbsObserver obs, IY0 protoY0) {
+    public LeafModel(String name, ParameterCore pars, AbsObserver obs, IY0 protoY0) {
         super(name, pars, obs, protoY0);
     }
 
     public LeafModel(String name, Map<String, Double> pars, AbsObserver obs, IY0 protoY0) {
-        super(name, new Gene(pars), obs, protoY0);
+        super(name, new ParameterCore(name, null, pars, 0), obs, protoY0);
+    }
+
+    public LeafModel(String name, AbsObserver obs, IY0 protoY0) {
+        super(name, ParameterCore.NullParameters, obs, protoY0);
     }
 
     @Override

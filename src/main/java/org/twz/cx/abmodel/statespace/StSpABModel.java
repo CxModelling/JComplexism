@@ -8,6 +8,7 @@ import org.twz.cx.abmodel.AbsAgentBasedModel;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.mcore.IY0;
 import org.twz.dag.Gene;
+import org.twz.dag.ParameterCore;
 import org.twz.io.FnJSON;
 import org.twz.statespace.AbsDCore;
 import org.twz.statespace.State;
@@ -18,7 +19,7 @@ import java.util.Map;
 public class StSpABModel extends AbsAgentBasedModel<StSpAgent> {
     private AbsDCore DCore;
 
-    public StSpABModel(String name, Gene parameters, StSpPopulation pop) {
+    public StSpABModel(String name, ParameterCore parameters, StSpPopulation pop) {
         super(name, parameters, pop, new StSpObserver(), new ABMY0());
         DCore = ((StSpBreeder) pop.getEva()).getDCore();
     }

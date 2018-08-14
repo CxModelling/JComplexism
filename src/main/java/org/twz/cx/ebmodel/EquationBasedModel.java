@@ -8,6 +8,7 @@ import org.twz.cx.mcore.IObsFun;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafModel;
 import org.twz.dag.Gene;
+import org.twz.dag.ParameterCore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class EquationBasedModel extends LeafModel {
     private AbsEquations Equations;
     private Map<String, Double> Y;
 
-    public EquationBasedModel(String name, AbsEquations eqs, Gene pars, IY0 protoY0) {
+    public EquationBasedModel(String name, AbsEquations eqs, ParameterCore pars, IY0 protoY0) {
         this(name, eqs, pars, new EBMObserver(), protoY0);
     }
 
@@ -24,7 +25,7 @@ public class EquationBasedModel extends LeafModel {
         this(name, eqs, pars, new EBMObserver(), protoY0);
     }
 
-    public EquationBasedModel(String name, AbsEquations eqs, Gene pars, EBMObserver obs, IY0 protoY0) {
+    public EquationBasedModel(String name, AbsEquations eqs, ParameterCore pars, EBMObserver obs, IY0 protoY0) {
         super(name, pars, obs, protoY0);
         Equations = eqs;
         Y = new HashMap<>();
@@ -42,11 +43,11 @@ public class EquationBasedModel extends LeafModel {
         ((EBMObserver) getObserver()).addObservingStock(stock);
     }
 
-    public void addObservingStockFunction(IObsFun fn) {
+    public void addObservingStockFunction(EBMMeasurement fn) {
         ((EBMObserver) getObserver()).addObservingStockFunction(fn);
     }
 
-    public void addObservingFlowFunction(IObsFun fn) {
+    public void addObservingFlowFunction(EBMMeasurement fn) {
         ((EBMObserver) getObserver()).addObservingFlowFunction(fn);
     }
 
@@ -60,8 +61,11 @@ public class EquationBasedModel extends LeafModel {
 
     @Override
     public void readY0(IY0 y0, double ti) {
-        // todo Equations.setY(FnJSON.toDoubleMap(y0.get()));
-        Y = Equations.getDictY();
+        Map<String, Double> m = new HashMap<>();
+        for (JSONObject ent : y0.get()) {
+            m.put(ent.getString("y"), ent.getDouble("n"));
+        }
+        Equations.setY(m);
     }
 
     @Override
@@ -107,8 +111,8 @@ public class EquationBasedModel extends LeafModel {
         super.fetchDisclosures(ds_ms, ti);
     }
 
-    public void meausre(Map<String, Double> tab, EBMMeasurement measurement) {
-
+    public void measure(Map<String, Double> tab, EBMMeasurement measurement) {
+        Equations.measure(tab, measurement);
     }
 
     @Override

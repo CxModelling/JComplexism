@@ -76,11 +76,6 @@ public class LifeRate extends ActiveBehaviour {
     }
 
     @Override
-    public void shock(double ti, Object source, String target, Object value) {
-
-    }
-
-    @Override
     public String toString() {
         return String.format("LifeRate(%s, Death:%s, Birth:%s, Rate:%s)", getName(), S_death.getName(), S_birth.getName(), BirthRate);
     }

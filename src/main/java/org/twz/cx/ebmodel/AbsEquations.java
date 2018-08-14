@@ -6,6 +6,7 @@ import org.twz.cx.element.Ticker.AbsTicker;
 import org.twz.cx.element.Ticker.StepTicker;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.dag.Gene;
+import org.twz.io.FnJSON;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -85,16 +86,17 @@ public abstract class AbsEquations extends ModelAtom {
     }
 
     public void goTo(double t1) {
+
         double t0 = Last;
-        if (t0 == t1) return;
+        if (t0 >= t1) return;
         goTo(t0, Ys, t1, Ys);
         Last = t1;
     }
 
     protected abstract void goTo(double t0, double[] y0, double t1, double[] y1);
 
-    private void meausre(Map<String, Double> tab, EBMMeasurement measurement, double ti) {
-        measurement.call(tab, ti, Ys);
+    public void measure(Map<String, Double> tab, EBMMeasurement measurement) {
+        measurement.call(tab, Last, Ys, getParameters(), FnJSON.toDoubleMap(Attributes));
     }
 
     public void setY(double[] y) {

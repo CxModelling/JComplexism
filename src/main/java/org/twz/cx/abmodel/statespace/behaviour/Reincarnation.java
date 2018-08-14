@@ -58,11 +58,6 @@ public class Reincarnation extends PassiveBehaviour {
     }
 
     @Override
-    public void shock(double ti, Object source, String target, Object value) {
-
-    }
-
-    @Override
     public String toString() {
         return String.format("Reincarnation(%s, Death:%s, Birth:%s, NBir:%s)", getName(), S_death.getName(), S_birth.getName(), BirthN);
     }

@@ -80,11 +80,6 @@ public class LifeS extends ActiveBehaviour {
     }
 
     @Override
-    public void shock(double ti, Object source, String target, Object value) {
-
-    }
-
-    @Override
     public String toString() {
         return String.format("LifeS(%s, Death:%s, Birth:%s, Cap: %.1f, Rate:%.4f)",
                 getName(), S_death.getName(), S_birth.getName(), Cap, BirthRate);

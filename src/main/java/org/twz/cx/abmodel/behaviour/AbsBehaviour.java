@@ -59,6 +59,11 @@ public abstract class AbsBehaviour extends ModelAtom {
     public abstract void match(AbsBehaviour be_src, Map<String, AbsAgent> ags_src, Map<String, AbsAgent> ags_new, double ti);
 
     @Override
+    public void shock(double ti, AbsSimModel model, String action, JSONObject value) {
+
+    }
+
+    @Override
     public JSONObject toJSON() {
         JSONObject js = new JSONObject();
         js.put("Name", getName());

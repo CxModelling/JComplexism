@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class EBMObserver extends AbsObserver<EquationBasedModel> {
     List<String> Stocks;
-    List<IObsFun> StockFns, FlowFns;
+    List<EBMMeasurement> StockFns, FlowFns;
 
     public EBMObserver() {
         Stocks = new ArrayList<>();
@@ -21,21 +21,25 @@ public class EBMObserver extends AbsObserver<EquationBasedModel> {
         Stocks.add(stock);
     }
 
-    public void addObservingStockFunction(IObsFun fn) {
+    public void addObservingStockFunction(EBMMeasurement fn) {
         StockFns.add(fn);
     }
 
-    public void addObservingFlowFunction(IObsFun fn) {
+    public void addObservingFlowFunction(EBMMeasurement fn) {
         FlowFns.add(fn);
     }
 
     @Override
-    protected void readStatics(EquationBasedModel model, Map tab, double ti) {
-        //todo
+    protected void readStatics(EquationBasedModel model, Map<String, Double> tab, double ti) {
+        model.goTo(ti);
+        AbsEquations Eq = model.getEquations();
+        Stocks.forEach(s->tab.put(s, Eq.getY(s)));
+        StockFns.forEach(sf->Eq.measure(tab, sf));
     }
 
     @Override
-    public void updateDynamicObservations(EquationBasedModel model, Map flows, double ti) {
-//todo
+    public void updateDynamicObservations(EquationBasedModel model,  Map<String, Double> flows, double ti) {
+        AbsEquations Eq = model.getEquations();
+        FlowFns.forEach(sf->Eq.measure(flows, sf));
     }
 }

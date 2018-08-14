@@ -54,8 +54,8 @@ public class ExternalShock extends PassiveModBehaviour {
     }
 
     @Override
-    public void shock(double ti, Object source, String target, Object value) {
-        Value = (Double) value;
+    public void shock(double ti, AbsSimModel source, String target, JSONObject value) {
+        Value = value.getDouble("value");
         if (ModProto.update(Value)) {
             StSpABModel model = (StSpABModel) source;
             model.getPopulation().getAgents().values().forEach(ag->ag.modify(getName(), ti));
