@@ -28,15 +28,16 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
     }
 
     public void putAllLast(String prefix, Map<String, Double> dis) {
-        Last.forEach((k, v) -> dis.put(prefix + "." + k, v));
+        Last.forEach((k, v) -> {
+            if (!k.equals("Time")) dis.put(prefix + "." + k, v);
+        });
     }
 
     public void putAllMid(String prefix, Map<String, Double> dis) {
-        Mid.forEach((k, v) -> dis.put(prefix + "." + k, v));
+        Mid.forEach((k, v) -> {
+            if (!k.equals("Time")) dis.put(prefix + "." + k, v);
+        });
     }
-
-
-
 
     public void setObservationalInterval(double odt) {
         assert odt > 0;

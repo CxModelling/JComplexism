@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
  */
 public class DataFrame implements AdapterJSONArray {
     private Map<String, List<Double>> Data;
+    private List<String> ColumnNames;
     private String Key;
 
     public DataFrame(List<Map<String, Double>> dat, String key) {
@@ -21,7 +22,9 @@ public class DataFrame implements AdapterJSONArray {
         Data = new LinkedHashMap<>();
 
         List<String> cols = new ArrayList<>();
+        cols.add(Key);
         dat.forEach(d->d.keySet().stream().filter(c->!cols.contains(c)).forEach(cols::add));
+        ColumnNames = cols;
 
         Data.put(Key, dat.stream().map(e->e.get(Key)).collect(Collectors.toList()));
         cols.stream().filter(col -> !col.equals(Key))
@@ -65,26 +68,34 @@ public class DataFrame implements AdapterJSONArray {
     }
 
     public void print() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Key);
-        sb.append("\t");
-        sb.append(Data.keySet().stream()
-                .filter(k-> !k.equals(Key))
-                .collect(Collectors.joining("\t")));
-        sb.append("\n");
+        print(10);
+    }
+
+    public void print(int n) {
+        System.out.format(getHeadingFormat(n), ColumnNames.toArray());
+        System.out.println();
+
         int size = Data.get(Key).size();
 
-        for (int i=0; i < size; i++) {
-            sb.append(Data.get(Key).get(i));
+        String k;
 
-            for (Map.Entry<String, List<Double>> entry : Data.entrySet()) {
-                if (!entry.getKey().equals(Key)) {
-                    sb.append("\t");
-                    sb.append(entry.getValue().get(i));
-                }
+        for (int i=0; i < size; i++) {
+            for (int j = 0; j < ColumnNames.size(); j++) {
+                k = ColumnNames.get(j);
+                System.out.printf(String.format(("%" + n + "g "), Data.get(k).get(i)));
             }
-            sb.append("\n");
+
+            System.out.println();
         }
-        System.out.println(sb.toString());
     }
+
+    private String getHeadingFormat(int n) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("%").append(n).append("s");
+        for (int i = 0; i < ColumnNames.size() - 1; i++) {
+            sb.append(" ").append("%").append(n).append("s");
+        }
+        return sb.toString();
+    }
+
 }
