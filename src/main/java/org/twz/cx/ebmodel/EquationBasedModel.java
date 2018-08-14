@@ -101,13 +101,13 @@ public class EquationBasedModel extends LeafModel {
     }
 
     public void goTo(double ti) {
-        Equations.updateTo(ti);
+        Equations.goTo(ti);
         Y = Equations.getDictY();
     }
 
     @Override
     public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) {
-        Equations.updateTo(ti);
+        Equations.goTo(ti);
         super.fetchDisclosures(ds_ms, ti);
     }
 

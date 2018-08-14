@@ -8,7 +8,7 @@ import java.util.*;
  * Created by TimeWz on 2017/2/10.
  */
 public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
-    private LinkedHashMap<String, Double> Last, Mid, Flows;
+    protected LinkedHashMap<String, Double> Last, Mid, Flows;
     private List<Map<String, Double>> TimeSeries, TimeSeriesMid;
     private double ObservationalInterval;
     private boolean ExactMid;
@@ -22,6 +22,21 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         Last = new LinkedHashMap<>();
         Mid = new LinkedHashMap<>();
     }
+
+    public void putAllFlows(String prefix, Map<String, Double> dis) {
+        Flows.forEach((k, v) -> dis.put(prefix + "." + k, v));
+    }
+
+    public void putAllLast(String prefix, Map<String, Double> dis) {
+        Last.forEach((k, v) -> dis.put(prefix + "." + k, v));
+    }
+
+    public void putAllMid(String prefix, Map<String, Double> dis) {
+        Mid.forEach((k, v) -> dis.put(prefix + "." + k, v));
+    }
+
+
+
 
     public void setObservationalInterval(double odt) {
         assert odt > 0;

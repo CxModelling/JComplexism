@@ -57,8 +57,8 @@ public class ODEquationsTest {
         Simulator Simu = new Simulator(EBM);
         Simu.addLogPath("log/EBM.txt");
         EBMY0 Y0 = new EBMY0();
-        Y0.append("{'y': 'S', 'n': 900}");
-        Y0.append("{'y': 'I', 'n': 100}");
+        Y0.append("{'y': 'S', 'n': 990}");
+        Y0.append("{'y': 'I', 'n': 10}");
 
         Simu.simulate(Y0, 0, 15, 1);
         EBM.getObserver().getObservations().print();

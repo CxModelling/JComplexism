@@ -109,6 +109,8 @@ public abstract class AbsScheduler {
     }
 
     private void checkCurrentRequests() {
+        if (NumAtoms == 0) return;
+
         if (Coming.isEmpty() || !Coming.containsAll(AtomRequests.keySet())) {
             findComingAtoms();
             AtomRequests.clear();
@@ -161,7 +163,8 @@ public abstract class AbsScheduler {
             if (req.reached()) continue;
 
             try {
-                lower.get(req.getGroup()).add(req.downScale().getValue());
+                req = req.downScale().getValue();
+                lower.get(req.getGroup()).add(req);
             } catch (NullPointerException e) {
                 List<Request> temp = new ArrayList<>();
                 temp.add(req.downScale().getValue());
