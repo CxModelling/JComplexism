@@ -50,6 +50,14 @@ public class EquationBasedModel extends LeafModel {
         ((EBMObserver) getObserver()).addObservingFlowFunction(fn);
     }
 
+    public AbsEquations getEquations() {
+        return Equations;
+    }
+
+    public String[] getYNames() {
+        return Equations.getYNames();
+    }
+
     @Override
     public void readY0(IY0 y0, double ti) {
         // todo Equations.setY(FnJSON.toDoubleMap(y0.get()));
@@ -97,6 +105,10 @@ public class EquationBasedModel extends LeafModel {
     public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) {
         Equations.updateTo(ti);
         super.fetchDisclosures(ds_ms, ti);
+    }
+
+    public void meausre(Map<String, Double> tab, EBMMeasurement measurement) {
+
     }
 
     @Override
