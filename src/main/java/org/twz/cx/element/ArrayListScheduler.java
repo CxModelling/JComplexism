@@ -67,5 +67,6 @@ public class ArrayListScheduler extends AbsScheduler {
                 Coming.add(atom);
             }
         }
+        CountRequeuing += atoms.size();
     }
 }

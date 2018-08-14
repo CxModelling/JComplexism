@@ -4,6 +4,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AbsScheduler {
+    public static String DefaultScheduler = "PriorityQueue";
+
+    public static AbsScheduler getScheduler(String name) {
+        switch (DefaultScheduler) {
+            case "PriorityQueue":
+                return new PriorityQueueScheduler(name);
+            case "ArrayList":
+                return new ArrayListScheduler(name);
+        }
+        return new ArrayListScheduler(name);
+    }
+
 
 
     protected String Location;
@@ -18,6 +30,8 @@ public abstract class AbsScheduler {
 
     private int NumAtoms;
 
+    protected long CountRequests, CountDisclosure, CountRequeuing;
+
     public AbsScheduler(String location) {
         Location = location;
         Requests = new ArrayList<>();
@@ -28,6 +42,10 @@ public abstract class AbsScheduler {
         GloTime = Double.POSITIVE_INFINITY;
         OwnTime = Double.POSITIVE_INFINITY;
         NumAtoms = 0;
+
+        CountDisclosure = 0;
+        CountRequests = 0;
+        CountRequeuing = 0;
     }
 
     public List<Request> getRequests() {
@@ -132,6 +150,7 @@ public abstract class AbsScheduler {
 
     public void fetchRequests(List<Request> requests) {
         Requests = requests;
+        CountRequests += requests.size();
     }
 
     public Map<String, List<Request>> popLowerRequests() {
@@ -179,6 +198,7 @@ public abstract class AbsScheduler {
 
     public void fetchDisclosures(List<Disclosure> ds) {
         Disclosures.addAll(ds);
+        CountDisclosure += ds.size();
     }
 
     public void toExecutionCompleted() {
@@ -192,6 +212,10 @@ public abstract class AbsScheduler {
         Requests.clear();
         Disclosures.clear();
         GloTime = Double.POSITIVE_INFINITY;
+    }
+
+    public void printEventCounts() {
+        System.out.println(String.format("Counts: Requests %d, Discloses %d, Requeuing %d", CountRequests, CountDisclosure, CountRequeuing));
     }
 
     @Override

@@ -47,11 +47,12 @@ public class ReincarnationTest {
         Simulator Simu = new Simulator(Model);
         Simu.addLogPath("log/Reincarnation.txt");
         Y0 = new StSpY0();
-        Y0.append(50, "Young");
-        Y0.append(50, "Middle");
-        Y0.append(50, "Old");
+        Y0.append(5000, "Young");
+        Y0.append(5000, "Middle");
+        Y0.append(5000, "Old");
 
         Simu.simulate(Y0, 0, 10, 1);
-        Model.getObserver().getObservations().print();
+        Model.print();
+        Model.printCounts();
     }
 }

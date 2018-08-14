@@ -33,7 +33,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         Environment = new HashMap<>();
         Listeners = new ListenerSet();
 
-        Scheduler = new PriorityQueueScheduler(name);
+        Scheduler = AbsScheduler.getScheduler(name); //new PriorityQueueScheduler(name);
         ProtoY0 = protoY0;
         TimeEnd = Double.NaN;
     }
@@ -178,5 +178,9 @@ public abstract class AbsSimModel implements AdapterJSONObject{
 
     public void print() {
         Observer.print();
+    }
+
+    public void printCounts() {
+        Scheduler.printEventCounts();
     }
 }

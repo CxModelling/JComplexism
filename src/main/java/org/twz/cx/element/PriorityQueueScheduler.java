@@ -39,12 +39,14 @@ public class PriorityQueueScheduler extends AbsScheduler {
         OwnTime = Double.POSITIVE_INFINITY;
         AtomQueue = new PriorityQueue<>(AtomQueue);
         AtomQueue.addAll(AtomWaiting);
+        CountRequeuing += AtomWaiting.size();
         AtomWaiting.clear();
     }
 
     @Override
     public void rescheduleWaitingAtoms() {
         AtomQueue.addAll(AtomWaiting);
+        CountRequeuing += AtomWaiting.size();
         AtomWaiting.clear();
     }
 
