@@ -151,7 +151,7 @@ public abstract class AbsScheduler {
     }
 
     public void fetchRequests(List<Request> requests) {
-        Requests = requests;
+        Requests = new ArrayList<>(requests);
         CountRequests += requests.size();
     }
 
