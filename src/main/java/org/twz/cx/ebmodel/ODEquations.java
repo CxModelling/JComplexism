@@ -1,10 +1,10 @@
 package org.twz.cx.ebmodel;
 
+import org.apache.commons.math3.exception.DimensionMismatchException;
+import org.apache.commons.math3.exception.MaxCountExceededException;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
-import org.apache.commons.math3.ode.nonstiff.ClassicalRungeKuttaIntegrator;
 import org.apache.commons.math3.ode.nonstiff.DormandPrince853Integrator;
-import org.apache.commons.math3.ode.nonstiff.EulerIntegrator;
 import org.json.JSONObject;
 
 import org.twz.cx.mcore.AbsSimModel;
@@ -13,34 +13,38 @@ import org.twz.dag.Gene;
 import java.util.Map;
 
 
-public abstract class ODEquations extends AbsEquations implements FirstOrderDifferentialEquations {
-    private double FDt;
+public class ODEquations extends AbsEquations implements FirstOrderDifferentialEquations {
 
     private FirstOrderIntegrator Integrator;
+    private ODEFunction Function;
 
-
-    public ODEquations(String name, String[] y_names, double dt, double fdt, Gene parameters) {
+    public ODEquations(String name, ODEFunction fn, String[] y_names, double dt, Gene parameters) {
         super(name, y_names, parameters, dt);
-        FDt = fdt;
-        Integrator = new DormandPrince853Integrator(1.0e-8, 100.0, 1.0e-10, 1.0e-10);
+        Function = fn;
+        Integrator = new DormandPrince853Integrator(1.0e-8, 10.0, 1.0e-10, 1.0e-10);
     }
 
-    public ODEquations(String name, String[] y_names, double dt, double fdt, Map<String, Double> parameters) {
+    public ODEquations(String name, ODEFunction fn, String[] y_names, double dt, Map<String, Double> parameters) {
         super(name, y_names, parameters, dt);
-        FDt = fdt;
-        Integrator = new DormandPrince853Integrator(1.0e-8, 100.0, 1.0e-10, 1.0e-10);
+        Function = fn;
+        Integrator = new DormandPrince853Integrator(1.0e-8, 10.0, 1.0e-10, 1.0e-10);
     }
 
-    public ODEquations(String name, String[] y_names, double dt, double fdt) {
+    public ODEquations(String name, ODEFunction fn, String[] y_names, double dt) {
         super(name, y_names, dt);
-        FDt = fdt;
-        Integrator = new DormandPrince853Integrator(1.0e-8, 100.0, 1.0e-10, 1.0e-10);
+        Function = fn;
+        Integrator = new DormandPrince853Integrator(1.0e-8, 10.0, 1.0e-10, 1.0e-10);
     }
 
 
     @Override
     protected void goTo(double t0, double[] y0, double t1, double[] y1) {
         Integrator.integrate(this, t0, y0, t1, y1);
+    }
+
+    @Override
+    public void computeDerivatives(double t, double[] y0, double[] y1) throws MaxCountExceededException, DimensionMismatchException {
+        Function.call(t, y0, y1, getParameters(), Attributes);
     }
 
     @Override
