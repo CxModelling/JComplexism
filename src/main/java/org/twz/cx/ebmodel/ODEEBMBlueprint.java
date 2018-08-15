@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.util.NodeGroup;
+import org.twz.io.FnJSON;
 import org.twz.statespace.IStateSpaceBlueprint;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
         Dt = 1;
         Xs = new JSONObject();
         ObsYs = new ArrayList<>();
+        Ps = new String[0];
         Measurements = new ArrayList<>();
     }
 
@@ -77,6 +79,7 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
         ParameterCore pc = (ParameterCore) args.get("pc");
 
         ODEquations eq = new ODEquations(name, Fn, Ys, Dt, pc);
+        eq.updateAttributes(FnJSON.toObjectMap(Xs));
         EquationBasedModel ebm = new EquationBasedModel(name, eq, pc);
 
         ObsYs.forEach(ebm::addObservingStock);

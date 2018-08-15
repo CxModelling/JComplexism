@@ -42,15 +42,6 @@ public class MultiModelTest {
         Bp.setObservations(new String[]{"Sus", "Inf", "Rec"}, new String[]{"Infect"}, new String[]{"FOI"});
 
 
-        StSpY0 y0 = new StSpY0();
-        y0.append(950, "Sus");
-        y0.append(50, "Inf");
-
-        Y0 = new Y0s();
-        Y0.appendChildren("m1", y0);
-        Y0.appendChildren("m2", y0);
-
-
         NodeGroup ng = new NodeGroup("root", new String[0]);
         ng.appendChildren(Bp.getParameterHierarchy(Da.getStateSpace("CloseSIR")));
 
@@ -78,6 +69,15 @@ public class MultiModelTest {
 
         Model.addObservingModel("m1");
         Model.addObservingModel("m2");
+
+
+        StSpY0 y0 = new StSpY0();
+        y0.append(950, "Sus");
+        y0.append(50, "Inf");
+
+        Y0 = new Y0s();
+        Y0.appendChildren("m1", y0);
+        Y0.appendChildren("m2", y0);
     }
 
     @Test

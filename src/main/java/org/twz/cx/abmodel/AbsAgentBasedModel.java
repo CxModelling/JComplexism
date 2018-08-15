@@ -142,7 +142,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
             Scheduler.removeAtom(ag);
             Population.removeAgent(id);
             impulseExit(bes, ag, ti);
-            disclose("remove agent " + id, ag.getName());
+            disclose("remove agent " + id, "*");
         } catch (NullPointerException ignored) {
 
         }

@@ -97,7 +97,7 @@ public abstract class AbsEquations extends ModelAtom {
     protected abstract void goTo(double t0, double[] y0, double t1, double[] y1);
 
     public void measure(Map<String, Double> tab, EBMMeasurement measurement) {
-        measurement.call(tab, Last, Ys, getParameters(), FnJSON.toDoubleMap(Attributes));
+        measurement.call(tab, Last, Ys, getParameters(), Attributes);
     }
 
     public void setY(double[] y) {

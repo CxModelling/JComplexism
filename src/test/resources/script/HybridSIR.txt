@@ -1,0 +1,6 @@
+CTMC HySIR {
+    Inf
+    Rec
+
+    Inf -- Recov(gamma) -> Rec
+}

@@ -21,7 +21,7 @@ public class LifeS extends ActiveBehaviour {
     private double Dt, BirthRate, Cap;
     private double BirthN;
 
-    public LifeS(String name, State s_death, State s_birth, double cap, double rate, double dt) {
+    public LifeS(String name, State s_death, State s_birth, Double cap, Double rate, Double dt) {
         super(name, new StepTicker(name, dt), new StateEnterTrigger(s_death));
         S_death = s_death;
         S_birth = s_birth;

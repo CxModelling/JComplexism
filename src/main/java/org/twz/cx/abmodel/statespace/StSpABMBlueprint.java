@@ -67,6 +67,10 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         addBehaviour(js);
     }
 
+    public void addBehaviour(String js) {
+        addBehaviour(new JSONObject(js));
+    }
+
     public void addBehaviour(JSONObject js) {
         Behaviours.add(js);
     }
@@ -100,7 +104,8 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
     public NodeGroup getParameterHierarchy(IStateSpaceBlueprint dc) {
         NodeGroup ng = new NodeGroup(Name, new String[0]);
         assert Population != null;
-        ng.appendChildren(new NodeGroup(Population.Group, dc.getRequiredDistributions()));
+        String[] needs = dc.getRequiredDistributions();
+        ng.appendChildren(new NodeGroup(Population.Group, needs));
         return ng;
     }
 
