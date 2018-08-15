@@ -4,23 +4,23 @@ package org.twz.cx.abmodel.statespace;
 import org.twz.cx.abmodel.AbsBreeder;
 import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
-import org.twz.statespace.AbsDCore;
+import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;
 
 import java.util.Collection;
 import java.util.Map;
 
 public class StSpBreeder extends AbsBreeder<StSpAgent> {
-    private final AbsDCore DCore;
+    private final AbsStateSpace DCore;
     private Map<String, State> WellDefined;
 
-    public StSpBreeder(String name, String group, AbsDCore dc, ParameterCore genPars, Map<String, Double> exo) {
+    public StSpBreeder(String name, String group, AbsStateSpace dc, ParameterCore genPars, Map<String, Double> exo) {
         super(name, group, genPars, exo);
         DCore = dc;
         WellDefined = dc.getWellDefinedStateSpace();
     }
 
-    public AbsDCore getDCore() {
+    public AbsStateSpace getDCore() {
         return DCore;
     }
 

@@ -1,7 +1,7 @@
 package org.twz.statespace.ctbn;
 
 import org.twz.dag.ScriptException;
-import org.twz.statespace.AbsDCore;
+import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;
 import org.twz.cx.Director;
 import org.json.JSONObject;
@@ -27,7 +27,7 @@ public class DBNCreateTest {
 
 
 
-        BlueprintCTBN bp = da.createCTBN("SIR_bn");
+        CTBNBlueprint bp = (CTBNBlueprint) da.createStateSpace("SIR_bn", "CTBN");
 
         bp.addMicroState("sir", new String[]{"S", "I", "R"});
         bp.addMicroState("life", new String[]{"Alive", "Dead"});
@@ -46,7 +46,7 @@ public class DBNCreateTest {
         bp.linkStateTransition("Inf", "Recov");
         bp.linkStateTransition("Alive", "Die");
 
-        AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
+        AbsStateSpace mod = da.generateDCore("SIR_bn", "pSIR");
         State st = mod.getState("Sus");
         assertEquals(st.getName(), "Sus");
 
@@ -65,9 +65,9 @@ public class DBNCreateTest {
 
         da.loadBayesNet("src/test/resources/script/pSIR.txt");
 
-        da.loadDCore("src/test/resources/script/SIR_BN.txt");
+        da.loadStateSpace("src/test/resources/script/SIR_BN.txt");
 
-        AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
+        AbsStateSpace mod = da.generateDCore("SIR_bn", "pSIR");
         State st = mod.getState("Sus");
         assertEquals(st.getName(), "Sus");
 
@@ -85,12 +85,12 @@ public class DBNCreateTest {
         Director da = new Director();
 
         da.loadBayesNet("src/test/resources/script/pSIR.txt");
-        da.loadDCore("src/test/resources/script/SIR_BN.txt");
+        da.loadStateSpace("src/test/resources/script/SIR_BN.txt");
 
-        AbsDCore mod = da.generateDCore("SIR_bn", "pSIR");
+        AbsStateSpace mod = da.generateDCore("SIR_bn", "pSIR");
         JSONObject js = mod.toJSON();
         js.put("ModelName", "SIR_bn_Copy");
-        da.readDCore(js);
+        da.readStateSpace(js);
 
         mod = da.generateDCore("SIR_bn_Copy", "pSIR");
         State st = mod.getState("Sus");

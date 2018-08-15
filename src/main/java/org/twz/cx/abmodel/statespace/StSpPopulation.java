@@ -3,7 +3,7 @@ package org.twz.cx.abmodel.statespace;
 import org.twz.cx.abmodel.AbsBreeder;
 import org.twz.cx.abmodel.Population;
 import org.twz.dag.ParameterCore;
-import org.twz.statespace.AbsDCore;
+import org.twz.statespace.AbsStateSpace;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,11 +13,11 @@ public class StSpPopulation extends Population<StSpAgent> {
         super(eva);
     }
 
-    public StSpPopulation(String name, String group, AbsDCore dc, ParameterCore genPars, Map<String, Double> exo) {
+    public StSpPopulation(String name, String group, AbsStateSpace dc, ParameterCore genPars, Map<String, Double> exo) {
         super(new StSpBreeder(name, group, dc, genPars, exo));
     }
 
-    public StSpPopulation(String name, String group, AbsDCore dc, ParameterCore genPars) {
+    public StSpPopulation(String name, String group, AbsStateSpace dc, ParameterCore genPars) {
         super(new StSpBreeder(name, group, dc, genPars, new HashMap<>()));
     }
 

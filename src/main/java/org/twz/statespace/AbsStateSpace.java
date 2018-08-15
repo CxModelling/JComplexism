@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
  *
  * Created by TimeWz on 2017/1/25.
  */
-public abstract class AbsDCore implements AdapterJSONObject {
+public abstract class AbsStateSpace implements AdapterJSONObject {
     private final String Name;
     private String JS;
 
-    public AbsDCore(String name, JSONObject js) {
+    public AbsStateSpace(String name, JSONObject js) {
         Name = name;
         JS = js.toString();
     }

@@ -5,19 +5,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
-import org.twz.statespace.AbsDCore;
-
-import static org.junit.Assert.*;
+import org.twz.statespace.AbsStateSpace;
 
 public class StSpBehaviourFactoryTest {
     private Director Da;
-    private AbsDCore DC;
+    private AbsStateSpace DC;
 
     @Before
     public void setUp() {
         Da = new Director();
         Da.loadBayesNet("src/test/resources/script/pBAD.txt");
-        Da.loadDCore("src/test/resources/script/BAD.txt");
+        Da.loadStateSpace("src/test/resources/script/BAD.txt");
 
         DC = Da.generateDCore("BAD", "pBAD");
 

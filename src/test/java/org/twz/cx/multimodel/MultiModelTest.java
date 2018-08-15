@@ -1,25 +1,17 @@
 package org.twz.cx.multimodel;
 
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
-import org.twz.cx.abmodel.ABMY0;
 import org.twz.cx.abmodel.statespace.StSpABMBlueprint;
-import org.twz.cx.abmodel.statespace.StSpABModel;
-import org.twz.cx.abmodel.statespace.StSpPopulation;
 import org.twz.cx.abmodel.statespace.StSpY0;
-import org.twz.cx.abmodel.statespace.behaviour.FDShock;
-import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.util.NodeGroup;
-import org.twz.statespace.AbsDCore;
+import org.twz.statespace.AbsStateSpace;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -29,7 +21,7 @@ public class MultiModelTest {
 
     private Director Da;
     private MultiModel Model;
-    private AbsDCore DC;
+    private AbsStateSpace DC;
     private ParameterCore PC;
     private Y0s Y0;
 
@@ -37,7 +29,7 @@ public class MultiModelTest {
     public void setUp() {
         Da = new Director();
         Da.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
-        Da.loadDCore("src/test/resources/script/CloseSIR.txt");
+        Da.loadStateSpace("src/test/resources/script/CloseSIR.txt");
 
         NodeGroup ng = new NodeGroup("root", new String[0]);
         NodeGroup ngABM = new NodeGroup("abm", new String[0]);

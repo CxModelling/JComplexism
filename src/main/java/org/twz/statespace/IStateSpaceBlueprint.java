@@ -7,7 +7,7 @@ import org.twz.dag.ParameterCore;
  *
  * Created by TimeWz on 2016/12/22.
  */
-public interface IBlueprintDCore<M extends AbsDCore> extends AdapterJSONObject {
+public interface IStateSpaceBlueprint<M extends AbsStateSpace> extends AdapterJSONObject {
     String getName();
     boolean isCompatible(ParameterCore pc);
     String[] getRequiredDistributions();

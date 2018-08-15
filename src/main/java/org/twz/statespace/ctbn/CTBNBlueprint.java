@@ -1,7 +1,7 @@
 package org.twz.statespace.ctbn;
 
 import org.twz.dag.actor.Sampler;
-import org.twz.statespace.IBlueprintDCore;
+import org.twz.statespace.IStateSpaceBlueprint;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  *
  * Created by TimeWz on 2017/2/8.
  */
-public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
+public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
     private class PseudoTransition implements AdapterJSONObject {
         String To, Dist;
         PseudoTransition(String to, String dist) {
@@ -40,7 +40,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
     private Map<String, List<String>>Targets;
     private JSONObject JS;
 
-    public BlueprintCTBN(String name) {
+    public CTBNBlueprint(String name) {
         Name = name;
         MicroStates = new LinkedHashMap<>();
         States = new TreeMap<>();
@@ -49,7 +49,7 @@ public class BlueprintCTBN implements IBlueprintDCore<CTBayesianNetwork> {
         JS = null;
     }
 
-    public BlueprintCTBN(JSONObject js) {
+    public CTBNBlueprint(JSONObject js) {
         this(js.getString("ModelName"));
         JSONObject sub, temp;
         JSONArray order;

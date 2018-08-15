@@ -8,9 +8,9 @@ import java.util.List;
  */
 public class State {
     private final String Name;
-    private AbsDCore Model;
+    private AbsStateSpace Model;
 
-    public State(String value, AbsDCore model) {
+    public State(String value, AbsStateSpace model) {
         Name = value;
         Model = model;
     }
@@ -23,7 +23,7 @@ public class State {
         return Model.getTransitions(this);
     }
 
-    public void setModel(AbsDCore mod) {
+    public void setModel(AbsStateSpace mod) {
         Model = mod;
     }
 

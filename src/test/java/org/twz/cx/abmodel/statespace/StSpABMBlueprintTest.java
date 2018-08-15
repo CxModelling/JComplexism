@@ -3,16 +3,12 @@ package org.twz.cx.abmodel.statespace;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
-import org.twz.cx.abmodel.statespace.behaviour.FDShock;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.ParameterCore;
-import org.twz.dag.util.NodeGroup;
-import org.twz.statespace.AbsDCore;
+import org.twz.statespace.AbsStateSpace;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class StSpABMBlueprintTest {
     private Director Da;
@@ -23,7 +19,7 @@ public class StSpABMBlueprintTest {
     public void setUp() {
         Da = new Director();
         Da.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
-        Da.loadDCore("src/test/resources/script/CloseSIR.txt");
+        Da.loadStateSpace("src/test/resources/script/CloseSIR.txt");
 
         Bp = new StSpABMBlueprint("SIR");
         Bp.setAgent("Ag", "agent", "CloseSIR");
@@ -45,9 +41,9 @@ public class StSpABMBlueprintTest {
         Map<String, Object> args = new HashMap<>();
 
         ParameterCore PC = Da.getBayesNet("pCloseSIR")
-                .toSimulationCore(Bp.getParameterHierarchy(Da.getDCore("CloseSIR")), true)
+                .toSimulationCore(Bp.getParameterHierarchy(Da.getStateSpace("CloseSIR")), true)
                 .generate("Test");
-        AbsDCore DC = Da.generateDCore("CloseSIR", PC.genPrototype("agent"));
+        AbsStateSpace DC = Da.generateDCore("CloseSIR", PC.genPrototype("agent"));
 
         args.put("pc", PC);
         args.put("dc", DC);

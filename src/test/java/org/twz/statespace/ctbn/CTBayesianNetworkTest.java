@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.twz.dag.BayesNet;
 import org.twz.dag.ScriptException;
 import org.twz.io.IO;
-import org.twz.statespace.DCoreFactory;
-import org.twz.statespace.IBlueprintDCore;
+import org.twz.statespace.StateSpaceFactory;
+import org.twz.statespace.IStateSpaceBlueprint;
 import org.twz.statespace.State;
 
 import static org.junit.Assert.*;
@@ -22,11 +22,11 @@ public class CTBayesianNetworkTest  {
 
     @Before
     public void setUp() {
-        IBlueprintDCore bp;
+        IStateSpaceBlueprint bp;
         try {
-            bp = DCoreFactory.createFromScripts(IO.loadText("src/test/resources/script/SIR_BN.txt"));
+            bp = StateSpaceFactory.createFromScripts(IO.loadText("src/test/resources/script/SIR_BN.txt"));
         } catch (ScriptException e) {
-            bp = new BlueprintCTBN("SIR");
+            bp = new CTBNBlueprint("SIR");
         }
 
         BayesNet bn = new BayesNet("pSIR");

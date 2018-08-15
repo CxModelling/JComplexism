@@ -1,6 +1,6 @@
 package org.twz.statespace.ctmc;
 
-import org.twz.statespace.AbsDCore;
+import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 import org.json.JSONObject;
@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * Created by TimeWz on 2017/1/2.
  */
-public class CTMarkovChain extends AbsDCore {
+public class CTMarkovChain extends AbsStateSpace {
 
     private Map<String, State> States;
     private Map<String, Transition> Transitions;

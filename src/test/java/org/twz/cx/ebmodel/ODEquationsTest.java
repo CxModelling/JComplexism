@@ -3,6 +3,7 @@ package org.twz.cx.ebmodel;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.mcore.Simulator;
+import org.twz.dag.Gene;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,12 @@ public class ODEquationsTest {
         EBM.addObservingStock("S");
         EBM.addObservingStock("I");
         EBM.addObservingStock("R");
+
+        EBM.addObservingStockFunction((tab, ti, ys, pc, x) -> {
+            double beta = pc.get("beta");
+            double n = ys[0] + ys[1] + ys[2];
+            tab.put("FOI", beta * ys[0] * ys[1] / n);
+        });
     }
 
     @Test

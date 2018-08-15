@@ -1,7 +1,7 @@
 package org.twz.statespace;
 
-import org.twz.statespace.ctbn.BlueprintCTBN;
-import org.twz.statespace.ctmc.BlueprintCTMC;
+import org.twz.statespace.ctbn.CTBNBlueprint;
+import org.twz.statespace.ctmc.CTMCBlueprint;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.twz.dag.ScriptException;
@@ -14,18 +14,18 @@ import java.util.regex.Pattern;
  * Controller for building dcores
  * Created by TimeWz on 2017/6/17.
  */
-public class DCoreFactory {
-    public static IBlueprintDCore createFromJSON(JSONObject js) {
-        IBlueprintDCore bp;
+public class StateSpaceFactory {
+    public static IStateSpaceBlueprint createFromJSON(JSONObject js) {
+        IStateSpaceBlueprint bp;
         if (js.getString("ModelType").equals("CTBN")) {
-            bp = new BlueprintCTBN(js);
+            bp = new CTBNBlueprint(js);
         } else {
-            bp = new BlueprintCTMC(js);
+            bp = new CTMCBlueprint(js);
         }
         return bp;
     }
 
-    public static IBlueprintDCore createFromScripts(String script) throws ScriptException {
+    public static IStateSpaceBlueprint createFromScripts(String script) throws ScriptException {
         JSONObject js = script2json(script);
         return createFromJSON(js);
     }

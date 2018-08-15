@@ -1,13 +1,10 @@
 package org.twz.statespace.ctmc;
 
-import org.twz.prob.ISampler;
-import org.twz.statespace.IBlueprintDCore;
+import org.twz.statespace.IStateSpaceBlueprint;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 import org.json.JSONObject;
 import org.twz.dag.ParameterCore;
-import org.twz.dag.ScriptException;
-import org.twz.prob.IDistribution;
 import org.twz.io.FnJSON;
 
 import java.util.*;
@@ -17,7 +14,7 @@ import java.util.stream.Collectors;
  *
  * Created by TimeWz on 25/01/2017.
  */
-public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
+public class CTMCBlueprint implements IStateSpaceBlueprint<CTMarkovChain> {
 
     private String Name;
     private Map<String, String> States;
@@ -27,7 +24,7 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
 
     private JSONObject JS;
 
-    public BlueprintCTMC(String name) {
+    public CTMCBlueprint(String name) {
         Name = name;
         States = new HashMap<>();
         TransitionTo = new HashMap<>();
@@ -36,7 +33,7 @@ public class BlueprintCTMC implements IBlueprintDCore<CTMarkovChain> {
         JS = null;
     }
 
-    public BlueprintCTMC(JSONObject js) {
+    public CTMCBlueprint(JSONObject js) {
         this(js.getString("ModelName"));
         JSONObject sub, temp;
         Iterator<?> keys;

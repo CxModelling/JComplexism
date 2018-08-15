@@ -1,9 +1,8 @@
 package org.twz.cx.abmodel;
 
-import org.twz.cx.mcore.AbsSimModel;
-import org.twz.cx.mcore.IMCoreBlueprint;
+import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.util.NodeGroup;
-import org.twz.statespace.IBlueprintDCore;
+import org.twz.statespace.IStateSpaceBlueprint;
 
 import java.util.Map;
 
@@ -11,7 +10,7 @@ import java.util.Map;
  *
  * Created by TimeWz on 2017/6/16.
  */
-public class ABMBlueprint implements IMCoreBlueprint{
+public class ABMBlueprint implements IModelBlueprint<AbsAgentBasedModel> {
     private String Name;
     private String TargetPCore;
     private String TargetDCore;
@@ -35,17 +34,13 @@ public class ABMBlueprint implements IMCoreBlueprint{
     }
 
     @Override
-    public AbsSimModel generate(String name, Map args) {
+    public AbsAgentBasedModel generate(String name, Map args) {
         return null;
     }
 
     @Override
-    public NodeGroup getParameterHierarchy(IBlueprintDCore dc) {
+    public NodeGroup getParameterHierarchy(IStateSpaceBlueprint dc) {
         return null;
     }
 
-    @Override
-    public AbsSimModel generate(String name) {
-        return null;
-    }
 }

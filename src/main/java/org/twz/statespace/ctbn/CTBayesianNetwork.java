@@ -1,6 +1,6 @@
 package org.twz.statespace.ctbn;
 
-import org.twz.statespace.AbsDCore;
+import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 import org.json.JSONObject;
@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * Created by TimeWz on 2017/2/8.
  */
-public class CTBayesianNetwork extends AbsDCore {
+public class CTBayesianNetwork extends AbsStateSpace {
     private final Map<String, State> States;
     private final Map<String, State> WellDefinedStates;
     private final Map<String, Transition> Transitions;

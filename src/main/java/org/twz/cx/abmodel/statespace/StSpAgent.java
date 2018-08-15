@@ -7,7 +7,7 @@ import org.twz.cx.abmodel.statespace.modifier.ModifierSet;
 import org.twz.cx.element.Event;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.dag.Gene;
-import org.twz.statespace.AbsDCore;
+import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 
@@ -132,7 +132,7 @@ public class StSpAgent extends AbsAgent {
         return State.isa(st);
     }
 
-    public StSpAgent deepcopy(AbsDCore dc_new, List<String> tr_ch) {
+    public StSpAgent deepcopy(AbsStateSpace dc_new, List<String> tr_ch) {
         StSpAgent ag = new StSpAgent(getName(), Parameters, dc_new.getState(State.getName()));
         for (Map.Entry<Transition, Double> ent: Transitions.entrySet()) {
             if (!tr_ch.contains(ent.getKey().getName())) {

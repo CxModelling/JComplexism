@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.twz.cx.Director;
 import org.twz.cx.element.Event;
 import org.twz.dag.ParameterCore;
-import org.twz.statespace.AbsDCore;
+import org.twz.statespace.AbsStateSpace;
 
 import static org.junit.Assert.*;
 
@@ -13,14 +13,14 @@ public class StSpAgentTest {
 
     private Director Da;
     private StSpAgent Agent;
-    private AbsDCore DC;
+    private AbsStateSpace DC;
     private ParameterCore PC;
 
     @Before
     public void setUp() {
         Da = new Director();
         Da.loadBayesNet("src/test/resources/script/pSIR.txt");
-        Da.loadDCore("src/test/resources/script/SIR_BN.txt");
+        Da.loadStateSpace("src/test/resources/script/SIR_BN.txt");
         PC = Da.generatePCore("Test","pSIR");
         DC = Da.generateDCore("SIR_bn", PC);
         Agent = new StSpAgent("Test", PC, DC.getState("Sus"));

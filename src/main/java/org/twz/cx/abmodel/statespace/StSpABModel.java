@@ -1,23 +1,21 @@
 package org.twz.cx.abmodel.statespace;
 
 import org.json.JSONObject;
-import org.twz.cx.abmodel.ABMObserver;
 import org.twz.cx.abmodel.ABMY0;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.mcore.IY0;
-import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
 import org.twz.io.FnJSON;
-import org.twz.statespace.AbsDCore;
+import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 
 import java.util.Map;
 
 public class StSpABModel extends AbsAgentBasedModel<StSpAgent> {
-    private AbsDCore DCore;
+    private AbsStateSpace DCore;
 
     public StSpABModel(String name, ParameterCore parameters, StSpPopulation pop) {
         super(name, parameters, pop, new StSpObserver(), new ABMY0());

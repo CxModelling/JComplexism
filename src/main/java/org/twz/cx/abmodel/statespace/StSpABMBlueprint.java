@@ -1,15 +1,15 @@
 package org.twz.cx.abmodel.statespace;
 
 import org.json.JSONObject;
-import org.twz.cx.mcore.IMCoreBlueprint;
+import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.util.NodeGroup;
-import org.twz.statespace.AbsDCore;
-import org.twz.statespace.IBlueprintDCore;
+import org.twz.statespace.AbsStateSpace;
+import org.twz.statespace.IStateSpaceBlueprint;
 
 import java.util.*;
 
-public class StSpABMBlueprint implements IMCoreBlueprint<StSpABModel> {
+public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
     private class PopEntry {
         String Prefix, Group, Dynamic;
         Map<String, Double> Exo;
@@ -92,7 +92,12 @@ public class StSpABMBlueprint implements IMCoreBlueprint<StSpABModel> {
     }
 
     @Override
-    public NodeGroup getParameterHierarchy(IBlueprintDCore dc) {
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public NodeGroup getParameterHierarchy(IStateSpaceBlueprint dc) {
         NodeGroup ng = new NodeGroup(Name, new String[0]);
         assert Population != null;
         ng.appendChildren(new NodeGroup(Population.Group, dc.getRequiredDistributions()));
@@ -102,7 +107,7 @@ public class StSpABMBlueprint implements IMCoreBlueprint<StSpABModel> {
     @Override
     public StSpABModel generate(String name, Map<String, Object> args) {
         ParameterCore pc = (ParameterCore) args.get("pc");
-        AbsDCore dc = (AbsDCore) args.get("dc");
+        AbsStateSpace dc = (AbsStateSpace) args.get("dc");
 
         StSpPopulation pop = new StSpPopulation(Population.Prefix, Population.Group, dc, pc, Population.Exo);
         StSpABModel model = new StSpABModel(name, pc, pop);
@@ -120,10 +125,5 @@ public class StSpABMBlueprint implements IMCoreBlueprint<StSpABModel> {
         ObsBehaviours.forEach(model::addObservingBehaviour);
 
         return model;
-    }
-
-    @Override
-    public StSpABModel generate(String name) {
-        return null;
     }
 }

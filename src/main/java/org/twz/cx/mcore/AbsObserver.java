@@ -8,8 +8,9 @@ import java.util.*;
  * Created by TimeWz on 2017/2/10.
  */
 public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
-    protected LinkedHashMap<String, Double> Last, Mid, Flows;
+    protected LinkedHashMap<String, Double> Last, Mid, Flows, Snapshot;
     private List<Map<String, Double>> TimeSeries, TimeSeriesMid;
+    private List<String> StockNames, FlowNames;
     private double ObservationalInterval;
     private boolean ExactMid;
 
@@ -21,6 +22,8 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         ExactMid = true;
         Last = new LinkedHashMap<>();
         Mid = new LinkedHashMap<>();
+        Snapshot = new LinkedHashMap<>();
+        Snapshot.put("Time", Double.MIN_VALUE);
     }
 
     public void putAllFlows(String prefix, Map<String, Double> dis) {
@@ -37,6 +40,10 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         Mid.forEach((k, v) -> {
             if (!k.equals("Time")) dis.put(prefix + "." + k, v);
         });
+    }
+
+    protected boolean isMid(Map<String, Double> tab) {
+        return tab == Mid;
     }
 
     public void setObservationalInterval(double odt) {
@@ -80,6 +87,9 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
             Mid.put("Time", ti);
         }
         readStatics(model, Last, ti);
+        updateDynamicObservations(model, Flows, ti);
+        StockNames = new ArrayList<>(Last.keySet());
+        FlowNames = new ArrayList<>(Flows.keySet());
     }
 
     public void observeRoutinely(T model, double ti) {
@@ -154,6 +164,20 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
             if (data.get("Time") == time){
                 return data.get(s);
             }
+        }
+        return Double.NaN;
+    }
+
+    public double getSnapshot(T model, String key, double ti) {
+        if (FlowNames.contains(key)) {
+            return TimeSeries.get(TimeSeries.size() - 1).get(key);
+        } else if (StockNames.contains(key)) {
+            if (ti > Snapshot.get("Time")) {
+                Snapshot.clear();
+                readStatics(model, Snapshot, ti);
+                Snapshot.put("Time", ti);
+            }
+            return Snapshot.get(key);
         }
         return Double.NaN;
     }

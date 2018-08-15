@@ -8,6 +8,7 @@ import org.twz.cx.mcore.communicator.IShocker;
 import org.twz.cx.mcore.communicator.ListenerSet;
 import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.actor.Sampler;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.*;
@@ -77,6 +78,10 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Parameters.get(key);
     }
 
+    public Sampler getSampler(String key) {
+        return Parameters.getSampler(key);
+    }
+
     public Gene getParameters() {
         return Parameters;
     }
@@ -95,6 +100,8 @@ public abstract class AbsSimModel implements AdapterJSONObject{
 
     public abstract void readY0(IY0 y0, double ti);
 
+    // Event finding and execution
+
     public abstract List<Request> collectRequests() throws Exception ;
 
     public abstract void doRequest(Request req);
@@ -102,6 +109,22 @@ public abstract class AbsSimModel implements AdapterJSONObject{
     public void validateRequests() {
         // todo
     }
+
+    public void addListener(IChecker impulse, IShocker response) {
+        Listeners.defineImpulseResponse(impulse, response);
+    }
+
+    public boolean triggerExternalImpulses(Disclosure dis, AbsSimModel model, double ti) {
+        return Listeners.applyShock(dis, model, this, ti);
+    }
+
+    public abstract void shock(double time, AbsSimModel model, String action, JSONObject value);
+
+    public Set<IChecker> getAllImpulseCheckers() {
+        return Listeners.getAllCheckers();
+    }
+
+    // Scheduling
 
     public abstract void synchroniseRequestTime(double time);
 
@@ -129,23 +152,15 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         TimeEnd = timeEnd;
     }
 
-    public void addListener(IChecker impulse, IShocker response) {
-        Listeners.defineImpulseResponse(impulse, response);
-    }
-
-    public boolean triggerExternalImpulses(Disclosure dis, AbsSimModel model, double ti) {
-        return Listeners.applyShock(dis, model, this, ti);
-    }
-
-    public abstract void shock(double time, AbsSimModel model, String action, JSONObject value);
-
-    public Set<IChecker> getAllImpulseCheckers() {
-        return Listeners.getAllCheckers();
-    }
-
     public void exitCycle() {
         Scheduler.toCycleCompleted();
     }
+
+    public void printCounts() {
+        Scheduler.printEventCounts();
+    }
+
+    // observation
 
     public void clearOutput() {
         Observer.renew();
@@ -180,14 +195,10 @@ public abstract class AbsSimModel implements AdapterJSONObject{
     }
 
     public Double getSnapshot(String key, double ti) {
-        return Observer.get(key);
+        return Observer.getSnapshot(this, key, ti);
     }
 
     public void print() {
         Observer.print();
-    }
-
-    public void printCounts() {
-        Scheduler.printEventCounts();
     }
 }

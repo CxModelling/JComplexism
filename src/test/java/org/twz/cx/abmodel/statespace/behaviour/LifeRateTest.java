@@ -9,14 +9,12 @@ import org.twz.cx.abmodel.statespace.StSpY0;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.util.NodeGroup;
-import org.twz.statespace.AbsDCore;
-
-import static org.junit.Assert.*;
+import org.twz.statespace.AbsStateSpace;
 
 public class LifeRateTest {
     private Director Da;
     private StSpABModel Model;
-    private AbsDCore DC;
+    private AbsStateSpace DC;
     private ParameterCore PC;
     private StSpY0 Y0;
 
@@ -24,7 +22,7 @@ public class LifeRateTest {
     public void setUp() {
         Da = new Director();
         Da.loadBayesNet("src/test/resources/script/pBAD.txt");
-        Da.loadDCore("src/test/resources/script/BAD.txt");
+        Da.loadStateSpace("src/test/resources/script/BAD.txt");
 
         NodeGroup NG = new NodeGroup("root", new String[0]);
         NG.appendChildren(new NodeGroup("agent", new String[]{"ToM", "ToO", "Die"}));

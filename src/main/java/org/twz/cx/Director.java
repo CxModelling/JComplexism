@@ -1,15 +1,15 @@
 package org.twz.cx;
 
+import org.twz.cx.abmodel.statespace.StSpABMBlueprint;
+import org.twz.cx.ebmodel.ODEEBMBlueprint;
+import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.BayesNet;
-import org.twz.dag.SimulationCore;
-import org.twz.statespace.AbsDCore;
-import org.twz.statespace.DCoreFactory;
-import org.twz.statespace.IBlueprintDCore;
-import org.twz.statespace.ctbn.BlueprintCTBN;
-import org.twz.statespace.ctmc.BlueprintCTMC;
-import org.twz.cx.abmodel.ABMBlueprint;
+import org.twz.statespace.AbsStateSpace;
+import org.twz.statespace.StateSpaceFactory;
+import org.twz.statespace.IStateSpaceBlueprint;
+import org.twz.statespace.ctbn.CTBNBlueprint;
+import org.twz.statespace.ctmc.CTMCBlueprint;
 import org.twz.cx.multimodel.ModelLayout;
-import org.twz.cx.mcore.IMCoreBlueprint;
 import org.json.JSONObject;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.ScriptException;
@@ -26,8 +26,8 @@ import java.util.logging.Logger;
  */
 public class Director {
     private Map<String, BayesNet> BNs;
-    private Map<String, IBlueprintDCore> DCores;
-    private Map<String, IMCoreBlueprint> MCores;
+    private Map<String, IStateSpaceBlueprint> DCores;
+    private Map<String, IModelBlueprint> MCores;
     private Map<String, ModelLayout> Layouts;
     private Logger Log;
 
@@ -71,6 +71,13 @@ public class Director {
         }
     }
 
+    public BayesNet createBayesNet(String name) {
+        assert !BNs.containsKey(name);
+        BayesNet BN = new BayesNet(name);
+        addBayesNet(BN);
+        return BN;
+    }
+
     public void listBayesNets() {
         System.out.println(BNs.keySet());
     }
@@ -79,49 +86,68 @@ public class Director {
         return BNs.get(name);
     }
 
-    public void addDCore(IBlueprintDCore dc) {
+    public void addStateSpace(IStateSpaceBlueprint dc) {
         if(DCores.putIfAbsent(dc.getName(), dc)!=null) {
-            Log.info("New Dynamic Core " + dc.getName() + " added");
+            Log.info("New State space dynamic model " + dc.getName() + " added");
         }
     }
 
-    public void loadDCore(String path) {
+    public void loadStateSpace(String path) {
         if (path.endsWith(".json")) {
-            readDCore(IO.loadJSON(path));
+            readStateSpace(IO.loadJSON(path));
         } else {
-            readDCore(IO.loadText(path));
+            readStateSpace(IO.loadText(path));
         }
     }
 
-    public void readDCore(String script) {
+    public void readStateSpace(String script) {
         try {
-            addDCore(DCoreFactory.createFromScripts(script));
+            addStateSpace(StateSpaceFactory.createFromScripts(script));
         } catch (ScriptException e) {
             Log.warning("Invalidated script");
         }
     }
 
-    public void readDCore(JSONObject js) {
-        addDCore(DCoreFactory.createFromJSON(js));
+    public void readStateSpace(JSONObject js) {
+        addStateSpace(StateSpaceFactory.createFromJSON(js));
     }
 
-    public void listDCore() {
+    public void listStateSpace() {
         System.out.println(DCores.keySet().toString());
     }
 
-    public IBlueprintDCore getDCore(String name) {
+    public IStateSpaceBlueprint getStateSpace(String name) {
         return DCores.get(name);
     }
 
-    public void addMCore(String name, IMCoreBlueprint mc) {
-        MCores.putIfAbsent(name, mc);
+    public IStateSpaceBlueprint createStateSpace(String name, String type) {
+        assert !DCores.containsKey(name);
+        IStateSpaceBlueprint ss;
+        switch (type) {
+            case "CTBN":
+                ss = new CTBNBlueprint(name);
+                break;
+            case "CTMC":
+                ss = new CTMCBlueprint(name);
+                break;
+            default:
+                Log.warning("Unknown type of state space");
+                return null;
+        }
+
+        addStateSpace(ss);
+        return ss;
     }
 
-    public void loadMCore(String path) {
-        restoreMCore(IO.loadJSON(path));
+    public void addSimModel(IModelBlueprint mc) {
+        MCores.putIfAbsent(mc.getName(), mc);
     }
 
-    public void restoreMCore(JSONObject js) {
+    public void loadSimModel(String path) {
+        restoreSimModel(IO.loadJSON(path));
+    }
+
+    public void restoreSimModel(JSONObject js) {
         //try {
         //    addDCore(name, MCoreBuilder.buildFromJSON(js));
         //} catch (ScriptException e) {
@@ -130,48 +156,43 @@ public class Director {
         // todo
     }
 
-    public void listMCore() {
+    public void listSimModels() {
         System.out.println(MCores.keySet().toString());
     }
 
-    public IMCoreBlueprint getMCore(String name) {
+    public IModelBlueprint getSimModel(String name) {
         return MCores.get(name);
     }
 
-    public BayesNet createBN(String name) {
-        BayesNet bn = new BayesNet(name);
-        addBayesNet(bn);
-        return bn;
-    }
+    public IModelBlueprint createSimModel(String name, String type) {
+        assert !DCores.containsKey(name);
+        IModelBlueprint mbp;
+        switch (type) {
+            case "CTBN":
+                mbp = new StSpABMBlueprint(name);
+                break;
+            case "CTMC":
+                mbp = new ODEEBMBlueprint(name);
+                break;
+            default:
+                Log.warning("Unknown type of simulation model");
+                return null;
+        }
 
-    public BlueprintCTBN createCTBN(String name) {
-        BlueprintCTBN bp = new BlueprintCTBN(name);
-        addDCore(bp);
-        return bp;
-    }
-
-    public BlueprintCTMC createCTMC(String name) {
-        BlueprintCTMC bp = new BlueprintCTMC(name);
-        addDCore(bp);
-        return bp;
-    }
-
-    public ABMBlueprint createABM(String name, String pc, String dc) {
-        ABMBlueprint bp = new ABMBlueprint(name, pc, dc);
-        addMCore(name, bp);
-        return bp;
+        addSimModel(mbp);
+        return mbp;
     }
 
     public ParameterCore generatePCore(String name, String bn) {
         return getBayesNet(bn).toSimulationCore().generate(name);
     }
 
-    public AbsDCore generateDCore(String dc, String pc) {
+    public AbsStateSpace generateDCore(String dc, String pc) {
         return generateDCore(dc, generatePCore(dc, pc));
     }
 
-    public AbsDCore generateDCore(String dc, ParameterCore pc) {
-        IBlueprintDCore bp = getDCore(dc);
+    public AbsStateSpace generateDCore(String dc, ParameterCore pc) {
+        IStateSpaceBlueprint bp = getStateSpace(dc);
         if (bp.isCompatible(pc)) {
             return bp.generateModel(pc);
         } else {
