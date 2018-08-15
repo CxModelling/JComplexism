@@ -14,7 +14,7 @@ public class IO {
     public static int DoublePrecision = 4;
 
     public static String doubleFormat(double d, int i) {
-        return String.format("%." + i + "f", d);
+        return String.format("%" + i + "g", d);
     }
 
     public static String doubleFormat(double d) {

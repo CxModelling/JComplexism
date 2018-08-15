@@ -2,6 +2,7 @@ package org.twz.cx;
 
 import org.twz.cx.abmodel.statespace.StSpABMBlueprint;
 import org.twz.cx.ebmodel.ODEEBMBlueprint;
+import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.BayesNet;
 import org.twz.statespace.AbsStateSpace;
@@ -165,13 +166,13 @@ public class Director {
     }
 
     public IModelBlueprint createSimModel(String name, String type) {
-        assert !DCores.containsKey(name);
+        assert !MCores.containsKey(name);
         IModelBlueprint mbp;
         switch (type) {
-            case "CTBN":
+            case "StSpABM":
                 mbp = new StSpABMBlueprint(name);
                 break;
-            case "CTMC":
+            case "ODEEBM":
                 mbp = new ODEEBMBlueprint(name);
                 break;
             default:
@@ -200,4 +201,17 @@ public class Director {
         }
     }
 
+    public AbsSimModel generateMCore(String name, String type, String bn) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("bn", bn);
+        args.put("da", this);
+        return MCores.get(type).generate(name, args);
+    }
+
+    public AbsSimModel generateMCore(String name, String type, ParameterCore pc) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("pc", pc);
+        args.put("da", this);
+        return MCores.get(type).generate(name, args);
+    }
 }

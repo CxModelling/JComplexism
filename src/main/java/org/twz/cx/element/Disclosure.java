@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Disclosure {
-    private final String What, Who;
+    public final String What, Who;
     public final LinkedList<String> Where;
     private final JSONObject Arguments;
 

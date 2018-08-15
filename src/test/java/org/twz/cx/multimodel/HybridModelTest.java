@@ -140,8 +140,7 @@ public class HybridModelTest {
             new Pair<>("add", new JSONObject("{'y': 'R', 'n': 1}"))
         );
         m_sr.addListener(new StartWithChecker("add agents"), (dis, source, target, time) ->
-
-                new Pair<>("del", new JSONObject("{'y': 'S', 'n': " + dis.get("n") + "}"))
+            new Pair<>("del", new JSONObject("{'y': 'S', 'n': " + dis.get("n") + "}"))
         );
 
 

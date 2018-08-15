@@ -1,6 +1,7 @@
 package org.twz.cx.abmodel.statespace;
 
 import org.json.JSONObject;
+import org.twz.cx.Director;
 import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.util.NodeGroup;
@@ -111,8 +112,28 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
 
     @Override
     public StSpABModel generate(String name, Map<String, Object> args) {
-        ParameterCore pc = (ParameterCore) args.get("pc");
-        AbsStateSpace dc = (AbsStateSpace) args.get("dc");
+        ParameterCore pc;
+        AbsStateSpace dc;
+
+        if (args.containsKey("bn") && args.containsKey("da")) {
+            Director da = (Director) args.get("da");
+            IStateSpaceBlueprint dbp = da.getStateSpace(Population.Dynamic);
+            pc = da.getBayesNet((String) args.get("bn")).toSimulationCore(getParameterHierarchy(dbp), true).generate(name);
+            dc = dbp.generateModel(pc.genPrototype(Population.Group));
+
+        } else if(args.containsKey("pc")) {
+            pc = (ParameterCore) args.get("pc");
+            if (args.containsKey("dc")) {
+                dc = (AbsStateSpace) args.get("dc");
+            } else {
+                Director da = (Director) args.get("da");
+                IStateSpaceBlueprint dbp = da.getStateSpace(Population.Dynamic);
+                dc = dbp.generateModel(pc);
+            }
+        } else {
+            return null;
+        }
+
 
         StSpPopulation pop = new StSpPopulation(Population.Prefix, Population.Group, dc, pc, Population.Exo);
         StSpABModel model = new StSpABModel(name, pc, pop);

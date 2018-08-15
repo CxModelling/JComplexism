@@ -37,7 +37,7 @@ public class StSpABMBlueprintTest {
     }
 
     @Test
-    public void simulation() {
+    public void simulationPcDc() {
         Map<String, Object> args = new HashMap<>();
 
         ParameterCore PC = Da.getBayesNet("pCloseSIR")
@@ -48,6 +48,20 @@ public class StSpABMBlueprintTest {
         args.put("pc", PC);
         args.put("dc", DC);
 
+        run(args);
+    }
+
+    @Test
+    public void simulationDaBN() {
+        Map<String, Object> args = new HashMap<>();
+
+        args.put("bn", "pCloseSIR");
+        args.put("da", Da);
+
+        run(args);
+    }
+
+    public void run(Map<String, Object> args) {
         StSpABModel Model = Bp.generate("Test", args);
 
         Simulator Simu = new Simulator(Model);
