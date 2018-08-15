@@ -51,31 +51,50 @@ public class ODEquations extends AbsEquations implements FirstOrderDifferentialE
     public void shock(double ti, AbsSimModel source, String action, JSONObject value) {
         EquationBasedModel model = (EquationBasedModel) source;
         int n;
+        double v0, v1;
         String y;
+        JSONObject js;
         switch (action) {
             case "impulse":
-                String k = value.getString("k");
-                double v1 = value.getDouble("v"), v0 = value.getDouble("v");
-                put(k, v1);
-                model.disclose(String.format("change %s from %.4f to %.4f", k, v1, v0), getName());
+                y = value.getString("k");
+                v0 = getY(y);
+                v1 = value.getDouble("v");
+                put(y, v1);
+                js = new JSONObject();
+                js.put("k", y);
+                js.put("v0", v0);
+                js.put("v1", v1);
+                model.disclose(String.format("change %s from %.4f to %.4f", y, v1, v0), getName(), js);
                 break;
 
             case "add":
                 y = (String) value.get("y");
-
                 n = value.has("n")? value.getInt("n"): 1;
-                setY(y, getY(y) + n);
-
-                model.disclose(String.format("add %s by %d", y, n), getName());
+                v0 = getY(y);
+                v1 = v0 + n;
+                setY(y, v1);
+                js = new JSONObject();
+                js.put("y", y);
+                js.put("n", n);
+                js.put("v0", v0);
+                js.put("v1", v1);
+                model.disclose(String.format("add %s by %d", y, n), getName(), js);
                 break;
 
             case "del":
                 y = (String) value.get("y");
-;
                 n = value.has("n")? value.getInt("n"): 1;
-                n = Math.min(n, (int) Math.floor(getY(y)));
-                setY(y, getY(y) - n);
-                model.disclose(String.format("del %s by %d", y, n), getName());
+                v0 = getY(y);
+                n = Math.min(n, (int) Math.floor(v0));
+                v1 = v0 - n;
+                setY(y, v1);
+
+                js = new JSONObject();
+                js.put("y", y);
+                js.put("n", n);
+                js.put("v0", v0);
+                js.put("v1", v1);
+                model.disclose(String.format("del %s by %d", y, n), getName(), js);
         }
     }
 }

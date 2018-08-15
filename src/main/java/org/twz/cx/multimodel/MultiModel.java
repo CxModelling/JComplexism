@@ -58,7 +58,7 @@ public class MultiModel extends BranchModel {
     }
 
     @Override
-    public void shock(double time, AbsSimModel model, String action, JSONObject value) {
+    public void shock(double time, String action, JSONObject value) {
 
     }
 

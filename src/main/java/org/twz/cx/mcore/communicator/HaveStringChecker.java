@@ -3,7 +3,7 @@ package org.twz.cx.mcore.communicator;
 import org.json.JSONObject;
 import org.twz.cx.element.Disclosure;
 
-public class HaveStringChecker implements IChecker {
+public class HaveStringChecker extends AbsChecker {
 
     private String Have;
 
@@ -22,8 +22,7 @@ public class HaveStringChecker implements IChecker {
 
     @Override
     public JSONObject toJSON() {
-        JSONObject js = new JSONObject();
-        js.put("Type", "HaveString");
+        JSONObject js = super.toJSON();
         js.put("Have", Have);
         return js;
     }

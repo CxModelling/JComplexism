@@ -56,8 +56,8 @@ public class ListenerSet implements AdapterJSONArray {
         JSONObject temp;
         for (Map.Entry<IChecker, IShocker> entry : Listeners.entrySet()) {
             temp = new JSONObject();
-            temp.put("Impulse", entry.getKey().toJSON());
-            temp.put("Response", entry.getValue().toJSON());
+            temp.put("Impulse", ((AdapterJSONObject) entry.getKey()).toJSON());
+            temp.put("Response", ((AdapterJSONObject) entry.getValue()).toJSON());
             js.put(temp);
         }
         return js;

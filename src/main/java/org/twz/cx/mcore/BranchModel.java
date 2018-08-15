@@ -45,13 +45,13 @@ public abstract class BranchModel extends AbsSimModel {
     @Override
     public void preset(double ti) {
         getModels().values().forEach(m -> m.preset(ti));
-        Scheduler.rescheduleAllAtoms();
+        super.preset(ti);
     }
 
     @Override
     public void reset(double ti) {
         getModels().values().forEach(m -> m.reset(ti));
-        Scheduler.rescheduleAllAtoms();
+        super.reset(ti);
     }
 
     @Override

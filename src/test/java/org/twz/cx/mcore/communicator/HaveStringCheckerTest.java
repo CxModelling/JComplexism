@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class HaveStringCheckerTest {
 
-    private IChecker Checker;
+    private AbsChecker Checker;
 
     @Before
     public void setUp() {

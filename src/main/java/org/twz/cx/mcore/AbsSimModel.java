@@ -91,11 +91,13 @@ public abstract class AbsSimModel implements AdapterJSONObject{
     }
 
     public void preset(double ti) {
-        reset(ti);
+        Scheduler.rescheduleAllAtoms();
+        disclose("initialise", "*");
     }
 
     public void reset(double ti) {
         Scheduler.rescheduleAllAtoms();
+        disclose("reset", "*");
     }
 
     public abstract void readY0(IY0 y0, double ti);
@@ -114,11 +116,11 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         Listeners.defineImpulseResponse(impulse, response);
     }
 
-    public boolean triggerExternalImpulses(Disclosure dis, AbsSimModel model, double ti) {
+    boolean triggerExternalImpulses(Disclosure dis, AbsSimModel model, double ti) {
         return Listeners.applyShock(dis, model, this, ti);
     }
 
-    public abstract void shock(double time, AbsSimModel model, String action, JSONObject value);
+    public abstract void shock(double time, String action, JSONObject value);
 
     public Set<IChecker> getAllImpulseCheckers() {
         return Listeners.getAllCheckers();
@@ -133,6 +135,10 @@ public abstract class AbsSimModel implements AdapterJSONObject{
     public abstract void executeRequests();
 
     public void disclose(String msg, String who, Map<String, Object> args) {
+        Scheduler.appendDisclosure(msg, who, args);
+    }
+
+    public void disclose(String msg, String who, JSONObject args) {
         Scheduler.appendDisclosure(msg, who, args);
     }
 

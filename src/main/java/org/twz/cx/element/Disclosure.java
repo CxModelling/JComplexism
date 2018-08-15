@@ -1,8 +1,8 @@
 package org.twz.cx.element;
 
+import org.json.JSONObject;
 import org.twz.dataframe.Pair;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 public class Disclosure {
     public final String What, Who;
     public final LinkedList<String> Where;
-    private final Map<String, Object> Arguments;
+    private final JSONObject Arguments;
 
     public Disclosure(String what, String who, LinkedList<String> where) {
         What = what;
         Who = who;
         Where = where;
-        Arguments = new HashMap<>();
+        Arguments = new JSONObject();
     }
 
     public Disclosure(String what, String who, String where) {
@@ -24,11 +24,21 @@ public class Disclosure {
         Who = who;
         Where = new LinkedList<>();
         Where.add(where);
-        Arguments = new HashMap<>();
+        Arguments = new JSONObject();
     }
 
     public void updateArguments(Map<String, Object> args) {
-        Arguments.putAll(args);
+        args.forEach(Arguments::put);
+    }
+
+    public void updateArguments(JSONObject args) {
+        for (String s : JSONObject.getNames(args)) {
+            args.put(s, args.get(s));
+        }
+    }
+
+    public JSONObject getArguments() {
+        return Arguments;
     }
 
     public Object get(String key) {
@@ -36,15 +46,15 @@ public class Disclosure {
     }
 
     public String getString(String key) {
-        return (String) Arguments.get(key);
+        return Arguments.getString(key);
     }
 
     public double getDouble(String key) {
-        return (double) Arguments.get(key);
+        return Arguments.getDouble(key);
     }
 
     public boolean has(String key) {
-        return Arguments.containsKey(key);
+        return Arguments.has(key);
     }
 
     public Disclosure upScale(String adr) {

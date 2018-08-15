@@ -1,5 +1,7 @@
 package org.twz.cx.element;
 
+import org.json.JSONObject;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -188,6 +190,12 @@ public abstract class AbsScheduler {
     }
 
     public void appendDisclosure(String msg, String who, Map<String, Object> kw) {
+        Disclosure dis = new Disclosure(msg, who, Location);
+        dis.updateArguments(kw);
+        Disclosures.add(dis);
+    }
+
+    public void appendDisclosure(String msg, String who, JSONObject kw) {
         Disclosure dis = new Disclosure(msg, who, Location);
         dis.updateArguments(kw);
         Disclosures.add(dis);

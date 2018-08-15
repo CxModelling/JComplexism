@@ -3,7 +3,7 @@ package org.twz.cx.mcore.communicator;
 import org.json.JSONObject;
 import org.twz.cx.element.Disclosure;
 
-public class StartWithChecker implements IChecker {
+public class StartWithChecker extends AbsChecker {
 
     private String Start;
 
@@ -22,8 +22,7 @@ public class StartWithChecker implements IChecker {
 
     @Override
     public JSONObject toJSON() {
-        JSONObject js = new JSONObject();
-        js.put("Type", "StartWith");
+        JSONObject js = super.toJSON();
         js.put("Start", Start);
         return js;
     }

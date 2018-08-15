@@ -25,14 +25,14 @@ public class EquationBasedModel extends LeafModel {
         this(name, eqs, pars, new EBMObserver(), new EBMY0());
     }
 
-    public EquationBasedModel(String name, AbsEquations eqs, ParameterCore pars, EBMObserver obs, IY0 protoY0) {
+    private EquationBasedModel(String name, AbsEquations eqs, ParameterCore pars, EBMObserver obs, IY0 protoY0) {
         super(name, pars, obs, protoY0);
         Equations = eqs;
         Y = new HashMap<>();
         Scheduler.addAtom(eqs);
     }
 
-    public EquationBasedModel(String name, AbsEquations eqs, Map<String, Double> pars, EBMObserver obs, IY0 protoY0) {
+    private EquationBasedModel(String name, AbsEquations eqs, Map<String, Double> pars, EBMObserver obs, IY0 protoY0) {
         super(name, pars, obs, protoY0);
         Equations = eqs;
         Y = new HashMap<>();
@@ -72,16 +72,14 @@ public class EquationBasedModel extends LeafModel {
     public void preset(double ti) {
         Equations.setY(Y);
         Equations.initialise(ti, this);
-        disclose("initialise", "*");
-        Scheduler.rescheduleAllAtoms();
+        super.preset(ti);
     }
 
     @Override
     public void reset(double ti) {
         Equations.reset(ti, this);
         Equations.setY(Y);
-        disclose("initialise", "*");
-        Scheduler.rescheduleAllAtoms();
+        super.reset(ti);
     }
 
     @Override
@@ -90,8 +88,8 @@ public class EquationBasedModel extends LeafModel {
     }
 
     @Override
-    public void shock(double ti, AbsSimModel model, String action, JSONObject value) {
-        Equations.shock(ti, model, action, value);
+    public void shock(double ti, String action, JSONObject value) {
+        Equations.shock(ti, this, action, value);
         Y = Equations.getDictY();
     }
 

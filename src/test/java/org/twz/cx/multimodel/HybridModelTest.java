@@ -7,10 +7,15 @@ import org.twz.cx.Director;
 import org.twz.cx.abmodel.statespace.StSpABMBlueprint;
 import org.twz.cx.abmodel.statespace.StSpY0;
 import org.twz.cx.ebmodel.*;
+import org.twz.cx.element.Disclosure;
+import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.Simulator;
-import org.twz.dag.Gene;
+import org.twz.cx.mcore.communicator.IShocker;
+import org.twz.cx.mcore.communicator.InitialChecker;
+import org.twz.cx.mcore.communicator.StartWithChecker;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.util.NodeGroup;
+import org.twz.dataframe.Pair;
 import org.twz.statespace.AbsStateSpace;
 
 import java.util.HashMap;
@@ -20,12 +25,11 @@ import java.util.Map;
  *
  * Created by TimeWz on 14/08/2018.
  */
+
 public class HybridModelTest {
 
     private Director Da;
     private MultiModel Model;
-    private AbsStateSpace DC;
-    private ParameterCore PC;
     private Y0s Y0;
 
     @Before
@@ -75,8 +79,8 @@ public class HybridModelTest {
 
         ng.print();
 
-        PC = Da.getBayesNet("pHySIR").toSimulationCore(ng, true).generate("Test");
-        DC = Da.generateDCore("HySIR", PC.genPrototype("agent"));
+        ParameterCore PC = Da.getBayesNet("pHySIR").toSimulationCore(ng, true).generate("Test");
+        AbsStateSpace DC;
 
 
         Model = new MultiModel("MM", PC);
@@ -89,22 +93,28 @@ public class HybridModelTest {
         args.put("dc", DC);
         args.put("pc", PC);
 
-        Model.appendModel(BpA.generate("I", args));
+        AbsSimModel m_i = BpA.generate("I", args);
+
+        Model.appendModel(m_i);
 
         args = new HashMap<>();
         args.put("dc", DC);
         args.put("pc", PC.breed("SR", "ebm"));
 
-        Model.appendModel(BpE.generate("SR", args));
+        AbsSimModel m_sr = BpE.generate("SR", args);
+
+        Model.appendModel(m_sr);
 
         Model.addObservingModel("SR");
         Model.addObservingModel("I");
+
+        m_sr.addListener(new InitialChecker(), (dis, source, target, time) -> null);
     }
 
     @Test
     public void simulation() {
         Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("log/HySIR.txt");
+        Simu.addLogPath("log/Hybrid.txt");
 
         Simu.simulate(Y0, 0, 10, 1);
         Model.getObserver().getObservations().print();

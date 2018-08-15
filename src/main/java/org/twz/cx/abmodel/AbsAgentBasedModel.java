@@ -64,7 +64,6 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
         Behaviours.values().forEach(be->be.initialise(ti, this));
         this.Population.getAgents().values().forEach(ag -> ag.initialise(ti, this));
         super.preset(ti);
-        disclose("initialise", "*");
     }
 
 
@@ -73,7 +72,6 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
         Behaviours.values().forEach(be->be.reset(ti, this));
         this.Population.getAgents().values().forEach(ag -> ag.reset(ti, this));
         super.reset(ti);
-        disclose("initialise", "*");
     }
 
     protected List<AbsBehaviour> checkEnter(Ta ag) {
@@ -120,6 +118,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
     public List<Ta> birth(int n, double ti, Map<String, Object> attributes) {
         List<Ta> ags = this.Population.addAgents(n, attributes);
         List<AbsBehaviour> bes;
+        JSONObject js = new JSONObject();
         int nBirth = 0;
         for (Ta ag : ags) {
             Behaviours.values().forEach(be->be.register(ag, ti));
@@ -130,7 +129,9 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
             nBirth ++;
         }
         if (nBirth > 0) {
-            disclose("add " + nBirth + " agents", "*", attributes);
+            js.put("n", nBirth);
+            js.put("attributes", attributes);
+            disclose("add " + nBirth + " agents", "*", js);
         }
         return ags;
     }
@@ -176,7 +177,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
     }
 
     @Override
-    public void shock(double time, AbsSimModel model, String action, JSONObject value) {
+    public void shock(double time, String action, JSONObject value) {
         try {
             AbsBehaviour be = Behaviours.get(action);
             be.shock(time, this, action, value);

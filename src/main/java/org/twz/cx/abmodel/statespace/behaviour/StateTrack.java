@@ -31,23 +31,29 @@ public class StateTrack extends PassiveBehaviour {
     @Override
     public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) {
         if (((StSpAgent) ag).isa(S_src)) {
-            Value ++;
+            changeValue(model, 1);
         } else {
-            Value --;
+            changeValue(model, -1);
         }
-        model.disclose("update value to "+Value, getName());
     }
 
     @Override
     public void impulseEnter(AbsAgentBasedModel model, AbsAgent ag, double ti) {
-        Value ++;
-        model.disclose("update value to "+Value, getName());
+        changeValue(model, 1);
     }
 
     @Override
     public void impulseExit(AbsAgentBasedModel model, AbsAgent ag, double ti) {
-        Value --;
-        model.disclose("update value to "+Value, getName());
+        changeValue(model, -1);
+    }
+
+    private void changeValue(AbsAgentBasedModel model, double dv) {
+        JSONObject js = new JSONObject();
+        double v0 = Value, v1 = Value + dv;
+        js.put("v0", v0);
+        js.put("v1", v1);
+        Value = v1;
+        model.disclose("update value to "+ Value, getName(), js);
     }
 
     @Override
