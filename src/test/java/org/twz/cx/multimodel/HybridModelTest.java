@@ -150,10 +150,10 @@ public class HybridModelTest {
 
     @Test
     public void simulation() {
-        Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("log/Hybrid.txt");
+        Simulator Sim = new Simulator(Model);
+        Sim.addLogPath("log/Hybrid.txt");
 
-        Simu.simulate(Y0, 0, 10, 1);
+        Sim.simulate(Y0, 0, 10, 1);
         Model.getObserver().getObservations().print();
     }
 

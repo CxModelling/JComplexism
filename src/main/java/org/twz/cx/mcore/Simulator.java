@@ -17,8 +17,7 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 2017/2/10.
  */
 public class Simulator {
-    private class SimuFormattor extends Formatter {
-
+    private class SimFormattor extends Formatter {
         @Override
         public String format(LogRecord record) {
             return String.format("[%s]: %s\n", record.getLevel(), record.getMessage());
@@ -62,7 +61,7 @@ public class Simulator {
 
         try {
             FileHandler fh = new FileHandler(pat, false);
-            fh.setFormatter(new SimuFormattor());
+            fh.setFormatter(new SimFormattor());
             Log.addHandler(fh);
         } catch (IOException e) {
             e.printStackTrace();

@@ -54,11 +54,11 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         return Parameters;
     }
 
-    public void setScheduler(AbsScheduler scheduler) {
+    void setScheduler(AbsScheduler scheduler) {
         Scheduler = scheduler;
     }
 
-    public void detachScheduler() {
+    void detachScheduler() {
         Scheduler = null;
     }
 

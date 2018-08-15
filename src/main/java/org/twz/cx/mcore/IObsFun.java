@@ -1,6 +1,5 @@
 package org.twz.cx.mcore;
 
-import org.twz.cx.mcore.AbsSimModel;
 
 import java.util.Map;
 

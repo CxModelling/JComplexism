@@ -85,8 +85,7 @@ public abstract class AbsEquations extends ModelAtom {
         updateTo(getTTE());
     }
 
-    public void goTo(double t1) {
-
+    void goTo(double t1) {
         double t0 = Last;
         if (t0 >= t1) return;
         goTo(t0, Ys, t1, Ys);
@@ -96,7 +95,7 @@ public abstract class AbsEquations extends ModelAtom {
 
     protected abstract void goTo(double t0, double[] y0, double t1, double[] y1);
 
-    public void measure(Map<String, Double> tab, EBMMeasurement measurement) {
+    void measure(Map<String, Double> tab, EBMMeasurement measurement) {
         measurement.call(tab, Last, Ys, getParameters(), Attributes);
     }
 
@@ -108,7 +107,7 @@ public abstract class AbsEquations extends ModelAtom {
         y.forEach((k, v)->Ys[YIndices.get(k)] = v);
     }
 
-    public Map<String, Double> getDictY() {
+    Map<String, Double> getDictY() {
         return YIndices.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e->Ys[e.getValue()]));
     }
 
@@ -117,11 +116,11 @@ public abstract class AbsEquations extends ModelAtom {
         return Ys[YIndices.get(y)];
     }
 
-    public String[] getYNames() {
+    String[] getYNames() {
         return YNames;
     }
 
-    public void setY(String y, double v) {
+    void setY(String y, double v) {
         Ys[YIndices.get(y)] = v;
     }
 

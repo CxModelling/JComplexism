@@ -20,11 +20,11 @@ import java.util.*;
 public abstract class AbsSimModel implements AdapterJSONObject{
     private final String Name;
     protected final AbsObserver Observer;
-    protected final IY0 ProtoY0;
+    private final IY0 ProtoY0;
     protected final AbsScheduler Scheduler;
     private ListenerSet Listeners;
-    protected ParameterCore Parameters;
-    protected JSONObject Environment;
+    private ParameterCore Parameters;
+    private JSONObject Environment;
     private double TimeEnd;
 
 

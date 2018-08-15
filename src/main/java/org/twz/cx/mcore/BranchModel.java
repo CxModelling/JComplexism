@@ -2,10 +2,8 @@ package org.twz.cx.mcore;
 
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
-import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

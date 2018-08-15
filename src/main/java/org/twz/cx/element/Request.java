@@ -1,7 +1,6 @@
 package org.twz.cx.element;
 
 import org.twz.dataframe.Pair;
-import java.util.List;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
@@ -11,9 +10,7 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 10/02/2017.
  */
 public class Request implements Comparable<Request> {
-    public final static Request NullRequest = new Request(Event.NullEvent, "*", "NoWhere");
-
-    public final LinkedList<String> Where;
+    private final LinkedList<String> Where;
     public final String Who;
     public final Event Todo;
 
@@ -57,7 +54,7 @@ public class Request implements Comparable<Request> {
     }
 
 
-    public Pair<String, Request> downScale() {
+    Pair<String, Request> downScale() {
         String gp = getGroup();
         LinkedList<String> new_adr = new LinkedList<>(Where);
         new_adr.pollLast();

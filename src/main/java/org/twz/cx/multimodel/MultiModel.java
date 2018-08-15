@@ -54,16 +54,16 @@ public class MultiModel extends BranchModel {
 
     @Override
     public void doRequest(Request req) {
-
+        // todo
     }
 
     @Override
     public void shock(double time, String action, JSONObject value) {
-
+        // todo
     }
 
     @Override
     public JSONObject toJSON() {
-        return null;
+        return null; // todo
     }
 }

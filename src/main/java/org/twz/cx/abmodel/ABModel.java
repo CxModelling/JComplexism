@@ -1,7 +1,6 @@
 package org.twz.cx.abmodel;
 
 
-import org.twz.dag.Gene;
 import org.twz.cx.mcore.*;
 import org.json.JSONObject;
 import org.twz.dag.ParameterCore;

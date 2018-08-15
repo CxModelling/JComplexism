@@ -9,7 +9,11 @@ public abstract class AbsScheduler {
     public static String DefaultScheduler = "PriorityQueue";
 
     public static AbsScheduler getScheduler(String name) {
-        switch (DefaultScheduler) {
+        return getScheduler(name, DefaultScheduler);
+    }
+
+    public static AbsScheduler getScheduler(String name, String type) {
+        switch (type) {
             case "PriorityQueue":
                 return new PriorityQueueScheduler(name);
             case "ArrayList":
@@ -19,10 +23,9 @@ public abstract class AbsScheduler {
     }
 
 
+    private String Location;
 
-    protected String Location;
-
-    protected double OwnTime;
+    double OwnTime;
     private double GloTime;
 
     protected Set<ModelAtom> Coming;
@@ -56,10 +59,6 @@ public abstract class AbsScheduler {
 
     public List<Disclosure> getDisclosures() {
         return Disclosures;
-    }
-
-    public double getGloTime() {
-        return GloTime;
     }
 
     public void setGloTime(double gloTime) {
