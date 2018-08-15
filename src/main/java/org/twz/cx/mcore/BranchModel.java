@@ -6,6 +6,7 @@ import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -120,7 +121,7 @@ public abstract class BranchModel extends AbsSimModel {
         if (Scheduler.getDisclosures().isEmpty()) Scheduler.toCycleCompleted();
 
         for (Map.Entry<String, AbsSimModel> ent: getModels().entrySet()) {
-            Map<Disclosure, AbsSimModel> ds = new HashMap<>();
+            Map<Disclosure, AbsSimModel> ds = new LinkedHashMap<>();
             for (Map.Entry<Disclosure, AbsSimModel> dm: ds_ms.entrySet()) {
                 if (dm.getKey().getGroup().equals(ent.getKey())) {
                     if (!dm.getKey().getSource().equals(ent.getKey())) {

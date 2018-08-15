@@ -131,7 +131,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
         if (nBirth > 0) {
             js.put("n", nBirth);
             js.put("attributes", attributes);
-            disclose("add " + nBirth + " agents", "*", js);
+            disclose("add agents by " + n, "*", js);
         }
         return ags;
     }

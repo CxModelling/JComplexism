@@ -31,7 +31,13 @@ public class EBMObserver extends AbsObserver<EquationBasedModel> {
 
     @Override
     protected void readStatics(EquationBasedModel model, Map<String, Double> tab, double ti) {
-        model.goTo(ti);
+        double tiu;
+        if (tab == getMid()) {
+            tiu = ti - ObservationalInterval / 2;
+        } else {
+            tiu = ti;
+        }
+        model.goTo(tiu);
         AbsEquations Eq = model.getEquations();
         Stocks.forEach(s->tab.put(s, Eq.getY(s)));
         StockFns.forEach(sf->Eq.measure(tab, sf));

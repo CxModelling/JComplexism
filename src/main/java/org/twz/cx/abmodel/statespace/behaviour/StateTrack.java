@@ -77,6 +77,9 @@ public class StateTrack extends PassiveBehaviour {
     public void initialise(double ti, AbsSimModel model) {
         StSpABModel m = (StSpABModel) model;
         Value = evaluate(m);
+        JSONObject js = new JSONObject();
+        js.put("v1", Value);
+        model.disclose("update value to "+ Value, getName(), js);
     }
 
     @Override

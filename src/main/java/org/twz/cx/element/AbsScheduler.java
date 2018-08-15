@@ -204,12 +204,8 @@ public abstract class AbsScheduler {
     public List<Disclosure> popDisclosures() {
         List<Disclosure> ds = new ArrayList<>(Disclosures);
         Disclosures.clear();
-        return ds;
-    }
-
-    public void fetchDisclosures(List<Disclosure> ds) {
-        Disclosures.addAll(ds);
         CountDisclosure += ds.size();
+        return ds;
     }
 
     public void toExecutionCompleted() {

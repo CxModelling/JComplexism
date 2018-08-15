@@ -1,6 +1,7 @@
 package org.twz.cx.abmodel.statespace;
 
 import org.twz.cx.abmodel.*;
+import org.twz.dataframe.Pair;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
@@ -28,6 +29,7 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
     private Set<AbsBehaviour> ObsBehaviours;
     private Set<IObsFun<StSpABModel>> ObsFunctions;
     private ArrayList<Record> Records;
+    private Map<String, Pair<String, Object>> LazySnapshot;
 
     StSpObserver() {
         ObsStates = new LinkedHashSet<>();
@@ -35,6 +37,12 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
         ObsBehaviours = new LinkedHashSet<>();
         ObsFunctions = new LinkedHashSet<>();
         Records = new ArrayList<>();
+    }
+
+    @Override
+    public void initialiseObservations(StSpABModel model, double ti) {
+        super.initialiseObservations(model, ti);
+        locateLazySnapshots(model, ti);
     }
 
     @Override
@@ -56,7 +64,6 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
         ObsTransitions.forEach(tr-> flows.put(tr.getName(), 0.0+ Records.stream().filter(e-> e.Tr==tr).count()));
     }
 
-
     void addObsState(State st) {
         ObsStates.add(st);
     }
@@ -73,6 +80,32 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
         ObsFunctions.add(fn);
     }
 
+    @Override
+    public double getSnapshot(StSpABModel model, String key, double ti) {
+        if (LazySnapshot.containsKey(key)) {
+            Pair<String, Object> ent = LazySnapshot.get(key);
+            if (ent.getFirst().equals("State")) {
+                return 0.0 + model.getPopulation().count("st", ent.getValue());
+            } else {
+                Map<String, Double> temp = new HashMap<>();
+                ((AbsBehaviour) ent.getSecond()).fillData(temp, model, ti);
+                return temp.get(ent.getKey());
+            }
+        }
+        return super.getSnapshot(model, key, ti);
+    }
+
+    private void locateLazySnapshots(StSpABModel model, double ti) {
+        LazySnapshot =  new HashMap<>();
+        ObsStates.forEach(st->LazySnapshot.put(st.getName(), new Pair<>("State", st)));
+
+        Map<String, Double> temp = new HashMap<>();
+        for (AbsBehaviour behaviour : ObsBehaviours) {
+            temp.clear();
+            behaviour.fillData(temp, model, ti);
+            temp.keySet().forEach(k->LazySnapshot.put(k, new Pair<>("Behaviour", behaviour)));
+        }
+    }
 
     @Override
     protected void clearFlows() {

@@ -12,11 +12,15 @@ public class Disclosure {
     public final LinkedList<String> Where;
     private final JSONObject Arguments;
 
-    public Disclosure(String what, String who, LinkedList<String> where) {
+    public Disclosure(String what, String who, LinkedList<String> where, JSONObject js) {
         What = what;
         Who = who;
         Where = where;
-        Arguments = new JSONObject();
+        Arguments = js;
+    }
+
+    public Disclosure(String what, String who, LinkedList<String> where) {
+        this(what, who, where, new JSONObject());
     }
 
     public Disclosure(String what, String who, String where) {
@@ -33,7 +37,7 @@ public class Disclosure {
 
     public void updateArguments(JSONObject args) {
         for (String s : JSONObject.getNames(args)) {
-            args.put(s, args.get(s));
+            Arguments.put(s, args.get(s));
         }
     }
 
@@ -60,7 +64,7 @@ public class Disclosure {
     public Disclosure upScale(String adr) {
         LinkedList<String> new_adr = new LinkedList<>(Where);
         new_adr.add(adr);
-        return new Disclosure(What, Who, new_adr);
+        return new Disclosure(What, Who, new_adr, Arguments);
     }
 
     public Disclosure siblingScale() {
@@ -71,7 +75,7 @@ public class Disclosure {
         String gp = getGroup();
         LinkedList<String> new_adr = new LinkedList<>(Where);
         new_adr.pollLast();
-        return new Pair<>(gp, new Disclosure(What, Who, new_adr));
+        return new Pair<>(gp, new Disclosure(What, Who, new_adr, Arguments));
     }
 
     public int getDistance() {
@@ -104,7 +108,6 @@ public class Disclosure {
     }
 
     public String toLog() {
-        return "Disclose: " +
-                Who + " did " + What + " in " + getAddress();
+        return String.format("Disclose: %s did %s in %s", Who, What, getAddress());
     }
 }

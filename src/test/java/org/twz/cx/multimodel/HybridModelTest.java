@@ -10,12 +10,12 @@ import org.twz.cx.ebmodel.*;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.Simulator;
-import org.twz.cx.mcore.communicator.IShocker;
-import org.twz.cx.mcore.communicator.InitialChecker;
-import org.twz.cx.mcore.communicator.StartWithChecker;
+import org.twz.cx.mcore.communicator.*;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.util.NodeGroup;
 import org.twz.dataframe.Pair;
+import org.twz.prob.IDistribution;
+import org.twz.prob.Poisson;
 import org.twz.statespace.AbsStateSpace;
 
 import java.util.HashMap;
@@ -25,6 +25,32 @@ import java.util.Map;
  *
  * Created by TimeWz on 14/08/2018.
  */
+
+class InfIn implements IShocker {
+    private double Last;
+
+    public InfIn() {
+        Last = Double.NaN;
+    }
+
+    @Override
+    public Pair<String, JSONObject> shock(Disclosure dis, AbsSimModel source, AbsSimModel target, double time) {
+        Pair<String, JSONObject> res = null;
+        if (!Double.isNaN(Last)) {
+            AbsEquations eq = ((EquationBasedModel) source).getEquations();
+            double dt = time - Last;
+            double sus = eq.getY("S"), rec = eq.getY("R"), inf = target.getSnapshot("StInf", time);
+            double lam = source.getParameter("transmission_rate") * sus * inf * dt / (sus + rec + inf);
+            IDistribution di = new Poisson(lam);
+            int n = (int) Math.min(di.sample(), sus);
+            System.out.println(n);
+            res = new Pair<>("InfIn", new JSONObject(String.format("{'n': %d}", n)));
+        }
+        Last = time;
+        return res;
+    }
+}
+
 
 public class HybridModelTest {
 
@@ -44,7 +70,7 @@ public class HybridModelTest {
         BpA.addBehaviour("{'Name': 'Recovery', 'Type': 'Cohort', 'Args': {'s_death': 'Rec'}}");
         BpA.addBehaviour("{'Name': 'StInf', 'Type': 'StateTrack', 'Args': {'s_src': 'Inf'}}");
         BpA.addBehaviour("{'Name': 'InfIn', 'Type': 'AgentImport', 'Args': {'s_birth': 'Inf'}}");
-        BpA.setObservations(new String[]{"Inf", "Rec"}, new String[]{"Recov"}, new String[]{"InfIn", "StInf"});
+        BpA.setObservations(new String[]{"Inf"}, new String[]{"Recov"}, new String[]{"InfIn", "StInf"});
 
 
         ODEEBMBlueprint BpE = new ODEEBMBlueprint("ebm");
@@ -108,7 +134,18 @@ public class HybridModelTest {
         Model.addObservingModel("SR");
         Model.addObservingModel("I");
 
-        m_sr.addListener(new InitialChecker(), (dis, source, target, time) -> null);
+
+        m_sr.addListener(new StartWithChecker("update value"), new ValueImpulseShocker("Inf"));
+        m_sr.addListener(new StartWithChecker("Recov"), (dis, source, target, time) ->
+            new Pair<>("add", new JSONObject("{'y': 'R', 'n': 1}"))
+        );
+        m_sr.addListener(new StartWithChecker("add agents"), (dis, source, target, time) ->
+
+                new Pair<>("del", new JSONObject("{'y': 'S', 'n': " + dis.get("n") + "}"))
+        );
+
+
+        m_i.addListener(new IsChecker("update"), new InfIn());
     }
 
     @Test

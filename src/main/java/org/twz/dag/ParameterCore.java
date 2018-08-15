@@ -45,9 +45,9 @@ public class ParameterCore extends Gene {
 
     @Override
     public double get(String s) {
-        try {
+        if (has(s)) {
             return super.get(s);
-        } catch (NullPointerException e) {
+        } else {
             return Parent.get(s);
         }
     }

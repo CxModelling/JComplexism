@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.mcore.AbsSimModel;
+import org.twz.dataframe.Pair;
 import org.twz.io.AdapterJSONArray;
 import org.twz.io.AdapterJSONObject;
 
@@ -36,9 +37,11 @@ public class ListenerSet implements AdapterJSONArray {
 
     public boolean applyShock(Disclosure disclosure, AbsSimModel foreign, AbsSimModel local, double ti) {
         boolean shock = false;
+        Pair<String, JSONObject> action;
         for (Map.Entry<IChecker, IShocker> entry : Listeners.entrySet()) {
             if (entry.getKey().check(disclosure)) {
-                entry.getValue().shock(disclosure, foreign, local, ti);
+                action = entry.getValue().shock(disclosure, foreign, local, ti);
+                local.shock(ti, action.getFirst(), action.getValue());
                 shock = true;
             }
         }

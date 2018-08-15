@@ -145,7 +145,7 @@ public class Simulator {
 
         Map<Disclosure, AbsSimModel> dm;
         while (!ds.isEmpty()) {
-            dm = new HashMap<>();
+            dm = new LinkedHashMap<>();
             for (Disclosure d: ds) {
                 dm.put(d.downScale().getSecond(), findModel(d));
             }
@@ -158,9 +158,9 @@ public class Simulator {
 
     private AbsSimModel findModel(Disclosure dis) {
         String adr = dis.getAddress();
-        try {
+        if (LazyModels.containsKey(adr)) {
             return LazyModels.get(adr);
-        } catch (NullPointerException e) {
+        } else {
             AbsSimModel m = Model;
             List<String> where = new LinkedList<>(dis.Where);
             for (int i = where.size() - 2; i >= 0; i--) {

@@ -60,11 +60,6 @@ public class StSpABModel extends AbsAgentBasedModel<StSpAgent> {
     }
 
     @Override
-    public Double getSnapshot(String key, double ti) {
-        return null;
-    }
-
-    @Override
     public JSONObject toJSON() {
         return null;
     }

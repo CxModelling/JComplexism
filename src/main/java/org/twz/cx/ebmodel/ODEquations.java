@@ -50,6 +50,7 @@ public class ODEquations extends AbsEquations implements FirstOrderDifferentialE
     @Override
     public void shock(double ti, AbsSimModel source, String action, JSONObject value) {
         EquationBasedModel model = (EquationBasedModel) source;
+        goTo(ti);
         int n;
         double v0, v1;
         String y;
@@ -57,14 +58,14 @@ public class ODEquations extends AbsEquations implements FirstOrderDifferentialE
         switch (action) {
             case "impulse":
                 y = value.getString("k");
-                v0 = getY(y);
+                v0 = getDouble(y);
                 v1 = value.getDouble("v");
                 put(y, v1);
                 js = new JSONObject();
                 js.put("k", y);
                 js.put("v0", v0);
                 js.put("v1", v1);
-                model.disclose(String.format("change %s from %.4f to %.4f", y, v1, v0), getName(), js);
+                model.disclose(String.format("change %s from %.4f to %.4f", y, v0, v1), getName(), js);
                 break;
 
             case "add":

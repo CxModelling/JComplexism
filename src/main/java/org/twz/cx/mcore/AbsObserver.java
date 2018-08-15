@@ -11,7 +11,7 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
     protected LinkedHashMap<String, Double> Last, Mid, Flows, Snapshot;
     private List<Map<String, Double>> TimeSeries, TimeSeriesMid;
     private List<String> StockNames, FlowNames;
-    private double ObservationalInterval;
+    protected double ObservationalInterval;
     private boolean ExactMid;
 
     public AbsObserver(){
@@ -172,7 +172,7 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         if (FlowNames.contains(key)) {
             return TimeSeries.get(TimeSeries.size() - 1).get(key);
         } else if (StockNames.contains(key)) {
-            if (ti > Snapshot.get("Time")) {
+            if (ti > Snapshot.get("Time") || !Snapshot.containsKey(key)) {
                 Snapshot.clear();
                 readStatics(model, Snapshot, ti);
                 Snapshot.put("Time", ti);
