@@ -43,4 +43,9 @@ public class ABMBlueprint implements IModelBlueprint<AbsAgentBasedModel> {
         return null;
     }
 
+    @Override
+    public boolean isWellDefined() {
+        return false;
+    }
+
 }

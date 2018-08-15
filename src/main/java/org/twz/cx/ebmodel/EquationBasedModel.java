@@ -17,12 +17,12 @@ public class EquationBasedModel extends LeafModel {
     private AbsEquations Equations;
     private Map<String, Double> Y;
 
-    public EquationBasedModel(String name, AbsEquations eqs, ParameterCore pars, IY0 protoY0) {
-        this(name, eqs, pars, new EBMObserver(), protoY0);
+    public EquationBasedModel(String name, AbsEquations eqs, ParameterCore pars) {
+        this(name, eqs, pars, new EBMObserver(), new EBMY0());
     }
 
-    public EquationBasedModel(String name, AbsEquations eqs, Map<String, Double> pars, IY0 protoY0) {
-        this(name, eqs, pars, new EBMObserver(), protoY0);
+    public EquationBasedModel(String name, AbsEquations eqs, Map<String, Double> pars) {
+        this(name, eqs, pars, new EBMObserver(), new EBMY0());
     }
 
     public EquationBasedModel(String name, AbsEquations eqs, ParameterCore pars, EBMObserver obs, IY0 protoY0) {

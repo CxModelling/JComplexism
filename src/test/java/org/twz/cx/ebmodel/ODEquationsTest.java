@@ -3,7 +3,6 @@ package org.twz.cx.ebmodel;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.mcore.Simulator;
-import org.twz.dag.Gene;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class ODEquationsTest {
         };
 
         ODEquations Eq = new ODEquations("SIR", Fn, new String[]{"S", "I", "R"}, 1, pars);
-        EBM = new EquationBasedModel("SIR", Eq, pars, new EBMY0());
+        EBM = new EquationBasedModel("SIR", Eq, pars);
         EBM.addObservingStock("S");
         EBM.addObservingStock("I");
         EBM.addObservingStock("R");

@@ -93,7 +93,7 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
 
     @Override
     public String getName() {
-        return null;
+        return Name;
     }
 
     @Override
@@ -125,5 +125,12 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         ObsBehaviours.forEach(model::addObservingBehaviour);
 
         return model;
+    }
+
+    @Override
+    public boolean isWellDefined() {
+        if (Population == null) return false;
+        if (ObsStates.size() + ObsTransitions.size() + ObsBehaviours.size() <= 0) return false;
+        return true;
     }
 }

@@ -13,4 +13,5 @@ public interface IModelBlueprint<T extends AbsSimModel> {
     String getName();
     NodeGroup getParameterHierarchy(IStateSpaceBlueprint dc);
     T generate(String name, Map<String, Object> args);
+    boolean isWellDefined();
 }
