@@ -130,7 +130,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
             nBirth ++;
         }
         if (nBirth > 0) {
-            disclose("add " + nBirth + " agents", "*");
+            disclose("add " + nBirth + " agents", "*", attributes);
         }
         return ags;
     }

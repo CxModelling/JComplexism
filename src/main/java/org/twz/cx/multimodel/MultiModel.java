@@ -46,9 +46,9 @@ public class MultiModel extends BranchModel {
     @Override
     public void readY0(IY0 y0, double ti) {
         Y0s y0s = (Y0s) y0;
-        Map<String, IY0> subs = y0s.getSubs();
+
         for (Map.Entry<String, AbsSimModel> entry : Submodels.entrySet()) {
-            entry.getValue().readY0(subs.get(entry.getKey()), ti);
+            entry.getValue().readY0(y0s.getChildren(entry.getKey()), ti);
         }
     }
 

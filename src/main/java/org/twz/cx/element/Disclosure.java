@@ -43,8 +43,8 @@ public class Disclosure {
         return (double) Arguments.get(key);
     }
 
-    public Object has(String key) {
-        return Arguments.keySet().contains(key);
+    public boolean has(String key) {
+        return Arguments.containsKey(key);
     }
 
     public Disclosure upScale(String adr) {
