@@ -19,7 +19,7 @@ public class DoubleArg extends AbsArgument{
     }
 
     @Override
-    public Object correct(Object value, Workshop ws) throws NoSuchElementException{
+    public Object correct(Object value, Workshop ws) throws NoSuchElementException, AssertionError{
         if (value instanceof String) {
             try {
                 value = ws.getResource((String) value);

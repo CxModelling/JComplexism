@@ -32,12 +32,12 @@ public class StSpBehaviourFactory {
 
         ags = new AbsArgument[]{new OptionArg("s_death", "States", State.class),
                 new OptionArg("s_birth", "States", State.class),
-                new DoubleArg("rate"), new DoubleArg("dt")};
+                new PositiveDoubleArg("rate"), new PositiveDoubleArg("dt")};
         Factory.register("LifeRate", LifeRate.class, ags);
 
         ags = new AbsArgument[]{new OptionArg("s_death", "States", State.class),
                 new OptionArg("s_birth", "States", State.class),
-                new DoubleArg("cap"), new DoubleArg("rate"), new DoubleArg("dt")};
+                new PositiveDoubleArg("cap"), new PositiveDoubleArg("rate"), new PositiveDoubleArg("dt")};
         Factory.register("LifeS", LifeS.class, ags);
 
         ags = new AbsArgument[]{new OptionArg("s_death", "States", State.class)};

@@ -14,6 +14,6 @@ public class Beta extends AdaptorRealCommonsMath {
 
     public Beta(double shape1, double shape2) {
         this(null, shape1, shape2);
-        Name = String.format("beta(%1$s,%2$s)", shape1, shape2);
+        Name = String.format("beta(%5g,%5g)", shape1, shape2);
     }
 }

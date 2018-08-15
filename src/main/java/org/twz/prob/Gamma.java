@@ -13,6 +13,6 @@ public class Gamma extends AdaptorRealCommonsMath {
 
     public Gamma(double shape, double rate) {
         this(null, shape, rate);
-        Name = String.format("gamma(%1$s,%2$s)", shape, rate);
+        Name = String.format("gamma(%5g,%5g)", shape, rate);
     }
 }

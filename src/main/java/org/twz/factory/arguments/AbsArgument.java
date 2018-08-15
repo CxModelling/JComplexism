@@ -21,7 +21,7 @@ public abstract class AbsArgument {
 
     public abstract Class getType();
 
-    public abstract Object correct(Object value, Workshop ws) throws NoSuchElementException;
+    public abstract Object correct(Object value, Workshop ws) throws NoSuchElementException, AssertionError;
 
     public abstract Object parse(String value);
 

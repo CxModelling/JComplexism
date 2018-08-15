@@ -12,6 +12,6 @@ public class Exponential extends AdaptorRealCommonsMath {
 
     public Exponential(double rate) {
         this(null, rate);
-        Name = String.format("exp(%1$s)", rate);
+        Name = String.format("exp(%5g)", rate);
     }
 }
