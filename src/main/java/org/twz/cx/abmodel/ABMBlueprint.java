@@ -25,14 +25,6 @@ public class ABMBlueprint implements IModelBlueprint<AbsAgentBasedModel> {
         return Name;
     }
 
-    public String getTargetPCore() {
-        return TargetPCore;
-    }
-
-    public String getTargetDCore() {
-        return TargetDCore;
-    }
-
     @Override
     public AbsAgentBasedModel generate(String name, Map args) {
         return null;
