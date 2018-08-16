@@ -156,7 +156,6 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
     @Override
     public boolean isWellDefined() {
         if (Population == null) return false;
-        if (ObsStates.size() + ObsTransitions.size() + ObsBehaviours.size() <= 0) return false;
-        return true;
+        return ObsStates.size() + ObsTransitions.size() + ObsBehaviours.size() > 0;
     }
 }
