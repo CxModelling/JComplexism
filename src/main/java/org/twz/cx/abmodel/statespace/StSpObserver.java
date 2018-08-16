@@ -89,7 +89,7 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
             } else {
                 Map<String, Double> temp = new HashMap<>();
                 ((AbsBehaviour) ent.getSecond()).fillData(temp, model, ti);
-                return temp.get(ent.getKey());
+                return temp.get(key);
             }
         }
         return super.getSnapshot(model, key, ti);

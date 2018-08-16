@@ -43,7 +43,6 @@ class InfIn implements IShocker {
             double lam = source.getParameter("transmission_rate") * sus * inf * dt / (sus + rec + inf);
             IDistribution di = new Poisson(lam);
             int n = (int) Math.min(di.sample(), sus);
-            System.out.println(n);
             res = new Pair<>("InfIn", new JSONObject(String.format("{'n': %d}", n)));
         }
         Last = time;
