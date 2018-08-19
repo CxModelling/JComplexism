@@ -4,6 +4,7 @@ import org.twz.cx.mcore.IY0;
 import org.twz.dataframe.Tuple;
 import org.twz.io.AdapterJSONObject;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -11,5 +12,6 @@ import java.util.Set;
  * Created by TimeWz on 2017/11/14.
  */
 public interface IModelEntry extends AdapterJSONObject {
-    Set<Tuple<String, String, IY0>> generate();
+    List<Tuple<String, String, IY0>> generate();
+    int size();
 }
