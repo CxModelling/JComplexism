@@ -4,10 +4,8 @@ import org.json.JSONObject;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
 import org.twz.cx.mcore.AbsSimModel;
-import org.twz.cx.mcore.IObsFun;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafModel;
-import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
 
 import java.util.HashMap;
@@ -62,7 +60,7 @@ public class EquationBasedModel extends LeafModel {
     @Override
     public void readY0(IY0 y0, double ti) {
         Map<String, Double> m = new HashMap<>();
-        for (JSONObject ent : y0.get()) {
+        for (JSONObject ent : y0.getEntries()) {
             m.put(ent.getString("y"), ent.getDouble("n"));
         }
         Equations.setY(m);

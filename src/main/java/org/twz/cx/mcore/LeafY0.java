@@ -9,17 +9,20 @@ import java.util.Collection;
 import java.util.List;
 
 public class LeafY0 implements IY0 {
-    private List<JSONObject> Definitions;
+    private List<JSONObject> Entries;
 
     public LeafY0() {
-        Definitions = new ArrayList<>();
+        Entries = new ArrayList<>();
     }
 
     public LeafY0(JSONObject js) {
-        Definitions = new ArrayList<>();
-        JSONArray jar = js.getJSONArray("Definitions");
+        this(js.getJSONArray("Entries"));
+    }
+
+    public LeafY0(JSONArray jar) {
+        this();
         for (int i = 0; i < jar.length(); i++) {
-            Definitions.add(jar.getJSONObject(i));
+            Entries.add(jar.getJSONObject(i));
         }
     }
 
@@ -30,7 +33,7 @@ public class LeafY0 implements IY0 {
 
     @Override
     public void append(JSONObject ent) {
-        Definitions.add(ent);
+        Entries.add(ent);
     }
 
     @Override
@@ -39,8 +42,8 @@ public class LeafY0 implements IY0 {
     }
 
     @Override
-    public Collection<JSONObject> get() {
-        return Definitions;
+    public Collection<JSONObject> getEntries() {
+        return Entries;
     }
 
     @Override
@@ -54,9 +57,20 @@ public class LeafY0 implements IY0 {
     }
 
     @Override
+    public IY0 adaptTo(JSONArray src) {
+        try {
+            return this.getClass().getConstructor(JSONArray.class).newInstance(src);
+        } catch (InstantiationException | IllegalAccessException |InvocationTargetException | NoSuchMethodException  e) {
+            e.printStackTrace();
+        }
+        return new LeafY0();
+    }
+
+    @Override
     public JSONObject toJSON() {
         JSONObject js = new JSONObject();
-        js.put("Definitions", Definitions);
+        js.put("Entries", Entries);
+        js.put("Type", "Leaf");
         return js;
     }
 }

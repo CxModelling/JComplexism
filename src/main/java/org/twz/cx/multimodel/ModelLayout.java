@@ -32,37 +32,7 @@ public class ModelLayout {
     }
 
     public ModelLayout(String name) {
-        this(name, new BranchY0() {
-            @Override
-            public void matchModelInfo(AbsSimModel model) {
-
-            }
-
-            @Override
-            public void append(JSONObject ent) {
-
-            }
-
-            @Override
-            public void append(String ent) {
-
-            }
-
-            @Override
-            public Collection<JSONObject> get() {
-                return null;
-            }
-
-            @Override
-            public IY0 adaptTo(JSONArray src) {
-                return null;
-            }
-
-            @Override
-            public JSONArray toJSON() {
-                return null;
-            }
-        })
+        this(name, new BranchY0());
     }
 
     public String getName() {
@@ -106,6 +76,6 @@ public class ModelLayout {
     }
 
     public AbsSimModel generate(Director da, ParameterCore pc) {
-
+        return null; // todo
     }
 }

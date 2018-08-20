@@ -9,6 +9,7 @@ import org.twz.cx.abmodel.statespace.StSpY0;
 import org.twz.cx.ebmodel.*;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.mcore.AbsSimModel;
+import org.twz.cx.mcore.BranchY0;
 import org.twz.cx.mcore.Simulator;
 import org.twz.cx.mcore.communicator.*;
 import org.twz.dag.ParameterCore;
@@ -55,7 +56,7 @@ public class HybridModelTest {
 
     private Director Da;
     private MultiModel Model;
-    private Y0s Y0;
+    private BranchY0 Y0;
 
     @Before
     public void setUp() {
@@ -87,7 +88,7 @@ public class HybridModelTest {
         });
         BpE.setObservations(new String[]{"S", "R"});
 
-        Y0 = new Y0s();
+        Y0 = new BranchY0();
 
         StSpY0 y0a = new StSpY0();
         y0a.append(50, "Inf");

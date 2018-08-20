@@ -53,7 +53,7 @@ public class StSpABModel extends AbsAgentBasedModel<StSpAgent> {
 
     @Override
     public void readY0(IY0 y0, double ti) {
-        for (JSONObject y : y0.get()) {
+        for (JSONObject y : y0.getEntries()) {
             Map<String, Object> atr = FnJSON.toObjectMap(y.getJSONObject("attributes"));
             makeAgents(y.getInt("n"), ti, atr);
         }

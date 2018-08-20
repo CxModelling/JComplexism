@@ -10,7 +10,7 @@ public interface IY0 extends Cloneable, AdapterJSONObject {
     void matchModelInfo(AbsSimModel model);
     void append(JSONObject ent);
     void append(String ent);
-    Collection<JSONObject> get();
+    Collection<JSONObject> getEntries();
     IY0 adaptTo(JSONObject src);
     IY0 adaptTo(JSONArray src);
 }

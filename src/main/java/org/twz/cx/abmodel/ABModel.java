@@ -26,7 +26,7 @@ public class ABModel extends AbsAgentBasedModel {
 
     @Override
     public void readY0(IY0 y0, double ti) {
-        Collection<JSONObject> entries = y0.get();
+        Collection<JSONObject> entries = y0.getEntries();
         JSONObject ajs;
         Map<String, Object> atr;
         for (JSONObject entry : entries) {

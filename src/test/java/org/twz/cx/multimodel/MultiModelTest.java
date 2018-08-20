@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.abmodel.statespace.StSpABMBlueprint;
 import org.twz.cx.abmodel.statespace.StSpY0;
+import org.twz.cx.mcore.BranchY0;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.util.NodeGroup;
@@ -23,7 +24,7 @@ public class MultiModelTest {
     private MultiModel Model;
     private AbsStateSpace DC;
     private ParameterCore PC;
-    private Y0s Y0;
+    private BranchY0 Y0;
 
     @Before
     public void setUp() {
@@ -75,7 +76,7 @@ public class MultiModelTest {
         y0.append(950, "Sus");
         y0.append(50, "Inf");
 
-        Y0 = new Y0s();
+        Y0 = new BranchY0();
         Y0.appendChildren("m1", y0);
         Y0.appendChildren("m2", y0);
     }

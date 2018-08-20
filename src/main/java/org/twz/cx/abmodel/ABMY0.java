@@ -4,51 +4,17 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
+import org.twz.cx.mcore.LeafY0;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ABMY0 implements IY0 {
-    private List<JSONObject> Definitions;
-
-    public ABMY0() {
-        Definitions = new ArrayList<>();
-    }
+public class ABMY0 extends LeafY0 {
 
     @Override
     public void matchModelInfo(AbsSimModel model) {
 
     }
 
-    @Override
-    public void append(JSONObject ent) {
-        if (ent.has("n") & ent.has("attributes")) {
-            Definitions.add(ent);
-        }
-    }
-
-    @Override
-    public void append(String ent) {
-        append(new JSONObject(ent));
-    }
-
-    @Override
-    public Collection<JSONObject> get() {
-        return Definitions;
-    }
-
-    @Override
-    public IY0 adaptTo(JSONArray src) {
-        ABMY0 y0 = new ABMY0();
-        for (int i = 0; i < src.length(); i++) {
-            y0.append(src.getJSONObject(i));
-        }
-        return y0;
-    }
-
-    @Override
-    public JSONObject toJSON() {
-        return new JSONArray(Definitions);
-    }
 }

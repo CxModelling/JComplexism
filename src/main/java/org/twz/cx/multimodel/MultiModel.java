@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import org.twz.cx.element.Request;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.BranchModel;
+import org.twz.cx.mcore.BranchY0;
 import org.twz.cx.mcore.IY0;
 import org.twz.dag.ParameterCore;
 
@@ -14,12 +15,12 @@ public class MultiModel extends BranchModel {
     private Map<String, AbsSimModel> Submodels;
 
     public MultiModel(String name, ParameterCore pars) {
-        super(name, pars, new MMObserver(), new Y0s());
+        super(name, pars, new MMObserver(), new BranchY0());
         Submodels = new HashMap<>();
     }
 
     public MultiModel(String name, Map<String, Double> pars) {
-        super(name, pars, new MMObserver(), new Y0s());
+        super(name, pars, new MMObserver(), new BranchY0());
         Submodels = new HashMap<>();
     }
 
@@ -45,7 +46,7 @@ public class MultiModel extends BranchModel {
 
     @Override
     public void readY0(IY0 y0, double ti) {
-        Y0s y0s = (Y0s) y0;
+        BranchY0 y0s = (BranchY0) y0;
 
         for (Map.Entry<String, AbsSimModel> entry : Submodels.entrySet()) {
             entry.getValue().readY0(y0s.getChildren(entry.getKey()), ti);
