@@ -108,7 +108,7 @@ public class HybridModelTest {
         ng.print();
 
 
-        Model = (MultiModel) Da.generateModel("Hybrid", "pHySIR");
+        Model = (MultiModel) Da.generateModel("SIR", "Hybrid", "pHySIR");
 
 
         AbsSimModel m_i = Model.getModel("I");

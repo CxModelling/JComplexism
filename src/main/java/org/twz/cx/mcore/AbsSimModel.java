@@ -86,6 +86,10 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Parameters;
     }
 
+    public IY0 getProtoY0() {
+        return ProtoY0;
+    }
+
     AbsScheduler getScheduler() {
         return Scheduler;
     }

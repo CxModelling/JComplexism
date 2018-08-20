@@ -78,8 +78,8 @@ public class ModelLayout {
         return ng;
     }
 
-    public AbsSimModel generate(Director da, ParameterCore pc, boolean all_observed) {
-        MultiModel model = new MultiModel(getName(), pc);
+    public AbsSimModel generate(String name, Director da, ParameterCore pc, boolean all_observed) {
+        MultiModel model = new MultiModel(name, pc);
         AbsSimModel sub;
 
         for (IModelEntry entry : ModelEntries) {
@@ -95,8 +95,8 @@ public class ModelLayout {
         return model;
     }
 
-    public AbsSimModel generate(Director da, ParameterCore pc) {
-        return this.generate(da, pc, true);
+    public AbsSimModel generate(String name, Director da, ParameterCore pc) {
+        return this.generate(name, da, pc, true);
     }
 
     public IY0 getY0s() {

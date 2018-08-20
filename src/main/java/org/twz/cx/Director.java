@@ -5,6 +5,7 @@ import org.twz.cx.ebmodel.ODEEBMBlueprint;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.cx.mcore.IY0;
+import org.twz.cx.mcore.LeafY0;
 import org.twz.dag.BayesNet;
 import org.twz.dag.util.NodeGroup;
 import org.twz.statespace.AbsStateSpace;
@@ -233,16 +234,22 @@ public class Director {
         return MCores.get(type).generate(name, args);
     }
 
-    public AbsSimModel generateModel(String name, String bn) {
-        assert Layouts.containsKey(name);
-        ModelLayout layout = Layouts.get(name);
-        NodeGroup ng = layout.getParameterHierarchy(this);
-        ParameterCore pc = getBayesNet(bn).toSimulationCore(ng, true).generate("Test");
-        return layout.generate(this, pc);
+    public AbsSimModel generateModel(String name, String type, String bn) {
+        if (Layouts.containsKey(type)) {
+            ModelLayout layout = Layouts.get(type);
+            NodeGroup ng = layout.getParameterHierarchy(this);
+            ParameterCore pc = getBayesNet(bn).toSimulationCore(ng, true).generate("Test");
+            return layout.generate(name, this, pc);
+        } else {
+            return generateMCore(name, type, bn);
+        }
     }
 
-    public IY0 generateModelY0(String name) {
-        assert Layouts.containsKey(name);
-        return Layouts.get(name).getY0s();
+    public IY0 generateModelY0(String type) {
+        if (Layouts.containsKey(type)) {
+            return Layouts.get(type).getY0s();
+        } else {
+            return new LeafY0();
+        }
     }
 }
