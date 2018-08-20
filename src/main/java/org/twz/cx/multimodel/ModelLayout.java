@@ -1,7 +1,6 @@
 package org.twz.cx.multimodel;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 import org.twz.cx.Director;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.BranchY0;
@@ -23,17 +22,11 @@ public class ModelLayout {
     private final String Name;
     private List<IModelEntry> ModelEntries;
     private Map<String, ModelLayout> Children;
-    private BranchY0 Y0;
 
-    public ModelLayout(String name, BranchY0 y0) {
+    public ModelLayout(String name) {
         Name = name;
         ModelEntries = new ArrayList<>();
         Children = new HashMap<>();
-        Y0 = y0;
-    }
-
-    public ModelLayout(String name) {
-        this(name, new BranchY0());
     }
 
     public String getName() {
@@ -79,12 +72,42 @@ public class ModelLayout {
     public NodeGroup getParameterHierarchy(Director da) {
         NodeGroup ng = new NodeGroup(Name, null);
         Children.values().forEach(e->ng.appendChildren(e.getParameterHierarchy(da)));
+        Set<String> leaves = new HashSet<>();
+        ModelEntries.forEach(e->leaves.add(e.getProtoName()));
+        leaves.forEach(e->ng.appendChildren(da.getSimModel(e).getParameterHierarchy(da)));
         return ng;
     }
 
+    public AbsSimModel generate(Director da, ParameterCore pc, boolean all_observed) {
+        MultiModel model = new MultiModel(getName(), pc);
+        AbsSimModel sub;
+
+        for (IModelEntry entry : ModelEntries) {
+            List<Tuple<String, String, IY0>> ms = entry.generate();
+            for (Tuple<String, String, IY0> m : ms) {
+                sub = da.generateMCore(m.getFirst(), m.getSecond(), pc.breed(m.getFirst(), m.getSecond()));
+                model.appendModel(sub);
+                if (all_observed) model.addObservingModel(m.getFirst());
+            }
+
+        }
+
+        return model;
+    }
+
     public AbsSimModel generate(Director da, ParameterCore pc) {
+        return this.generate(da, pc, true);
+    }
 
+    public IY0 getY0s() {
+        BranchY0 y0 = new BranchY0();
+        for (IModelEntry entry : ModelEntries) {
+            List<Tuple<String, String, IY0>> ms = entry.generate();
+            for (Tuple<String, String, IY0> m : ms) {
+                y0.appendChildren(m.getFirst(), m.getThird());
+            }
 
-        return null; // todo
+        }
+        return y0;
     }
 }

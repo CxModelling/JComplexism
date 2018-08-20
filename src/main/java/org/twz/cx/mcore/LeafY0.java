@@ -73,4 +73,10 @@ public class LeafY0 implements IY0 {
         js.put("Type", "Leaf");
         return js;
     }
+
+    public LeafY0 clone() {
+        LeafY0 clo = new LeafY0();
+        getEntries().forEach(e->clo.append(e.toString()));
+        return clo;
+    }
 }

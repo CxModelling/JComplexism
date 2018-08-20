@@ -12,6 +12,7 @@ import java.util.Set;
  * Created by TimeWz on 2017/11/14.
  */
 public interface IModelEntry extends AdapterJSONObject {
+    String getProtoName();
     List<Tuple<String, String, IY0>> generate();
     int size();
 }

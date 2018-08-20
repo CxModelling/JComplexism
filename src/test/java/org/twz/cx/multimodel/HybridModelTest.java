@@ -10,6 +10,7 @@ import org.twz.cx.ebmodel.*;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.BranchY0;
+import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.Simulator;
 import org.twz.cx.mcore.communicator.*;
 import org.twz.dag.ParameterCore;
@@ -56,7 +57,7 @@ public class HybridModelTest {
 
     private Director Da;
     private MultiModel Model;
-    private BranchY0 Y0;
+    private IY0 Y0;
 
     @Before
     public void setUp() {
@@ -64,7 +65,7 @@ public class HybridModelTest {
         Da.loadBayesNet("src/test/resources/script/pHybridSIR.txt");
         Da.loadStateSpace("src/test/resources/script/HybridSIR.txt");
 
-        StSpABMBlueprint BpA = new StSpABMBlueprint("abm");
+        StSpABMBlueprint BpA = (StSpABMBlueprint) Da.createSimModel("abm", "StSpABM");
         BpA.setAgent("Ag", "agent", "HySIR");
 
         BpA.addBehaviour("{'Name': 'Recovery', 'Type': 'Cohort', 'Args': {'s_death': 'Rec'}}");
@@ -73,7 +74,7 @@ public class HybridModelTest {
         BpA.setObservations(new String[]{"Inf"}, new String[]{"Recov"}, new String[]{"InfIn", "StInf"});
 
 
-        ODEEBMBlueprint BpE = new ODEEBMBlueprint("ebm");
+        ODEEBMBlueprint BpE = (ODEEBMBlueprint) Da.createSimModel("ebm", "ODEEBM");
         BpE.setODE((t, y0, y1, parameters, attributes) -> {
             y1[0] = 0;
             y1[1] = 0;
@@ -88,51 +89,30 @@ public class HybridModelTest {
         });
         BpE.setObservations(new String[]{"S", "R"});
 
-        Y0 = new BranchY0();
+        ModelLayout layout = Da.createModelLayout("Hybrid");
 
-        StSpY0 y0a = new StSpY0();
-        y0a.append(50, "Inf");
-        Y0.appendChildren("I", y0a);
 
         EBMY0 y0e = new EBMY0();
         y0e.append("{'y': 'S', 'n': 950}");
-        Y0.appendChildren("SR", y0e);
+        layout.addEntry("SR", "ebm", y0e);
+
+        StSpY0 y0a = new StSpY0();
+        y0a.append(50, "Inf");
+        layout.addEntry("I", "abm", y0a);
 
 
-        NodeGroup ng = new NodeGroup("root", new String[0]);
-        ng.appendChildren(BpA.getParameterHierarchy(Da));
-        ng.appendChildren(BpE.getParameterHierarchy(null));
+
+
+        NodeGroup ng = Da.getParameterHierarchy("Hybrid");
 
         ng.print();
 
-        ParameterCore PC = Da.getBayesNet("pHySIR").toSimulationCore(ng, true).generate("Test");
-        AbsStateSpace DC;
+
+        Model = (MultiModel) Da.generateModel("Hybrid", "pHySIR");
 
 
-        Model = new MultiModel("MM", PC);
-
-        Map<String, Object> args;
-        args = new HashMap<>();
-        ParameterCore PCA = PC.breed("I", "abm");
-
-        DC = Da.generateDCore("HySIR", PCA.genPrototype("agent"));
-        args.put("dc", DC);
-        args.put("pc", PC);
-
-        AbsSimModel m_i = BpA.generate("I", args);
-
-        Model.appendModel(m_i);
-
-        args = new HashMap<>();
-        args.put("dc", DC);
-        args.put("pc", PC.breed("SR", "ebm"));
-
-        AbsSimModel m_sr = BpE.generate("SR", args);
-
-        Model.appendModel(m_sr);
-
-        Model.addObservingModel("SR");
-        Model.addObservingModel("I");
+        AbsSimModel m_i = Model.getModel("I");
+        AbsSimModel m_sr = Model.getModel("SR");
 
 
         m_sr.addListener(new StartWithChecker("update value"), new ValueImpulseShocker("Inf"));
@@ -145,6 +125,8 @@ public class HybridModelTest {
 
 
         m_i.addListener(new IsChecker("update"), new InfIn());
+
+        Y0 = Da.generateModelY0("Hybrid");
     }
 
     @Test
@@ -152,7 +134,7 @@ public class HybridModelTest {
         Simulator Sim = new Simulator(Model);
         Sim.addLogPath("log/Hybrid.txt");
 
-        Sim.simulate(Y0, 0, 10, 1);
+        Sim.simulate(Y0, 0, 30, 1);
         Model.getObserver().getObservations().print();
     }
 

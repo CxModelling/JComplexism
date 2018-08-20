@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
  * Created by TimeWz on 2017/11/14.
  */
 public class MultipleEntry implements IModelEntry {
@@ -34,6 +35,11 @@ public class MultipleEntry implements IModelEntry {
         this(prefix, modelProto, y0, 1, to, 1);
     }
 
+
+    @Override
+    public String getProtoName() {
+        return ModelProto;
+    }
 
     @Override
     public List<Tuple<String, String, IY0>> generate() {

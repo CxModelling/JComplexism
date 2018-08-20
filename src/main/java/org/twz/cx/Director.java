@@ -4,7 +4,9 @@ import org.twz.cx.abmodel.statespace.StSpABMBlueprint;
 import org.twz.cx.ebmodel.ODEEBMBlueprint;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IModelBlueprint;
+import org.twz.cx.mcore.IY0;
 import org.twz.dag.BayesNet;
+import org.twz.dag.util.NodeGroup;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.StateSpaceFactory;
 import org.twz.statespace.IStateSpaceBlueprint;
@@ -184,6 +186,22 @@ public class Director {
         return mbp;
     }
 
+    public void addModelLayout(ModelLayout ml) {
+        Layouts.putIfAbsent(ml.getName(), ml);
+    }
+
+    public ModelLayout createModelLayout(String name) {
+        assert !Layouts.containsKey(name);
+        ModelLayout layout = new ModelLayout(name);
+        addModelLayout(layout);
+        return layout;
+    }
+
+    public NodeGroup getParameterHierarchy(String name) {
+        assert Layouts.containsKey(name);
+        return Layouts.get(name).getParameterHierarchy(this);
+    }
+
     public ParameterCore generatePCore(String name, String bn) {
         return getBayesNet(bn).toSimulationCore().generate(name);
     }
@@ -213,5 +231,18 @@ public class Director {
         args.put("pc", pc);
         args.put("da", this);
         return MCores.get(type).generate(name, args);
+    }
+
+    public AbsSimModel generateModel(String name, String bn) {
+        assert Layouts.containsKey(name);
+        ModelLayout layout = Layouts.get(name);
+        NodeGroup ng = layout.getParameterHierarchy(this);
+        ParameterCore pc = getBayesNet(bn).toSimulationCore(ng, true).generate("Test");
+        return layout.generate(this, pc);
+    }
+
+    public IY0 generateModelY0(String name) {
+        assert Layouts.containsKey(name);
+        return Layouts.get(name).getY0s();
     }
 }

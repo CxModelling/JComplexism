@@ -26,7 +26,7 @@ public class NodeGroup implements AdapterJSONObject {
     public NodeGroup(String name, String[] nodes) {
         Name = name;
         Children = new HashSet<>();
-        Nodes = new HashSet<>(Arrays.asList(nodes));
+        Nodes = (nodes != null)? new HashSet<>(Arrays.asList(nodes)): new HashSet<>();
         Exo = new HashSet<>();
         Fixed = new HashSet<>();
         Random = new HashSet<>();

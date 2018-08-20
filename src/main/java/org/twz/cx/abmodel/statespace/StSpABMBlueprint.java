@@ -131,7 +131,7 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
             } else {
                 Director da = (Director) args.get("da");
                 IStateSpaceBlueprint dbp = da.getStateSpace(Population.Dynamic);
-                dc = dbp.generateModel(pc);
+                dc = dbp.generateModel(pc.genPrototype(Population.Group));
             }
         } else {
             return null;

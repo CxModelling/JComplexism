@@ -30,6 +30,11 @@ public class SingleEntry implements IModelEntry {
     }
 
     @Override
+    public String getProtoName() {
+        return ModelProto;
+    }
+
+    @Override
     public int size() {
         return 1;
     }
