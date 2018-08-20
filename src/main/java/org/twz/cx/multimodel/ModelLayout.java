@@ -10,6 +10,7 @@ import org.twz.cx.multimodel.entries.IModelEntry;
 import org.twz.cx.multimodel.entries.MultipleEntry;
 import org.twz.cx.multimodel.entries.SingleEntry;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.util.NodeGroup;
 import org.twz.dataframe.Tuple;
 
 import java.util.*;
@@ -75,7 +76,15 @@ public class ModelLayout {
         return ModelEntries.stream().mapToInt(IModelEntry::size).sum();
     }
 
+    public NodeGroup getParameterHierarchy(Director da) {
+        NodeGroup ng = new NodeGroup(Name, null);
+        Children.values().forEach(e->ng.appendChildren(e.getParameterHierarchy(da)));
+        return ng;
+    }
+
     public AbsSimModel generate(Director da, ParameterCore pc) {
+
+
         return null; // todo
     }
 }

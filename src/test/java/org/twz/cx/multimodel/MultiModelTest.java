@@ -44,7 +44,7 @@ public class MultiModelTest {
 
 
         NodeGroup ng = new NodeGroup("root", new String[0]);
-        ng.appendChildren(Bp.getParameterHierarchy(Da.getStateSpace("CloseSIR")));
+        ng.appendChildren(Bp.getParameterHierarchy(Da));
 
         PC = Da.getBayesNet("pCloseSIR").toSimulationCore(ng, true).generate("Test");
         DC = Da.generateDCore("CloseSIR", PC.genPrototype("agent"));

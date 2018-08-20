@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel;
 
+import org.twz.cx.Director;
 import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.util.NodeGroup;
 import org.twz.statespace.IStateSpaceBlueprint;
@@ -31,7 +32,7 @@ public class ABMBlueprint implements IModelBlueprint<AbsAgentBasedModel> {
     }
 
     @Override
-    public NodeGroup getParameterHierarchy(IStateSpaceBlueprint dc) {
+    public NodeGroup getParameterHierarchy(Director da) {
         return null;
     }
 

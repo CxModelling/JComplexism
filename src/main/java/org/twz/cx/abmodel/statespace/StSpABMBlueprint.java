@@ -102,10 +102,13 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
     }
 
     @Override
-    public NodeGroup getParameterHierarchy(IStateSpaceBlueprint dc) {
+    public NodeGroup getParameterHierarchy(Director da) {
         NodeGroup ng = new NodeGroup(Name, new String[0]);
         assert Population != null;
-        String[] needs = dc.getRequiredDistributions();
+
+        IStateSpaceBlueprint dc = da.getStateSpace(Population.Dynamic);
+        assert dc != null;
+        String[] needs = dc .getRequiredDistributions();
         ng.appendChildren(new NodeGroup(Population.Group, needs));
         return ng;
     }
@@ -118,7 +121,7 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         if (args.containsKey("bn") && args.containsKey("da")) {
             Director da = (Director) args.get("da");
             IStateSpaceBlueprint dbp = da.getStateSpace(Population.Dynamic);
-            pc = da.getBayesNet((String) args.get("bn")).toSimulationCore(getParameterHierarchy(dbp), true).generate(name);
+            pc = da.getBayesNet((String) args.get("bn")).toSimulationCore(getParameterHierarchy(da), true).generate(name);
             dc = dbp.generateModel(pc.genPrototype(Population.Group));
 
         } else if(args.containsKey("pc")) {
@@ -155,7 +158,6 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
 
     @Override
     public boolean isWellDefined() {
-        if (Population == null) return false;
-        return ObsStates.size() + ObsTransitions.size() + ObsBehaviours.size() > 0;
+        return Population != null && ObsStates.size() + ObsTransitions.size() + ObsBehaviours.size() > 0;
     }
 }

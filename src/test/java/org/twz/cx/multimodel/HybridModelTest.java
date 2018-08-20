@@ -100,7 +100,7 @@ public class HybridModelTest {
 
 
         NodeGroup ng = new NodeGroup("root", new String[0]);
-        ng.appendChildren(BpA.getParameterHierarchy(Da.getStateSpace("HySIR")));
+        ng.appendChildren(BpA.getParameterHierarchy(Da));
         ng.appendChildren(BpE.getParameterHierarchy(null));
 
         ng.print();

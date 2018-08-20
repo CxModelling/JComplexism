@@ -41,7 +41,7 @@ public class StSpABMBlueprintTest {
         Map<String, Object> args = new HashMap<>();
 
         ParameterCore PC = Da.getBayesNet("pCloseSIR")
-                .toSimulationCore(Bp.getParameterHierarchy(Da.getStateSpace("CloseSIR")), true)
+                .toSimulationCore(Bp.getParameterHierarchy(Da), true)
                 .generate("Test");
         AbsStateSpace DC = Da.generateDCore("CloseSIR", PC.genPrototype("agent"));
 
