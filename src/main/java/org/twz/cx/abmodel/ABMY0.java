@@ -48,7 +48,7 @@ public class ABMY0 implements IY0 {
     }
 
     @Override
-    public JSONArray toJSON() {
+    public JSONObject toJSON() {
         return new JSONArray(Definitions);
     }
 }
