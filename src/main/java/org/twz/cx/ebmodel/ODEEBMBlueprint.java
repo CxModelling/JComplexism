@@ -6,6 +6,7 @@ import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.util.NodeGroup;
 import org.twz.io.FnJSON;
+import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.IStateSpaceBlueprint;
 
 import java.util.ArrayList;
@@ -77,7 +78,18 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
 
     @Override
     public EquationBasedModel generate(String name, Map<String, Object> args) {
-        ParameterCore pc = (ParameterCore) args.get("pc");
+        ParameterCore pc;
+
+        if (args.containsKey("bn") && args.containsKey("da")) {
+            Director da = (Director) args.get("da");
+            pc = da.getBayesNet((String) args.get("bn")).toSimulationCore(getParameterHierarchy(da), true).generate(name);
+
+        } else if(args.containsKey("pc")) {
+            pc = (ParameterCore) args.get("pc");
+        } else {
+            assert false;
+            return null;
+        }
 
         ODEquations eq = new ODEquations(name, Fn, Ys, Dt, pc);
         eq.updateAttributes(FnJSON.toObjectMap(Xs));

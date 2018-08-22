@@ -184,19 +184,6 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
 
 
     public void print(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("Time");
-
-        TimeSeries.get(TimeSeries.size()-1).keySet().stream().filter(key -> !Objects.equals(key, "Time"))
-                .forEach(key -> sb.append("\t").append(key));
-
-        for (Map<String, Double> data: TimeSeries) {
-            sb.append('\n').append(String.format( "%4.1f", data.get("Time")));
-
-            data.entrySet().stream().filter(e -> !e.getKey().equals("Time"))
-                    .forEach(e -> sb.append('\t').append(String.format( "%.3f", e.getValue())));
-        }
-
-        System.out.println(sb);
+        getObservations().print();
     }
 }
