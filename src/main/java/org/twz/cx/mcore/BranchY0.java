@@ -8,7 +8,7 @@ import java.util.*;
 
 public class BranchY0 implements IY0 {
     private Map<String, IY0> Children;
-    protected List<JSONObject> Entries;
+    protected    List<JSONObject> Entries;
 
     public BranchY0() {
         Children = new HashMap<>();
