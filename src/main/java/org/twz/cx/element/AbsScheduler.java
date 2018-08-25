@@ -226,12 +226,12 @@ public abstract class AbsScheduler {
 
     @Override
     public String toString() {
-        return "Schedule{" +
+        return "Scheduler{" +
                 "Location='" + Location +
                 ", Number of Atoms=" + NumAtoms +
                 ", Requests=" + Requests.size() +
                 ", Disclosures=" + Disclosures.size() +
-                ", Time=" + GloTime +
+                ", Time=" + OwnTime +
                 '}';
     }
 }
