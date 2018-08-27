@@ -24,6 +24,20 @@ public class StateTrack extends PassiveBehaviour {
     }
 
     @Override
+    public void initialise(double ti, AbsSimModel model) {
+        StSpABModel m = (StSpABModel) model;
+        Value = evaluate(m);
+        JSONObject js = new JSONObject();
+        js.put("v1", Value);
+        model.disclose("update value to "+ Value, getName(), js);
+    }
+
+    @Override
+    public void reset(double ti, AbsSimModel model) {
+
+    }
+
+    @Override
     public void register(AbsAgent ag, double ti) {
 
     }
@@ -71,20 +85,6 @@ public class StateTrack extends PassiveBehaviour {
         JSONObject js = new JSONObject();
         js.put("s_src", S_src.getName());
         return js;
-    }
-
-    @Override
-    public void initialise(double ti, AbsSimModel model) {
-        StSpABModel m = (StSpABModel) model;
-        Value = evaluate(m);
-        JSONObject js = new JSONObject();
-        js.put("v1", Value);
-        model.disclose("update value to "+ Value, getName(), js);
-    }
-
-    @Override
-    public void reset(double ti, AbsSimModel model) {
-
     }
 
     private double evaluate(StSpABModel model) {
