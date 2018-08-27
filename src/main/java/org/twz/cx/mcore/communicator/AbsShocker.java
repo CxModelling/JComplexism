@@ -11,7 +11,7 @@ public abstract class AbsShocker implements IShocker, AdapterJSONObject {
     }
 
     public String getType() {
-        return this.getClass().getSimpleName().replace("Checker", "");
+        return this.getClass().getSimpleName().replace("AbsShocker", "");
     }
 
     @Override

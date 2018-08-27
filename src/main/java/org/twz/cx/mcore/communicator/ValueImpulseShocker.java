@@ -26,7 +26,7 @@ public class ValueImpulseShocker extends AbsShocker {
     public Pair<String, JSONObject> shock(Disclosure dis, AbsSimModel source, AbsSimModel target, double time) {
         JSONObject js = new JSONObject();
         js.put("k", Target);
-        js.put("v", dis.getDouble("v1"));
+        js.put("v", dis.getDouble(this.Value));
         return new Pair<>("impulse", js);
     }
 
