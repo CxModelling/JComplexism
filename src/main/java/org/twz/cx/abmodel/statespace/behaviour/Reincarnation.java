@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace.behaviour;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
@@ -29,7 +30,7 @@ public class Reincarnation extends PassiveBehaviour {
     }
 
     @Override
-    public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) {
+    public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) throws JSONException {
         model.kill(ag.getName(), ti);
         Map<String, Object> atr = new HashMap<>();
         atr.put("st", S_birth);
@@ -63,7 +64,7 @@ public class Reincarnation extends PassiveBehaviour {
     }
 
     @Override
-    protected JSONObject getArgumentJSON() {
+    protected JSONObject getArgumentJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("s_death", S_death.getName());
         js.put("s_birth", S_birth.getName());

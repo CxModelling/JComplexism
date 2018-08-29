@@ -1,6 +1,7 @@
 package org.twz.io;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -38,7 +39,7 @@ public class IO {
             data.write(f);
             f.flush();
             f.close();
-        } catch(IOException e) {
+        } catch(IOException | JSONException e) {
             e.printStackTrace();
         }
     }
@@ -77,7 +78,7 @@ public class IO {
         return sb.toString();
     }
 
-    public static JSONObject loadJSON(String path) {
+    public static JSONObject loadJSON(String path) throws JSONException {
         return new JSONObject(loadText(path));
     }
 }

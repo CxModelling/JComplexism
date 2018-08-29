@@ -37,7 +37,7 @@ public class ListArg extends AbsArgument{
     }
 
     @Override
-    public Object correct(Object value, Workshop ws) throws NoSuchElementException{
+    public Object correct(Object value, Workshop ws) throws NoSuchElementException, JSONException {
         if (value instanceof String) {
             try {
                 value = ws.getResource((String) value);
@@ -67,7 +67,7 @@ public class ListArg extends AbsArgument{
     }
 
     @Override
-    public Object parse(String value) {
+    public Object parse(String value) throws JSONException {
         return FnJSON.toObjectList(new JSONArray(value));
     }
 }

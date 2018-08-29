@@ -2,6 +2,7 @@ package org.twz.cx.abmodel.statespace.behaviour;
 
 import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.distribution.PoissonDistribution;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
@@ -60,7 +61,7 @@ public class LifeS extends ActiveBehaviour {
     }
 
     @Override
-    protected void doAction(AbsSimModel model, Object todo, double ti) {
+    protected void doAction(AbsSimModel model, Object todo, double ti) throws JSONException {
         double n = ((AbsAgentBasedModel) model).size();
         if (n <= 0) return;
 
@@ -86,7 +87,7 @@ public class LifeS extends ActiveBehaviour {
     }
 
     @Override
-    protected JSONObject getArgumentJSON() {
+    protected JSONObject getArgumentJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("s_death", S_death.getName());
         js.put("s_birth", S_birth.getName());

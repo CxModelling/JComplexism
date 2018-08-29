@@ -1,5 +1,6 @@
 package org.twz.cx;
 
+import org.json.JSONException;
 import org.twz.cx.abmodel.statespace.StSpABMBlueprint;
 import org.twz.cx.ebmodel.ODEEBMBlueprint;
 import org.twz.cx.mcore.AbsSimModel;
@@ -62,12 +63,12 @@ public class Director {
     public void readBayesNet(JSONObject js) {
         try {
             addBayesNet(new BayesNet(js));
-        } catch (ScriptException e) {
+        } catch (ScriptException | JSONException e) {
             Log.warning("Invalidated script");
         }
     }
 
-    public void loadBayesNet(String path) {
+    public void loadBayesNet(String path) throws JSONException {
         if (path.endsWith(".json")) {
             readBayesNet(IO.loadJSON(path));
         } else {
@@ -96,7 +97,7 @@ public class Director {
         }
     }
 
-    public void loadStateSpace(String path) {
+    public void loadStateSpace(String path) throws JSONException {
         if (path.endsWith(".json")) {
             readStateSpace(IO.loadJSON(path));
         } else {
@@ -107,13 +108,17 @@ public class Director {
     public void readStateSpace(String script) {
         try {
             addStateSpace(StateSpaceFactory.createFromScripts(script));
-        } catch (ScriptException e) {
+        } catch (ScriptException | JSONException e) {
             Log.warning("Invalidated script");
         }
     }
 
     public void readStateSpace(JSONObject js) {
-        addStateSpace(StateSpaceFactory.createFromJSON(js));
+        try {
+            addStateSpace(StateSpaceFactory.createFromJSON(js));
+        } catch (JSONException e) {
+            Log.warning("Invalidated format");
+        }
     }
 
     public void listStateSpace() {
@@ -147,7 +152,7 @@ public class Director {
         MCores.putIfAbsent(mc.getName(), mc);
     }
 
-    public void loadSimModel(String path) {
+    public void loadSimModel(String path) throws JSONException {
         restoreSimModel(IO.loadJSON(path));
     }
 
@@ -214,24 +219,39 @@ public class Director {
     public AbsStateSpace generateDCore(String dc, ParameterCore pc) {
         IStateSpaceBlueprint bp = getStateSpace(dc);
         if (bp.isCompatible(pc)) {
-            return bp.generateModel(pc);
+            try {
+                return bp.generateModel(pc);
+            } catch (JSONException e) {
+                Log.warning(e.getMessage());
+            }
         } else {
-            return null;
+            Log.warning("Non-compatible bn");
         }
+        return null;
     }
 
     public AbsSimModel generateMCore(String name, String type, String bn) {
         Map<String, Object> args = new HashMap<>();
         args.put("bn", bn);
         args.put("da", this);
-        return MCores.get(type).generate(name, args);
+        try {
+            return MCores.get(type).generate(name, args);
+        } catch (JSONException e) {
+            Log.warning(e.getMessage());
+            return null;
+        }
     }
 
     public AbsSimModel generateMCore(String name, String type, ParameterCore pc) {
         Map<String, Object> args = new HashMap<>();
         args.put("pc", pc);
         args.put("da", this);
-        return MCores.get(type).generate(name, args);
+        try {
+            return MCores.get(type).generate(name, args);
+        } catch (JSONException e) {
+            Log.warning(e.getMessage());
+            return null;
+        }
     }
 
     public AbsSimModel generateModel(String name, String type, String bn) {

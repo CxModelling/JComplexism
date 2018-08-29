@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace;
 
+import org.json.JSONException;
 import org.twz.cx.abmodel.AbsBreeder;
 import org.twz.cx.abmodel.Population;
 import org.twz.dag.ParameterCore;
@@ -22,7 +23,7 @@ public class StSpPopulation extends Population<StSpAgent> {
     }
 
     @Override
-    public long count(String key, Object value) {
+    public long count(String key, Object value) throws JSONException {
         if (key.equals("st")) {
             return ((StSpBreeder) getEva()).count(getAgents().values(), value);
         } else {

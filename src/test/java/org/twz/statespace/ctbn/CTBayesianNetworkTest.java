@@ -1,5 +1,6 @@
 package org.twz.statespace.ctbn;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.dag.BayesNet;
@@ -17,11 +18,11 @@ import static org.junit.Assert.*;
  * Created by TimeWz on 10/08/2018.
  */
 public class CTBayesianNetworkTest  {
-    CTBayesianNetwork CTBN;
+    private CTBayesianNetwork CTBN;
 
 
     @Before
-    public void setUp() {
+    public void setUp() throws JSONException {
         IStateSpaceBlueprint bp;
         try {
             bp = StateSpaceFactory.createFromScripts(IO.loadText("src/test/resources/script/SIR_BN.txt"));
@@ -39,22 +40,22 @@ public class CTBayesianNetworkTest  {
     }
 
     @Test
-    public void testGetStateSpace() throws Exception {
+    public void testGetStateSpace() {
         System.out.println(CTBN.getStateSpace().keySet());
     }
 
     @Test
-    public void testGetWellDefinedStateSpace() throws Exception {
+    public void testGetWellDefinedStateSpace() {
         System.out.println(CTBN.getWellDefinedStateSpace().keySet());
     }
 
     @Test
-    public void testGetTransitionSpace() throws Exception {
+    public void testGetTransitionSpace() {
         System.out.println(CTBN.getTransitionSpace().keySet());
     }
 
     @Test
-    public void testIsa() throws Exception {
+    public void testIsa() {
         State sus = CTBN.getState("Sus");
         assertTrue(sus.isa(sus));
         assertTrue(sus.isa(CTBN.getState("Alive")));
@@ -62,7 +63,7 @@ public class CTBayesianNetworkTest  {
     }
 
     @Test
-    public void testExec() throws Exception {
+    public void testExec() {
         State sus = CTBN.getState("Sus");
         assertEquals(sus.exec(CTBN.getTransition("Infect")), CTBN.getState("Inf"));
     }

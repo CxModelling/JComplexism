@@ -1,5 +1,7 @@
 package org.twz.cx.mcore;
 
+import org.json.JSONException;
+
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -29,7 +31,13 @@ public class ModelSelector extends HashMap<String, AbsSimModel> {
 
 
     public double sum(String key) {
-        return this.values().stream().mapToDouble(e-> e.getDouble(key)).sum();
+        return this.values().stream().mapToDouble(e-> {
+            try {
+                return e.getDouble(key);
+            } catch (JSONException e1) {
+                return 0;
+            }
+        }).sum();
     }
 
     public Map<String, Double> sum() {

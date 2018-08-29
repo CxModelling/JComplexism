@@ -1,5 +1,6 @@
 package org.twz.cx.multimodel;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
@@ -27,7 +28,7 @@ public class MultiModelTest {
     private BranchY0 Y0;
 
     @Before
-    public void setUp() {
+    public void setUp() throws JSONException {
         Da = new Director();
         Da.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
         Da.loadStateSpace("src/test/resources/script/CloseSIR.txt");
@@ -82,7 +83,7 @@ public class MultiModelTest {
     }
 
     @Test
-    public void simulation() {
+    public void simulation() throws JSONException {
         Simulator Simu = new Simulator(Model);
         Simu.addLogPath("log/MM.txt");
 

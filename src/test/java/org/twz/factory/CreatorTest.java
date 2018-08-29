@@ -1,6 +1,7 @@
 package org.twz.factory;
 
 
+import org.json.JSONException;
 import org.twz.factory.arguments.AbsArgument;
 import org.twz.factory.arguments.DoubleArg;
 import org.twz.factory.arguments.IntegerArg;
@@ -13,7 +14,7 @@ import org.json.JSONObject;
  */
 public class CreatorTest extends TestCase {
 
-    public void testToString() {
+    public void testToString() throws JSONException {
         Workshop ws = new Workshop();
         AbsArgument[] args = new AbsArgument[]{
                 new StringArg("S"),

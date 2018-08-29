@@ -1,6 +1,7 @@
 package org.twz.dag.loci;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Gene;
@@ -59,7 +60,7 @@ public class PseudoLoci extends Loci {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = super.toJSON();
         js.put("Type", "Pseudo");
         js.put("Parents", new JSONArray(getParents()));

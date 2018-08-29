@@ -2,13 +2,9 @@ package org.twz.dag;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.twz.dag.BayesNet;
+
 import org.twz.dag.util.NodeGroup;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertArrayEquals;
 
 /**
  *
@@ -21,7 +17,7 @@ public class BayesNetHierarchyTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         BN = new BayesNet("test");
         BN.appendLoci("b1 = 0.5");
         BN.appendLoci("b0 ~ norm(12, 1)");
@@ -48,7 +44,7 @@ public class BayesNetHierarchyTest {
     }
 
     @Test
-    public void formHei() throws Exception {
+    public void formHei() {
         System.out.println("---------- Predefined nodes ----------");
         NG.print();
         NG.form_hierarchy(BN);

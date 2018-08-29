@@ -1,5 +1,7 @@
 package org.twz.factory;
 
+import org.json.JSONException;
+import org.junit.internal.runners.InitializationError;
 import org.twz.factory.arguments.AbsArgument;
 import org.json.JSONObject;
 
@@ -41,15 +43,26 @@ public class Workshop<T> {
     }
 
     public T create(JSONObject js) throws InstantiationError {
-        String name = (js.has("Name"))? js.getString("Name"): js.getString("Type");
-        String type = js.getString("Type");
-        JSONObject args = js.getJSONObject("Args");
-        return create(name, type, args);
+
+        try {
+            String name = (js.has("Name"))? js.getString("Name"): js.getString("Type");
+            String type = js.getString("Type");
+            JSONObject args = js.getJSONObject("Args");
+            return create(name, type, args);
+        } catch (JSONException e) {
+            throw new InstantiationError(e.getMessage());
+        }
+
+
     }
 
     public T create(String name, String type, JSONObject args) throws InstantiationError {
         Creator<? extends T> cr = Creators.get(type);
-        return cr.create(name, args, this);
+        try {
+            return cr.create(name, args, this);
+        } catch (JSONException e) {
+            throw new InstantiationError(e.toString());
+        }
     }
 
     public T create(String name, String type, String[] args) throws InstantiationError {

@@ -1,5 +1,6 @@
 package org.twz.cx.ebmodel;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
@@ -58,7 +59,7 @@ public class EquationBasedModel extends LeafModel {
     }
 
     @Override
-    public void readY0(IY0 y0, double ti) {
+    public void readY0(IY0 y0, double ti) throws JSONException {
         Map<String, Double> m = new HashMap<>();
         for (JSONObject ent : y0.getEntries()) {
             m.put(ent.getString("y"), ent.getDouble("n"));
@@ -86,7 +87,7 @@ public class EquationBasedModel extends LeafModel {
     }
 
     @Override
-    public void shock(double ti, String action, JSONObject value) {
+    public void shock(double ti, String action, JSONObject value) throws JSONException {
         Equations.shock(ti, this, action, value);
         Y = Equations.getDictY();
     }
@@ -102,7 +103,7 @@ public class EquationBasedModel extends LeafModel {
     }
 
     @Override
-    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) {
+    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) throws JSONException {
         Equations.goTo(ti);
         super.fetchDisclosures(ds_ms, ti);
     }

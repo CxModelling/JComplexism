@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel;
 
+import org.json.JSONException;
 import org.twz.cx.abmodel.network.AbsNetwork;
 import org.twz.cx.abmodel.network.NetworkSet;
 import org.twz.io.AdapterJSONObject;
@@ -42,7 +43,7 @@ public class Population<T extends AbsAgent> implements AdapterJSONObject {
         return Agents;
     }
 
-    public List<T> addAgents(int n, Map<String, Object> info) {
+    public List<T> addAgents(int n, Map<String, Object> info) throws JSONException {
         List<T> ags = Eva.breed(n, info);
         for (T ag: ags) {
             Agents.put(ag.getName(), ag);
@@ -51,7 +52,7 @@ public class Population<T extends AbsAgent> implements AdapterJSONObject {
         return ags;
     }
 
-    public List<T> addAgents(int n) {
+    public List<T> addAgents(int n) throws JSONException {
         return addAgents(n, new LinkedHashMap<>());
     }
 
@@ -70,8 +71,14 @@ public class Population<T extends AbsAgent> implements AdapterJSONObject {
         Networks.reform(net);
     }
 
-    public long count(String key, Object value) {
-        return Agents.values().stream().filter(ag->ag.get(key) == value).count();
+    public long count(String key, Object value) throws JSONException {
+        long count = 0L;
+        for (T ag : Agents.values()) {
+            if (ag.get(key) == value) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public long count(Map<String, Object> kvs) {
@@ -89,7 +96,7 @@ public class Population<T extends AbsAgent> implements AdapterJSONObject {
         return null;
     }
 
-    public JSONArray getSnapshot() {
+    public JSONArray getSnapshot() throws JSONException {
         JSONArray js = new JSONArray();
         for (T ag: Agents.values()) {
             js.put(ag.toData());

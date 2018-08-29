@@ -1,6 +1,7 @@
 package org.twz.cx.abmodel;
 
 
+import org.json.JSONException;
 import org.twz.cx.mcore.*;
 import org.json.JSONObject;
 import org.twz.dag.ParameterCore;
@@ -25,7 +26,7 @@ public class ABModel extends AbsAgentBasedModel {
     }
 
     @Override
-    public void readY0(IY0 y0, double ti) {
+    public void readY0(IY0 y0, double ti) throws JSONException {
         Collection<JSONObject> entries = y0.getEntries();
         JSONObject ajs;
         Map<String, Object> atr;

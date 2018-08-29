@@ -5,6 +5,7 @@ import org.apache.commons.math3.exception.MaxCountExceededException;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.nonstiff.DormandPrince853Integrator;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.twz.cx.mcore.AbsSimModel;
@@ -48,7 +49,7 @@ public class ODEquations extends AbsEquations implements FirstOrderDifferentialE
     }
 
     @Override
-    public void shock(double ti, AbsSimModel source, String action, JSONObject value) {
+    public void shock(double ti, AbsSimModel source, String action, JSONObject value) throws JSONException {
         EquationBasedModel model = (EquationBasedModel) source;
         goTo(ti);
         int n;

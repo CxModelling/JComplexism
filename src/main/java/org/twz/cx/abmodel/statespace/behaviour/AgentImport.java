@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace.behaviour;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
@@ -47,7 +48,7 @@ public class AgentImport extends PassiveBehaviour {
     }
 
     @Override
-    public void shock(double ti, AbsSimModel source, String target, JSONObject value) {
+    public void shock(double ti, AbsSimModel source, String target, JSONObject value) throws JSONException {
         int v = value.getInt("n");
         if (v > 0) {
             AbsAgentBasedModel model = (AbsAgentBasedModel) source;
@@ -65,7 +66,7 @@ public class AgentImport extends PassiveBehaviour {
     }
 
     @Override
-    protected JSONObject getArgumentJSON() {
+    protected JSONObject getArgumentJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("s_birth", S_birth.getName());
         return js;

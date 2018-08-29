@@ -1,6 +1,7 @@
 package org.twz.dag;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.actor.*;
 import org.twz.dag.loci.ExoValueLoci;
@@ -163,7 +164,7 @@ class SimulationGroup implements AdapterJSONObject {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Name", Name);
         js.put("Listening", new JSONArray(Listening));

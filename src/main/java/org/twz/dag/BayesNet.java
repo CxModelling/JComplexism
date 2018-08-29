@@ -1,6 +1,7 @@
 package org.twz.dag;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.loci.*;
 import org.twz.dag.util.NodeGroup;
@@ -27,7 +28,7 @@ public class BayesNet implements AdapterJSONObject {
         frozen=false;
     }
 
-    public BayesNet(JSONObject js) throws ScriptException {
+    public BayesNet(JSONObject js) throws ScriptException, JSONException {
         this(js.getString("Name"));
 
         JSONArray nodes = js.getJSONArray("Nodes");
@@ -85,7 +86,7 @@ public class BayesNet implements AdapterJSONObject {
         }
     }
 
-    public void appendLoci(JSONObject loc) {
+    public void appendLoci(JSONObject loc) throws JSONException {
         String nd = loc.getString("Name");
 
         Loci loci;
@@ -140,7 +141,7 @@ public class BayesNet implements AdapterJSONObject {
 
 
 
-    private List<String> toList(JSONArray ja) {
+    private List<String> toList(JSONArray ja) throws JSONException {
         List<String> l = new ArrayList<>();
         for (int i = 0; i < ja.length(); i++) {
             l.add(ja.getString(i));
@@ -191,7 +192,7 @@ public class BayesNet implements AdapterJSONObject {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject(), nodes = new JSONObject();
         js.put("Name", getName());
 

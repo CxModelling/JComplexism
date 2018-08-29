@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace.behaviour;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
@@ -68,7 +69,7 @@ public class Cohort extends PassiveBehaviour {
     }
 
     @Override
-    protected JSONObject getArgumentJSON() {
+    protected JSONObject getArgumentJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("s_death", S_death.getName());
         return js;

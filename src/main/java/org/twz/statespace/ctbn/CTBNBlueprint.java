@@ -1,5 +1,6 @@
 package org.twz.statespace.ctbn;
 
+import org.json.JSONException;
 import org.twz.dag.actor.Sampler;
 import org.twz.statespace.IStateSpaceBlueprint;
 import org.twz.statespace.State;
@@ -27,7 +28,7 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
         }
 
         @Override
-        public JSONObject toJSON() {
+        public JSONObject toJSON() throws JSONException {
             return new JSONObject("{'To':"+To+", 'Dist':"+Dist+"}");
         }
     }
@@ -49,7 +50,7 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
         JS = null;
     }
 
-    public CTBNBlueprint(JSONObject js) {
+    public CTBNBlueprint(JSONObject js) throws JSONException {
         this(js.getString("ModelName"));
         JSONObject sub, temp;
         JSONArray order;
@@ -186,7 +187,7 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
     }
 
     @Override
-    public CTBayesianNetwork generateModel(ParameterCore pc) {
+    public CTBayesianNetwork generateModel(ParameterCore pc) throws JSONException {
         Map<String, MicroNode> mss = makeMicro();
 
         Map<String, List<MicroState>> stm = makeStateMap(mss);
@@ -319,7 +320,7 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
             }
             i++;
         }
-        return "[" + pairs.stream().collect(Collectors.joining(", ")) + "]";
+        return "[" + String.join(", ", pairs) + "]";
     }
 
     private String formName(Map<String, String> lms) {
@@ -327,7 +328,7 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
                 .filter(lms::containsKey).map(k -> k + "=" + lms.get(k))
                 .collect(Collectors.toList());
 
-        return "[" + pairs.stream().collect(Collectors.joining(", ")) + "]";
+        return "[" + String.join(", ", pairs) + "]";
 
     }
 
@@ -365,14 +366,14 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
 
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         if (JS == null) {
             buildJSON();
         }
         return JS;
     }
 
-    public void buildJSON() {
+    public void buildJSON() throws JSONException {
         JS  = new JSONObject();
 
         JS.put("ModelType", "CTBN");
@@ -380,8 +381,13 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
         JS.put("Microstates", MicroStates);
 
         JS.put("States", States);
-        JS.put("Transitions", Transitions.entrySet()
-                .stream().collect(Collectors.toMap(Map.Entry::getKey, e-> e.getValue().toJSON())));
+
+        JSONObject trj = new JSONObject();
+        for (Map.Entry<String, PseudoTransition> ent : Transitions.entrySet()) {
+            trj.put(ent.getKey(), ent.getValue().toJSON());
+        }
+
+        JS.put("Transitions", trj);
         JS.put("Targets", Targets);
         JS.put("Order", MicroStates.keySet());
     }

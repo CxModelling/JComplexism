@@ -1,5 +1,6 @@
 package org.twz.dag.loci;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Gene;
@@ -31,7 +32,7 @@ public abstract class Loci implements AdapterJSONObject {
     public abstract double sample(Gene gene);
     public abstract void fill(Gene gene);
     public abstract String getDefinition();
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Name", this.Name);
         js.put("Def", this.getDefinition());

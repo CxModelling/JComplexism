@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.abmodel.ABMY0;
 import org.twz.cx.abmodel.AbsAgent;
@@ -52,7 +53,7 @@ public class StSpABModel extends AbsAgentBasedModel<StSpAgent> {
     }
 
     @Override
-    public void readY0(IY0 y0, double ti) {
+    public void readY0(IY0 y0, double ti) throws JSONException {
         for (JSONObject y : y0.getEntries()) {
             Map<String, Object> atr = FnJSON.toObjectMap(y.getJSONObject("attributes"));
             makeAgents(y.getInt("n"), ti, atr);

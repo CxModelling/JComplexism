@@ -1,5 +1,6 @@
 package org.twz.cx.multimodel.entries;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.io.AdapterJSONObject;
 
@@ -27,7 +28,7 @@ public class RelationEntry implements AdapterJSONObject {
 
     }
 
-    public RelationEntry(JSONObject js) {
+    public RelationEntry(JSONObject js) throws JSONException {
         Selector = js.getString("Selector");
         Single = js.getString("Type").equals("Single");
         Parameter = js.getString("Parameter");
@@ -45,7 +46,7 @@ public class RelationEntry implements AdapterJSONObject {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         return new JSONObject("{'Selector': " + Selector +
                 ", 'Type': " + ((Single)? "Single": "Multiple") +
                 ", 'Parameter': " + Parameter + "}");

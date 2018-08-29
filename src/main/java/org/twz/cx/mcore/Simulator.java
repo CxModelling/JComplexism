@@ -1,5 +1,6 @@
 package org.twz.cx.mcore;
 
+import org.json.JSONException;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
 
@@ -73,7 +74,7 @@ public class Simulator {
     }
 
 
-    public void simulate(IY0 y0, double fr, double to, double dt) {
+    public void simulate(IY0 y0, double fr, double to, double dt) throws JSONException {
         Time = fr;
         Model.initialise(Time, y0);
         dealWithDisclosures(fr, null);
@@ -84,7 +85,7 @@ public class Simulator {
         update(to, dt);
     }
 
-    public void update(double forward, double dt) {
+    public void update(double forward, double dt) throws JSONException {
         dealWithDisclosures(Time, null);
 
         LinkedList<Double> ts = seq(Time, forward, dt);
@@ -104,7 +105,7 @@ public class Simulator {
         }
     }
 
-    private void step(double t, double end) {
+    private void step(double t, double end) throws JSONException {
         double tx = t, ti;
         while (tx < end) {
             try {
@@ -130,7 +131,7 @@ public class Simulator {
         Model.setTimeEnd(end);
     }
 
-    private void dealWithDisclosures(double ti, List<Request> requests) {
+    private void dealWithDisclosures(double ti, List<Request> requests) throws JSONException {
         List<Disclosure> ds;
         if (requests != null) {
             ds = requests.stream().map(Request::disclose).collect(Collectors.toList());
@@ -191,7 +192,7 @@ public class Simulator {
 
     public static List<Map<String, Double>> simulate(AbsSimModel model, IY0 y0,
                                                      double fr, double to, double dt,
-                                                     boolean rec) {
+                                                     boolean rec) throws JSONException {
         Simulator sim = new Simulator(model, rec);
         sim.simulate(y0, fr, to, dt);
         return model.output();
@@ -199,7 +200,7 @@ public class Simulator {
 
     public static List<Map<String, Double>> update(AbsSimModel model,
                                                    double fr, double to, double dt,
-                                                   boolean rec) {
+                                                   boolean rec) throws JSONException {
         Simulator sim = new Simulator(model, rec);
         sim.Time = fr;
         sim.update(to, dt);

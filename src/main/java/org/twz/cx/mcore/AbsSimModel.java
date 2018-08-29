@@ -1,6 +1,7 @@
 package org.twz.cx.mcore;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.element.*;
 import org.twz.cx.mcore.communicator.IChecker;
@@ -44,13 +45,17 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Observer;
     }
 
-    public void initialise(double ti, JSONArray y0) {
+    public void initialise(double ti, JSONArray y0) throws JSONException {
         initialise(ti, ProtoY0.adaptTo(y0));
     }
 
-    public void initialise(double ti, IY0 y0) {
+    public void initialise(double ti, IY0 y0) throws JSONException {
         y0.matchModelInfo(this);
-        readY0(y0, ti);
+        try {
+            readY0(y0, ti);
+        } catch (JSONException e) {
+            throw new ClassFormatError("Unknown format of Y0");
+        }
         preset(ti);
     }
 
@@ -62,15 +67,15 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Name;
     }
 
-    public Object get(String s) {
+    public Object get(String s) throws JSONException {
         return Environment.get(s);
     }
 
-    public String getString(String s) {
+    public String getString(String s) throws JSONException {
         return Environment.getString(s);
     }
 
-    public Double getDouble(String s) {
+    public Double getDouble(String s) throws JSONException {
         return Environment.getDouble(s);
     }
 
@@ -104,13 +109,13 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         disclose("reset", "*");
     }
 
-    public abstract void readY0(IY0 y0, double ti);
+    public abstract void readY0(IY0 y0, double ti) throws JSONException;
 
     // Event finding and execution
 
     public abstract List<Request> collectRequests() throws Exception ;
 
-    public abstract void doRequest(Request req);
+    public abstract void doRequest(Request req) throws JSONException;
 
     public void validateRequests() {
         // todo
@@ -120,11 +125,11 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         Listeners.defineImpulseResponse(impulse, response);
     }
 
-    boolean triggerExternalImpulses(Disclosure dis, AbsSimModel model, double ti) {
+    boolean triggerExternalImpulses(Disclosure dis, AbsSimModel model, double ti) throws JSONException {
         return Listeners.applyShock(dis, model, this, ti);
     }
 
-    public abstract void shock(double time, String action, JSONObject value);
+    public abstract void shock(double time, String action, JSONObject value) throws JSONException;
 
     public Set<IChecker> getAllImpulseCheckers() {
         return Listeners.getAllCheckers();
@@ -136,7 +141,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
 
     public abstract void fetchRequests(List<Request> requests);
 
-    public abstract void executeRequests();
+    public abstract void executeRequests() throws JSONException;
 
     public void disclose(String msg, String who, Map<String, Object> args) {
         Scheduler.appendDisclosure(msg, who, args);
@@ -152,7 +157,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
 
     public abstract List<Disclosure> collectDisclosure();
 
-    public abstract void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti);
+    public abstract void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) throws JSONException;
 
     public double getTimeEnd() {
         return TimeEnd;
@@ -180,15 +185,15 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         Observer.setObservationalInterval(dt);
     }
 
-    public void initialiseObservations(double ti) {
+    public void initialiseObservations(double ti) throws JSONException {
         Observer.initialiseObservations(this, ti);
     }
 
-    public void updateObservations(double ti) {
+    public void updateObservations(double ti) throws JSONException {
         Observer.observeRoutinely(this, ti);
     }
 
-    public void captureMidTermObservations(double ti) {
+    public void captureMidTermObservations(double ti) throws JSONException {
         Observer.updateAtMidTerm(this, ti);
     }
 
@@ -204,7 +209,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Observer.getTimeSeries();
     }
 
-    public Double getSnapshot(String key, double ti) {
+    public Double getSnapshot(String key, double ti) throws JSONException {
         return Observer.getSnapshot(this, key, ti);
     }
 

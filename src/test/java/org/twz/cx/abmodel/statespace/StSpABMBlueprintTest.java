@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
@@ -16,7 +17,7 @@ public class StSpABMBlueprintTest {
     private StSpY0 Y0;
 
     @Before
-    public void setUp() {
+    public void setUp() throws JSONException {
         Da = new Director();
         Da.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
         Da.loadStateSpace("src/test/resources/script/CloseSIR.txt");
@@ -37,7 +38,7 @@ public class StSpABMBlueprintTest {
     }
 
     @Test
-    public void simulationPcDc() {
+    public void simulationPcDc() throws JSONException {
         Map<String, Object> args = new HashMap<>();
 
         ParameterCore PC = Da.getBayesNet("pCloseSIR")
@@ -52,7 +53,7 @@ public class StSpABMBlueprintTest {
     }
 
     @Test
-    public void simulationDaBN() {
+    public void simulationDaBN() throws JSONException {
         Map<String, Object> args = new HashMap<>();
 
         args.put("bn", "pCloseSIR");
@@ -61,7 +62,7 @@ public class StSpABMBlueprintTest {
         run(args);
     }
 
-    public void run(Map<String, Object> args) {
+    public void run(Map<String, Object> args) throws JSONException {
         StSpABModel Model = Bp.generate("Test", args);
 
         Simulator Simu = new Simulator(Model);

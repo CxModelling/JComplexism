@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace.behaviour;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
@@ -26,21 +27,21 @@ public class FDShock extends PassiveModBehaviour {
     }
 
     @Override
-    public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) {
+    public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) throws JSONException {
         StSpABModel m = (StSpABModel) model;
         Value = evaluate(m);
         shock(m, ti);
     }
 
     @Override
-    public void impulseEnter(AbsAgentBasedModel model, AbsAgent ag, double ti) {
+    public void impulseEnter(AbsAgentBasedModel model, AbsAgent ag, double ti) throws JSONException {
         StSpABModel m = (StSpABModel) model;
         Value = evaluate(m);
         shock(m, ti);
     }
 
     @Override
-    public void impulseExit(AbsAgentBasedModel model, AbsAgent ag, double ti) {
+    public void impulseExit(AbsAgentBasedModel model, AbsAgent ag, double ti) throws JSONException {
         StSpABModel m = (StSpABModel) model;
         Value = evaluate(m);
         shock(m, ti);
@@ -59,7 +60,7 @@ public class FDShock extends PassiveModBehaviour {
     }
 
     @Override
-    protected JSONObject getArgumentJSON() {
+    protected JSONObject getArgumentJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("s_src", S_src.getName());
         js.put("t_tar", T_tar.getName());
@@ -67,7 +68,7 @@ public class FDShock extends PassiveModBehaviour {
     }
 
     @Override
-    public void initialise(double ti, AbsSimModel model) {
+    public void initialise(double ti, AbsSimModel model) throws JSONException {
         StSpABModel m = (StSpABModel) model;
         Value = evaluate(m);
         shock(m, ti);
@@ -78,7 +79,7 @@ public class FDShock extends PassiveModBehaviour {
 
     }
 
-    private double evaluate(StSpABModel model) {
+    private double evaluate(StSpABModel model) throws JSONException {
         double a = model.getPopulation().count("st", S_src);
         return a/model.getPopulation().count();
     }

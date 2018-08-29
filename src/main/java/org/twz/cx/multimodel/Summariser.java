@@ -1,6 +1,7 @@
 package org.twz.cx.multimodel;
 
 
+import org.json.JSONException;
 import org.twz.cx.element.Event;
 import org.twz.cx.element.ModelAtom;
 import org.twz.cx.element.Ticker.StepTicker;
@@ -27,12 +28,12 @@ public class Summariser extends ModelAtom {
             NewName = newName;
         }
 
-        Task(JSONObject js) {
+        Task(JSONObject js) throws JSONException {
             this(js.getString("Selector"), js.getString("Parameter"), js.getString("NewName"));
         }
 
         @Override
-        public JSONObject toJSON() {
+        public JSONObject toJSON() throws JSONException {
             return new JSONObject("{'Selector': "+ Selector +
                     ", 'Parameter': "+ Parameter + ", 'NewName': " + NewName + "}");
         }
@@ -50,7 +51,7 @@ public class Summariser extends ModelAtom {
         Impulses = new LinkedHashMap<>();
     }
 
-    Summariser(String name, JSONObject js) {
+    Summariser(String name, JSONObject js) throws JSONException {
         this(name, js.getJSONObject("Timer").getJSONObject("Args").getDouble("dt"));
         JSONArray tasks = js.getJSONArray("Tasks");
 
@@ -127,9 +128,13 @@ public class Summariser extends ModelAtom {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
-        js.put("Tasks", Tasks.stream().map(Task::toJSON));
+        JSONArray jsa = new JSONArray();
+        for (Task task : Tasks) {
+            jsa.put(task.toJSON());
+        }
+        js.put("Tasks", jsa);
         js.put("Timer",  Clock.toJSON());
         return null;
     }

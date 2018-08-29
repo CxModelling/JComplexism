@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.Director;
 import org.twz.cx.mcore.IModelBlueprint;
@@ -48,7 +49,7 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         setAgent(prefix, group, new HashMap<>(), dc, new HashMap<>());
     }
 
-    public void addNetwork(String name, String type, Map<String, Object> arg) {
+    public void addNetwork(String name, String type, Map<String, Object> arg) throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Name", name);
         js.put("Type", type);
@@ -60,7 +61,7 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         Networks.add(js);
     }
 
-    public void addBehaviour(String name, String type, Map<String, Object> arg) {
+    public void addBehaviour(String name, String type, Map<String, Object> arg) throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Name", name);
         js.put("Type", type);
@@ -68,7 +69,7 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         addBehaviour(js);
     }
 
-    public void addBehaviour(String js) {
+    public void addBehaviour(String js) throws JSONException {
         addBehaviour(new JSONObject(js));
     }
 
@@ -114,7 +115,7 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
     }
 
     @Override
-    public StSpABModel generate(String name, Map<String, Object> args) {
+    public StSpABModel generate(String name, Map<String, Object> args) throws JSONException {
         ParameterCore pc;
         AbsStateSpace dc;
 

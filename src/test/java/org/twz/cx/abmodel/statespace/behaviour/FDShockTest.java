@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace.behaviour;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
@@ -13,22 +14,18 @@ import org.twz.statespace.AbsStateSpace;
 
 public class FDShockTest {
 
-    private Director Da;
     private StSpABModel Model;
-    private AbsStateSpace DC;
-    private ParameterCore PC;
-    private StSpY0 Y0;
 
     @Before
-    public void setUp() {
-        Da = new Director();
-        Da.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
-        Da.loadStateSpace("src/test/resources/script/CloseSIR.txt");
+    public void setUp() throws JSONException {
+        Director da = new Director();
+        da.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
+        da.loadStateSpace("src/test/resources/script/CloseSIR.txt");
 
         NodeGroup NG = new NodeGroup("root", new String[0]);
         NG.appendChildren(new NodeGroup("agent", new String[]{"beta", "gamma"}));
-        PC = Da.getBayesNet("pCloseSIR").toSimulationCore(NG, true).generate("Test");
-        DC = Da.generateDCore("CloseSIR", PC.genPrototype("agent"));
+        ParameterCore PC = da.getBayesNet("pCloseSIR").toSimulationCore(NG, true).generate("Test");
+        AbsStateSpace DC = da.generateDCore("CloseSIR", PC.genPrototype("agent"));
 
 
         StSpPopulation Pop = new StSpPopulation("Ag", "agent", DC, PC);
@@ -44,14 +41,14 @@ public class FDShockTest {
     }
 
     @Test
-    public void simulation() {
+    public void simulation() throws JSONException {
         Simulator Simu = new Simulator(Model);
         Simu.addLogPath("log/FDShock.txt");
-        Y0 = new StSpY0();
-        Y0.append(950, "Sus");
-        Y0.append(50, "Inf");
+        StSpY0 y0 = new StSpY0();
+        y0.append(950, "Sus");
+        y0.append(50, "Inf");
 
-        Simu.simulate(Y0, 0, 10, 1);
+        Simu.simulate(y0, 0, 10, 1);
         Model.getObserver().getObservations().print();
     }
 }

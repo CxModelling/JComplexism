@@ -1,5 +1,6 @@
 package org.twz.factory.arguments;
 
+import org.json.JSONException;
 import org.twz.factory.Workshop;
 
 import java.util.NoSuchElementException;
@@ -21,9 +22,9 @@ public abstract class AbsArgument {
 
     public abstract Class getType();
 
-    public abstract Object correct(Object value, Workshop ws) throws NoSuchElementException, AssertionError;
+    public abstract Object correct(Object value, Workshop ws) throws NoSuchElementException, AssertionError, JSONException;
 
-    public abstract Object parse(String value);
+    public abstract Object parse(String value) throws JSONException;
 
     public String toString() {
         return Name + "(" + getType().getSimpleName() + ")";

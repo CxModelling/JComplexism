@@ -1,5 +1,6 @@
 package org.twz.cx.element.Ticker;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -32,7 +33,7 @@ public class StepTicker extends AbsTicker {
 
 
     @Override
-    JSONObject getArguments() {
+    JSONObject getArguments() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("dt", By);
         return js;

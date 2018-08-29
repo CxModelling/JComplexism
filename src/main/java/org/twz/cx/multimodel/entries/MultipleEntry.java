@@ -1,5 +1,6 @@
 package org.twz.cx.multimodel.entries;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.mcore.IY0;
 import org.twz.dataframe.Tuple;
@@ -62,7 +63,7 @@ public class MultipleEntry implements IModelEntry {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Prefix", Prefix);
         js.put("Prototype", ModelProto);

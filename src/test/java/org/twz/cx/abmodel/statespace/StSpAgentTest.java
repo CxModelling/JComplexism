@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace;
 
+import org.json.JSONException;
 import org.junit.Test;
 import org.junit.Before;
 import org.twz.cx.Director;
@@ -17,7 +18,7 @@ public class StSpAgentTest {
     private ParameterCore PC;
 
     @Before
-    public void setUp() {
+    public void setUp() throws JSONException {
         Da = new Director();
         Da.loadBayesNet("src/test/resources/script/pSIR.txt");
         Da.loadStateSpace("src/test/resources/script/SIR_BN.txt");

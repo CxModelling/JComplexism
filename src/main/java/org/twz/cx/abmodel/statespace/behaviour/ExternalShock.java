@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace.behaviour;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
@@ -34,7 +35,7 @@ public class ExternalShock extends PassiveModBehaviour {
     }
 
     @Override
-    protected JSONObject getArgumentJSON() {
+    protected JSONObject getArgumentJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("t_tar", T_tar.getName());
         return js;
@@ -54,7 +55,7 @@ public class ExternalShock extends PassiveModBehaviour {
     }
 
     @Override
-    public void shock(double ti, AbsSimModel source, String target, JSONObject value) {
+    public void shock(double ti, AbsSimModel source, String target, JSONObject value) throws JSONException {
         Value = value.getDouble("value");
         if (ModProto.update(Value)) {
             StSpABModel model = (StSpABModel) source;

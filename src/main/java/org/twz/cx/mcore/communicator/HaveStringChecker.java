@@ -1,5 +1,6 @@
 package org.twz.cx.mcore.communicator;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.element.Disclosure;
 
@@ -11,7 +12,7 @@ public class HaveStringChecker extends AbsChecker {
         Have = have;
     }
 
-    public HaveStringChecker(JSONObject js) {
+    public HaveStringChecker(JSONObject js) throws JSONException {
         Have = js.getString("Have");
     }
 
@@ -21,7 +22,7 @@ public class HaveStringChecker extends AbsChecker {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = super.toJSON();
         js.put("Have", Have);
         return js;

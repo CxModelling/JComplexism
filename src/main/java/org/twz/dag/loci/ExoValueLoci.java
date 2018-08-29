@@ -1,5 +1,6 @@
 package org.twz.dag.loci;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.Gene;
 
@@ -49,7 +50,7 @@ public class ExoValueLoci extends Loci {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = super.toJSON();
         js.put("Type", "ExoValue");
         return js;

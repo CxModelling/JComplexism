@@ -1,5 +1,6 @@
 package org.twz.cx.ebmodel;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.Director;
 import org.twz.cx.mcore.IModelBlueprint;
@@ -55,7 +56,7 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
         Xs = js;
     }
 
-    public void appendExternalVariable(String k, Object o) {
+    public void appendExternalVariable(String k, Object o) throws JSONException {
         Xs.put(k, o);
     }
 
@@ -77,7 +78,7 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
     }
 
     @Override
-    public EquationBasedModel generate(String name, Map<String, Object> args) {
+    public EquationBasedModel generate(String name, Map<String, Object> args) throws JSONException {
         ParameterCore pc;
 
         if (args.containsKey("bn") && args.containsKey("da")) {

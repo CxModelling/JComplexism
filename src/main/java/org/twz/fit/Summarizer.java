@@ -2,6 +2,7 @@ package org.twz.fit;
 
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.Gene;
 import org.twz.io.IO;
@@ -113,7 +114,7 @@ public class Summarizer implements AdapterJSONObject {
 
 	}
 	
-	public void json(String file){
+	public void json(String file) throws JSONException {
 		JSONArray jsa = new JSONArray();
 		jsa.put(Summary);
 
@@ -125,7 +126,7 @@ public class Summarizer implements AdapterJSONObject {
 	}
 
 	@Override
-	public JSONObject toJSON() {
+	public JSONObject toJSON() throws JSONException {
 		JSONArray jsa = new JSONArray();
 		jsa.put(Summary);
 

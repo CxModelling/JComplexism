@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.abmodel.ABMY0;
 
@@ -7,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StSpY0 extends ABMY0 {
-    public void append(int n, String st, Map<String, Object> atr) {
+    public void append(int n, String st, Map<String, Object> atr) throws JSONException {
         assert n > 0;
         JSONObject js = new JSONObject();
         atr = new HashMap<>(atr);
@@ -17,7 +18,7 @@ public class StSpY0 extends ABMY0 {
         append(js);
     }
 
-    public void append(int n, String st) {
+    public void append(int n, String st) throws JSONException {
         assert n > 0;
         JSONObject js = new JSONObject();
         js.put("n", n);

@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.behaviour;
 
+import org.json.JSONException;
 import org.twz.cx.abmodel.behaviour.trigger.Trigger;
 import org.twz.cx.element.Event;
 import org.twz.cx.element.Ticker.AbsTicker;
@@ -45,7 +46,7 @@ public abstract class ActiveBehaviour extends AbsBehaviour {
 
     }
 
-    public void operate(AbsSimModel model) {
+    public void operate(AbsSimModel model) throws JSONException {
         Event evt = getNext();
         double time = evt.getTime();
         Clock.update(time);
@@ -53,5 +54,5 @@ public abstract class ActiveBehaviour extends AbsBehaviour {
         dropNext();
     }
 
-    protected abstract void doAction(AbsSimModel model, Object todo, double ti);
+    protected abstract void doAction(AbsSimModel model, Object todo, double ti) throws JSONException;
 }

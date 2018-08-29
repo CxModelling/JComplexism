@@ -1,5 +1,6 @@
 package org.twz.factory;
 
+import org.json.JSONException;
 import org.twz.factory.arguments.AbsArgument;
 import org.json.JSONObject;
 
@@ -47,7 +48,7 @@ public class Creator<T> {
         }
     }
 
-    private Constructor<T> getConstructor(JSONObject args) {
+    private Constructor getConstructor(JSONObject args) {
         List<Class> classes = new ArrayList<>();
         classes.add(String.class);
         String key;
@@ -69,7 +70,7 @@ public class Creator<T> {
         }
     }
 
-    public T create(String name, JSONObject args, Workshop ws) {
+    public T create(String name, JSONObject args, Workshop ws) throws JSONException {
         List<Object> values = new ArrayList<>();
         values.add(name);
         String key;
@@ -93,7 +94,7 @@ public class Creator<T> {
 
         }
         try {
-            return getConstructor(args).newInstance(valueArr);
+            return (T) getConstructor(args).newInstance(valueArr);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e1) {
             throw new InstantiationError("Object creation failed");
         }
@@ -108,7 +109,11 @@ public class Creator<T> {
         values.add(name);
 
         for (int i = 0; i < args.length; i++) {
-            values.add(Args[i].parse(args[i]));
+            try {
+                values.add(Args[i].parse(args[i]));
+            } catch (JSONException e) {
+                throw new InstantiationError(e.getMessage());
+            }
         }
 
 

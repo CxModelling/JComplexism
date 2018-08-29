@@ -1,6 +1,7 @@
 package org.twz.cx.abmodel.statespace;
 
 
+import org.json.JSONException;
 import org.twz.cx.abmodel.AbsBreeder;
 import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
@@ -24,17 +25,23 @@ public class StSpBreeder extends AbsBreeder<StSpAgent> {
         return DCore;
     }
 
-    protected StSpAgent newAgent(String name, Gene pars, Map<String, Object> attributes) {
+    protected StSpAgent newAgent(String name, Gene pars, Map<String, Object> attributes) throws JSONException {
         Object st_def = attributes.get("st");
         State st;
         if (st_def instanceof State) {
             st = (State) st_def;
-        } else {
+        } else if (st_def instanceof String) {
             st = WellDefined.get(st_def);
+        } else {
+            throw new InstantiationError("Unknown state");
         }
 
         StSpAgent ag = new StSpAgent(name, pars, st);
-        attributes.entrySet().stream().filter(a -> !"st".equals(a.getKey())).forEach(a->ag.put(a.getKey(), a.getValue()));
+        for (Map.Entry<String, Object> a : attributes.entrySet()) {
+            if (!"st".equals(a.getKey())) {
+                ag.put(a.getKey(), a.getValue());
+            }
+        }
         return ag;
     }
 

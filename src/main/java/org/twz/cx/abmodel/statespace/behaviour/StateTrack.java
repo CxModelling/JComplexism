@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace.behaviour;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
@@ -24,11 +25,15 @@ public class StateTrack extends PassiveBehaviour {
     }
 
     @Override
-    public void initialise(double ti, AbsSimModel model) {
+    public void initialise(double ti, AbsSimModel model) throws JSONException {
         StSpABModel m = (StSpABModel) model;
         Value = evaluate(m);
         JSONObject js = new JSONObject();
-        js.put("v1", Value);
+        try {
+            js.put("v1", Value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         model.disclose("update value to "+ Value, getName(), js);
     }
 
@@ -43,7 +48,7 @@ public class StateTrack extends PassiveBehaviour {
     }
 
     @Override
-    public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) {
+    public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) throws JSONException {
         if (((StSpAgent) ag).isa(S_src)) {
             changeValue(model, 1);
         } else {
@@ -52,16 +57,16 @@ public class StateTrack extends PassiveBehaviour {
     }
 
     @Override
-    public void impulseEnter(AbsAgentBasedModel model, AbsAgent ag, double ti) {
+    public void impulseEnter(AbsAgentBasedModel model, AbsAgent ag, double ti) throws JSONException {
         changeValue(model, 1);
     }
 
     @Override
-    public void impulseExit(AbsAgentBasedModel model, AbsAgent ag, double ti) {
+    public void impulseExit(AbsAgentBasedModel model, AbsAgent ag, double ti) throws JSONException {
         changeValue(model, -1);
     }
 
-    private void changeValue(AbsAgentBasedModel model, double dv) {
+    private void changeValue(AbsAgentBasedModel model, double dv) throws JSONException {
         JSONObject js = new JSONObject();
         double v0 = Value, v1 = Value + dv;
         js.put("v0", v0);
@@ -81,13 +86,13 @@ public class StateTrack extends PassiveBehaviour {
     }
 
     @Override
-    protected JSONObject getArgumentJSON() {
+    protected JSONObject getArgumentJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("s_src", S_src.getName());
         return js;
     }
 
-    private double evaluate(StSpABModel model) {
+    private double evaluate(StSpABModel model) throws JSONException {
         return model.getPopulation().count("st", S_src);
     }
 

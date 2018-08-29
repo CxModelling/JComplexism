@@ -1,6 +1,7 @@
 package org.twz.statespace;
 
 
+import org.json.JSONException;
 import org.twz.io.AdapterJSONObject;
 import org.json.JSONObject;
 import org.twz.prob.IDistribution;
@@ -39,7 +40,7 @@ public class Transition implements AdapterJSONObject {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Name", Name);
         js.put("To", State.getName());

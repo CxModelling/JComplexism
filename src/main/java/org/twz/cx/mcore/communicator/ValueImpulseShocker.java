@@ -1,5 +1,6 @@
 package org.twz.cx.mcore.communicator;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.mcore.AbsSimModel;
@@ -18,12 +19,12 @@ public class ValueImpulseShocker extends AbsShocker {
         this(target, "v1");
     }
 
-    public ValueImpulseShocker(JSONObject js) {
+    public ValueImpulseShocker(JSONObject js) throws JSONException {
         this(js.getString("Target"), js.getString("Value"));
     }
 
     @Override
-    public Pair<String, JSONObject> shock(Disclosure dis, AbsSimModel source, AbsSimModel target, double time) {
+    public Pair<String, JSONObject> shock(Disclosure dis, AbsSimModel source, AbsSimModel target, double time) throws JSONException {
         JSONObject js = new JSONObject();
         js.put("k", Target);
         js.put("v", dis.getDouble(this.Value));
@@ -31,7 +32,7 @@ public class ValueImpulseShocker extends AbsShocker {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = super.toJSON();
         js.put("Value", Value);
         js.put("Target", Target);

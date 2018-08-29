@@ -1,5 +1,6 @@
 package org.twz.cx.multimodel;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.element.Request;
 import org.twz.cx.mcore.AbsSimModel;
@@ -45,7 +46,7 @@ public class MultiModel extends BranchModel {
     }
 
     @Override
-    public void readY0(IY0 y0, double ti) {
+    public void readY0(IY0 y0, double ti) throws JSONException {
         BranchY0 y0s = (BranchY0) y0;
 
         for (Map.Entry<String, AbsSimModel> entry : Submodels.entrySet()) {

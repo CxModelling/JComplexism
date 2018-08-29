@@ -1,6 +1,6 @@
 package org.twz.graph;
 
-/**
+/*
  *
  * Created by TimeWz on 07/08/2018.
  */
@@ -13,7 +13,7 @@ public class DiGraphTest {
     private DiGraph<String> DG, DAG;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         DG = new DiGraph<>();
 
         DG.addEdge("A", "C");
@@ -31,17 +31,17 @@ public class DiGraphTest {
     }
 
     @Test
-    public void checkRelation() throws Exception {
-        assertArrayEquals(DG.getParents("B").toArray(), new String[]{"D"});
+    public void checkRelation() {
+        assertEquals(DG.getParents("B").toArray(), new String[]{"D"});
     }
 
     @Test
     public void getOrder() throws Exception {
-        assertArrayEquals(DAG.getOrder().toArray(), new String[]{"A", "B", "C", "D"});
+        assertEquals(DAG.getOrder().toArray(), new String[]{"A", "B", "C", "D"});
     }
 
     @Test
-    public void checkAcyclic() throws Exception {
+    public void checkAcyclic() {
         assertTrue(DAG.isAcyclic());
         assertFalse(DG.isAcyclic());
     }

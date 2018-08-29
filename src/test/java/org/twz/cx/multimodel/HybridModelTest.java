@@ -1,5 +1,6 @@
 package org.twz.cx.multimodel;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ class InfIn implements IShocker {
     }
 
     @Override
-    public Pair<String, JSONObject> shock(Disclosure dis, AbsSimModel source, AbsSimModel target, double time) {
+    public Pair<String, JSONObject> shock(Disclosure dis, AbsSimModel source, AbsSimModel target, double time) throws JSONException {
         Pair<String, JSONObject> res = null;
         if (!Double.isNaN(Last)) {
             AbsEquations eq = ((EquationBasedModel) source).getEquations();
@@ -60,7 +61,7 @@ public class HybridModelTest {
     private IY0 Y0;
 
     @Before
-    public void setUp() {
+    public void setUp() throws JSONException {
         Da = new Director();
         Da.loadBayesNet("src/test/resources/script/pHybridSIR.txt");
         Da.loadStateSpace("src/test/resources/script/HybridSIR.txt");
@@ -82,7 +83,12 @@ public class HybridModelTest {
 
         BpE.appendExternalVariable("Inf", 0);
         BpE.addMeasurementFunction((tab, ti, ys, pc, x) -> {
-            double inf = x.getDouble("Inf");
+            double inf = 0;
+            try {
+                inf = x.getDouble("Inf");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             double n = ys[0] + ys[1] + inf;
             tab.put("Prv", inf/n);
             tab.put("N", n);
@@ -130,7 +136,7 @@ public class HybridModelTest {
     }
 
     @Test
-    public void simulation() {
+    public void simulation() throws JSONException {
         Simulator Sim = new Simulator(Model);
         Sim.addLogPath("log/Hybrid.txt");
 

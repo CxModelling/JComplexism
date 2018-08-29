@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.behaviour.trigger;
 
+import org.json.JSONException;
 import org.twz.cx.abmodel.AbsAgent;
 
 import java.util.Map;
@@ -11,7 +12,7 @@ public class AttributeTrigger extends Trigger {
         Attributes = attributes;
     }
 
-    protected boolean check(AbsAgent ag) {
+    protected boolean check(AbsAgent ag) throws JSONException {
         for (Map.Entry<String, Object> ent: Attributes.entrySet()) {
             if (ag.get(ent.getKey()) != ent.getValue()) {
                 return false;

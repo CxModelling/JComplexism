@@ -1,5 +1,6 @@
 package org.twz.cx.mcore.communicator;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.element.Disclosure;
 
@@ -11,7 +12,7 @@ public class StartWithChecker extends AbsChecker {
         Start = start;
     }
 
-    public StartWithChecker(JSONObject js) {
+    public StartWithChecker(JSONObject js) throws JSONException {
         Start = js.getString("Start");
     }
 
@@ -21,7 +22,7 @@ public class StartWithChecker extends AbsChecker {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = super.toJSON();
         js.put("Start", Start);
         return js;

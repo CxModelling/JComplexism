@@ -17,7 +17,7 @@ public class ParameterCoreTest {
     private NodeGroup NG;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         BN = new BayesNet("test");
         BN.appendLoci("b0 = 10");
         BN.appendLoci("b1 ~ norm(0, 1)");
@@ -29,19 +29,19 @@ public class ParameterCoreTest {
     }
 
     @Test
-    public void toSC_no_ng() throws Exception {
+    public void toSC_no_ng() {
         SimulationCore sc = BN.toSimulationCore();
         ParameterCore pc = sc.generate("X1");
 
         System.out.println(pc);
-        assertArrayEquals(pc.listSamplers().toArray(), new String[]{"y"});
+        assertEquals(pc.listSamplers().toArray(), new String[]{"y"});
 
         System.out.println(sc.generate("x1"));
     }
 
 
     @Test
-    public void toSC_ng() throws Exception {
+    public void toSC_ng() {
         NG = new NodeGroup("country", new String[]{"b0", "b1", "x1"});
         NG.appendChildren(new NodeGroup("agent", new String[]{"x2", "mu", "b2"}));
         NG.allocateNodes(BN);

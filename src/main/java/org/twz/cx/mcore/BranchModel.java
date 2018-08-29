@@ -1,5 +1,6 @@
 package org.twz.cx.mcore;
 
+import org.json.JSONException;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
 import org.twz.dag.ParameterCore;
@@ -90,11 +91,15 @@ public abstract class BranchModel extends AbsSimModel {
     }
 
     @Override
-    public void executeRequests() {
-        getModels().values().forEach(AbsSimModel::executeRequests);
+    public void executeRequests() throws JSONException {
+        for (AbsSimModel absSimModel : getModels().values()) {
+            absSimModel.executeRequests();
+        }
 
         if (Scheduler.isExecutable()) {
-            Scheduler.getRequests().forEach(this::doRequest);
+            for (Request request : Scheduler.getRequests()) {
+                doRequest(request);
+            }
             Scheduler.toExecutionCompleted();
         }
     }
@@ -111,10 +116,16 @@ public abstract class BranchModel extends AbsSimModel {
     }
 
     @Override
-    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) {
+    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) throws JSONException {
         ds_ms.entrySet().stream()
                 .filter(e -> e.getValue() != this)
-                .forEach(e -> triggerExternalImpulses(e.getKey(), e.getValue(), ti));
+                .forEach(e -> {
+                    try {
+                        triggerExternalImpulses(e.getKey(), e.getValue(), ti);
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+                });
 
         if (Scheduler.getDisclosures().isEmpty()) Scheduler.toCycleCompleted();
 
@@ -142,20 +153,26 @@ public abstract class BranchModel extends AbsSimModel {
     }
 
     @Override
-    public void initialiseObservations(double ti) {
-        getModels().values().forEach(m->m.initialiseObservations(ti));
+    public void initialiseObservations(double ti) throws JSONException {
+        for (AbsSimModel m : getModels().values()) {
+            m.initialiseObservations(ti);
+        }
         super.initialiseObservations(ti);
     }
 
     @Override
-    public void updateObservations(double ti) {
-        getModels().values().forEach(m->m.updateObservations(ti));
+    public void updateObservations(double ti) throws JSONException {
+        for (AbsSimModel m : getModels().values()) {
+            m.updateObservations(ti);
+        }
         super.updateObservations(ti);
     }
 
     @Override
-    public void captureMidTermObservations(double ti) {
-        getModels().values().forEach(m->m.captureMidTermObservations(ti));
+    public void captureMidTermObservations(double ti) throws JSONException {
+        for (AbsSimModel m : getModels().values()) {
+            m.captureMidTermObservations(ti);
+        }
         super.captureMidTermObservations(ti);
     }
 

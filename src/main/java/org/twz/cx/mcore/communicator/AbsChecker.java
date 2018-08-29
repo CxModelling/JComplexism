@@ -1,5 +1,6 @@
 package org.twz.cx.mcore.communicator;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.io.AdapterJSONObject;
 
@@ -15,7 +16,7 @@ public abstract class AbsChecker implements IChecker, AdapterJSONObject {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Type", getType());
         return js;

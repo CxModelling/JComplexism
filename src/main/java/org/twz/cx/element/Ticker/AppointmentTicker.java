@@ -1,5 +1,6 @@
 package org.twz.cx.element.Ticker;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -43,7 +44,7 @@ public class AppointmentTicker extends AbsTicker {
     }
 
     @Override
-    JSONObject getArguments() {
+    JSONObject getArguments() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("queue", Queue);
         return js;

@@ -1,5 +1,6 @@
 package org.twz.cx.mcore.communicator;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class HaveStringCheckerTest {
     }
 
     @Test
-    public void toJSON() {
+    public void toJSON() throws JSONException {
         JSONObject js = Checker.toJSON();
         assertEquals("HaveString", js.getString("Type"));
         assertEquals("remove agent", js.getString("Have"));

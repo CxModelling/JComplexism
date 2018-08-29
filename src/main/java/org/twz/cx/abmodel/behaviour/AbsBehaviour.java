@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.behaviour;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
@@ -40,31 +41,31 @@ public abstract class AbsBehaviour extends ModelAtom {
         return Tri.checkChange(pre, post);
     }
 
-    public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) {}
+    public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) throws JSONException {}
 
     public boolean checkEnterChange(AbsAgent ag) {
         return Tri.checkEnter(ag);
     }
 
-    public void impulseEnter(AbsAgentBasedModel model, AbsAgent ag, double ti) {}
+    public void impulseEnter(AbsAgentBasedModel model, AbsAgent ag, double ti) throws JSONException {}
 
     public boolean checkExitChange(AbsAgent ag) {
         return Tri.checkExit(ag);
     }
 
-    public void impulseExit(AbsAgentBasedModel model, AbsAgent ag, double ti) {}
+    public void impulseExit(AbsAgentBasedModel model, AbsAgent ag, double ti) throws JSONException {}
 
     public abstract void fillData(Map<String, Double> obs, AbsAgentBasedModel model, double ti);
 
     public abstract void match(AbsBehaviour be_src, Map<String, AbsAgent> ags_src, Map<String, AbsAgent> ags_new, double ti);
 
     @Override
-    public void shock(double ti, AbsSimModel model, String action, JSONObject value) {
+    public void shock(double ti, AbsSimModel model, String action, JSONObject value) throws JSONException {
 
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Name", getName());
         js.put("Type", getClass().getSimpleName());
@@ -72,5 +73,5 @@ public abstract class AbsBehaviour extends ModelAtom {
         return js;
     }
 
-    protected abstract JSONObject getArgumentJSON();
+    protected abstract JSONObject getArgumentJSON() throws JSONException;
 }

@@ -1,6 +1,7 @@
 package org.twz.cx.mcore;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,11 +16,11 @@ public class BranchY0 implements IY0 {
         Entries = new ArrayList<>();
     }
 
-    public BranchY0(JSONObject js) {
+    public BranchY0(JSONObject js) throws JSONException {
         this(js.getJSONArray("Entries"), js.getJSONObject("Children"));
     }
 
-    public BranchY0(JSONArray jar, JSONObject js) {
+    public BranchY0(JSONArray jar, JSONObject js) throws JSONException {
         this();
         for (int i = 0; i < jar.length(); i++) {
             Entries.add(jar.getJSONObject(i));
@@ -37,7 +38,7 @@ public class BranchY0 implements IY0 {
         }
     }
 
-    public BranchY0(JSONArray jar) {
+    public BranchY0(JSONArray jar) throws JSONException {
         this(jar, new JSONObject());
     }
 
@@ -50,7 +51,7 @@ public class BranchY0 implements IY0 {
     }
 
     @Override
-    public void matchModelInfo(AbsSimModel model) {
+    public void matchModelInfo(AbsSimModel model) throws JSONException {
 
     }
 
@@ -60,7 +61,7 @@ public class BranchY0 implements IY0 {
     }
 
     @Override
-    public void append(String ent) {
+    public void append(String ent) throws JSONException {
         append(new JSONObject(ent));
     }
 
@@ -90,7 +91,7 @@ public class BranchY0 implements IY0 {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Entries", Entries);
         js.put("Type", "Branch");

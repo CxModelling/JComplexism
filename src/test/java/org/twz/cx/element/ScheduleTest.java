@@ -37,12 +37,12 @@ public class ScheduleTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 
     }
 
     @Test
-    public void getRequests() throws Exception {
+    public void getRequests() {
         Agent a1 = new Agent("a", 1), a2 = new Agent("b", 2), a3 = new Agent("c", 3);
         Queue<Agent> q = new PriorityQueue<>();
         q.add(a1);

@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.io.AdapterJSONObject;
 
@@ -17,7 +18,7 @@ class NameGenerator implements Cloneable, AdapterJSONObject {
         this(prefix, 1, 1);
     }
 
-    public NameGenerator(JSONObject js) {
+    public NameGenerator(JSONObject js) throws JSONException {
         this(js.getString("Prefix"), js.getInt("Ini"), js.getInt("Step"));
     }
 
@@ -42,7 +43,7 @@ class NameGenerator implements Cloneable, AdapterJSONObject {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Prefix", Prefix);
         js.put("Ini", Ini);

@@ -1,5 +1,6 @@
 package org.twz.cx.mcore;
 
+import org.json.JSONException;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
 import org.twz.dag.ParameterCore;
@@ -25,7 +26,7 @@ public abstract class LeafModel extends AbsSimModel {
     }
 
     @Override
-    public List<Request> collectRequests() throws Exception {
+    public List<Request> collectRequests() {
         Scheduler.findNext();
         return Scheduler.getRequests();
     }
@@ -41,9 +42,11 @@ public abstract class LeafModel extends AbsSimModel {
     }
 
     @Override
-    public void executeRequests() {
+    public void executeRequests() throws JSONException {
         if (Scheduler.isExecutable()) {
-            Scheduler.getRequests().forEach(this::doRequest);
+            for (Request request : Scheduler.getRequests()) {
+                doRequest(request);
+            }
             Scheduler.toExecutionCompleted();
         }
     }
@@ -54,7 +57,7 @@ public abstract class LeafModel extends AbsSimModel {
     }
 
     @Override
-    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) {
+    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) throws JSONException {
         for (Map.Entry<Disclosure, AbsSimModel> ent: ds_ms.entrySet()) {
             triggerExternalImpulses(ent.getKey(), ent.getValue(), ti);
         }

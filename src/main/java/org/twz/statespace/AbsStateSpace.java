@@ -1,6 +1,7 @@
 package org.twz.statespace;
 
 
+import org.json.JSONException;
 import org.twz.io.AdapterJSONObject;
 import org.json.JSONObject;
 
@@ -72,6 +73,11 @@ public abstract class AbsStateSpace implements AdapterJSONObject {
     public abstract State exec(State st, Transition tr);
 
     public JSONObject toJSON() {
-        return new JSONObject(JS);
+        try {
+            return new JSONObject(JS);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

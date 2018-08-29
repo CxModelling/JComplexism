@@ -1,6 +1,7 @@
 package org.twz.dataframe;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.io.IO;
 import org.twz.io.AdapterJSONArray;
@@ -36,7 +37,7 @@ public class DataFrame implements AdapterJSONArray {
     public void toCSV(String path) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(Data.keySet().stream().collect(Collectors.joining(",")));
+        sb.append(String.join(",", Data.keySet()));
         int size = Data.get(Key).size();
 
         for (int i=0; i < size; i++) {
@@ -47,11 +48,11 @@ public class DataFrame implements AdapterJSONArray {
         IO.writeText(sb.toString(), path);
     }
 
-    public void toJSON(String path) {
+    public void toJSON(String path) throws JSONException {
         IO.writeText(toJSON().toString(), path);
     }
 
-    public JSONArray toJSON() {
+    public JSONArray toJSON() throws JSONException {
         JSONArray js = new JSONArray();
         int size = Data.get(Key).size();
 
@@ -82,7 +83,7 @@ public class DataFrame implements AdapterJSONArray {
         for (int i=0; i < size; i++) {
             for (int j = 0; j < ColumnNames.size(); j++) {
                 k = ColumnNames.get(j);
-                System.out.printf(String.format(("%" + n + "g "), Data.get(k).get(i)));
+                System.out.print(String.format(("%" + n + "g "), Data.get(k).get(i)));
             }
 
             System.out.println();

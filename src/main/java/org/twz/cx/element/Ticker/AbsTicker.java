@@ -1,5 +1,6 @@
 package org.twz.cx.element.Ticker;
 
+import org.json.JSONException;
 import org.twz.io.AdapterJSONObject;
 import org.json.JSONObject;
 
@@ -29,19 +30,28 @@ public abstract class AbsTicker implements AdapterJSONObject {
     }
 
     public String toString() {
-        return toJSON().toString();
+        try {
+            return toJSON().toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
-    abstract JSONObject getArguments();
+    abstract JSONObject getArguments() throws JSONException;
 
     abstract String getType();
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject(), args = getArguments();
         args.put("t", Last);
         js.put("Type", getType());
         js.put("Args", args);
         return js;
+    }
+
+    public String getName() {
+        return Name;
     }
 }

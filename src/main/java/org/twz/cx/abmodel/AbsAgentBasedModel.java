@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.abmodel.behaviour.ActiveBehaviour;
@@ -45,7 +46,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
         this.Population.addNetwork(net);
     }
 
-    protected void makeAgents(int n, double ti, Map<String, Object> attributes) {
+    protected void makeAgents(int n, double ti, Map<String, Object> attributes) throws JSONException {
         List<Ta> ags = this.Population.addAgents(n, attributes);
         for (Ta ag: ags) {
             for (AbsBehaviour be: Behaviours.values()) {
@@ -61,8 +62,21 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
 
     @Override
     public void preset(double ti) {
-        Behaviours.values().forEach(be->be.initialise(ti, this));
-        this.Population.getAgents().values().forEach(ag -> ag.initialise(ti, this));
+
+        for (AbsBehaviour be : Behaviours.values()) {
+            try {
+                be.initialise(ti, this);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        for (Ta ag : this.Population.getAgents().values()) {
+            try {
+                ag.initialise(ti, this);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         super.preset(ti);
     }
 
@@ -79,7 +93,13 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
     }
 
     protected void impulseEnter(List<AbsBehaviour> bes, Ta ag, double ti) {
-        bes.forEach(be-> be.impulseEnter(this, ag, ti));
+        for (AbsBehaviour be : bes) {
+            try {
+                be.impulseEnter(this, ag, ti);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     protected List<AbsBehaviour> checkExit(Ta ag) {
@@ -87,7 +107,13 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
     }
 
     protected void impulseExit(List<AbsBehaviour> bes, Ta ag, double ti) {
-        bes.forEach(be-> be.impulseExit(this, ag, ti));
+        for (AbsBehaviour be : bes) {
+            try {
+                be.impulseExit(this, ag, ti);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     protected List<Boolean> checkPreChange(Ta ag) {
@@ -112,10 +138,16 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
     }
 
     protected void impulseChange(List<AbsBehaviour> bes, Ta ag, double ti) {
-        bes.forEach(be-> be.impulseChange(this, ag, ti));
+        for (AbsBehaviour be : bes) {
+            try {
+                be.impulseChange(this, ag, ti);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public List<Ta> birth(int n, double ti, Map<String, Object> attributes) {
+    public List<Ta> birth(int n, double ti, Map<String, Object> attributes) throws JSONException {
         List<Ta> ags = this.Population.addAgents(n, attributes);
         List<AbsBehaviour> bes;
         JSONObject js = new JSONObject();
@@ -129,9 +161,14 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
             nBirth ++;
         }
         if (nBirth > 0) {
-            js.put("n", nBirth);
-            js.put("attributes", attributes);
-            disclose("add agents by " + n, "*", js);
+            try {
+                js.put("n", nBirth);
+                js.put("attributes", attributes);
+                disclose("add agents by " + n, "*", js);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
         return ags;
     }
@@ -150,7 +187,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
     }
 
     @Override
-    public void doRequest(Request req) {
+    public void doRequest(Request req) throws JSONException {
         String nod = req.Who;
         Event todo = req.Todo;
         double time = req.getTime();
@@ -181,7 +218,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
         try {
             AbsBehaviour be = Behaviours.get(action);
             be.shock(time, this, action, value);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | JSONException e) {
             e.printStackTrace();
         }
     }

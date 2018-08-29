@@ -10,7 +10,7 @@ public class RequestTest {
     private Request R;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         R = new Request(new Event("Have fun", 10), "I", "Here");
     }
 
@@ -22,7 +22,7 @@ public class RequestTest {
     }
 
     @Test
-    public void downScale() throws IllegalAccessException {
+    public void downScale() {
         Request Up = R.upScale("Taipei");
         Pair<String, Request> Down = Up.downScale();
 

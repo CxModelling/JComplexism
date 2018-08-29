@@ -2,14 +2,11 @@ package org.twz.dag;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.twz.dag.BayesNet;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static junit.framework.Assert.assertEquals;
 
 /**
  *
@@ -22,7 +19,7 @@ public class BayesNetTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         BN = new BayesNet("test");
         BN.appendLoci("age ~ unif(0, 100)");
         BN.appendLoci("sex");
@@ -37,13 +34,13 @@ public class BayesNetTest {
     }
 
     @Test
-    public void getOrder() throws Exception {
-        assertArrayEquals(BN.getOrder().toArray(), new String[]{"sd", "beta1", "beta2", "sex", "age", "mu", "y"});
+    public void getOrder() {
+        assertEquals(BN.getOrder().toArray(), new String[]{"sd", "beta1", "beta2", "sex", "age", "mu", "y"});
     }
 
 
     @Test
-    public void sampleGene() throws Exception {
+    public void sampleGene() {
         System.out.println(BN.sample(Exo));
     }
 }

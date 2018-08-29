@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
@@ -10,22 +11,18 @@ import org.twz.statespace.AbsStateSpace;
 
 public class StSpABModelTest {
 
-    private Director Da;
     private StSpABModel Model;
-    private AbsStateSpace DC;
-    private ParameterCore PC;
-    private StSpY0 Y0;
 
     @Before
-    public void setUp() {
-        Da = new Director();
-        Da.loadBayesNet("src/test/resources/script/pDzAB.txt");
-        Da.loadStateSpace("src/test/resources/script/DzAB.txt");
+    public void setUp() throws JSONException {
+        Director da = new Director();
+        da.loadBayesNet("src/test/resources/script/pDzAB.txt");
+        da.loadStateSpace("src/test/resources/script/DzAB.txt");
 
         NodeGroup NG = new NodeGroup("root", new String[0]);
         NG.appendChildren(new NodeGroup("agent", new String[]{"ToA", "ToB","ToB_A"}));
-        PC = Da.getBayesNet("pDzAB").toSimulationCore(NG, true).generate("Test");
-        DC = Da.generateDCore("DzAB", PC.genPrototype("agent"));
+        ParameterCore PC = da.getBayesNet("pDzAB").toSimulationCore(NG, true).generate("Test");
+        AbsStateSpace DC = da.generateDCore("DzAB", PC.genPrototype("agent"));
 
 
         StSpPopulation Pop = new StSpPopulation("Ag", "agent", DC, PC);
@@ -41,14 +38,14 @@ public class StSpABModelTest {
     }
 
     @Test
-    public void simulation() {
+    public void simulation() throws JSONException {
         Simulator Simu = new Simulator(Model);
         Simu.addLogPath("DzAB.txt");
-        Y0 = new StSpY0();
-        Y0.append(200, "ab");
+        StSpY0 y0 = new StSpY0();
+        y0.append(200, "ab");
 
 
-        Simu.simulate(Y0, 0, 10, 1);
+        Simu.simulate(y0, 0, 10, 1);
         Model.getObserver().getObservations().print();
     }
 }

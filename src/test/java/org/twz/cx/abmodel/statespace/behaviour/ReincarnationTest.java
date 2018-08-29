@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace.behaviour;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
@@ -19,7 +20,7 @@ public class ReincarnationTest {
     private StSpY0 Y0;
 
     @Before
-    public void setUp() {
+    public void setUp() throws JSONException {
         Da = new Director();
         Da.loadBayesNet("src/test/resources/script/pBAD.txt");
         Da.loadStateSpace("src/test/resources/script/BAD.txt");
@@ -41,7 +42,7 @@ public class ReincarnationTest {
     }
 
     @Test
-    public void simulation() {
+    public void simulation() throws JSONException {
         Simulator Simu = new Simulator(Model);
         Simu.addLogPath("log/Reincarnation.txt");
         Y0 = new StSpY0();

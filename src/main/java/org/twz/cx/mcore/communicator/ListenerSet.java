@@ -1,6 +1,7 @@
 package org.twz.cx.mcore.communicator;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.mcore.AbsSimModel;
@@ -19,7 +20,7 @@ public class ListenerSet implements AdapterJSONArray {
         Listeners = new LinkedHashMap<>();
     }
 
-    public ListenerSet(JSONArray js) {
+    public ListenerSet(JSONArray js) throws JSONException {
         this();
         JSONObject temp;
         for (int i = 0; i < js.length(); i++) {
@@ -35,7 +36,7 @@ public class ListenerSet implements AdapterJSONArray {
 
     }
 
-    public boolean applyShock(Disclosure disclosure, AbsSimModel foreign, AbsSimModel local, double ti) {
+    public boolean applyShock(Disclosure disclosure, AbsSimModel foreign, AbsSimModel local, double ti) throws JSONException {
         boolean shock = false;
         Pair<String, JSONObject> action;
         for (Map.Entry<IChecker, IShocker> entry : Listeners.entrySet()) {
@@ -54,7 +55,7 @@ public class ListenerSet implements AdapterJSONArray {
 
 
     @Override
-    public JSONArray toJSON() {
+    public JSONArray toJSON() throws JSONException {
         JSONArray js = new JSONArray();
         JSONObject temp;
         for (Map.Entry<IChecker, IShocker> entry : Listeners.entrySet()) {
@@ -66,7 +67,7 @@ public class ListenerSet implements AdapterJSONArray {
         return js;
     }
 
-    private static IChecker findChecker(JSONObject js) {
+    private static IChecker findChecker(JSONObject js) throws JSONException {
         switch (js.getString("Type")) {
             case "StartWith":
                 return new StartWithChecker(js);

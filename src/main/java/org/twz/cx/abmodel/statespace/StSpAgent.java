@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel.statespace;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.statespace.modifier.AbsModifier;
@@ -31,7 +32,7 @@ public class StSpAgent extends AbsAgent {
     }
 
     @Override
-    public Object get(String key) {
+    public Object get(String key) throws JSONException {
         if (key.equals("State")) {
             return State;
         } else {

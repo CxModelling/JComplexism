@@ -1,5 +1,6 @@
 package org.twz.cx.element;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.dag.Gene;
@@ -34,15 +35,15 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         return Name;
     }
 
-    public Object get(String s) {
+    public Object get(String s) throws JSONException {
         return Attributes.get(s);
     }
 
-    public String getString(String s) {
+    public String getString(String s) throws JSONException {
         return Attributes.getString(s);
     }
 
-    public Double getDouble(String s) {
+    public Double getDouble(String s) throws JSONException {
         return Attributes.getDouble(s);
     }
 
@@ -62,12 +63,18 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         Scheduler = null;
     }
 
-    public void put(String key, Object value) {
+    public void put(String key, Object value) throws JSONException {
         Attributes.put(key, value);
     }
 
     public void updateAttributes(Map<String, Object> atr) {
-        atr.forEach((k, v) -> Attributes.put(k, v));
+        atr.forEach((k, v) -> {
+            try {
+                Attributes.put(k, v);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public Event getNext() {
@@ -103,22 +110,26 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
 
     public abstract void executeEvent();
 
-    public abstract void initialise(double ti, AbsSimModel model);
+    public abstract void initialise(double ti, AbsSimModel model) throws JSONException;
 
     public abstract void reset(double ti, AbsSimModel model);
 
-    public abstract void shock(double ti, AbsSimModel model, String action, JSONObject value);
+    public abstract void shock(double ti, AbsSimModel model, String action, JSONObject value) throws JSONException;
 
     public boolean isCompatible(Map<String, Object> args) {
         for(Map.Entry<String, Object> ent: args.entrySet()) {
-            if (Attributes.get(ent.getKey()) != ent.getValue()) {
+            try {
+                if (Attributes.get(ent.getKey()) != ent.getValue()) {
+                    return false;
+                }
+            } catch (JSONException e) {
                 return false;
             }
         }
         return true;
     }
 
-    public Map<String, Object> toData() {
+    public Map<String, Object> toData() throws JSONException {
         Map<String, Object> dat = new LinkedHashMap<>();
         dat.put("Name", Name);
         String[] ks = JSONObject.getNames(Attributes);
@@ -134,7 +145,7 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Name", Name);
         js.put("Attributes", Attributes);

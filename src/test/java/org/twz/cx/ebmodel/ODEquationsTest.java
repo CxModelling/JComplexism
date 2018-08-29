@@ -1,5 +1,6 @@
 package org.twz.cx.ebmodel;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.mcore.Simulator;
@@ -43,7 +44,7 @@ public class ODEquationsTest {
     }
 
     @Test
-    public void simulation() {
+    public void simulation() throws JSONException {
         Simulator Simu = new Simulator(EBM);
         Simu.addLogPath("log/EBM.txt");
         EBMY0 Y0 = new EBMY0();

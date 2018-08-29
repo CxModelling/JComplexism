@@ -1,6 +1,7 @@
 package org.twz.cx.mcore;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,11 +16,11 @@ public class LeafY0 implements IY0 {
         Entries = new ArrayList<>();
     }
 
-    public LeafY0(JSONObject js) {
+    public LeafY0(JSONObject js) throws JSONException {
         this(js.getJSONArray("Entries"));
     }
 
-    public LeafY0(JSONArray jar) {
+    public LeafY0(JSONArray jar) throws JSONException {
         this();
         for (int i = 0; i < jar.length(); i++) {
             Entries.add(jar.getJSONObject(i));
@@ -37,7 +38,7 @@ public class LeafY0 implements IY0 {
     }
 
     @Override
-    public void append(String ent) {
+    public void append(String ent) throws JSONException {
         append(new JSONObject(ent));
     }
 
@@ -67,7 +68,7 @@ public class LeafY0 implements IY0 {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Entries", Entries);
         js.put("Type", "Leaf");
@@ -75,8 +76,12 @@ public class LeafY0 implements IY0 {
     }
 
     public LeafY0 clone() {
-        LeafY0 clo = new LeafY0();
-        getEntries().forEach(e->clo.append(e.toString()));
-        return clo;
+        LeafY0 clone = null;
+        try {
+            clone = (LeafY0) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return clone;
     }
 }

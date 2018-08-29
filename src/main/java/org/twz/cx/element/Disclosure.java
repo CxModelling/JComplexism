@@ -1,5 +1,6 @@
 package org.twz.cx.element;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dataframe.Pair;
 
@@ -32,12 +33,24 @@ public class Disclosure {
     }
 
     public void updateArguments(Map<String, Object> args) {
-        args.forEach(Arguments::put);
+        for (Map.Entry<String, Object> entry : args.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            try {
+                Arguments.put(key, value);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void updateArguments(JSONObject args) {
         for (String s : JSONObject.getNames(args)) {
-            Arguments.put(s, args.get(s));
+            try {
+                Arguments.put(s, args.get(s));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -45,15 +58,15 @@ public class Disclosure {
         return Arguments;
     }
 
-    public Object get(String key) {
+    public Object get(String key) throws JSONException {
         return Arguments.get(key);
     }
 
-    public String getString(String key) {
+    public String getString(String key) throws JSONException {
         return Arguments.getString(key);
     }
 
-    public double getDouble(String key) {
+    public double getDouble(String key) throws JSONException {
         return Arguments.getDouble(key);
     }
 
@@ -83,7 +96,7 @@ public class Disclosure {
     }
 
     public String getAddress() {
-        return Where.stream().collect(Collectors.joining("@"));
+        return String.join("@", Where);
     }
 
     public String getGroup() {

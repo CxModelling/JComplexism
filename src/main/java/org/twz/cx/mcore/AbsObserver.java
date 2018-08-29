@@ -1,5 +1,6 @@
 package org.twz.cx.mcore;
 
+import org.json.JSONException;
 import org.twz.dataframe.DataFrame;
 import java.util.*;
 
@@ -78,7 +79,7 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         Flows.clear();
     }
 
-    public void initialiseObservations(T model, double ti) {
+    public void initialiseObservations(T model, double ti) throws JSONException {
         renew();
         clearFlows();
         Last.put("Time", ti);
@@ -92,16 +93,16 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         FlowNames = new ArrayList<>(Flows.keySet());
     }
 
-    public void observeRoutinely(T model, double ti) {
+    public void observeRoutinely(T model, double ti) throws JSONException {
         readStatics(model, Last, ti);
         updateDynamicObservations(model, Flows, ti);
     }
 
-    public void updateAtMidTerm(T model, double ti) {
+    public void updateAtMidTerm(T model, double ti) throws JSONException {
         if (ExactMid) readStatics(model, Mid, ti);
     }
 
-    protected abstract void readStatics(T model, Map<String, Double> tab, double ti);
+    protected abstract void readStatics(T model, Map<String, Double> tab, double ti) throws JSONException;
 
     public abstract void updateDynamicObservations(T model, Map<String, Double> flows, double ti);
 
@@ -168,7 +169,7 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         return Double.NaN;
     }
 
-    public double getSnapshot(T model, String key, double ti) {
+    public double getSnapshot(T model, String key, double ti) throws JSONException {
         if (FlowNames.contains(key)) {
             return TimeSeries.get(TimeSeries.size() - 1).get(key);
         } else if (StockNames.contains(key)) {

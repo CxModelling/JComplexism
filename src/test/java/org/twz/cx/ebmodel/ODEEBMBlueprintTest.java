@@ -1,5 +1,6 @@
 package org.twz.cx.ebmodel;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
@@ -17,7 +18,7 @@ public class ODEEBMBlueprintTest {
     private Director Da;
 
     @Before
-    public void setUp() {
+    public void setUp() throws JSONException {
         Da = new Director();
         Da.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
 
@@ -43,7 +44,7 @@ public class ODEEBMBlueprintTest {
     }
 
     @Test
-    public void simulationPcDc() {
+    public void simulationPcDc() throws JSONException {
         ParameterCore PC = Da.getBayesNet("pCloseSIR")
                 .toSimulationCore(Da.getSimModel("SIR").getParameterHierarchy(Da), true)
                 .generate("Test");
@@ -52,11 +53,11 @@ public class ODEEBMBlueprintTest {
     }
 
     @Test
-    public void simulationDaBN() {
+    public void simulationDaBN() throws JSONException {
         run(Da.generateMCore("model", "SIR", "pCloseSIR"));
     }
 
-    public void run(AbsSimModel model) {
+    public void run(AbsSimModel model) throws JSONException {
         Simulator Simu = new Simulator(model);
         Simu.addLogPath("log/ODE.txt");
         EBMY0 y0 = new EBMY0();

@@ -1,5 +1,6 @@
 package org.twz.statespace;
 
+import org.json.JSONException;
 import org.twz.statespace.ctbn.CTBNBlueprint;
 import org.twz.statespace.ctmc.CTMCBlueprint;
 import org.json.JSONArray;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
  * Created by TimeWz on 2017/6/17.
  */
 public class StateSpaceFactory {
-    public static IStateSpaceBlueprint createFromJSON(JSONObject js) {
+    public static IStateSpaceBlueprint createFromJSON(JSONObject js) throws JSONException {
         IStateSpaceBlueprint bp;
         if (js.getString("ModelType").equals("CTBN")) {
             bp = new CTBNBlueprint(js);
@@ -25,12 +26,12 @@ public class StateSpaceFactory {
         return bp;
     }
 
-    public static IStateSpaceBlueprint createFromScripts(String script) throws ScriptException {
+    public static IStateSpaceBlueprint createFromScripts(String script) throws ScriptException, JSONException {
         JSONObject js = script2json(script);
         return createFromJSON(js);
     }
 
-    private static JSONObject script2json(String script) throws ScriptException {
+    private static JSONObject script2json(String script) throws ScriptException, JSONException {
         JSONObject js = new JSONObject();
 
         String[] row_lines = script.split("\n");
@@ -88,7 +89,8 @@ public class StateSpaceFactory {
             js.put("Microstates", mss);
             js.put("States", sts);
 
-            for (Object k: sts.keySet()) {
+            for (Iterator it = sts.keys(); it.hasNext(); ) {
+                Object k = it.next();
                 targets.put(k.toString(), new ArrayList<>());
             }
         } else {

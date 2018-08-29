@@ -1,5 +1,6 @@
 package org.twz.factory.arguments;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.prob.DistributionManager;
 import org.twz.prob.IDistribution;
@@ -39,7 +40,7 @@ public class DistributionArg extends AbsArgument{
     }
 
     @Override
-    public Object parse(String value) {
+    public Object parse(String value) throws JSONException {
         return FnJSON.toDoubleMap(new JSONObject(value));
     }
 }

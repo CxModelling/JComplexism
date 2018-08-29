@@ -1,5 +1,6 @@
 package org.twz.dag;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.loci.Loci;
 import org.twz.dag.util.NodeGroup;
@@ -33,7 +34,7 @@ public class SimulationCore implements AdapterJSONObject, Cloneable {
         findSGs();
     }
 
-    public SimulationCore(JSONObject js) throws ScriptException {
+    public SimulationCore(JSONObject js) throws ScriptException, JSONException {
         this(new BayesNet(js.getJSONObject("BayesianNetwork")),
                 new NodeGroup(js.getJSONObject("Blueprint")),
                 js.getBoolean("Hoist"));
@@ -85,7 +86,7 @@ public class SimulationCore implements AdapterJSONObject, Cloneable {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Name", Name);
         js.put("BayesianNetwork", BN.toJSON());

@@ -1,6 +1,7 @@
 package org.twz.factory;
 
 
+import org.json.JSONException;
 import org.twz.cx.element.Ticker.AbsTicker;
 import org.twz.cx.element.Ticker.AppointmentTicker;
 import org.twz.cx.element.Ticker.TickerFactory;
@@ -15,7 +16,7 @@ public class TickerFactoryTest {
 
 
     @Test
-    public void createStepTicker() {
+    public void createStepTicker() throws JSONException {
         AbsTicker tick = TickerFactory.create(new JSONObject("{'Type': 'Step', 'Args': {'ts':[1,3,6], 't':0}}"));
         System.out.println("Ticker:");
         System.out.println(tick);
@@ -32,7 +33,7 @@ public class TickerFactoryTest {
     }
 
     @Test
-    public void createClockTicker() {
+    public void createClockTicker() throws JSONException {
         AbsTicker tick = TickerFactory.create(new JSONObject("{'Type': 'Clock', 'Args': {'dt':0.7}}"));
         System.out.println("Ticker:");
         System.out.println(tick);
@@ -49,7 +50,7 @@ public class TickerFactoryTest {
     }
 
     @Test
-    public void createAppointmentTicker() {
+    public void createAppointmentTicker() throws JSONException {
         AbsTicker tick = TickerFactory.create(new JSONObject("{'Type': 'Appointment', 'Args': {'queue':[]}}"));
         ((AppointmentTicker) tick).makeAnAppointment(1);
         System.out.println("Ticker:");
@@ -61,7 +62,7 @@ public class TickerFactoryTest {
             ((AppointmentTicker) tick).makeAnAppointment(ti+2.4);
             tick.update(ti);
             ti = tick.getNext();
-            System.out.println("At: "+ti);
+            System.out.println("At: "+ ti);
         }
         System.out.println(tick);
 

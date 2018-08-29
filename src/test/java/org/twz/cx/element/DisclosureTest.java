@@ -10,7 +10,7 @@ public class DisclosureTest {
     private Disclosure D;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         D = new Disclosure("Have fun", "I", "Here");
     }
 

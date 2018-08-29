@@ -1,5 +1,6 @@
 package org.twz.statespace.ctmc;
 
+import org.json.JSONException;
 import org.twz.statespace.IStateSpaceBlueprint;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
@@ -33,7 +34,7 @@ public class CTMCBlueprint implements IStateSpaceBlueprint<CTMarkovChain> {
         JS = null;
     }
 
-    public CTMCBlueprint(JSONObject js) {
+    public CTMCBlueprint(JSONObject js) throws JSONException {
         this(js.getString("ModelName"));
         JSONObject sub, temp;
         Iterator<?> keys;
@@ -125,7 +126,7 @@ public class CTMCBlueprint implements IStateSpaceBlueprint<CTMarkovChain> {
     }
 
     @Override
-    public CTMarkovChain generateModel(ParameterCore pc) {
+    public CTMarkovChain generateModel(ParameterCore pc) throws JSONException {
         Map<String, State> sts = new HashMap<>();
         Map<String, Transition> trs = new HashMap<>();
         Map<State, List<Transition>> tars = new HashMap<>();
@@ -147,21 +148,27 @@ public class CTMCBlueprint implements IStateSpaceBlueprint<CTMarkovChain> {
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         if (JS == null) {
             buildJSON();
         }
         return JS;
     }
 
-    public void buildJSON() {
+    public void buildJSON() throws JSONException {
         JS  = new JSONObject();
 
         JS.put("ModelType", "CTMC");
         JS.put("ModelName", Name);
         JS.put("States", States);
-        JS.put("Transitions", TransitionTo.keySet().stream()
-                .collect(Collectors.toMap(e->e, e -> new JSONObject("{'Dist': "+TransitionBy.get(e)+", 'To': "+TransitionTo.get(e)+"}"))));
+
+        JSONObject trs = new JSONObject();
+
+        for (Map.Entry<String, String> entry : TransitionTo.entrySet()) {
+            trs.put(entry.getKey(), new JSONObject("{'Dist': "+TransitionBy.get(entry.getKey())+", 'To': "+entry.getValue()+"}"));
+        }
+
+        JS.put("Transitions", trs);
 
         JS.put("Targets", Targets);
     }

@@ -1,5 +1,6 @@
 package org.twz.statespace.ctbn;
 
+import org.json.JSONException;
 import org.twz.dag.ScriptException;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;
@@ -19,7 +20,7 @@ import java.util.List;
 public class DBNCreateTest {
 
     @Test
-    public void testBuildCTBN() {
+    public void testBuildCTBN() throws JSONException {
         Director da = new Director();
 
 
@@ -60,7 +61,7 @@ public class DBNCreateTest {
     }
 
     @Test
-    public void testLoadCTBN() {
+    public void testLoadCTBN() throws JSONException {
         Director da = new Director();
 
         da.loadBayesNet("src/test/resources/script/pSIR.txt");
@@ -81,7 +82,7 @@ public class DBNCreateTest {
     }
 
     @Test
-    public void testJosnifyCTBN() throws ScriptException {
+    public void testJosnifyCTBN() throws JSONException {
         Director da = new Director();
 
         da.loadBayesNet("src/test/resources/script/pSIR.txt");

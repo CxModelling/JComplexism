@@ -1,6 +1,7 @@
 package org.twz.dag.util;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.BayesNet;
 import org.twz.dag.loci.Loci;
@@ -34,7 +35,7 @@ public class NodeGroup implements AdapterJSONObject {
         Status = Initialised;
     }
 
-    public NodeGroup(JSONObject js) {
+    public NodeGroup(JSONObject js) throws JSONException {
         Name = js.getString("Name");
         Children = new HashSet<>();
         Nodes = FnJSON.toStringSet(js.getJSONArray("Nodes"));
@@ -50,7 +51,7 @@ public class NodeGroup implements AdapterJSONObject {
         Status = RolesChecked;
     }
 
-    public NodeGroup(String script) {
+    public NodeGroup(String script) throws JSONException {
         this(new JSONObject(script));
     }
 
@@ -76,7 +77,7 @@ public class NodeGroup implements AdapterJSONObject {
 
     private boolean canBePassedDown(String node, DiGraph<Loci> g) {
         List<String> des = g.getDescendants(node);
-        return !Nodes.stream().anyMatch(des::contains);
+        return Nodes.stream().noneMatch(des::contains);
     }
 
     private void passDown(String node, DiGraph<Loci> g) {
@@ -224,7 +225,7 @@ public class NodeGroup implements AdapterJSONObject {
         return "NodeGroup{" +
                 "Name='" + Name +
                 ", Children=" + Children.stream().map(NodeGroup::getName).collect(Collectors.joining(", ")) +
-                ", Nodes=" + Nodes.stream().collect(Collectors.joining(", ")) +
+                ", Nodes=" + String.join(", ", Nodes) +
                 '}';
     }
 
@@ -247,16 +248,16 @@ public class NodeGroup implements AdapterJSONObject {
     public void printBlueprint() {
         System.out.println("NodeGroup{" +
                 "Name='" + Name +
-                ((Exo.isEmpty())? "":"| Exo=" + Exo.stream().collect(Collectors.joining(", "))) +
-                ((Fixed.isEmpty())? "":"| Fixed=" + Fixed.stream().collect(Collectors.joining(", "))) +
-                ((Random.isEmpty())? "":"| Random=" + Random.stream().collect(Collectors.joining(", "))) +
-                ((Actors.isEmpty())? "":"| Actor=" + Actors.stream().collect(Collectors.joining(", "))) +
+                ((Exo.isEmpty())? "":"| Exo=" + String.join(", ", Exo)) +
+                ((Fixed.isEmpty())? "":"| Fixed=" + String.join(", ", Fixed)) +
+                ((Random.isEmpty())? "":"| Random=" + String.join(", ", Random)) +
+                ((Actors.isEmpty())? "":"| Actor=" + String.join(", ", Actors)) +
                 '}');
         Children.forEach(NodeGroup::printBlueprint);
     }
 
     @Override
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Name", Name);
         js.put("Nodes", Nodes);
@@ -264,7 +265,12 @@ public class NodeGroup implements AdapterJSONObject {
         js.put("Fixed", Fixed);
         js.put("Random", Random);
         js.put("Actors", Actors);
-        js.put("Children", Children.stream().map(NodeGroup::toJSON).collect(Collectors.toList()));
+        List<JSONObject> list = new ArrayList<>();
+        for (NodeGroup Child : Children) {
+            JSONObject toJSON = Child.toJSON();
+            list.add(toJSON);
+        }
+        js.put("Children", list);
         return js;
     }
 }

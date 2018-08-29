@@ -1,5 +1,6 @@
 package org.twz.cx.abmodel;
 
+import org.json.JSONException;
 import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
 
@@ -25,7 +26,7 @@ public abstract class AbsBreeder<T extends AbsAgent> {
         return Name;
     }
 
-    public List<T> breed(int n, Map<String, Object> attributes) {
+    public List<T> breed(int n, Map<String, Object> attributes) throws JSONException {
         String name;
         Gene pars;
         List<T> ags = new ArrayList<>();
@@ -41,5 +42,5 @@ public abstract class AbsBreeder<T extends AbsAgent> {
         return ags;
     }
 
-    protected abstract T newAgent(String name, Gene pars, Map<String, Object> attributes);
+    protected abstract T newAgent(String name, Gene pars, Map<String, Object> attributes) throws JSONException;
 }
