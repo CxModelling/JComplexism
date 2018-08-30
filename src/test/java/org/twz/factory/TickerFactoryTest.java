@@ -16,8 +16,8 @@ public class TickerFactoryTest {
 
 
     @Test
-    public void createStepTicker() throws JSONException {
-        AbsTicker tick = TickerFactory.create(new JSONObject("{'Type': 'Step', 'Args': {'ts':[1,3,6], 't':0}}"));
+    public void createScheduleTicker() throws JSONException {
+        AbsTicker tick = TickerFactory.create(new JSONObject("{'Type': 'Schedule', 'Args': {'ts':[1,3,6], 't':0}}"));
         System.out.println("Ticker:");
         System.out.println(tick);
 
@@ -26,15 +26,15 @@ public class TickerFactoryTest {
         while (ti < 10) {
             tick.update(ti);
             ti = tick.getNext();
-            System.out.println("At: "+ti);
+            System.out.println(String.format("At: %.2f", ti));
         }
         System.out.println(tick);
 
     }
 
     @Test
-    public void createClockTicker() throws JSONException {
-        AbsTicker tick = TickerFactory.create(new JSONObject("{'Type': 'Clock', 'Args': {'dt':0.7}}"));
+    public void createStepTicker() throws JSONException {
+        AbsTicker tick = TickerFactory.create(new JSONObject("{'Type': 'Step', 'Args': {'dt':0.7}}"));
         System.out.println("Ticker:");
         System.out.println(tick);
 
@@ -43,7 +43,7 @@ public class TickerFactoryTest {
         while (ti < 10) {
             tick.update(ti);
             ti = tick.getNext();
-            System.out.println("At: "+ti);
+            System.out.println(String.format("At: %.2f", ti));
         }
         System.out.println(tick);
 
@@ -59,10 +59,10 @@ public class TickerFactoryTest {
         double ti=0;
         tick.initialise(ti);
         while (ti < 10) {
-            ((AppointmentTicker) tick).makeAnAppointment(ti+2.4);
             tick.update(ti);
             ti = tick.getNext();
-            System.out.println("At: "+ ti);
+            ((AppointmentTicker) tick).makeAnAppointment(ti+2.4);
+            System.out.println(String.format("At: %.2f", ti));
         }
         System.out.println(tick);
 

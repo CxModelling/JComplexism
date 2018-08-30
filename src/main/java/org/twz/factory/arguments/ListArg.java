@@ -26,14 +26,15 @@ public class ListArg extends AbsArgument{
 
     @Override
     public Class getType() {
-        switch (Type) {
+        return List.class;
+        /*switch (Type) {
             case "Double":
                 return Double.class;
             case "String":
                 return String.class;
             default:
                 return List.class;
-        }
+        }*/
     }
 
     @Override

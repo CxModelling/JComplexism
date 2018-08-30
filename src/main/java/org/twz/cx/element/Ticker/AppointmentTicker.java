@@ -12,7 +12,7 @@ import java.util.*;
 public class AppointmentTicker extends AbsTicker {
     private LinkedList<Double> Queue;
 
-    public AppointmentTicker(String name,List<Double> queue) {
+    public AppointmentTicker(String name, List<Double> queue) {
         super(name);
         Queue = new LinkedList<>();
         Queue.addAll(queue);

@@ -41,6 +41,6 @@ public class StepTicker extends AbsTicker {
 
     @Override
     String getType() {
-        return "Clock";
+        return "Step";
     }
 }
