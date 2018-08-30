@@ -9,16 +9,14 @@ import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.statespace.AbsStateSpace;
 
 public class StSpBehaviourFactoryTest {
-    private Director Da;
-    private AbsStateSpace DC;
 
     @Before
     public void setUp() throws JSONException {
-        Da = new Director();
-        Da.loadBayesNet("src/test/resources/script/pBAD.txt");
-        Da.loadStateSpace("src/test/resources/script/BAD.txt");
+        Director ctrl = new Director();
+        ctrl.loadBayesNet("src/test/resources/script/pBAD.txt");
+        ctrl.loadStateSpace("src/test/resources/script/BAD.txt");
 
-        DC = Da.generateDCore("BAD", "pBAD");
+        AbsStateSpace DC = ctrl.generateDCore("BAD", "pBAD");
 
         StSpBehaviourFactory.appendResource("States", DC.getStateSpace());
         StSpBehaviourFactory.appendResource("Transitions", DC.getTransitionSpace());

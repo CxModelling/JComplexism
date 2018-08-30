@@ -12,18 +12,16 @@ import static org.junit.Assert.*;
 
 public class StSpAgentTest {
 
-    private Director Da;
     private StSpAgent Agent;
     private AbsStateSpace DC;
-    private ParameterCore PC;
 
     @Before
     public void setUp() throws JSONException {
-        Da = new Director();
-        Da.loadBayesNet("src/test/resources/script/pSIR.txt");
-        Da.loadStateSpace("src/test/resources/script/SIR_BN.txt");
-        PC = Da.generatePCore("Test","pSIR");
-        DC = Da.generateDCore("SIR_bn", PC);
+        Director ctrl = new Director();
+        ctrl.loadBayesNet("src/test/resources/script/pSIR.txt");
+        ctrl.loadStateSpace("src/test/resources/script/SIR_BN.txt");
+        ParameterCore PC = ctrl.generatePCore("Test", "pSIR");
+        DC = ctrl.generateDCore("SIR_bn", PC);
         Agent = new StSpAgent("Test", PC, DC.getState("Sus"));
         Agent.initialise(0, null);
     }

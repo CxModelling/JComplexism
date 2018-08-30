@@ -13,22 +13,18 @@ import org.twz.dag.util.NodeGroup;
 import org.twz.statespace.AbsStateSpace;
 
 public class ReincarnationTest {
-    private Director Da;
     private StSpABModel Model;
-    private AbsStateSpace DC;
-    private ParameterCore PC;
-    private StSpY0 Y0;
 
     @Before
     public void setUp() throws JSONException {
-        Da = new Director();
-        Da.loadBayesNet("src/test/resources/script/pBAD.txt");
-        Da.loadStateSpace("src/test/resources/script/BAD.txt");
+        Director ctrl = new Director();
+        ctrl.loadBayesNet("src/test/resources/script/pBAD.txt");
+        ctrl.loadStateSpace("src/test/resources/script/BAD.txt");
 
         NodeGroup NG = new NodeGroup("root", new String[0]);
         NG.appendChildren(new NodeGroup("agent", new String[]{"ToM", "ToO", "Die"}));
-        PC = Da.getBayesNet("pBAD").toSimulationCore(NG, true).generate("Test");
-        DC = Da.generateDCore("BAD", PC.genPrototype("agent"));
+        ParameterCore PC = ctrl.getBayesNet("pBAD").toSimulationCore(NG, true).generate("Test");
+        AbsStateSpace DC = ctrl.generateDCore("BAD", PC.genPrototype("agent"));
 
 
         StSpPopulation Pop = new StSpPopulation("Ag", "agent", DC, PC);
@@ -45,12 +41,12 @@ public class ReincarnationTest {
     public void simulation() throws JSONException {
         Simulator Simu = new Simulator(Model);
         Simu.addLogPath("log/Reincarnation.txt");
-        Y0 = new StSpY0();
-        Y0.append(5000, "Young");
-        Y0.append(5000, "Middle");
-        Y0.append(5000, "Old");
+        StSpY0 y0 = new StSpY0();
+        y0.append(5000, "Young");
+        y0.append(5000, "Middle");
+        y0.append(5000, "Old");
 
-        Simu.simulate(Y0, 0, 10, 1);
+        Simu.simulate(y0, 0, 10, 1);
         Model.print();
         Model.printCounts();
     }

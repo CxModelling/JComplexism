@@ -15,14 +15,14 @@ public class StSpABModelTest {
 
     @Before
     public void setUp() throws JSONException {
-        Director da = new Director();
-        da.loadBayesNet("src/test/resources/script/pDzAB.txt");
-        da.loadStateSpace("src/test/resources/script/DzAB.txt");
+        Director Ctrl = new Director();
+        Ctrl.loadBayesNet("src/test/resources/script/pDzAB.txt");
+        Ctrl.loadStateSpace("src/test/resources/script/DzAB.txt");
 
         NodeGroup NG = new NodeGroup("root", new String[0]);
         NG.appendChildren(new NodeGroup("agent", new String[]{"ToA", "ToB","ToB_A"}));
-        ParameterCore PC = da.getBayesNet("pDzAB").toSimulationCore(NG, true).generate("Test");
-        AbsStateSpace DC = da.generateDCore("DzAB", PC.genPrototype("agent"));
+        ParameterCore PC = Ctrl.getBayesNet("pDzAB").toSimulationCore(NG, true).generate("Test");
+        AbsStateSpace DC = Ctrl.generateDCore("DzAB", PC.genPrototype("agent"));
 
 
         StSpPopulation Pop = new StSpPopulation("Ag", "agent", DC, PC);
@@ -40,7 +40,7 @@ public class StSpABModelTest {
     @Test
     public void simulation() throws JSONException {
         Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("DzAB.txt");
+        Simu.addLogPath("log/DzAB.txt");
         StSpY0 y0 = new StSpY0();
         y0.append(200, "ab");
 

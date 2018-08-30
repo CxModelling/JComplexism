@@ -18,14 +18,14 @@ public class LifeRateTest {
 
     @Before
     public void setUp() throws JSONException {
-        Director da = new Director();
-        da.loadBayesNet("src/test/resources/script/pBAD.txt");
-        da.loadStateSpace("src/test/resources/script/BAD.txt");
+        Director Ctrl = new Director();
+        Ctrl.loadBayesNet("src/test/resources/script/pBAD.txt");
+        Ctrl.loadStateSpace("src/test/resources/script/BAD.txt");
 
         NodeGroup NG = new NodeGroup("root", new String[0]);
         NG.appendChildren(new NodeGroup("agent", new String[]{"ToM", "ToO", "Die"}));
-        ParameterCore PC = da.getBayesNet("pBAD").toSimulationCore(NG, true).generate("Test");
-        AbsStateSpace DC = da.generateDCore("BAD", PC.genPrototype("agent"));
+        ParameterCore PC = Ctrl.getBayesNet("pBAD").toSimulationCore(NG, true).generate("Test");
+        AbsStateSpace DC = Ctrl.generateDCore("BAD", PC.genPrototype("agent"));
 
         StSpPopulation Pop = new StSpPopulation("Ag", "agent", DC, PC);
         Model = new StSpABModel("Test", PC, Pop);

@@ -18,14 +18,14 @@ public class FDShockTest {
 
     @Before
     public void setUp() throws JSONException {
-        Director da = new Director();
-        da.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
-        da.loadStateSpace("src/test/resources/script/CloseSIR.txt");
+        Director Ctrl = new Director();
+        Ctrl.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
+        Ctrl.loadStateSpace("src/test/resources/script/CloseSIR.txt");
 
         NodeGroup NG = new NodeGroup("root", new String[0]);
         NG.appendChildren(new NodeGroup("agent", new String[]{"beta", "gamma"}));
-        ParameterCore PC = da.getBayesNet("pCloseSIR").toSimulationCore(NG, true).generate("Test");
-        AbsStateSpace DC = da.generateDCore("CloseSIR", PC.genPrototype("agent"));
+        ParameterCore PC = Ctrl.getBayesNet("pCloseSIR").toSimulationCore(NG, true).generate("Test");
+        AbsStateSpace DC = Ctrl.generateDCore("CloseSIR", PC.genPrototype("agent"));
 
 
         StSpPopulation Pop = new StSpPopulation("Ag", "agent", DC, PC);

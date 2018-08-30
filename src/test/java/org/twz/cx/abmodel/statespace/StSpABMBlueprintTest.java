@@ -12,15 +12,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StSpABMBlueprintTest {
-    private Director Da;
+    private Director Ctrl;
     private StSpABMBlueprint Bp;
     private StSpY0 Y0;
 
     @Before
     public void setUp() throws JSONException {
-        Da = new Director();
-        Da.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
-        Da.loadStateSpace("src/test/resources/script/CloseSIR.txt");
+        Ctrl = new Director();
+        Ctrl.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
+        Ctrl.loadStateSpace("src/test/resources/script/CloseSIR.txt");
 
         Bp = new StSpABMBlueprint("SIR");
         Bp.setAgent("Ag", "agent", "CloseSIR");
@@ -41,10 +41,10 @@ public class StSpABMBlueprintTest {
     public void simulationPcDc() throws JSONException {
         Map<String, Object> args = new HashMap<>();
 
-        ParameterCore PC = Da.getBayesNet("pCloseSIR")
-                .toSimulationCore(Bp.getParameterHierarchy(Da), true)
+        ParameterCore PC = Ctrl.getBayesNet("pCloseSIR")
+                .toSimulationCore(Bp.getParameterHierarchy(Ctrl), true)
                 .generate("Test");
-        AbsStateSpace DC = Da.generateDCore("CloseSIR", PC.genPrototype("agent"));
+        AbsStateSpace DC = Ctrl.generateDCore("CloseSIR", PC.genPrototype("agent"));
 
         args.put("pc", PC);
         args.put("dc", DC);
@@ -57,7 +57,7 @@ public class StSpABMBlueprintTest {
         Map<String, Object> args = new HashMap<>();
 
         args.put("bn", "pCloseSIR");
-        args.put("da", Da);
+        args.put("da", Ctrl);
 
         run(args);
     }
@@ -66,7 +66,7 @@ public class StSpABMBlueprintTest {
         StSpABModel Model = Bp.generate("Test", args);
 
         Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("FDShock.txt");
+        Simu.addLogPath("log/FDShock.txt");
 
         Simu.simulate(Y0, 0, 10, 1);
         Model.getObserver().getObservations().print();
