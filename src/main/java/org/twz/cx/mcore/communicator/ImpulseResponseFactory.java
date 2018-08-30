@@ -31,17 +31,17 @@ public class ImpulseResponseFactory {
             case "ValueImpulseResponse":
                 return new ValueImpulseResponse(js);
             case "AddOneResponse":
-                return null; // todo
+                return new AddOneResponse(js);
             case "AddNResponse":
-                return null; // todo
+                return new AddNResponse(js);
             case "DelOneResponse":
-                return null; // todo
+                return new DelOneResponse(js);
             case "DelNResponse":
-                return null; // todo
+                return new DelNResponse(js);
             case "ValueShockResponse":
                 return new ValueShockResponse(js);
             case "MultiValueShockResponse":
-                return null; // todo
+                return new MultiValueShockResponse(js);
         }
         throw new JSONException("Unknown type of response");
     }

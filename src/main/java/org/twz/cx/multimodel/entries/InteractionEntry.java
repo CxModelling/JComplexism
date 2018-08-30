@@ -32,6 +32,10 @@ public class InteractionEntry implements AdapterJSONObject {
                 js.getJSONObject("Response"));
     }
 
+    public String getSelector() {
+        return Selector;
+    }
+
     public IChecker passChecker() {
         if (Checker instanceof AbsChecker) {
             return ((AbsChecker) Checker).deepcopy();

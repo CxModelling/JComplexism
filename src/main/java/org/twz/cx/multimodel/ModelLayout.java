@@ -111,6 +111,12 @@ public class ModelLayout {
 
         }
 
+        for (InteractionEntry inter : InteractionEntries) {
+            for (AbsSimModel chd : model.selectAll(inter.getSelector()).values()) {
+                chd.addListener(inter.passChecker(), inter.passResponse());
+            }
+        }
+
         return model;
     }
 

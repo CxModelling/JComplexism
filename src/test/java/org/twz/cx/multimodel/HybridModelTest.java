@@ -101,8 +101,6 @@ public class HybridModelTest {
         layout.addEntry("I", "abm", y0a);
 
 
-
-
         NodeGroup ng = Da.getParameterHierarchy("Hybrid");
 
         ng.print();
