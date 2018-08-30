@@ -27,4 +27,8 @@ public class HaveStringChecker extends AbsChecker {
         js.put("Have", Have);
         return js;
     }
+
+    public AbsChecker deepcopy() {
+        return new HaveStringChecker(Have);
+    }
 }

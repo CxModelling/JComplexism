@@ -5,7 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.element.*;
 import org.twz.cx.mcore.communicator.IChecker;
-import org.twz.cx.mcore.communicator.IShocker;
+import org.twz.cx.mcore.communicator.IResponse;
 import org.twz.cx.mcore.communicator.ListenerSet;
 import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
@@ -121,7 +121,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         // todo
     }
 
-    public void addListener(IChecker impulse, IShocker response) {
+    public void addListener(IChecker impulse, IResponse response) {
         Listeners.defineImpulseResponse(impulse, response);
     }
 

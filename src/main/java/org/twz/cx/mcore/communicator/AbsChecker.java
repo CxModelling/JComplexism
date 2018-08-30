@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import org.twz.io.AdapterJSONObject;
 
 public abstract class AbsChecker implements IChecker, AdapterJSONObject {
-    public AbsChecker() {
+    AbsChecker() {
     }
 
     public AbsChecker(JSONObject js) {
@@ -21,4 +21,6 @@ public abstract class AbsChecker implements IChecker, AdapterJSONObject {
         js.put("Type", getType());
         return js;
     }
+
+    public abstract AbsChecker deepcopy();
 }

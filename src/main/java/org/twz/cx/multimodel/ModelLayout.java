@@ -5,6 +5,8 @@ import org.twz.cx.Director;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.BranchY0;
 import org.twz.cx.mcore.IY0;
+import org.twz.cx.mcore.communicator.IChecker;
+import org.twz.cx.mcore.communicator.IResponse;
 import org.twz.cx.multimodel.entries.IModelEntry;
 import org.twz.cx.multimodel.entries.MultipleEntry;
 import org.twz.cx.multimodel.entries.SingleEntry;
@@ -53,7 +55,19 @@ public class ModelLayout {
         ModelEntries.add(new MultipleEntry(prefix, proto, y0, to));
     }
 
-    public void addRelation(String source, String target) {
+    public void addRelation(String check, String shock) {
+
+    }
+
+    public void addRelation(IChecker check, String shock) {
+
+    }
+
+    public void addRelation(String check, IResponse shock) {
+
+    }
+
+    public void addRelation(IChecker check, IResponse shock) {
 
     }
 

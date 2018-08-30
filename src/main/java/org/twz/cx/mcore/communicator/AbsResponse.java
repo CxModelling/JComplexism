@@ -4,15 +4,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.io.AdapterJSONObject;
 
-public abstract class AbsShocker implements IShocker, AdapterJSONObject {
-    public AbsShocker() {
+public abstract class AbsResponse implements IResponse, AdapterJSONObject, Cloneable {
+    public AbsResponse() {
     }
 
-    public AbsShocker(JSONObject js) {
+    public AbsResponse(JSONObject js) {
     }
 
     public String getType() {
-        return this.getClass().getSimpleName().replace("AbsShocker", "");
+        return this.getClass().getSimpleName().replace("AbsResponse", "");
     }
 
     @Override
@@ -21,4 +21,6 @@ public abstract class AbsShocker implements IShocker, AdapterJSONObject {
         js.put("Type", getType());
         return js;
     }
+
+    public abstract AbsResponse deepcopy();
 }

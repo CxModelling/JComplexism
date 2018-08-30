@@ -27,4 +27,8 @@ public class IsChecker extends AbsChecker {
         js.put("Message", Message);
         return js;
     }
+
+    public AbsChecker deepcopy() {
+        return new IsChecker(Message);
+    }
 }

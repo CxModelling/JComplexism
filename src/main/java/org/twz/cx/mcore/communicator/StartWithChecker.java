@@ -27,4 +27,19 @@ public class StartWithChecker extends AbsChecker {
         js.put("Start", Start);
         return js;
     }
+
+    @Override
+    public AbsChecker deepcopy() {
+        return new StartWithChecker(Start);
+    }
+
+    public StartWithChecker clone() {
+        StartWithChecker checker;
+        try {
+            checker = (StartWithChecker) super.clone();
+        } catch (CloneNotSupportedException e) {
+            checker = new StartWithChecker(Start);
+        }
+        return checker;
+    }
 }

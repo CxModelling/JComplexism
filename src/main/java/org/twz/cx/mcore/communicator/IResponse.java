@@ -7,6 +7,6 @@ import org.twz.cx.mcore.AbsSimModel;
 import org.twz.dataframe.Pair;
 import org.twz.io.AdapterJSONObject;
 
-public interface IShocker {
+public interface IResponse {
     Pair<String, JSONObject> shock(Disclosure dis, AbsSimModel source, AbsSimModel target, double time) throws JSONException;
 }

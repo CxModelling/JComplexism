@@ -10,26 +10,20 @@ import org.twz.cx.abmodel.statespace.StSpY0;
 import org.twz.cx.ebmodel.*;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.mcore.AbsSimModel;
-import org.twz.cx.mcore.BranchY0;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.Simulator;
 import org.twz.cx.mcore.communicator.*;
-import org.twz.dag.ParameterCore;
 import org.twz.dag.util.NodeGroup;
 import org.twz.dataframe.Pair;
 import org.twz.prob.IDistribution;
 import org.twz.prob.Poisson;
-import org.twz.statespace.AbsStateSpace;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
  * Created by TimeWz on 14/08/2018.
  */
 
-class InfIn implements IShocker {
+class InfIn implements IResponse {
     private double Last;
 
     public InfIn() {
@@ -121,7 +115,7 @@ public class HybridModelTest {
         AbsSimModel m_sr = Model.getModel("SR");
 
 
-        m_sr.addListener(new StartWithChecker("update value"), new ValueImpulseShocker("Inf"));
+        m_sr.addListener(new StartWithChecker("update value"), new ValueImpulseResponse("Inf"));
         m_sr.addListener(new StartWithChecker("Recov"), (dis, source, target, time) ->
             new Pair<>("add", new JSONObject("{'y': 'R', 'n': 1}"))
         );

@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ListenerSet implements AdapterJSONArray {
-    private Map<IChecker, IShocker> Listeners;
+    private Map<IChecker, IResponse> Listeners;
 
     public ListenerSet() {
         Listeners = new LinkedHashMap<>();
@@ -31,7 +31,7 @@ public class ListenerSet implements AdapterJSONArray {
         }
     }
 
-    public void defineImpulseResponse(IChecker impulse, IShocker response) {
+    public void defineImpulseResponse(IChecker impulse, IResponse response) {
         Listeners.put(impulse, response);
 
     }
@@ -39,7 +39,7 @@ public class ListenerSet implements AdapterJSONArray {
     public boolean applyShock(Disclosure disclosure, AbsSimModel foreign, AbsSimModel local, double ti) throws JSONException {
         boolean shock = false;
         Pair<String, JSONObject> action;
-        for (Map.Entry<IChecker, IShocker> entry : Listeners.entrySet()) {
+        for (Map.Entry<IChecker, IResponse> entry : Listeners.entrySet()) {
             if (entry.getKey().check(disclosure)) {
                 action = entry.getValue().shock(disclosure, foreign, local, ti);
                 local.shock(ti, action.getFirst(), action.getValue());
@@ -58,7 +58,7 @@ public class ListenerSet implements AdapterJSONArray {
     public JSONArray toJSON() throws JSONException {
         JSONArray js = new JSONArray();
         JSONObject temp;
-        for (Map.Entry<IChecker, IShocker> entry : Listeners.entrySet()) {
+        for (Map.Entry<IChecker, IResponse> entry : Listeners.entrySet()) {
             temp = new JSONObject();
             temp.put("Impulse", ((AdapterJSONObject) entry.getKey()).toJSON());
             temp.put("Response", ((AdapterJSONObject) entry.getValue()).toJSON());
@@ -77,7 +77,7 @@ public class ListenerSet implements AdapterJSONArray {
         }
     }
 
-    private static IShocker findShocker(JSONObject js) {
+    private static IResponse findShocker(JSONObject js) {
         return null; //todo
     }
 }
