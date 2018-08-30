@@ -28,18 +28,18 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
     }
 
     public void putAllFlows(String prefix, Map<String, Double> dis) {
-        Flows.forEach((k, v) -> dis.put(prefix + "." + k, v));
+        Flows.forEach((k, v) -> dis.put(prefix + ":" + k, v));
     }
 
     public void putAllLast(String prefix, Map<String, Double> dis) {
         Last.forEach((k, v) -> {
-            if (!k.equals("Time")) dis.put(prefix + "." + k, v);
+            if (!k.equals("Time")) dis.put(prefix + ":" + k, v);
         });
     }
 
     public void putAllMid(String prefix, Map<String, Double> dis) {
         Mid.forEach((k, v) -> {
-            if (!k.equals("Time")) dis.put(prefix + "." + k, v);
+            if (!k.equals("Time")) dis.put(prefix + ":" + k, v);
         });
     }
 

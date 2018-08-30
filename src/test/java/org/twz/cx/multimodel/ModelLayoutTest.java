@@ -7,17 +7,48 @@ import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.abmodel.statespace.StSpABMBlueprint;
 import org.twz.cx.abmodel.statespace.StSpY0;
+import org.twz.cx.ebmodel.AbsEquations;
 import org.twz.cx.ebmodel.EBMY0;
+import org.twz.cx.ebmodel.EquationBasedModel;
 import org.twz.cx.ebmodel.ODEEBMBlueprint;
+import org.twz.cx.element.Disclosure;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.Simulator;
+import org.twz.cx.mcore.communicator.IResponse;
 import org.twz.cx.mcore.communicator.IsChecker;
 import org.twz.cx.mcore.communicator.StartWithChecker;
 import org.twz.cx.mcore.communicator.ValueImpulseResponse;
 import org.twz.dataframe.Pair;
+import org.twz.prob.IDistribution;
+import org.twz.prob.Poisson;
 
 public class ModelLayoutTest {
+    class InfIn implements IResponse {
+        private double Last;
+
+        public InfIn() {
+            Last = Double.NaN;
+        }
+
+        @Override
+        public Pair<String, JSONObject> shock(Disclosure dis, AbsSimModel source, AbsSimModel target, double time) throws JSONException {
+            Pair<String, JSONObject> res = null;
+            if (!Double.isNaN(Last)) {
+                AbsEquations eq = ((EquationBasedModel) source).getEquations();
+                double dt = time - Last;
+                double sus = eq.getY("S"), rec = eq.getY("R"), inf = target.getSnapshot("StInf", time);
+                double lam = source.getParameter("transmission_rate") * sus * inf * dt / (sus + rec + inf);
+                IDistribution di = new Poisson(lam);
+                int n = (int) Math.min(di.sample(), sus);
+                res = new Pair<>("InfIn", new JSONObject(String.format("{'n': %d}", n)));
+            }
+            Last = time;
+            return res;
+        }
+    }
+
+
     private Director Ctrl;
     private IY0 Y0s;
 
