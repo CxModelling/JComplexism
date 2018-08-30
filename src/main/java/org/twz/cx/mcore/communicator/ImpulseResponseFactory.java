@@ -4,7 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ImpulseResponseFactory {
-    private static IChecker getChecker(JSONObject js) throws JSONException {
+    public static IChecker getChecker(JSONObject js) throws JSONException {
         String type = js.getString("Type");
         switch (type) {
             case "IsChecker":
@@ -25,7 +25,7 @@ public class ImpulseResponseFactory {
         throw new JSONException("Unknown type of checker");
     }
 
-    private static IResponse getResponse(JSONObject js) throws JSONException {
+    public static IResponse getResponse(JSONObject js) throws JSONException {
         String type = js.getString("Type");
         switch (type) {
             case "ValueImpulseResponse":

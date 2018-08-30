@@ -1,6 +1,8 @@
 package org.twz.cx.multimodel;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.twz.cx.Director;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.BranchY0;
@@ -8,6 +10,7 @@ import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.communicator.IChecker;
 import org.twz.cx.mcore.communicator.IResponse;
 import org.twz.cx.multimodel.entries.IModelEntry;
+import org.twz.cx.multimodel.entries.InteractionEntry;
 import org.twz.cx.multimodel.entries.MultipleEntry;
 import org.twz.cx.multimodel.entries.SingleEntry;
 import org.twz.dag.ParameterCore;
@@ -23,11 +26,13 @@ import java.util.*;
 public class ModelLayout {
     private final String Name;
     private List<IModelEntry> ModelEntries;
+    private List<InteractionEntry> InteractionEntries;
     private Map<String, ModelLayout> Children;
 
     public ModelLayout(String name) {
         Name = name;
         ModelEntries = new ArrayList<>();
+        InteractionEntries = new ArrayList<>();
         Children = new HashMap<>();
     }
 
@@ -55,20 +60,20 @@ public class ModelLayout {
         ModelEntries.add(new MultipleEntry(prefix, proto, y0, to));
     }
 
-    public void addRelation(String check, String shock) {
-
+    public void addInteraction(String sel, String checker, String response) throws JSONException {
+        InteractionEntries.add(new InteractionEntry(sel, checker, response));
     }
 
-    public void addRelation(IChecker check, String shock) {
-
+    public void addInteraction(String sel, JSONObject checker, JSONObject response) throws JSONException {
+        InteractionEntries.add(new InteractionEntry(sel, checker, response));
     }
 
-    public void addRelation(String check, IResponse shock) {
-
+    public void addInteraction(JSONObject js) throws JSONException {
+        InteractionEntries.add(new InteractionEntry(js));
     }
 
-    public void addRelation(IChecker check, IResponse shock) {
-
+    public void addInteraction(String sel, IChecker checker, IResponse response) {
+        InteractionEntries.add(new InteractionEntry(sel, checker, response));
     }
 
     public List<Tuple<String, String, IY0>> getModels() {
