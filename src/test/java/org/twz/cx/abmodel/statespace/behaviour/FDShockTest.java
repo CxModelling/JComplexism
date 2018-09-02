@@ -43,10 +43,10 @@ public class FDShockTest {
     @Test
     public void simulation() throws JSONException {
         Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("log/FDShock.txt");
+        //Simu.addLogPath("log/FDShock.txt");
         StSpY0 y0 = new StSpY0();
-        y0.append(950, "Sus");
-        y0.append(50, "Inf");
+        y0.append(9990, "Sus");
+        y0.append(10, "Inf");
 
         Simu.simulate(y0, 0, 10, 1);
         Model.getObserver().getObservations().print();
