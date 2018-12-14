@@ -45,7 +45,6 @@ public class BayesianModel {
     public void print() {
         System.out.println("DAG:");
         BN.print();
-
     }
 
 

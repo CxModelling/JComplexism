@@ -91,6 +91,8 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Parameters;
     }
 
+    public abstract ModelAtom getAtom(String atom);
+
     public IY0 getProtoY0() {
         return ProtoY0;
     }
@@ -116,10 +118,6 @@ public abstract class AbsSimModel implements AdapterJSONObject{
     public abstract List<Request> collectRequests() throws Exception ;
 
     public abstract void doRequest(Request req) throws JSONException;
-
-    public void validateRequests() {
-        // todo
-    }
 
     public void addListener(IChecker impulse, IResponse response) {
         Listeners.defineImpulseResponse(impulse, response);
@@ -153,6 +151,23 @@ public abstract class AbsSimModel implements AdapterJSONObject{
 
     public void disclose(String msg, String who) {
         Scheduler.appendDisclosure(msg, who);
+    }
+
+    public List<Disclosure> manageDisclosures(String atom, List<Disclosure> dis) {
+        if (atom.equals("*")) {
+            return manageDisclosures(dis);
+        }
+
+        ModelAtom ma = getAtom(atom);
+        if (ma != null) {
+            return ma.manageDisclosures(dis);
+        } else {
+            return dis;
+        }
+    }
+
+    public List<Disclosure> manageDisclosures(List<Disclosure> dis) {
+        return dis;
     }
 
     public abstract List<Disclosure> collectDisclosure();

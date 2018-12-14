@@ -69,11 +69,6 @@ public abstract class BranchModel extends AbsSimModel {
     }
 
     @Override
-    public void validateRequests() {
-        // todo;
-    }
-
-    @Override
     public void synchroniseRequestTime(double time) {
         Scheduler.setGloTime(time);
         getModels().values().forEach(m->m.synchroniseRequestTime(time));

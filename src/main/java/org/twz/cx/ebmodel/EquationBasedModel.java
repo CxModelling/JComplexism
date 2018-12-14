@@ -3,6 +3,7 @@ package org.twz.cx.ebmodel;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.element.Disclosure;
+import org.twz.cx.element.ModelAtom;
 import org.twz.cx.element.Request;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
@@ -65,6 +66,14 @@ public class EquationBasedModel extends LeafModel {
             m.put(ent.getString("y"), ent.getDouble("n"));
         }
         Equations.setY(m);
+    }
+
+    @Override
+    public ModelAtom getAtom(String atom) {
+        if (atom.equals("Equations")) {
+            return Equations;
+        }
+        return null;
     }
 
     @Override

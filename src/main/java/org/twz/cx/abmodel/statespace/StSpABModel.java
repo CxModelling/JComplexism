@@ -6,6 +6,7 @@ import org.twz.cx.abmodel.ABMY0;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
+import org.twz.cx.element.ModelAtom;
 import org.twz.cx.mcore.IY0;
 import org.twz.dag.ParameterCore;
 import org.twz.io.FnJSON;

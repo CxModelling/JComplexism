@@ -6,6 +6,7 @@ import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.abmodel.behaviour.ActiveBehaviour;
 import org.twz.cx.abmodel.network.AbsNetwork;
 import org.twz.cx.element.Event;
+import org.twz.cx.element.ModelAtom;
 import org.twz.cx.element.Request;
 import org.twz.cx.mcore.AbsObserver;
 import org.twz.cx.mcore.AbsSimModel;
@@ -58,6 +59,19 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
 
     public org.twz.cx.abmodel.Population<Ta> getPopulation() {
         return Population;
+    }
+
+    @Override
+    public ModelAtom getAtom(String atom) {
+        if (Behaviours.containsKey(atom)) {
+            return Behaviours.get(atom);
+        }
+
+        try {
+            return Population.get(atom);
+        } catch (NullPointerException e){
+            return null;
+        }
     }
 
     @Override

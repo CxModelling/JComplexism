@@ -3,7 +3,9 @@ package org.twz.dag;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
@@ -35,7 +37,15 @@ public class BayesNetTest {
 
     @Test
     public void getOrder() {
-        assertEquals(BN.getOrder().toArray(), new String[]{"sd", "beta1", "beta2", "sex", "age", "mu", "y"});
+        List<String> od = new ArrayList<>();
+        od.add("sd");
+        od.add("beta1");
+        od.add("beta2");
+        od.add("sex");
+        od.add("age");
+        od.add("mu");
+        od.add("y");
+        assertEquals(BN.getOrder(), od);
     }
 
 

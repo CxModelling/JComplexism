@@ -7,6 +7,7 @@ import org.twz.dag.Gene;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObject {
@@ -151,4 +152,8 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         js.put("Attributes", Attributes);
         return js;
     }
+
+    public List<Disclosure> manageDisclosures(List<Disclosure> dis) {
+        return dis;
+    };
 }

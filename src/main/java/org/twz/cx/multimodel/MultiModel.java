@@ -2,6 +2,7 @@ package org.twz.cx.multimodel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.twz.cx.element.ModelAtom;
 import org.twz.cx.element.Request;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.BranchModel;
@@ -43,6 +44,11 @@ public class MultiModel extends BranchModel {
     @Override
     public void appendModel(AbsSimModel mod) {
         Submodels.put(mod.getName(), mod);
+    }
+
+    @Override
+    public ModelAtom getAtom(String atom) {
+        return null;
     }
 
     @Override

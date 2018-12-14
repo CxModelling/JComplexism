@@ -2,6 +2,7 @@ package org.twz.cx.abmodel;
 
 
 import org.json.JSONException;
+import org.twz.cx.element.ModelAtom;
 import org.twz.cx.mcore.*;
 import org.json.JSONObject;
 import org.twz.dag.ParameterCore;
@@ -42,11 +43,6 @@ public class ABModel extends AbsAgentBasedModel {
 
             makeAgents(entry.getInt("n"), ti, atr);
         }
-    }
-
-    @Override
-    public void validateRequests() {
-
     }
 
     @Override

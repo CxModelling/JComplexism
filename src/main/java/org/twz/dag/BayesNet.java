@@ -68,7 +68,7 @@ public class BayesNet implements AdapterJSONObject {
 
     public void appendLoci(String def) {
         def = def.replaceAll("\\s+", "");
-
+        // todo "\\w+="
         if (def.contains("=")) {
             String[] opt = def.split("=");
             Loci lo;
@@ -86,7 +86,7 @@ public class BayesNet implements AdapterJSONObject {
         }
     }
 
-    public void appendLoci(JSONObject loc) throws JSONException {
+    private void appendLoci(JSONObject loc) throws JSONException {
         String nd = loc.getString("Name");
 
         Loci loci;
@@ -137,8 +137,6 @@ public class BayesNet implements AdapterJSONObject {
         gene.setLogPriorProb(li);
         return li;
     }
-
-
 
 
     private List<String> toList(JSONArray ja) throws JSONException {

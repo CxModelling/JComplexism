@@ -5,8 +5,6 @@ import org.twz.dag.actor.Sampler;
 import org.twz.dag.actor.SimulationActor;
 import org.twz.dag.loci.Loci;
 import org.twz.graph.DiGraph;
-import org.twz.prob.IDistribution;
-import org.twz.prob.Sample;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,7 +22,7 @@ public class ParameterCore extends Gene {
     Map<String, SimulationActor> Actors;
     private Map<String, ParameterCore> Children;
     Map<String, Map<String, SimulationActor>> ChildrenActors;
-
+    private boolean Frozen;
 
     public ParameterCore(String nickname, SimulationGroup sg, Map<String, Double> fixed, double prior) {
         super(fixed, prior);
@@ -33,6 +31,7 @@ public class ParameterCore extends Gene {
         Children = new HashMap<>();
         Actors = new HashMap<>();
         ChildrenActors = new HashMap<>();
+        Frozen = false;
     }
 
     public void setParent(ParameterCore parent) {
@@ -173,6 +172,12 @@ public class ParameterCore extends Gene {
     }
 
     void freeze() {
+        if (Frozen) {
+            return;
+        } else {
+            Frozen = true;
+        }
+
         for (SimulationActor act : Actors.values()) {
             act.fill(this);
         }

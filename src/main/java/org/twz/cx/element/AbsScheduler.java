@@ -1,6 +1,7 @@
 package org.twz.cx.element;
 
 import org.json.JSONObject;
+import org.twz.cx.mcore.AbsSimModel;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -198,6 +199,26 @@ public abstract class AbsScheduler {
         Disclosure dis = new Disclosure(msg, who, Location);
         dis.updateArguments(kw);
         Disclosures.add(dis);
+    }
+
+    public void mergeDisclosures(AbsSimModel model) {
+        Map<String, List<Disclosure>> toMerge = new HashMap<>();
+        for (Disclosure disclosure : Disclosures) {
+            if (!toMerge.containsKey(disclosure.Who)) {
+                toMerge.put(disclosure.Who, new ArrayList<>());
+            }
+            toMerge.get(disclosure.Who).add(disclosure);
+        }
+
+        List<Disclosure> toPop = new ArrayList<>();
+
+        for (Map.Entry<String, List<Disclosure>> ent : toMerge.entrySet()) {
+            if (ent.getValue().size() <= 1) {
+                toPop.addAll(model.manageDisclosures(ent.getKey(), ent.getValue()));
+            }
+        }
+
+        Disclosures = toPop;
     }
 
     public List<Disclosure> popDisclosures() {
