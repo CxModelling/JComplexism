@@ -101,6 +101,7 @@ public abstract class BranchModel extends AbsSimModel {
 
     @Override
     public List<Disclosure> collectDisclosure() {
+        Scheduler.reduceDisclosures(this);
         List<Disclosure> dss = Scheduler.popDisclosures();
         for (AbsSimModel m: getModels().values()) {
             dss.addAll(m.collectDisclosure().stream()

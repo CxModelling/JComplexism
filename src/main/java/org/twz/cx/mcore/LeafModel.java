@@ -53,7 +53,7 @@ public abstract class LeafModel extends AbsSimModel {
 
     @Override
     public List<Disclosure> collectDisclosure() {
-        Scheduler.mergeDisclosures(this);
+        Scheduler.reduceDisclosures(this);
         return Scheduler.popDisclosures();
     }
 

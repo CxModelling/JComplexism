@@ -9,9 +9,12 @@ import org.twz.cx.abmodel.behaviour.PassiveBehaviour;
 import org.twz.cx.abmodel.statespace.StSpABModel;
 import org.twz.cx.abmodel.statespace.StSpAgent;
 import org.twz.cx.abmodel.statespace.behaviour.trigger.StateTrigger;
+import org.twz.cx.element.Disclosure;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.statespace.State;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class StateTrack extends PassiveBehaviour {
@@ -45,6 +48,28 @@ public class StateTrack extends PassiveBehaviour {
     @Override
     public void register(AbsAgent ag, double ti) {
 
+    }
+
+    @Override
+    public List<Disclosure> manageDisclosures(List<Disclosure> dis) {
+        if (dis.size() == 1) {
+            return dis;
+        }
+
+        Disclosure d0 = dis.get(0), d1 = dis.get(dis.size()-1);
+
+        JSONObject js = new JSONObject();
+        try {
+            js.put("v0", d0.getDouble("v0"));
+            js.put("v1", Value);
+        } catch (JSONException ignored) {
+
+        }
+
+        List<Disclosure> res = new ArrayList<>();
+        res.add(new Disclosure("update value to "+ Value,
+                getName(), d1.Where, js));
+        return res;
     }
 
     @Override

@@ -201,7 +201,7 @@ public abstract class AbsScheduler {
         Disclosures.add(dis);
     }
 
-    public void mergeDisclosures(AbsSimModel model) {
+    public void reduceDisclosures(AbsSimModel model) {
         Map<String, List<Disclosure>> toMerge = new HashMap<>();
         for (Disclosure disclosure : Disclosures) {
             if (!toMerge.containsKey(disclosure.Who)) {
@@ -215,6 +215,8 @@ public abstract class AbsScheduler {
         for (Map.Entry<String, List<Disclosure>> ent : toMerge.entrySet()) {
             if (ent.getValue().size() <= 1) {
                 toPop.addAll(model.manageDisclosures(ent.getKey(), ent.getValue()));
+            } else {
+                toPop.addAll(ent.getValue());
             }
         }
 
