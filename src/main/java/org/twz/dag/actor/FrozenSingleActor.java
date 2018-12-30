@@ -43,8 +43,19 @@ public class FrozenSingleActor extends SimulationActor {
     }
 
     @Override
+    public double sample(Gene pas, Map<String, Double> exo) {
+        return sample(pas);
+    }
+
+
+    @Override
     public void fill(Gene pas) {
         pas.put(Field, sample(pas));
+    }
+
+    @Override
+    public void fill(Gene pas, Map<String, Double> exo) {
+        fill(pas);
     }
 
     @Override

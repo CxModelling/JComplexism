@@ -13,11 +13,20 @@ import java.util.stream.Collectors;
 public class CompoundActor extends SimulationActor {
     private List<Loci> Flow;
     private Loci End;
+    private Set<String> AllParents;
 
     public CompoundActor(String field, List<Loci> flow, Loci loci) {
         super(field);
         Flow = new ArrayList<>(flow);
         End = loci;
+        AllParents = new HashSet<>();
+        for (Loci loc: Flow) {
+            AllParents.addAll(loc.getParents());
+        }
+        AllParents.addAll(End.getParents());
+        for (Loci loc: Flow) {
+            AllParents.remove(loc.getName());
+        }
     }
 
     @Override
@@ -31,11 +40,33 @@ public class CompoundActor extends SimulationActor {
     }
 
     @Override
+    public double sample(Gene pas, Map<String, Double> exo) {
+        Map<String, Double> ps = new HashMap<>();
+        for (String pa: AllParents) {
+            try {
+                ps.put(pa, pas.get(pa));
+            } catch (NullPointerException e) {
+                ps.put(pa, exo.get(pa));
+            }
+        }
+
+        for (Loci loci: Flow) {
+            ps.put(loci.getName(), loci.sample(ps));
+        }
+        return End.sample(ps);
+    }
+
+    @Override
     public void fill(Gene pas) {
         for (Loci loci : Flow) {
             pas.put(loci.getName(), loci.sample(pas));
         }
         End.fill(pas);
+    }
+
+    @Override
+    public void fill(Gene pas, Map<String, Double> exo) {
+
     }
 
     @Override
