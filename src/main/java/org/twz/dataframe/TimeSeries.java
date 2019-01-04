@@ -2,15 +2,17 @@ package org.twz.dataframe;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.twz.dataframe.timeseries.DoubleSeries;
 import org.twz.dataframe.timeseries.ProbabilityTableSeries;
 import org.twz.dataframe.timeseries.Series;
+import org.twz.dataframe.timeseries.StringSeries;
 import org.twz.io.AdapterJSONArray;
 import org.twz.io.IO;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TimeSeries implements AdapterJSONArray {
     private final List<Double> Times;
@@ -32,24 +34,55 @@ public class TimeSeries implements AdapterJSONArray {
     }
 
     public Map<String, Object> get(double time) {
-        int t = (int) Math.round(TimeFunction.value(time));
-        t = Math.min(t, Times.size() - 1);
-        t = Math.max(t, 0);
+        double i = TimeFunction.value(time);
+        i = Math.min(i, Times.size() - 1);
+        i = Math.max(i, 0);
+
+        if (i == Math.round(i)) {
+            return geti((int) i);
+        } else {
+            double t0 = Times.get((int) Math.floor(i)), t1 = Times.get((int) Math.ceil(i));
+            Map<String, Object> res0 = geti((int) Math.floor(i)),
+                                res1 = geti((int) Math.ceil(i));
+
+            Map<String, Object> res = new HashMap<>();
+            for (Series value : DataSeries.values()) {
+                String key = value.getName();
+                res.put(key, value.interpolate(time, t0, res0.get(key), t1, res1.get(key)));
+            }
+            return res;
+        }
+    }
+
+    private Map<String, Object> geti(int i) {
         Map<String, Object> res = new HashMap<>();
         for (Series value : DataSeries.values()) {
-            res.put(value.getName(), value.get(t));
+            res.put(value.getName(), value.get(i));
         }
         return res;
     }
 
     public Object get(double time, String x) {
-        int t = (int) Math.round(TimeFunction.value(time));
-        t = Math.min(t, Times.size() - 1);
-        t = Math.max(t, 0);
-        return DataSeries.get(x).get(t);
+        double i = TimeFunction.value(time);
+        i = Math.min(i, Times.size() - 1);
+        i = Math.max(i, 0);
+
+        if (i == Math.round(i)) {
+            return DataSeries.get(x).get((int) i);
+        } else {
+            double t0 = Times.get((int) Math.floor(i)), t1 = Times.get((int) Math.ceil(i));
+            Object res0 = DataSeries.get(x).get((int) Math.floor(i)),
+                    res1 = DataSeries.get(x).get((int) Math.ceil(i));
+
+            return DataSeries.get(x).interpolate(time, t0, res0, t1, res1);
+        }
     }
 
-    public <T> void appendSeries(Series<T> series) {
+    public Series getSeries(String x) {
+        return DataSeries.get(x);
+    }
+
+    public void appendSeries(Series series) {
         DataSeries.put(series.getName(), series);
     }
 
@@ -98,9 +131,9 @@ public class TimeSeries implements AdapterJSONArray {
         for (Map.Entry<String, List<String>> ent: data.entrySet()) {
             if (ent.getKey().equals(i_time)) continue;
             try {
-                ts.appendSeries(new Series<>(ent.getKey(), SS2DS(ent.getValue())));
+                ts.appendSeries(new DoubleSeries(ent.getKey(), SS2DS(ent.getValue())));
             } catch (ClassCastException e) {
-                ts.appendSeries(new Series<>(ent.getKey(), ent.getValue()));
+                ts.appendSeries(new StringSeries(ent.getKey(), ent.getValue()));
             }
         }
         return ts;

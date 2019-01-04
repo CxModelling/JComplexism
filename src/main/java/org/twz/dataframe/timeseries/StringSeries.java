@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class StringSeries extends Series<String> {
+
     public StringSeries(String name, List<String> vs) {
         super(name, vs);
     }
@@ -19,7 +20,7 @@ public class StringSeries extends Series<String> {
     }
 
     @Override
-    public String data_type() {
+    public String datatype() {
         return "String";
     }
 }

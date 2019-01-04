@@ -19,7 +19,12 @@ public class IntegerSeries extends Series<Integer> {
     }
 
     @Override
-    public String data_type() {
+    public String datatype() {
         return "Integer";
+    }
+
+    @Override
+    public Integer interpolate(double t, double t0, Integer v0, double t1, Integer v1) {
+        return v0 + (int)((t-t0) / (t1-t0) * (v1 - v0));
     }
 }
