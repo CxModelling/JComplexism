@@ -5,7 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  *
@@ -81,4 +81,25 @@ public class IO {
     public static JSONObject loadJSON(String path) throws JSONException {
         return new JSONObject(loadText(path));
     }
+
+    public static Map<String, List<String>> loadCSV(String path) {
+        String[] texts = loadText(path).split("\n");
+        int length = texts.length - 1;
+        String[] cols = texts[0].split(",");
+        int nc = cols.length;
+
+        Map<String, List<String>> csv = new LinkedHashMap<>();
+        for (String col: cols) {
+            csv.put(col, new ArrayList<>());
+        }
+        String[] data;
+        for (int i = 0; i < length; i++) {
+            data = texts[i+1].split(",");
+            for (int j = 0; j < nc; j++) {
+                csv.get(cols[j]).add(data[j]);
+            }
+        }
+        return csv;
+    }
+
 }
