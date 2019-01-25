@@ -2,7 +2,6 @@ package org.twz.dataframe;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
-import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.twz.dataframe.timeseries.DoubleSeries;
@@ -13,6 +12,7 @@ import org.twz.io.AdapterJSONArray;
 import org.twz.io.IO;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TimeSeries implements AdapterJSONArray {
     private final List<Double> Times;
@@ -67,7 +67,7 @@ public class TimeSeries implements AdapterJSONArray {
         i = Math.min(i, Times.size() - 1);
         i = Math.max(i, 0);
 
-        if (i == Math.round(i)) {
+        if (Math.round(i) == i) {
             return DataSeries.get(x).get((int) i);
         } else {
             double t0 = Times.get((int) Math.floor(i)), t1 = Times.get((int) Math.ceil(i));
@@ -112,10 +112,35 @@ public class TimeSeries implements AdapterJSONArray {
         System.out.println(
                 "Timeseries [" + Times.get(0) + ", " +
                         Times.get(Times.size()-1)+ "]");
-        for(Map.Entry<String, Series> entry: DataSeries.entrySet()) {
-            System.out.println(entry.getKey() + ": " +
-                    entry.getValue().get(0).getClass().getSimpleName());
+        System.out.println("Time " + String.join("\t", DataSeries.keySet()));
+
+        for (double t: Times) {
+            System.out.print(t);
+            for(String k: DataSeries.keySet()) {
+                System.out.print(" " + get(t, k));
+            }
+            System.out.println();
         }
+
+
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Timeseries [").append(Times.get(0))
+                .append(", ")
+                .append(Times.get(Times.size() - 1))
+                .append("]");
+
+        for(Map.Entry<String, Series> entry: DataSeries.entrySet()) {
+            sb.append("\n");
+            sb.append(entry.getKey())
+                    .append(": ")
+                    .append(entry.getValue().get(0).getClass().getSimpleName());
+        }
+
+        return sb.toString();
     }
 
     @Override

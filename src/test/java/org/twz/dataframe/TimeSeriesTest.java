@@ -22,6 +22,7 @@ public class TimeSeriesTest {
     @Test
     public void readCSV() {
         ts.print();
+
         System.out.println(ts.get(7));
         System.out.println(ts.get(8, "Z"));
         System.out.println(ts.get(7, "Z"));

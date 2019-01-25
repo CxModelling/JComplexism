@@ -34,7 +34,7 @@ public class Series<T> extends ArrayList<T> {
         try {
             return Double.parseDouble((String) e);
         } catch (Exception ex) {
-            throw new TimeseriesException("This timeseries is not a double series");
+            throw new TimeseriesException("This series cannot be transformed to double data");
         }
     }
 
@@ -47,7 +47,7 @@ public class Series<T> extends ArrayList<T> {
         try {
             return Integer.parseInt((String) e);
         } catch (Exception ex) {
-            throw new TimeseriesException("This timeseries is not an integer series");
+            throw new TimeseriesException("This series cannot be transformed to double data");
         }
     }
 
