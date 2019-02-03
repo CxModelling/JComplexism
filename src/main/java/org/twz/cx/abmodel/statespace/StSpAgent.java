@@ -32,7 +32,7 @@ public class StSpAgent extends AbsAgent {
     }
 
     @Override
-    public Object get(String key) throws JSONException {
+    public Object get(String key) {
         if (key.equals("State")) {
             return State;
         } else {

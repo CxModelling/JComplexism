@@ -25,7 +25,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
     protected final AbsScheduler Scheduler;
     private ListenerSet Listeners;
     private ParameterCore Parameters;
-    private JSONObject Environment;
+    private Map<String, Object> Environment;
     private double TimeEnd;
 
 
@@ -33,7 +33,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         Name = name;
         Observer = obs;
         Parameters = pars;
-        Environment = new JSONObject();
+        Environment = new HashMap<>();
         Listeners = new ListenerSet();
 
         Scheduler = AbsScheduler.getScheduler(name); //new PriorityQueueScheduler(name);
@@ -67,16 +67,16 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Name;
     }
 
-    public Object get(String s) throws JSONException {
+    public Object get(String s) {
         return Environment.get(s);
     }
 
-    public String getString(String s) throws JSONException {
-        return Environment.getString(s);
+    public String getString(String s) {
+        return Environment.get(s).toString();
     }
 
-    public Double getDouble(String s) throws JSONException {
-        return Environment.getDouble(s);
+    public Double getDouble(String s) {
+        return (double) get(s);
     }
 
     public double getParameter(String key) {
@@ -87,7 +87,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Parameters.getSampler(key);
     }
 
-    public Gene getParameters() {
+    public ParameterCore getParameters() {
         return Parameters;
     }
 

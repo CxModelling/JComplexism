@@ -1,18 +1,15 @@
 package org.twz.dataframe;
 
-import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.twz.dataframe.timeseries.DoubleSeries;
 import org.twz.datastructure.ProbabilityTable;
-
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
 
 public class TimeSeriesTest {
 
-    TimeSeries ts;
+    private TimeSeries ts;
 
     @Before
     public void setUp() throws Exception {
@@ -26,8 +23,6 @@ public class TimeSeriesTest {
         System.out.println(ts.get(7));
         System.out.println(ts.get(8, "Z"));
         System.out.println(ts.get(7, "Z"));
-
-
         System.out.println(ts.get(7.5, "Z"));
     }
 

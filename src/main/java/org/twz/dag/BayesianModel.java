@@ -21,10 +21,6 @@ public class BayesianModel {
         BN = bn;
     }
 
-    public boolean setInputData(Map<String, Double> dat) {
-        return false;
-    }
-
     public Map<String, IDistribution> sampleDistribution() {
         return null;
     }

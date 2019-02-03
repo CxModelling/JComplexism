@@ -116,13 +116,11 @@ public class TimeSeries implements AdapterJSONArray {
 
         for (double t: Times) {
             System.out.print(t);
-            for(String k: DataSeries.keySet()) {
+            for (String k : DataSeries.keySet()) {
                 System.out.print(" " + get(t, k));
             }
             System.out.println();
         }
-
-
     }
 
     public String toString() {

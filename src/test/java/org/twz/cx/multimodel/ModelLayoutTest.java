@@ -78,8 +78,8 @@ public class ModelLayoutTest {
         BpE.addMeasurementFunction((tab, ti, ys, pc, x) -> {
             double inf = 0;
             try {
-                inf = x.getDouble("Inf");
-            } catch (JSONException e) {
+                inf = (double) x.get("Inf");
+            } catch (ClassCastException e) {
                 e.printStackTrace();
             }
             double n = ys[0] + ys[1] + inf;

@@ -6,6 +6,7 @@ import org.twz.cx.mcore.AbsSimModel;
 import org.twz.dag.Gene;
 import org.twz.io.AdapterJSONObject;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,14 +14,14 @@ import java.util.Map;
 public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObject {
     private final String Name;
     protected Gene Parameters;
-    protected JSONObject Attributes;
+    protected Map<String, Object> Attributes;
     private Event Next;
     private AbsScheduler Scheduler;
 
     public ModelAtom(String name, Gene parameters) {
         Name = name;
         Parameters = parameters;
-        Attributes = new JSONObject();
+        Attributes = new HashMap<>();
         Next = Event.NullEvent;
     }
 
@@ -36,16 +37,25 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         return Name;
     }
 
-    public Object get(String s) throws JSONException {
+    public Object get(String s) {
         return Attributes.get(s);
     }
 
-    public String getString(String s) throws JSONException {
-        return Attributes.getString(s);
+    public String getString(String s) {
+        return Attributes.get(s).toString();
     }
 
-    public Double getDouble(String s) throws JSONException {
-        return Attributes.getDouble(s);
+    public Double getDouble(String s) {
+        Object o = Attributes.get(s);
+        if (o instanceof Integer) {
+            return 0.0 + ((Integer) o).doubleValue();
+        }
+
+        try {
+            return (double) o;
+        } catch (ClassCastException e) {
+            return Double.NaN;
+        }
     }
 
     public double getParameter(String key) {
@@ -64,18 +74,12 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         Scheduler = null;
     }
 
-    public void put(String key, Object value) throws JSONException {
+    public void put(String key, Object value) {
         Attributes.put(key, value);
     }
 
     public void updateAttributes(Map<String, Object> atr) {
-        atr.forEach((k, v) -> {
-            try {
-                Attributes.put(k, v);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        });
+        Attributes.putAll(atr);
     }
 
     public Event getNext() {
@@ -119,11 +123,7 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
 
     public boolean isCompatible(Map<String, Object> args) {
         for(Map.Entry<String, Object> ent: args.entrySet()) {
-            try {
-                if (Attributes.get(ent.getKey()) != ent.getValue()) {
-                    return false;
-                }
-            } catch (JSONException e) {
+            if (Attributes.get(ent.getKey()) != ent.getValue()) {
                 return false;
             }
         }

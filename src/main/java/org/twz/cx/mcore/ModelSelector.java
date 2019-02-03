@@ -31,13 +31,7 @@ public class ModelSelector extends HashMap<String, AbsSimModel> {
 
 
     public double sum(String key) {
-        return this.values().stream().mapToDouble(e-> {
-            try {
-                return e.getDouble(key);
-            } catch (JSONException e1) {
-                return 0;
-            }
-        }).sum();
+        return this.values().stream().mapToDouble(e-> e.getDouble(key)).sum();
     }
 
     public Map<String, Double> sum() {
