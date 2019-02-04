@@ -1,10 +1,12 @@
 package org.twz.fit;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.twz.dag.BayesianModel;
 import org.twz.dag.Gene;
 
 import java.util.*;
+import java.util.jar.JarException;
 
 public abstract class BayesianFitter extends AbsFitter {
 
@@ -31,15 +33,19 @@ public abstract class BayesianFitter extends AbsFitter {
         }
     }
 
-    public JSONArray priorToJSON() {
+    public JSONArray priorToJSON() throws JSONException {
         JSONArray js = new JSONArray();
-        Prior.forEach(p->js.put(p.toJSON()));
+        for (Gene p: Prior) {
+            js.put(p.toJSON());
+        }
         return js;
     }
 
-    public JSONArray posteriorToJSON() {
+    public JSONArray posteriorToJSON() throws JSONException {
         JSONArray js = new JSONArray();
-        Posterior.forEach(p->js.put(p.toJSON()));
+        for (Gene p: Posterior) {
+            js.put(p.toJSON());
+        }
         return js;
     }
 

@@ -34,6 +34,17 @@ public class DataFrame implements AdapterJSONArray {
                      .collect(Collectors.toList())));
     }
 
+    public DataFrame(List<Map<String, Double>> dat) {
+        List<String> cols = new ArrayList<>();
+        dat.forEach(d->d.keySet().stream().filter(c->!cols.contains(c)).forEach(cols::add));
+        ColumnNames = cols;
+
+        cols.forEach(col -> Data.put(col, dat.stream()
+                        .map(e -> e.getOrDefault(col, 0.0))
+                        .collect(Collectors.toList())));
+    }
+
+
     public void toCSV(String path) {
         StringBuilder sb = new StringBuilder();
 

@@ -199,14 +199,12 @@ public class DiGraph<T> implements Cloneable {
     public List<String> getOrder() throws InvalidPropertiesFormatException {
         List<String> order = new ArrayList<>();
 
-        Set<String> querying,  waiting = Nodes.keySet().stream().collect(Collectors.toSet());
+        Set<String> querying,  waiting = new HashSet<>(Nodes.keySet());
 
         while(!waiting.isEmpty()) {
-            querying = new HashSet<>();
 
-            querying.addAll(waiting.stream()
-                    .filter(s -> getParents(s).stream().allMatch(order::contains))
-                    .collect(Collectors.toSet()));
+            querying = waiting.stream()
+                    .filter(s -> order.containsAll(getParents(s))).collect(Collectors.toSet());
 
             if (querying.isEmpty()) {
                 throw new InvalidPropertiesFormatException("Node loops found");
@@ -216,6 +214,16 @@ public class DiGraph<T> implements Cloneable {
             waiting.removeAll(querying);
         }
         return order;
+    }
+
+    public List<String> sort(List<String> nodes) throws InvalidPropertiesFormatException {
+        List<String> res = new ArrayList<>();
+        for (String s: getOrder()) {
+            if (nodes.contains(s)) {
+                res.add(s);
+            }
+        }
+        return res;
     }
 
     public int size() {
@@ -228,7 +236,7 @@ public class DiGraph<T> implements Cloneable {
 
     public DiGraph<T> clone() {
         DiGraph<T> di = new DiGraph<>();
-        Nodes.entrySet().forEach(e->di.addNode(e.getKey(), e.getValue()));
+        Nodes.forEach(di::addNode);
 
         di.Nodes.putAll(this.Nodes);
         for (Map.Entry<String, List<String>> entry : Successor.entrySet()) {

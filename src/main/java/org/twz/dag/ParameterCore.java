@@ -1,5 +1,7 @@
 package org.twz.dag;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.twz.dag.actor.FrozenSingleActor;
 import org.twz.dag.actor.Sampler;
 import org.twz.dag.actor.SimulationActor;
@@ -36,6 +38,10 @@ public class ParameterCore extends Gene {
 
     public void setParent(ParameterCore parent) {
         Parent = parent;
+    }
+
+    public String getName() {
+        return Nickname;
     }
 
     public String getGroupName() {
@@ -198,13 +204,10 @@ public class ParameterCore extends Gene {
         return getLogPriorProb() + Children.values().stream().mapToDouble(ParameterCore::getDeepLogPrior).sum();
     }
 
-    public String toJSON() {
-        String sb = "{";
-        sb += getLocus().entrySet().stream()
-                        .map(e -> e.getKey() + ":" + e.getValue())
-                        .collect(Collectors.joining(","));
-        sb += "}";
-        return sb;
+    public JSONObject toJSON() throws JSONException {
+        JSONObject js = super.toJSON();
+        js.put("Name", Nickname);
+        return js;
     }
 
     private void deepPrint(int ind) {

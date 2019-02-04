@@ -48,8 +48,8 @@ public abstract class AbsStepper implements IStepper {
             return newGene;
         } else {
             newGene.put(Name, proposed);
-            newGene.setLogPriorProb(bm.evaluatePrior(newGene));
-            newGene.setLogLikelihood(bm.evaluateLikelihood(newGene));
+            newGene.setLogPriorProb(bm.evaluateLogPrior(newGene));
+            newGene.setLogLikelihood(bm.evaluateLogLikelihood(newGene));
             double p_acc = Math.exp(newGene.getLogPosterior() - gene.getLogPosterior());
 
             if (p_acc > Math.random()) {

@@ -49,6 +49,16 @@ public class Gene implements Cloneable, AdapterJSONObject {
     public void put(String s, double d) {
         Locus.put(s, d);
         LogLikelihood = Double.NaN;
+        LogPriorProb = Double.NaN;
+    }
+
+    public void impulse(Map<String, Double> values) {
+        for (Map.Entry<String, Double> entry : values.entrySet()) {
+            if (has(entry.getKey())) {
+                Locus.put(entry.getKey(), entry.getValue());
+            }
+        }
+        resetProbability();
     }
 
     public boolean has(String s) {
@@ -85,22 +95,39 @@ public class Gene implements Cloneable, AdapterJSONObject {
         return LogLikelihood + LogPriorProb;
     }
 
-    public boolean isEvaluated() {
+    public boolean isPriorEvaluated() {
+        return !Double.isNaN(LogPriorProb);
+    }
+
+    public boolean isLikelihoodEvaluated() {
         return !Double.isNaN(LogLikelihood);
+    }
+
+    public boolean isEvaluated() {
+        return isLikelihoodEvaluated() & isPriorEvaluated();
+    }
+
+    public void resetProbability() {
+        LogLikelihood = Double.NaN;
+        LogPriorProb = Double.NaN;
     }
 
     public int getSize() {
         return Locus.size();
     }
 
-    public JSONObject toJSON() {
+    public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
-        try {
+        js.put("Values", Locus);
+
+        if (isLikelihoodEvaluated()) {
             js.put("LogLikelihood", LogLikelihood);
-            js.put("Values", Locus);
+        }
+        if (isPriorEvaluated()) {
             js.put("LogPrior", LogPriorProb);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        }
+        if (isEvaluated()) {
+            js.put("LogPosterior", getLogPosterior());
         }
         return js;
     }
@@ -114,6 +141,15 @@ public class Gene implements Cloneable, AdapterJSONObject {
         sb += "LogPrior:" + IO.doubleFormat(LogPriorProb);
         if (isEvaluated()) {
             sb += ",LogLikelihood:" + IO.doubleFormat(LogLikelihood);
+        }
+        if (isLikelihoodEvaluated()) {
+            sb += "LogPrior:" + IO.doubleFormat(LogPriorProb);
+        }
+        if (isPriorEvaluated()) {
+            sb += ",LogLikelihood:" + IO.doubleFormat(LogLikelihood);
+        }
+        if (isEvaluated()) {
+            sb += ",LogPosterior:" + IO.doubleFormat(getLogPosterior());
         }
         sb += "}";
         return sb;

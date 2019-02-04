@@ -11,6 +11,7 @@ import org.twz.io.AdapterJSONObject;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -21,11 +22,16 @@ public class BayesNet implements AdapterJSONObject {
     private boolean frozen;
     private DiGraph<Loci> DAG;
     private List<String> Order;
+    private List<String> Roots, RVRoots, Leaves, Exogenous;
 
     public BayesNet(String name) {
         Name = name;
         DAG = new DiGraph<>();
         frozen=false;
+        Roots = new ArrayList<>();
+        RVRoots = new ArrayList<>();
+        Leaves = new ArrayList<>();
+        Exogenous = new ArrayList<>();
     }
 
     public BayesNet(JSONObject js) throws ScriptException, JSONException {
@@ -48,6 +54,38 @@ public class BayesNet implements AdapterJSONObject {
 
     public DiGraph<Loci> getDAG() {
         return DAG;
+    }
+
+    public List<String> getRoots() {
+        if (isFrozen()) {
+            return Roots;
+        } else {
+            return DAG.getRoots();
+        }
+    }
+
+    public List<String> getRVRoots() {
+        if (isFrozen()) {
+            return RVRoots;
+        } else {
+            return findRVRoots();
+        }
+    }
+
+    public List<String> getLeaves() {
+        if (isFrozen()) {
+            return Leaves;
+        } else {
+            return DAG.getLeaves();
+        }
+    }
+
+    public List<String> getExogenous() {
+        if (isFrozen()) {
+            return Exogenous;
+        } else {
+            return findExogenous();
+        }
     }
 
     public void appendLoci(String name, Loci loci) {
@@ -138,6 +176,39 @@ public class BayesNet implements AdapterJSONObject {
         return li;
     }
 
+    public void impulse(Gene gene, Map<String, Double> nodes) {
+        Set<String> shocked = new HashSet<>();
+
+        for (String s : nodes.keySet()) {
+            shocked.addAll(DAG.getDescendants(s));
+        }
+
+        double value;
+        Loci loci;
+        for (String s: getOrder()) {
+            if (shocked.contains(s)) {
+                value = nodes.getOrDefault(s, Double.NaN);
+                if (Double.isNaN(value)) {
+                    loci = DAG.getNode(s);
+                    if (!(loci instanceof ExoValueLoci)) {
+                        loci.fill(gene);
+                    }
+                } else {
+                    gene.getLocus().put(s, value);
+                }
+            }
+        }
+        gene.resetProbability();
+        gene.setLogPriorProb(evaluate(gene));
+    }
+
+    public void impulse(Gene gene, List<String> nodes) {
+        Map<String, Double> imp = new HashMap<>();
+        for (String node : nodes) {
+            imp.put(node, Double.NaN);
+        }
+        impulse(gene, imp);
+    }
 
     private List<String> toList(JSONArray ja) throws JSONException {
         List<String> l = new ArrayList<>();
@@ -162,11 +233,19 @@ public class BayesNet implements AdapterJSONObject {
     public void complete() throws InvalidPropertiesFormatException {
         frozen = true;
         Order = DAG.getOrder();
+        Roots = DAG.getRoots();
+        Leaves = DAG.getLeaves();
+        Exogenous = findExogenous();
+        RVRoots = findRVRoots();
     }
 
     private void defrost() {
         frozen = false;
         Order = null;
+        Roots = null;
+        Leaves = null;
+        Exogenous = null;
+        RVRoots = null;
     }
 
     public SimulationCore toSimulationCore() {
@@ -205,6 +284,32 @@ public class BayesNet implements AdapterJSONObject {
         return js;
     }
 
+    public List<String> findRVRoots() {
+        List<String> rvr = new ArrayList<>();
+        Loci loci;
+        for (String s : getOrder()) {
+            loci = getLoci(s);
+            if (loci instanceof DistributionLoci) {
+                boolean test = true;
+                for (Loci parent : DAG.getAncestorNodes(s)) {
+                    if (parent instanceof DistributionLoci) {
+                        test = false;
+                        break;
+                    }
+                }
+                if (test) {
+                    rvr.add(s);
+                }
+            }
+        }
+        return rvr;
+    }
+
+    private List<String> findExogenous() {
+        return getRoots().stream()
+                .filter(n -> getLoci(n) instanceof ExoValueLoci)
+                .collect(Collectors.toList());
+    }
 
     public void print() {
         System.out.println("Nodes:");
