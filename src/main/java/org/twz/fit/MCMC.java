@@ -14,9 +14,7 @@ import java.util.*;
  *
  * Created by TimeWz on 2017/4/25.
  */
-public class MCMC implements IFitter {
-    private BayesianModel Model;
-    private List<Gene> Posterior;
+public class MCMC extends BayesianFitter {
     private List<IStepper> Steppers;
     private Gene Last;
     private int Burnin, Thin;
@@ -26,7 +24,7 @@ public class MCMC implements IFitter {
     }
 
     public MCMC(BayesianModel model, int burn, int thin) {
-        Model = model;
+        super(model);
         Posterior = new ArrayList<>();
         Steppers = new ArrayList<>();
         Burnin = burn;
@@ -51,8 +49,9 @@ public class MCMC implements IFitter {
         }
     }
 
-    public List<Gene> getPosterior() {
-        return Posterior;
+    @Override
+    public Map<String, Double> getGoodnessOfFit() {
+        return null;
     }
 
     public void fit(int niter) {
@@ -72,7 +71,7 @@ public class MCMC implements IFitter {
     public void initialise() {
         Posterior.clear();
         Last = Model.samplePrior();
-        Last.setLogLikelihood(Model.evaluateLikelihood(Last));
+        Last.setLogLikelihood(Model.evaluateLogLikelihood(Last));
     }
 
     public void adaptationOn() {

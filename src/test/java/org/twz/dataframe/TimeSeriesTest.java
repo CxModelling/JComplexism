@@ -1,6 +1,7 @@
 package org.twz.dataframe;
 
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.datastructure.ProbabilityTable;
@@ -33,5 +34,14 @@ public class TimeSeriesTest {
         ProbabilityTable pt = (ProbabilityTable) ts.get(8, "XYZ");
         System.out.println(pt);
         System.out.println(Arrays.toString(pt.sample(20)));
+    }
+
+    @Test
+    public void toTimeVaryingFunction() {
+        UnivariateFunction fn = ts.getTimeVaryingFunction("Z");
+        System.out.println(fn.value(5));
+        System.out.println(fn.value(6.7));
+        System.out.println(fn.value(6));
+        System.out.println(fn.value(8));
     }
 }

@@ -1,5 +1,8 @@
 package org.twz.dag;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.twz.io.AdapterJSONObject;
 import org.twz.io.IO;
 
 import java.util.Collection;
@@ -12,7 +15,7 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 2017/4/21.
  */
 
-public class Gene implements Cloneable {
+public class Gene implements Cloneable, AdapterJSONObject {
     private double LogPriorProb, LogLikelihood;
     private Map<String, Double> Locus;
 
@@ -24,15 +27,15 @@ public class Gene implements Cloneable {
         }
 
         LogPriorProb = pp;
-        LogLikelihood = 0;
+        LogLikelihood = Double.NaN;
     }
 
     public Gene(Map<String, Double> locus) {
-        this(locus, 0);
+        this(locus, Double.NaN);
     }
 
     public Gene() {
-        this(new HashMap<>(), 0);
+        this(new HashMap<>(), Double.NaN);
     }
 
     public Map<String, Double> getLocus() {
@@ -45,7 +48,7 @@ public class Gene implements Cloneable {
 
     public void put(String s, double d) {
         Locus.put(s, d);
-        LogLikelihood = 0;
+        LogLikelihood = Double.NaN;
     }
 
     public boolean has(String s) {
@@ -83,25 +86,23 @@ public class Gene implements Cloneable {
     }
 
     public boolean isEvaluated() {
-        return LogLikelihood != 0;
+        return !Double.isNaN(LogLikelihood);
     }
 
     public int getSize() {
         return Locus.size();
     }
 
-    public String toJSON() {
-        String sb = "{Values:{";
-        sb += Locus.entrySet().stream()
-                .map(e -> e.getKey() + ":" + e.getValue())
-                .collect(Collectors.joining(","));
-        sb += "}, ";
-        sb += "LogPrior:" + LogPriorProb;
-        if (isEvaluated()) {
-            sb += ",LogLikelihood:" + LogLikelihood;
+    public JSONObject toJSON() {
+        JSONObject js = new JSONObject();
+        try {
+            js.put("LogLikelihood", LogLikelihood);
+            js.put("Values", Locus);
+            js.put("LogPrior", LogPriorProb);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        sb += "}";
-        return sb;
+        return js;
     }
 
     public String toString() {

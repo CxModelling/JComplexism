@@ -8,6 +8,7 @@ import org.twz.dataframe.timeseries.DoubleSeries;
 import org.twz.dataframe.timeseries.ProbabilityTableSeries;
 import org.twz.dataframe.timeseries.Series;
 import org.twz.dataframe.timeseries.StringSeries;
+import org.twz.exception.TimeseriesException;
 import org.twz.io.AdapterJSONArray;
 import org.twz.io.IO;
 
@@ -75,6 +76,24 @@ public class TimeSeries implements AdapterJSONArray {
                     res1 = DataSeries.get(x).get((int) Math.ceil(i));
 
             return DataSeries.get(x).interpolate(time, t0, res0, t1, res1);
+        }
+    }
+
+    public UnivariateFunction getTimeVaryingFunction(String s) throws ClassCastException{
+        Series series = getSeries(s);
+        if (series instanceof DoubleSeries) {
+            double[] ys = new double[series.size()], ts = new double[series.size()];
+            for (int i = 0; i < series.size(); i++) {
+                try {
+                    ys[i] = series.getDouble(i);
+                    ts[i] = Times.get(i);
+                } catch (TimeseriesException ignore) {
+
+                }
+            }
+            return (new LinearInterpolator()).interpolate(ts, ys);
+        } else {
+            throw new ClassCastException();
         }
     }
 

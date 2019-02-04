@@ -29,12 +29,12 @@ public class BayesianModel {
         return null;
     }
 
-    public double evaluatePrior(Gene gene) {
-        return 0;
+    public double evaluateLogPrior(Gene gene) {
+        return Double.NaN;
     }
 
-    public double evaluateLikelihood(Gene gene) {
-        return 0;
+    public double evaluateLogLikelihood(Gene gene) {
+        return Double.NaN;
     }
 
 
