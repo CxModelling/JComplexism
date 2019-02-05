@@ -26,11 +26,11 @@ public class TimeSeries implements AdapterJSONArray {
         DataSeries = new LinkedHashMap<>();
     }
 
-    public int nrow() {
+    public int getNumRow() {
         return Times.size();
     }
 
-    public int ncol() {
+    public int getNumColumn() {
         return DataSeries.size();
     }
 
@@ -80,7 +80,7 @@ public class TimeSeries implements AdapterJSONArray {
     }
 
     public UnivariateFunction getTimeVaryingFunction(String s) throws ClassCastException{
-        Series series = getSeries(s);
+        Series series = DataSeries.get(s);
         if (series instanceof DoubleSeries) {
             double[] ys = new double[series.size()], ts = new double[series.size()];
             for (int i = 0; i < series.size(); i++) {
@@ -97,11 +97,13 @@ public class TimeSeries implements AdapterJSONArray {
         }
     }
 
-    public Series getSeries(String x) {
-        return DataSeries.get(x);
+    public TimeSeries separateSeries(String x) {
+        TimeSeries ts = new TimeSeries(Times);
+        ts.appendSeries(DataSeries.get(x));
+        return ts;
     }
 
-    public void appendSeries(Series series) {
+    private void appendSeries(Series series) {
         DataSeries.put(series.getName(), series);
     }
 
@@ -115,7 +117,7 @@ public class TimeSeries implements AdapterJSONArray {
 
         List<double[]> ds = new ArrayList<>();
         double[] d;
-        for (int i = 0; i < nrow(); i++) {
+        for (int i = 0; i < getNumRow(); i++) {
             d = new double[xs.length];
             for (int j = 0; j < src.size(); j++) {
                 d[j] = (double) src.get(j).get(i);

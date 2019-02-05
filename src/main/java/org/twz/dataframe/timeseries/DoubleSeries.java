@@ -20,7 +20,7 @@ public class DoubleSeries extends Series<Double> {
     }
 
     @Override
-    public String datatype() {
+    public String getDataType() {
         return "Double";
     }
 

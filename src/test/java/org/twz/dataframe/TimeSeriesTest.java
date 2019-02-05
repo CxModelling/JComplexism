@@ -28,6 +28,12 @@ public class TimeSeriesTest {
     }
 
     @Test
+    public void separateSeries() {
+        TimeSeries ts_new = ts.separateSeries("X");
+        ts_new.print();
+    }
+
+    @Test
     public void toPT() {
         ts.toProbabilityTable(new String[]{"X", "Y", "Z"}, new String[]{"x", "y", "z"}, "XYZ");
         ts.print();

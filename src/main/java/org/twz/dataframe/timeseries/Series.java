@@ -17,7 +17,7 @@ public class Series<T> extends ArrayList<T> {
         return Name;
     }
 
-    public String datatype() {
+    public String getDataType() {
         return get(0).getClass().getSimpleName();
     }
 

@@ -20,7 +20,7 @@ public class StringSeries extends Series<String> {
     }
 
     @Override
-    public String datatype() {
+    public String getDataType() {
         return "String";
     }
 }

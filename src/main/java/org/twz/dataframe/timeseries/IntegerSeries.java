@@ -19,7 +19,7 @@ public class IntegerSeries extends Series<Integer> {
     }
 
     @Override
-    public String datatype() {
+    public String getDataType() {
         return "Integer";
     }
 
