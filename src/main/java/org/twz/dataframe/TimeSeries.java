@@ -34,6 +34,14 @@ public class TimeSeries implements AdapterJSONArray {
         return DataSeries.size();
     }
 
+    public double getStartTime() {
+        return Times.get(0);
+    }
+
+    public double getEndtime() {
+        return Times.get(Times.size()-1);
+    }
+
     public Map<String, Object> get(double time) {
         double i = TimeFunction.value(time);
         i = Math.min(i, Times.size() - 1);
@@ -74,8 +82,22 @@ public class TimeSeries implements AdapterJSONArray {
             double t0 = Times.get((int) Math.floor(i)), t1 = Times.get((int) Math.ceil(i));
             Object res0 = DataSeries.get(x).get((int) Math.floor(i)),
                     res1 = DataSeries.get(x).get((int) Math.ceil(i));
-
             return DataSeries.get(x).interpolate(time, t0, res0, t1, res1);
+        }
+    }
+
+    public Double getDouble(double time, String x) throws TimeseriesException {
+        double i = TimeFunction.value(time);
+        i = Math.min(i, Times.size() - 1);
+        i = Math.max(i, 0);
+
+        if (Math.round(i) == i) {
+            return DataSeries.get(x).getDouble((int) i);
+        } else {
+            double t0 = Times.get((int) Math.floor(i)), t1 = Times.get((int) Math.ceil(i));
+            double res0 = DataSeries.get(x).getDouble((int) Math.floor(i)),
+                    res1 = DataSeries.get(x).getDouble((int) Math.ceil(i));
+            return (double) DataSeries.get(x).interpolate(time, t0, res0, t1, res1);
         }
     }
 
@@ -116,6 +138,26 @@ public class TimeSeries implements AdapterJSONArray {
         }
 
         List<double[]> ds = new ArrayList<>();
+        extractPT(xs, src, ds);
+
+        DataSeries.put(y, new ProbabilityTableSeries(y, labels, ds));
+    }
+
+    public void addProbabilityTable(String[] xs, String[] labels, String y) {
+        assert xs.length == labels.length;
+
+        List<Series> src = new ArrayList<>();
+        for (String x: xs) {
+            src.add(DataSeries.get(x));
+        }
+
+        List<double[]> ds = new ArrayList<>();
+        extractPT(xs, src, ds);
+
+        DataSeries.put(y, new ProbabilityTableSeries(y, labels, ds));
+    }
+
+    private void extractPT(String[] xs, List<Series> src, List<double[]> ds) {
         double[] d;
         for (int i = 0; i < getNumRow(); i++) {
             d = new double[xs.length];
@@ -124,8 +166,6 @@ public class TimeSeries implements AdapterJSONArray {
             }
             ds.add(d);
         }
-
-        DataSeries.put(y, new ProbabilityTableSeries(y, labels, ds));
     }
 
 

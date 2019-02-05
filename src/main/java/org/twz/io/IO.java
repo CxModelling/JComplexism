@@ -86,6 +86,11 @@ public class IO {
         String[] texts = loadText(path).split("\n");
         int length = texts.length - 1;
         String[] cols = texts[0].split(",");
+
+        for (int i = 0; i < cols.length; i++) {
+            cols[i] = cols[i].replaceAll("\"", "");
+        }
+
         int nc = cols.length;
 
         Map<String, List<String>> csv = new LinkedHashMap<>();
