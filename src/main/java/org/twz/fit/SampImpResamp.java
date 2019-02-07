@@ -20,8 +20,13 @@ public class SampImpResamp extends BayesianFitter {
     }
 
     @Override
-    public List<Gene> getPosterior() {
-        return Posterior;
+    public void update(int niter) {
+
+    }
+
+    @Override
+    public Map<String, Double> getGoodnessOfFit() {
+        return null;
     }
 
     @Override
@@ -46,12 +51,10 @@ public class SampImpResamp extends BayesianFitter {
         double[] lis = new double[niter];
         for (int i = 0; i < niter; i++) {
             g = prior.get(i);
-            if (g.isEvaluated()) {
-                lis[i] = g.getLogLikelihood();
-            } else {
-                li = Model.evaluateLogLikelihood(g);
-                g.setLogLikelihood(li);
+            if (!g.isEvaluated()) {
+                Model.evaluateLogLikelihood(g);
             }
+            lis[i] = g.getLogLikelihood();
         }
         lis = Statistics.add(lis, -Statistics.lse(lis));
         lis = Statistics.exp(lis);
@@ -60,22 +63,6 @@ public class SampImpResamp extends BayesianFitter {
         for (int i: Sample.sample(lis, niter)) {
             Posterior.add(prior.get(i));
         }
-    }
-
-    @Override
-    public void summarisePrior() {
-        // todo
-    }
-
-    @Override
-    public void summarisePosterior() {
-        // todo
-    }
-
-    @Override
-    public Map<String, Double> getGoodnessOfFit() {
-        // todo
-        return null;
     }
 
 }

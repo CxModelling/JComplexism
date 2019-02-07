@@ -18,6 +18,8 @@ public abstract class BayesianFitter extends AbsFitter {
 
     }
 
+    public abstract void update(int niter);
+
     public List<Gene> getPosterior() {
         return Posterior;
     }

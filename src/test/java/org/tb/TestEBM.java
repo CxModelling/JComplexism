@@ -8,9 +8,8 @@ import org.twz.cx.ebmodel.EBMY0;
 import org.twz.cx.ebmodel.ODEEBMBlueprint;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.Simulator;
-import org.twz.dag.ParameterCore;
-import org.twz.dataframe.TimeSeries;
 import org.twz.dataframe.demographics.SexDemography;
+import org.twz.exception.TimeseriesException;
 
 public class TestEBM {
 
@@ -28,7 +27,7 @@ public class TestEBM {
         ODEEBMBlueprint bp = (ODEEBMBlueprint) Da.createSimModel("SIR", "ODEEBM");
 
         bp.setODE((t, y0, y1, parameters, attributes) -> {
-            double beta = parameters.get("transmission_rate"), gamma = parameters.get("rec_rate");
+            double beta = Math.exp(parameters.get("beta")), gamma = Math.exp(parameters.get("delay"));
             double n = y0[0] + y0[1] + y0[2];
             double foi = beta * y0[0] * y0[1] / n;
             y1[0] = - foi;
@@ -38,16 +37,25 @@ public class TestEBM {
 
         bp.addMeasurementFunction((tab, ti, ys, pc, x) -> {
             double n = ys[0] + ys[1] + ys[2];
+            double p;
+            try {
+                p=((SexDemography) x.get("Demo")).getPopulation(ti);
+            } catch (TimeseriesException e) {
+                p=Double.NEGATIVE_INFINITY;
+            }
+            tab.put("Pop", p);
             tab.put("Prv", ys[1]/n);
             tab.put("N", n);
         });
-        bp.setRequiredParameters(new String[]{"transmission_rate", "rec_rate"});
+        bp.setRequiredParameters(new String[]{"beta", "delay"});
         bp.setObservations(new String[]{"Sus", "Inf", "Rec"});
+        bp.addExternalVariables("Demo", DemoSex);
+
     }
 
     @Test
     public void simulationDaBN() throws JSONException {
-        run(Da.generateMCore("model", "SIR", "pCloseSIR"));
+        run(Da.generateMCore("model", "SIR", "pTB"));
     }
 
     public void run(AbsSimModel model) throws JSONException {
@@ -56,7 +64,7 @@ public class TestEBM {
         EBMY0 y0 = new EBMY0();
         y0.append("{'y': 'Sus', 'n': 900}");
         y0.append("{'y': 'Inf', 'n': 100}");
-        Simu.simulate(y0, 0, 10, 1);
+        Simu.simulate(y0, 1998, 2000, 1);
         model.print();
     }
 }

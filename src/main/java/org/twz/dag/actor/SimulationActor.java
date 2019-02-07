@@ -2,6 +2,8 @@ package org.twz.dag.actor;
 
 import org.twz.dag.Gene;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,22 +11,32 @@ import java.util.Map;
  * Created by TimeWz on 08/08/2018.
  */
 public abstract class SimulationActor {
-    protected final String Field;
+    public final String Field;
 
-    public SimulationActor(String field) {
+    SimulationActor(String field) {
         Field = field;
     }
+
+    protected abstract List<String> getParents();
 
     public abstract double sample(Gene pas);
 
     public abstract double sample(Gene pas, Map<String, Double> exo);
 
-    public abstract void fill(Gene pas);
+    protected Map<String, Double> findParentValues(Gene gene) {
+        Map<String, Double> ps = new HashMap<>();
+        for (String s : getParents()) {
+            ps.put(s, gene.get(s));
+        }
+        return ps;
+    }
 
-    public abstract void fill(Gene pas, Map<String, Double> exo);
-
-    public void update(Map<String, Double> pas) {}
-
-    public void update(Gene gene) {}
+    protected Map<String, Double> findParentValues(Gene gene, Map<String, Double> exo) {
+        Map<String, Double> ps = new HashMap<>();
+        for (String s : getParents()) {
+            ps.put(s, exo.containsKey(s)? exo.get(s): gene.get(s));
+        }
+        return ps;
+    }
 
 }

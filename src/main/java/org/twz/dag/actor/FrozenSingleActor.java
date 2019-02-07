@@ -5,6 +5,8 @@ import org.twz.dag.loci.DistributionLoci;
 import org.twz.dag.loci.Loci;
 import org.twz.prob.IDistribution;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,14 +29,17 @@ public class FrozenSingleActor extends SimulationActor {
         Distribution = Loci.findDistribution(pas);
     }
 
-    @Override
-    public void update(Map<String, Double> pas) {
-        Distribution = Loci.findDistribution(pas);
+    public void update(Gene gene) {
+       Distribution = Loci.findDistribution(gene);
+    }
+
+    public void update(Gene gene, Map<String, Double> exo) {
+        Distribution = Loci.findDistribution(findParentValues(gene, exo));
     }
 
     @Override
-    public void update(Gene gene) {
-        Loci.findDistribution(gene);
+    protected List<String> getParents() {
+        return Loci.getParents();
     }
 
     @Override
@@ -44,18 +49,7 @@ public class FrozenSingleActor extends SimulationActor {
 
     @Override
     public double sample(Gene pas, Map<String, Double> exo) {
-        return sample(pas);
-    }
-
-
-    @Override
-    public void fill(Gene pas) {
-        pas.put(Field, sample(pas));
-    }
-
-    @Override
-    public void fill(Gene pas, Map<String, Double> exo) {
-        fill(pas);
+        return Distribution.sample();
     }
 
     @Override

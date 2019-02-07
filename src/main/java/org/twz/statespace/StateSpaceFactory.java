@@ -5,7 +5,7 @@ import org.twz.statespace.ctbn.CTBNBlueprint;
 import org.twz.statespace.ctmc.CTMCBlueprint;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.twz.dag.ScriptException;
+import org.twz.exception.ScriptException;
 
 import java.util.*;
 import java.util.regex.Matcher;

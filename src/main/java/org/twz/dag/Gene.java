@@ -43,7 +43,7 @@ public class Gene implements Cloneable, AdapterJSONObject {
     }
 
     public double get(String s) {
-        return Locus.get(s);
+        return Locus.getOrDefault(s, Double.NaN);
     }
 
     public void put(String s, double d) {

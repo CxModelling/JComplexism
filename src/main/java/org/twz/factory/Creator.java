@@ -133,6 +133,6 @@ public class Creator<T> {
     public String toString() {
         return Name + ":" + Cls.getSimpleName() +
                 "[" +
-                (Arrays.asList(Args)).stream().map(AbsArgument::getName).collect(Collectors.joining(",")) + "]";
+                Arrays.stream(Args).map(AbsArgument::getName).collect(Collectors.joining(",")) + "]";
     }
 }

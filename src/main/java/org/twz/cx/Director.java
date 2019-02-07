@@ -17,7 +17,7 @@ import org.twz.statespace.ctmc.CTMCBlueprint;
 import org.twz.cx.multimodel.ModelLayout;
 import org.json.JSONObject;
 import org.twz.dag.ParameterCore;
-import org.twz.dag.ScriptException;
+import org.twz.exception.ScriptException;
 import org.twz.io.IO;
 
 import java.util.HashMap;

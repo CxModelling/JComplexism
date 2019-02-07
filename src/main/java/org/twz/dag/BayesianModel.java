@@ -1,9 +1,8 @@
 package org.twz.dag;
 
+import org.twz.fit.ValueDomain;
 import org.twz.prob.IDistribution;
 import org.twz.dag.loci.DistributionLoci;
-import org.twz.dag.loci.Loci;
-import org.twz.statistic.Statistics;
 
 import java.util.*;
 
@@ -11,9 +10,7 @@ import java.util.*;
  *
  * Created by TimeWz on 2017/4/22.
  */
-public class BayesianModel {
-
-    private static int DefaultSizeMC = 100;
+public abstract class BayesianModel {
 
     private final BayesNet BN;
 
@@ -21,22 +18,28 @@ public class BayesianModel {
         BN = bn;
     }
 
-    public Map<String, IDistribution> sampleDistribution() {
-        return null;
+    public List<ValueDomain> getMovableNodes() {
+        Gene p = samplePrior();
+
+        List<ValueDomain> res = new ArrayList<>();
+        DistributionLoci loci;
+        for (String s : BN.getRVRoots()) {
+            loci = (DistributionLoci) BN.getLoci(s);
+            IDistribution d = loci.findDistribution(p);
+            res.add(new ValueDomain(s, d.getDataType(), d.getLower(), d.getUpper()));
+        }
+        return res;
     }
 
-    public Gene samplePrior() {
-        return null;
+    public abstract Gene samplePrior();
+
+    public void evaluateLogPrior(Gene gene) {
+        BN.evaluate(gene);
     }
 
-    public double evaluateLogPrior(Gene gene) {
-        return Double.NaN;
-    }
+    public abstract void evaluateLogLikelihood(Gene gene);
 
-    public double evaluateLogLikelihood(Gene gene) {
-        return Double.NaN;
-    }
-
+    public abstract boolean hasExactLikelihood();
 
     public void print() {
         System.out.println("DAG:");

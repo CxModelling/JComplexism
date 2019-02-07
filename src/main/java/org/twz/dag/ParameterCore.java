@@ -2,6 +2,7 @@ package org.twz.dag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.twz.dag.actor.CompoundActor;
 import org.twz.dag.actor.FrozenSingleActor;
 import org.twz.dag.actor.Sampler;
 import org.twz.dag.actor.SimulationActor;
@@ -185,12 +186,20 @@ public class ParameterCore extends Gene {
         }
 
         for (SimulationActor act : Actors.values()) {
-            act.fill(this);
+            if (act instanceof CompoundActor) {
+                ((CompoundActor) act).fillAll(this);
+            } else {
+                this.put(act.Field, act.sample(this));
+            }
         }
 
         if (Parent != null) {
             for (SimulationActor act : Parent.ChildrenActors.get(getGroupName()).values()) {
-                act.fill(this);
+                if (act instanceof CompoundActor) {
+                    ((CompoundActor) act).fillAll(this);
+                } else {
+                    this.put(act.Field, act.sample(this));
+                }
             }
         }
     }

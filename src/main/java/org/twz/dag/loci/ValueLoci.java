@@ -4,7 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Gene;
-import org.twz.dag.ScriptException;
+import org.twz.exception.ScriptException;
 
 import java.util.ArrayList;
 import java.util.List;

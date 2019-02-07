@@ -6,6 +6,7 @@ import org.twz.dag.Gene;
 import org.twz.dag.loci.Loci;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,31 +23,18 @@ public class SingleActor extends SimulationActor {
     }
 
     @Override
+    protected List<String> getParents() {
+        return Distribution.getParents();
+    }
+
+    @Override
     public double sample(Gene pas) {
         return Distribution.sample(pas);
     }
 
     @Override
     public double sample(Gene pas, Map<String, Double> exo) {
-        Map<String, Double> ps = new HashMap<>();
-        for (String p :Distribution.getParents()) {
-            try {
-                ps.put(p, pas.get(p));
-            } catch (NullPointerException e) {
-                ps.put(p, exo.get(p));
-            }
-        }
-        return Distribution.sample(ps);
-    }
-
-    @Override
-    public void fill(Gene pas) {
-        Distribution.fill(pas);
-    }
-
-    @Override
-    public void fill(Gene pas, Map<String, Double> exo) {
-
+        return Distribution.sample(findParentValues(pas, exo));
     }
 
     @Override

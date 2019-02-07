@@ -4,7 +4,7 @@ import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.dag.BayesNet;
-import org.twz.dag.ScriptException;
+import org.twz.exception.ScriptException;
 import org.twz.io.IO;
 import org.twz.statespace.StateSpaceFactory;
 import org.twz.statespace.IStateSpaceBlueprint;

@@ -87,7 +87,11 @@ class SimulationGroup implements AdapterJSONObject {
             String name = act.Actor;
             switch (hoist?act.TypeH:act.Type) {
                 case ActorBlueprint.Frozen:
-                    actor = new FrozenSingleActor(name, bn.getLoci(name), pas);
+                    try {
+                        actor = new FrozenSingleActor(name, bn.getLoci(name), pas);
+                    } catch (ClassCastException e) {
+                        continue;
+                    }
                     break;
                 case ActorBlueprint.Single:
                     actor = new SingleActor(name, bn.getLoci(name));
@@ -122,7 +126,7 @@ class SimulationGroup implements AdapterJSONObject {
     }
 
     void setResponse(Map<String, Double> imp, List<String> fixed, List<String> actors, Map<String, List<String>> hoist, ParameterCore pc) {
-        pc.setLogPriorProb(0);
+        pc.resetProbability();
         for (Loci loci : FixedChain) {
             if (imp.containsKey(loci.getName())) {
                 pc.put(loci.getName(), imp.get(loci.getName()));
@@ -132,10 +136,24 @@ class SimulationGroup implements AdapterJSONObject {
             }
         }
 
-        actors.forEach(act->pc.Actors.get(act).update(pc));
+        // update frozen actors
+        for (String actor : actors) {
+            try {
+                FrozenSingleActor act = (FrozenSingleActor) pc.Actors.get(actor);
+                act.update(pc);
+            } catch (ClassCastException ignored) {
+
+            }
+        }
+
         for (Map.Entry<String, List<String>> entry : hoist.entrySet()) {
             for (String s : entry.getValue()) {
-                pc.ChildrenActors.get(entry.getKey()).get(s).update(pc);
+                try {
+                    FrozenSingleActor act = (FrozenSingleActor) pc.ChildrenActors.get(entry.getKey()).get(s);
+                    act.update(pc);
+                } catch (ClassCastException ignored) {
+
+                }
             }
         }
     }

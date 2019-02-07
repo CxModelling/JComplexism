@@ -2,6 +2,7 @@ package org.twz.cx.ebmodel;
 
 import org.json.JSONObject;
 import org.twz.dag.Gene;
+import org.twz.exception.TimeseriesException;
 
 import java.util.Map;
 

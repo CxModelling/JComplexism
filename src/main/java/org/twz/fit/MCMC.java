@@ -6,7 +6,7 @@ import org.twz.fit.mcmc.IStepper;
 import org.twz.fit.mcmc.IntegerStepper;
 import org.twz.dag.BayesianModel;
 import org.twz.dag.Gene;
-import org.twz.prob.IDistribution;
+
 import java.util.*;
 
 
@@ -31,16 +31,18 @@ public class MCMC extends BayesianFitter {
         Thin = thin;
 
         IStepper stp;
-        for (Map.Entry<String, IDistribution> ent: Model.sampleDistribution().entrySet()) {
-            switch (ent.getValue().getDataType()) {
+
+        for (ValueDomain vd: Model.getMovableNodes()) {
+
+            switch (vd.Type) {
                 case "Double":
-                    stp = new DoubleStepper(ent.getKey(), ent.getValue().getLower(), ent.getValue().getUpper());
+                    stp = new DoubleStepper(vd.Name, vd.Lower, vd.Upper);
                     break;
                 case "Integer":
-                    stp = new IntegerStepper(ent.getKey(), ent.getValue().getLower(), ent.getValue().getUpper());
+                    stp = new IntegerStepper(vd.Name, vd.Lower, vd.Upper);
                     break;
                 case "Binary":
-                    stp = new BinaryStepper(ent.getKey(), ent.getValue().getLower(), ent.getValue().getUpper());
+                    stp = new BinaryStepper(vd.Name, vd.Lower, vd.Upper);
                     break;
                 default:
                     continue;
@@ -71,7 +73,7 @@ public class MCMC extends BayesianFitter {
     public void initialise() {
         Posterior.clear();
         Last = Model.samplePrior();
-        Last.setLogLikelihood(Model.evaluateLogLikelihood(Last));
+        Model.evaluateLogLikelihood(Last);
     }
 
     public void adaptationOn() {
@@ -89,7 +91,7 @@ public class MCMC extends BayesianFitter {
             for (IStepper stp: Steppers) {
                 nSample ++;
                 Last = stp.step(Model, Last);
-
+                Model.evaluateLogLikelihood(Last);
                 if (nSample % Thin == 0) Posterior.add(Last);
                 if (Posterior.size() >= niter) return;
             }

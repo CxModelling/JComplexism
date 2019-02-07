@@ -3,6 +3,7 @@ package org.twz.dataframe;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.twz.dataframe.timeseries.DoubleSeries;
 import org.twz.io.IO;
 import org.twz.io.AdapterJSONArray;
 
@@ -44,6 +45,21 @@ public class DataFrame implements AdapterJSONArray {
                         .collect(Collectors.toList())));
     }
 
+    public TimeSeries toTimeSeries(String i) {
+        TimeSeries ts = new TimeSeries(Data.get(Key));
+        ts.appendSeries(new DoubleSeries(i, Data.get(i)));
+        return ts;
+    }
+
+    public TimeSeries toTimeSeries() {
+        TimeSeries ts = new TimeSeries(Data.get(Key));
+        for (Map.Entry<String, List<Double>> entry : Data.entrySet()) {
+            if (!entry.getKey().equals(Key)) {
+                ts.appendSeries(new DoubleSeries(entry.getKey(), entry.getValue()));
+            }
+        }
+        return ts;
+    }
 
     public void toCSV(String path) {
         StringBuilder sb = new StringBuilder();

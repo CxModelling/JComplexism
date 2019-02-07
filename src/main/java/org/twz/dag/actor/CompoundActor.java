@@ -30,43 +30,31 @@ public class CompoundActor extends SimulationActor {
     }
 
     @Override
-    public double sample(Gene pas) {
-        Map<String, Double> ps = new HashMap<>();
-        for (Loci loci : Flow) {
-            ps.put(loci.getName(), loci.sample(pas));
-        }
-        End.getParents().stream().filter(p->!ps.containsKey(p)).forEach(p->ps.put(p, pas.get(p)));
-        return End.sample(pas);
+    protected List<String> getParents() {
+        return new ArrayList<>(AllParents);
     }
 
     @Override
-    public double sample(Gene pas, Map<String, Double> exo) {
-        Map<String, Double> ps = new HashMap<>();
-        for (String pa: AllParents) {
-            try {
-                ps.put(pa, pas.get(pa));
-            } catch (NullPointerException e) {
-                ps.put(pa, exo.get(pa));
-            }
-        }
-
-        for (Loci loci: Flow) {
+    public double sample(Gene pas) {
+        Map<String, Double> ps = findParentValues(pas);
+        for (Loci loci : Flow) {
             ps.put(loci.getName(), loci.sample(ps));
         }
         return End.sample(ps);
     }
 
     @Override
-    public void fill(Gene pas) {
+    public double sample(Gene pas, Map<String, Double> exo) {
+        Map<String, Double> ps = findParentValues(pas, exo);
         for (Loci loci : Flow) {
-            pas.put(loci.getName(), loci.sample(pas));
+            ps.put(loci.getName(), loci.sample(ps));
         }
-        End.fill(pas);
+        return End.sample(ps);
     }
 
-    @Override
-    public void fill(Gene pas, Map<String, Double> exo) {
-
+    public void fillAll(Gene gene) {
+        gene.getLocus().putAll(findParentValues(gene));
+        gene.put(Field, End.sample(gene));
     }
 
     @Override

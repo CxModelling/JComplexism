@@ -1,7 +1,6 @@
 package org.twz.statespace.ctbn;
 
 import org.json.JSONException;
-import org.twz.dag.ScriptException;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;
 import org.twz.cx.Director;

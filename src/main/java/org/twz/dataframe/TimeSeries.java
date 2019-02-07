@@ -125,7 +125,7 @@ public class TimeSeries implements AdapterJSONArray {
         return ts;
     }
 
-    private void appendSeries(Series series) {
+    protected void appendSeries(Series series) {
         DataSeries.put(series.getName(), series);
     }
 

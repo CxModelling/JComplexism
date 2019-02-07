@@ -2,16 +2,20 @@ package org.twz.fit;
 
 import org.twz.dag.BayesianModel;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class AbsFitter {
 
     protected BayesianModel Model;
+    protected Map<String, Double> Options;
     private Logger Log;
 
     public AbsFitter(BayesianModel model) {
         Model = model;
+        Options = new HashMap<>();
         Log = null;
     }
 
@@ -41,6 +45,10 @@ public abstract class AbsFitter {
 
     protected void error(String msg) {
         Log.severe(msg);
+    }
+
+    public void setOptions(String key, double value) {
+        Options.replace(key, value);
     }
 
     public abstract void fit(int niter);

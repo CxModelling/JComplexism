@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.loci.Loci;
 import org.twz.dag.util.NodeGroup;
+import org.twz.exception.ScriptException;
 import org.twz.graph.DiGraph;
 import org.twz.io.AdapterJSONObject;
 

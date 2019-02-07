@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.loci.*;
 import org.twz.dag.util.NodeGroup;
+import org.twz.exception.ScriptException;
 import org.twz.graph.DiGraph;
 import org.twz.io.AdapterJSONObject;
 
@@ -27,11 +28,11 @@ public class BayesNet implements AdapterJSONObject {
     public BayesNet(String name) {
         Name = name;
         DAG = new DiGraph<>();
-        frozen=false;
         Roots = new ArrayList<>();
         RVRoots = new ArrayList<>();
         Leaves = new ArrayList<>();
         Exogenous = new ArrayList<>();
+        frozen=false;
     }
 
     public BayesNet(JSONObject js) throws ScriptException, JSONException {
@@ -152,20 +153,34 @@ public class BayesNet implements AdapterJSONObject {
         return DAG.getNode(loc);
     }
 
-    public Gene sample(Map<String, Double> inp) {
-        Loci loci;
-        Gene gene = new Gene(inp);
-        for (String s : getOrder()) {
-            loci = DAG.getNode(s);
-            if (!(loci instanceof ExoValueLoci)) {
-                loci.fill(gene);
-                gene.addLogPriorProb(loci.evaluate(gene.getLocus()));
-            }
-        }
+    public Gene sample() {
+        Gene gene = new Gene();
+        fillAll(gene);
+        evaluate(gene);
         return gene;
     }
 
-    public double evaluate(Gene gene) {
+    public Gene sample(Map<String, Double> inp) {
+        Gene gene = new Gene(inp);
+        fillAll(gene);
+        evaluate(gene);
+        return gene;
+    }
+
+    private void fillAll(Gene gene) {
+        Loci loci;
+        for (String s : getOrder()) {
+            if (gene.has(s)) {
+                continue;
+            }
+            loci = DAG.getNode(s);
+            if (!(loci instanceof ExoValueLoci)) {
+                loci.fill(gene);
+            }
+        }
+    }
+
+    public void evaluate(Gene gene) {
         Loci loci;
         double li = 0;
         for (String s : getOrder()) {
@@ -173,7 +188,6 @@ public class BayesNet implements AdapterJSONObject {
             li += loci.evaluate(gene);
         }
         gene.setLogPriorProb(li);
-        return li;
     }
 
     public void impulse(Gene gene, Map<String, Double> nodes) {
@@ -199,7 +213,7 @@ public class BayesNet implements AdapterJSONObject {
             }
         }
         gene.resetProbability();
-        gene.setLogPriorProb(evaluate(gene));
+        evaluate(gene);
     }
 
     public void impulse(Gene gene, List<String> nodes) {
@@ -208,6 +222,16 @@ public class BayesNet implements AdapterJSONObject {
             imp.put(node, Double.NaN);
         }
         impulse(gene, imp);
+    }
+
+    public void bindExogenous(Gene gene, Map<String, Double> exo) {
+        Map<String, Double> imp = new HashMap<>();
+        for (Map.Entry<String, Double> ent : exo.entrySet()) {
+            if (Order.contains(ent.getKey())) {
+                imp.put(ent.getKey(), ent.getValue());
+            }
+        }
+        impulse(gene, exo);
     }
 
     private List<String> toList(JSONArray ja) throws JSONException {
