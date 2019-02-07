@@ -3,6 +3,7 @@ package org.twz.cx.abmodel;
 import org.json.JSONException;
 import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
+import org.twz.misc.NameGenerator;
 
 import java.util.ArrayList;
 import java.util.List;

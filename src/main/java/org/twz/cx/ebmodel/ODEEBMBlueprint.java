@@ -35,6 +35,11 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
         return Name;
     }
 
+    @Override
+    public void setOption(String opt, Object value) {
+
+    }
+
     public void setODE(ODEFunction fn, String[] ys) {
         Fn = fn;
         Ys = ys;
@@ -80,8 +85,9 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
 
         if (args.containsKey("bn") && args.containsKey("da")) {
             Director da = (Director) args.get("da");
+
             pc = da.getBayesNet((String) args.get("bn"))
-                    .toSimulationCore(getParameterHierarchy(da), new String[0], new String[0],true).generate(name);
+                    .toSimulationCoreNoOut(getParameterHierarchy(da), true).generate(name);
 
         } else if(args.containsKey("pc")) {
             pc = (ParameterCore) args.get("pc");

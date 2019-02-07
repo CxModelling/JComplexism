@@ -103,19 +103,24 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
     }
 
     @Override
+    public void setOption(String opt, Object value) {
+
+    }
+
+    @Override
     public NodeGroup getParameterHierarchy(Director da) {
-        NodeGroup ng = new NodeGroup(Name, new String[0]);
+        NodeGroup ng = new NodeGroup(Name, new String[0]); // todo if behaviour needs
         assert Population != null;
 
         IStateSpaceBlueprint dc = da.getStateSpace(Population.Dynamic);
         assert dc != null;
-        String[] needs = dc .getRequiredDistributions();
+        String[] needs = dc.getRequiredDistributions();
         ng.appendChildren(new NodeGroup(Population.Group, needs));
         return ng;
     }
 
     @Override
-    public StSpABModel generate(String name, Map<String, Object> args) throws JSONException {
+    public StSpABModel generate(String name, Map<String, Object> args) {
         ParameterCore pc;
         AbsStateSpace dc;
 

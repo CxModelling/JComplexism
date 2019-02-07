@@ -1,10 +1,10 @@
-package org.twz.cx.abmodel;
+package org.twz.misc;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.io.AdapterJSONObject;
 
-class NameGenerator implements Cloneable, AdapterJSONObject {
+public class NameGenerator implements Cloneable, AdapterJSONObject {
     private String Prefix;
     private int Ini, Step;
 

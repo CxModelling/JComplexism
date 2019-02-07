@@ -288,6 +288,11 @@ public class BayesNet implements AdapterJSONObject {
         return new SimulationCore(this, root, hoist);
     }
 
+    public SimulationCore toSimulationCoreNoOut(NodeGroup root, boolean hoist) {
+        root.allocateNodes(this, new HashSet<>(), new HashSet<>());
+        return new SimulationCore(this, root, hoist);
+    }
+
     public boolean isFrozen() {
         return frozen;
     }

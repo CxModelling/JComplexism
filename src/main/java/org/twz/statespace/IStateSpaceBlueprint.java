@@ -12,6 +12,6 @@ public interface IStateSpaceBlueprint<M extends AbsStateSpace> extends AdapterJS
     String getName();
     boolean isCompatible(ParameterCore pc);
     String[] getRequiredDistributions();
-    M generateModel(ParameterCore pc) throws JSONException;
+    M generateModel(ParameterCore pc);
     void buildJSON() throws JSONException;
 }

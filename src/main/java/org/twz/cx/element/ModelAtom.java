@@ -30,7 +30,7 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
     }
 
     public ModelAtom(String name) {
-        this(name, new Gene());
+        this(name, Gene.NullGene);
     }
 
     public String getName() {
@@ -56,6 +56,10 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         } catch (ClassCastException e) {
             return Double.NaN;
         }
+    }
+
+    public void setParameters(Gene parameters) {
+        Parameters = parameters;
     }
 
     public double getParameter(String key) {
@@ -107,10 +111,6 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         Next = evt;
     }
 
-    public void disapproveEvent(double ti) {
-        updateTo(ti);
-    }
-
     public abstract void updateTo(double ti);
 
     public abstract void executeEvent();
@@ -130,13 +130,10 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         return true;
     }
 
-    public Map<String, Object> toData() throws JSONException {
+    public Map<String, Object> toData() {
         Map<String, Object> dat = new LinkedHashMap<>();
         dat.put("Name", Name);
-        String[] ks = JSONObject.getNames(Attributes);
-        for (String key : ks) {
-            dat.put(key, Attributes.get(key));
-        }
+        dat.putAll(Attributes);
         return dat;
     }
 

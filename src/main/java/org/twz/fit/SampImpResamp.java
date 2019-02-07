@@ -3,7 +3,7 @@ package org.twz.fit;
 import org.twz.dag.BayesianModel;
 import org.twz.dag.Gene;
 import org.twz.prob.Sample;
-import org.twz.statistic.Statistics;
+import org.twz.misc.Statistics;
 import java.util.*;
 
 

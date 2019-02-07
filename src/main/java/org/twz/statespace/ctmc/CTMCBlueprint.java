@@ -126,7 +126,7 @@ public class CTMCBlueprint implements IStateSpaceBlueprint<CTMarkovChain> {
     }
 
     @Override
-    public CTMarkovChain generateModel(ParameterCore pc) throws JSONException {
+    public CTMarkovChain generateModel(ParameterCore pc) {
         Map<String, State> sts = new HashMap<>();
         Map<String, Transition> trs = new HashMap<>();
         Map<State, List<Transition>> tars = new HashMap<>();
@@ -142,7 +142,14 @@ public class CTMCBlueprint implements IStateSpaceBlueprint<CTMarkovChain> {
             tars.put(sts.get(ent.getKey()),
                     ent.getValue().stream().map(trs::get).collect(Collectors.toList()));
         }
-        CTMarkovChain mod = new CTMarkovChain(Name, sts, trs, tars, toJSON());
+
+        JSONObject js;
+        try {
+            js = toJSON();
+        } catch (JSONException e) {
+            js = null;
+        }
+        CTMarkovChain mod = new CTMarkovChain(Name, sts, trs, tars, js);
         sts.values().forEach(st -> st.setModel(mod));
         return mod;
     }

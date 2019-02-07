@@ -187,7 +187,7 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
     }
 
     @Override
-    public CTBayesianNetwork generateModel(ParameterCore pc) throws JSONException {
+    public CTBayesianNetwork generateModel(ParameterCore pc) {
         Map<String, MicroNode> mss = makeMicro();
 
         Map<String, List<MicroState>> stm = makeStateMap(mss);
@@ -205,16 +205,21 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
 
         Map<String, Transition> trs = new HashMap<>();
         for (Map.Entry<String, PseudoTransition> entry : Transitions.entrySet()) {
-            Sampler samp = pc.getSampler(entry.getValue().Dist);
-            Transition tr = new Transition(entry.getKey(), sts.get(entry.getValue().To), samp);
+            Sampler sam = pc.getSampler(entry.getValue().Dist);
+            Transition tr = new Transition(entry.getKey(), sts.get(entry.getValue().To), sam);
             trs.put(tr.getName(), tr);
         }
-
 
         Map<State, List<Transition>> tas = makeTargets(sts, sub, trs);
         Map<State, Map<State, State>> links = makeLinks(sts, wds, stm, mst);
 
-        CTBayesianNetwork model = new CTBayesianNetwork(Name, sts, trs, wds, sub, tas, links, toJSON());
+        JSONObject js;
+        try {
+            js = toJSON();
+        } catch (JSONException e) {
+            js = null;
+        }
+        CTBayesianNetwork model = new CTBayesianNetwork(Name, sts, trs, wds, sub, tas, links, js);
         sts.values().forEach(st -> st.setModel(model));
         return model;
     }
@@ -271,7 +276,7 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
     private Map<String, State> findWellDefined(Map<String, List<MicroState>> stm, Map<String, State> sts) {
         Map<String, State> wd = new HashMap<>();
         stm.entrySet().stream()
-                .filter(ent -> ent.getValue().stream().filter(e-> e==MicroState.NullState).count() == 0)
+                .filter(ent -> ent.getValue().stream().noneMatch(e -> e == MicroState.NullState))
                 .forEach(ent -> wd.put(ent.getKey(), sts.get(ent.getKey())));
         return wd;
     }
@@ -280,11 +285,9 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
         List<State> sub;
         Map<State, List<State>> subs = new HashMap<>();
         for (Map.Entry<String, State> ent: wds.entrySet()) {
-            sub = new ArrayList<>();
-            sub.addAll(stm.entrySet().stream()
+            sub = stm.entrySet().stream()
                     .filter(bs -> matchMic(stm.get(ent.getKey()), bs.getValue()))
-                    .map(bs -> sts.get(bs.getKey()))
-                    .collect(Collectors.toList()));
+                    .map(bs -> sts.get(bs.getKey())).collect(Collectors.toList());
             subs.put(ent.getValue(), sub);
         }
         return subs;

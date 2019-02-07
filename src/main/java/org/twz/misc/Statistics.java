@@ -1,4 +1,4 @@
-package org.twz.statistic;
+package org.twz.misc;
 
 import java.util.*;
 

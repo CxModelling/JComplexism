@@ -1,9 +1,7 @@
 package org.twz.cx.mcore;
 
-import org.json.JSONException;
 import org.twz.cx.Director;
 import org.twz.dag.util.NodeGroup;
-import org.twz.statespace.IStateSpaceBlueprint;
 
 import java.util.Map;
 
@@ -13,7 +11,8 @@ import java.util.Map;
  */
 public interface IModelBlueprint<T extends AbsSimModel> {
     String getName();
+    void setOption(String opt, Object value);
     NodeGroup getParameterHierarchy(Director da);
-    T generate(String name, Map<String, Object> args) throws JSONException;
+    T generate(String name, Map<String, Object> args);
     boolean isWellDefined();
 }

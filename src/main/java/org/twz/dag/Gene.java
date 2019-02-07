@@ -15,7 +15,14 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 2017/4/21.
  */
 
-public class Gene implements Cloneable, AdapterJSONObject {
+public class Gene implements AdapterJSONObject {
+    public static Gene NullGene = new Gene() {
+        @Override
+        public void put(String s, double d) {
+
+        }
+    };
+
     private double LogPriorProb, LogLikelihood;
     private Map<String, Double> Locus;
 

@@ -45,7 +45,7 @@ public class Director {
         Log.addHandler(new ConsoleHandler());
     }
 
-    public void addBayesNet(BayesNet bn) {
+    private void addBayesNet(BayesNet bn) {
         if (BNs.putIfAbsent(bn.getName(), bn) != null) {
             Log.info("New BayesNet " + bn.getName() + " added");
         }
@@ -91,7 +91,7 @@ public class Director {
         return BNs.get(name);
     }
 
-    public void addStateSpace(IStateSpaceBlueprint dc) {
+    private void addStateSpace(IStateSpaceBlueprint dc) {
         if(DCores.putIfAbsent(dc.getName(), dc)!=null) {
             Log.info("New State space dynamic model " + dc.getName() + " added");
         }
@@ -148,7 +148,7 @@ public class Director {
         return ss;
     }
 
-    public void addSimModel(IModelBlueprint mc) {
+    private void addSimModel(IModelBlueprint mc) {
         MCores.putIfAbsent(mc.getName(), mc);
     }
 
@@ -192,7 +192,7 @@ public class Director {
         return mbp;
     }
 
-    public void addModelLayout(ModelLayout ml) {
+    private void addModelLayout(ModelLayout ml) {
         Layouts.putIfAbsent(ml.getName(), ml);
     }
 
@@ -219,11 +219,7 @@ public class Director {
     public AbsStateSpace generateDCore(String dc, ParameterCore pc) {
         IStateSpaceBlueprint bp = getStateSpace(dc);
         if (bp.isCompatible(pc)) {
-            try {
-                return bp.generateModel(pc);
-            } catch (JSONException e) {
-                Log.warning(e.getMessage());
-            }
+            return bp.generateModel(pc);
         } else {
             Log.warning("Non-compatible bn");
         }
@@ -234,24 +230,14 @@ public class Director {
         Map<String, Object> args = new HashMap<>();
         args.put("bn", bn);
         args.put("da", this);
-        try {
-            return MCores.get(type).generate(name, args);
-        } catch (JSONException e) {
-            Log.warning(e.getMessage());
-            return null;
-        }
+        return MCores.get(type).generate(name, args);
     }
 
     public AbsSimModel generateMCore(String name, String type, ParameterCore pc) {
         Map<String, Object> args = new HashMap<>();
         args.put("pc", pc);
         args.put("da", this);
-        try {
-            return MCores.get(type).generate(name, args);
-        } catch (JSONException e) {
-            Log.warning(e.getMessage());
-            return null;
-        }
+        return MCores.get(type).generate(name, args);
     }
 
     public AbsSimModel generateModel(String name, String type, String bn) {
