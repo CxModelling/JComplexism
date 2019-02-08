@@ -122,6 +122,7 @@ class SimulationGroup implements AdapterJSONObject {
         if (actors) {
             pc.Actors = getActors(pc, SC.isHoist());
         }
+        SC.getBN().evaluate(pc);
         return pc;
     }
 

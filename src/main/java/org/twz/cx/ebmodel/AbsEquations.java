@@ -107,7 +107,7 @@ public abstract class AbsEquations extends ModelAtom {
         y.forEach((k, v)->Ys[YIndices.get(k)] = v);
     }
 
-    Map<String, Double> getDictY() {
+    public Map<String, Double> getDictY() {
         return YIndices.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e->Ys[e.getValue()]));
     }
 

@@ -40,7 +40,7 @@ public class StSpABModelTest {
     @Test
     public void simulation() throws JSONException {
         Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("log/DzAB.txt");
+        Simu.onLog("log/DzAB.txt");
         StSpY0 y0 = new StSpY0();
         y0.append(200, "ab");
 

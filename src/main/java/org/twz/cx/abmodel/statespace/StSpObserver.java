@@ -41,13 +41,13 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
     }
 
     @Override
-    public void initialiseObservations(StSpABModel model, double ti) throws JSONException {
+    public void initialiseObservations(StSpABModel model, double ti) {
         super.initialiseObservations(model, ti);
         locateLazySnapshots(model, ti);
     }
 
     @Override
-    protected void readStatics(StSpABModel model, Map<String, Double> tab, double ti) throws JSONException {
+    protected void readStatics(StSpABModel model, Map<String, Double> tab, double ti) {
         //Map<String, Object> option = new HashMap<>();
         for (State st: ObsStates) {
             tab.put(st.getName(), 0.0 + model.getPopulation().count("st", st));
@@ -82,7 +82,7 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
     }
 
     @Override
-    public double getSnapshot(StSpABModel model, String key, double ti) throws JSONException {
+    public double getSnapshot(StSpABModel model, String key, double ti) {
         if (LazySnapshot.containsKey(key)) {
             Pair<String, Object> ent = LazySnapshot.get(key);
             if (ent.getFirst().equals("State")) {

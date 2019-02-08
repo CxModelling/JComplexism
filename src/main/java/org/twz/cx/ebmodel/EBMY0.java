@@ -7,7 +7,9 @@ import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.BranchY0;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EBMY0 extends BranchY0 {
     @Override
@@ -31,6 +33,18 @@ public class EBMY0 extends BranchY0 {
         if (ent.has("n") && ent.has("y")) {
             Entries.add(ent);
         }
+    }
+
+    public Map<String, Double> toMap() {
+        Map<String, Double> m = new HashMap<>();
+        for (JSONObject ent : getEntries()) {
+            try {
+                m.put(ent.getString("y"), ent.getDouble("n"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return m;
     }
 
 }

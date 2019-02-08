@@ -23,7 +23,7 @@ public class StSpPopulation extends Population<StSpAgent> {
     }
 
     @Override
-    public long count(String key, Object value) throws JSONException {
+    public long count(String key, Object value) {
         if (key.equals("st")) {
             return ((StSpBreeder) getEva()).count(getAgents().values(), value);
         } else {

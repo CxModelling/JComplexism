@@ -71,7 +71,7 @@ public class Population<T extends AbsAgent> implements AdapterJSONObject {
         Networks.reform(net);
     }
 
-    public long count(String key, Object value) throws JSONException {
+    public long count(String key, Object value) {
         long count = 0L;
         for (T ag : Agents.values()) {
             if (ag.get(key) == value) {

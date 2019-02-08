@@ -1,16 +1,14 @@
 package org.tb;
 
-import org.apache.commons.math3.ode.nonstiff.ClassicalRungeKuttaIntegrator;
-import org.apache.commons.math3.ode.nonstiff.EulerIntegrator;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
+import org.twz.cx.CxFitter;
 import org.twz.cx.Director;
 import org.twz.cx.ebmodel.EBMY0;
-import org.twz.cx.ebmodel.EquationBasedModel;
-import org.twz.cx.ebmodel.ODEquations;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.Simulator;
+import org.twz.dag.SimulationCore;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.exception.TimeseriesException;
 
@@ -18,6 +16,7 @@ public class TestEBM {
 
     private Director Da;
     private SexDemography DemoSex;
+    private CxFitter BM;
 
     @Before
     public void setUp() throws JSONException {
@@ -28,6 +27,10 @@ public class TestEBM {
                 "BirthF", "BirthM", "MigrationF", "MigrationM");
 
         ReducedTB.setUpModel(Da, DemoSex, 1990);
+
+        SimulationCore SC = Da.getBayesNet("pTB")
+                .toSimulationCoreNoOut(Da.getParameterHierarchy("TB"), true);
+        BM = new ReducedTB(SC, Da, DemoSex, 1990);
 
     }
 
@@ -40,7 +43,7 @@ public class TestEBM {
         //((ODEquations)((EquationBasedModel) model).getEquations())
         //        .setIntegrator(new EulerIntegrator(3));
         Simulator Simu = new Simulator(model);
-        Simu.addLogPath("log/ODE.txt");
+        Simu.onLog("log/ODE.txt");
         EBMY0 y0 = new EBMY0();
         double n = DemoSex.getPopulation(1990);
         y0.append("{'y': 'Sus', 'n': "+ n*0.55 + "}");

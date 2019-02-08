@@ -103,7 +103,7 @@ public class EquationBasedModel extends LeafModel {
 
     @Override
     public Double getSnapshot(String key, double ti) {
-        return null;
+        return getObserver().getSnapshot(this, key, ti);
     }
 
     public void goTo(double ti) {

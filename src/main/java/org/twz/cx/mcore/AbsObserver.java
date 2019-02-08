@@ -1,6 +1,5 @@
 package org.twz.cx.mcore;
 
-import org.json.JSONException;
 import org.twz.dataframe.DataFrame;
 import org.twz.dataframe.TimeSeries;
 
@@ -11,15 +10,18 @@ import java.util.*;
  * Created by TimeWz on 2017/2/10.
  */
 public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
-    protected LinkedHashMap<String, Double> Last, Mid, Flows, Snapshot;
-    private List<Map<String, Double>> TimeSeries, TimeSeriesMid;
+    protected LinkedHashMap<String, Double> Last;
+    private LinkedHashMap<String, Double> Mid;
+    private LinkedHashMap<String, Double> Flows;
+    private LinkedHashMap<String, Double> Snapshot;
+    private List<Map<String, Double>> Observation, ObservationMid;
     private List<String> StockNames, FlowNames;
     protected double ObservationalInterval;
     private boolean ExactMid;
 
-    public AbsObserver(){
-        TimeSeries = new LinkedList<>();
-        TimeSeriesMid = new LinkedList<>();
+    protected AbsObserver(){
+        Observation = new LinkedList<>();
+        ObservationMid = new LinkedList<>();
         Flows = new LinkedHashMap<>();
         ObservationalInterval = 1;
         ExactMid = true;
@@ -67,8 +69,8 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
     }
 
     public void renew(){
-        TimeSeries.clear();
-        TimeSeriesMid.clear();
+        Observation.clear();
+        ObservationMid.clear();
     }
 
     private void newSession(double ti) {
@@ -81,7 +83,7 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         Flows.clear();
     }
 
-    public void initialiseObservations(T model, double ti) throws JSONException {
+    public void initialiseObservations(T model, double ti) {
         renew();
         clearFlows();
         Last.put("Time", ti);
@@ -95,16 +97,16 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         FlowNames = new ArrayList<>(Flows.keySet());
     }
 
-    public void observeRoutinely(T model, double ti) throws JSONException {
+    public void observeRoutinely(T model, double ti) {
         readStatics(model, Last, ti);
         updateDynamicObservations(model, Flows, ti);
     }
 
-    public void updateAtMidTerm(T model, double ti) throws JSONException {
+    public void updateAtMidTerm(T model, double ti) {
         if (ExactMid) readStatics(model, Mid, ti);
     }
 
-    protected abstract void readStatics(T model, Map<String, Double> tab, double ti) throws JSONException;
+    protected abstract void readStatics(T model, Map<String, Double> tab, double ti);
 
     public abstract void updateDynamicObservations(T model, Map<String, Double> flows, double ti);
 
@@ -114,10 +116,10 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
 
     public void pushObservation(double ti) {
         Last.putAll(Flows);
-        TimeSeries.add(Last);
+        Observation.add(Last);
         if (ExactMid) {
             Mid.putAll(Flows);
-            TimeSeriesMid.add(Mid);
+            ObservationMid.add(Mid);
         }
         newSession(ti);
         clearFlows();
@@ -131,39 +133,39 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         return Mid;
     }
 
-    public org.twz.dataframe.TimeSeries getTimeSeries() {
+    public TimeSeries getTimeSeries() {
         return getObservations().toTimeSeries();
     }
 
-    public List<Map<String, Double>> getAdjustedTimeSeries() {
-        if (TimeSeriesMid != null && TimeSeriesMid.size() == TimeSeries.size() - 1)
-            return TimeSeriesMid;
-        TimeSeriesMid = new LinkedList<>();
+    public TimeSeries getAdjustedTimeSeries() {
+        if (ObservationMid != null && ObservationMid.size() == Observation.size() - 1)
+            return (new DataFrame(ObservationMid, "Time")).toTimeSeries();
+        ObservationMid = new LinkedList<>();
         Map<String, Double> rec;
-        int n = TimeSeries.size();
+        int n = Observation.size();
 
         for (int i = 0; i < n - 1; i++) {
             rec = new LinkedHashMap<>();
-            Map<String, Double> ts0 = TimeSeries.get(i), ts1 = TimeSeries.get(i+1);
+            Map<String, Double> ts0 = Observation.get(i), ts1 = Observation.get(i+1);
             rec.put("Time", ts1.get("Time"));
             for (Map.Entry<String, Double> ent: ts0.entrySet()) {
                 rec.put(ent.getKey(), (ent.getValue() + ts1.get(ent.getKey()))/2);
             }
-            TimeSeriesMid.add(rec);
+            ObservationMid.add(rec);
         }
-        return TimeSeriesMid;
+        return (new DataFrame(ObservationMid, "Time")).toTimeSeries();
     }
 
     public Map<String, Double> getEntry(int i) {
-        return TimeSeries.get(i);
+        return Observation.get(i);
     }
 
     public DataFrame getObservations() {
-        return new DataFrame(TimeSeries, "Time");
+        return new DataFrame(Observation, "Time");
     }
 
     public double getValue(double time, String s){
-        for (Map<String, Double> data: TimeSeries){
+        for (Map<String, Double> data: Observation){
             if (data.get("Time") == time){
                 return data.get(s);
             }
@@ -171,9 +173,9 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         return Double.NaN;
     }
 
-    public double getSnapshot(T model, String key, double ti) throws JSONException {
+    public double getSnapshot(T model, String key, double ti) {
         if (FlowNames.contains(key)) {
-            return TimeSeries.get(TimeSeries.size() - 1).get(key);
+            return Observation.get(Observation.size() - 1).get(key);
         } else if (StockNames.contains(key)) {
             if (ti > Snapshot.get("Time") || !Snapshot.containsKey(key)) {
                 Snapshot.clear();

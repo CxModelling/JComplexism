@@ -45,7 +45,7 @@ public class LifeRateTest {
     @Test
     public void simulation() throws JSONException {
         Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("log/LifeRate.txt");
+        Simu.onLog("log/LifeRate.txt");
         Simu.simulate(Y0, 0, 10, 1);
         Model.print();
     }

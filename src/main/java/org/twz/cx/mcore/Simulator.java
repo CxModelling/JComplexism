@@ -26,10 +26,9 @@ public class Simulator {
         }
     }
 
-
     private AbsSimModel Model;
     private double Time;
-    private boolean Record;
+    private boolean Recording, Logging;
 
     private Logger Log;
     private Map<String, AbsSimModel> LazyModels;
@@ -37,8 +36,8 @@ public class Simulator {
     public Simulator(AbsSimModel model, boolean rec) {
         Model = model;
         Time = 0;
-        Record = rec;
-
+        Recording = rec;
+        Logging = false;
         Log = Logger.getLogger(model.getName());
         Log.setUseParentHandlers(false);
         LazyModels = new HashMap<>();
@@ -48,12 +47,26 @@ public class Simulator {
         this(model, true);
     }
 
-    public void addLogHandler(Handler han) {
-        Log.addHandler(han);
+    public void onLog() {
+        Logging = true;
     }
 
-    public void addLogPath(String pat) {
+    public void onLog(String pat) {
+        onLog();
+        addLogPath(pat);
+    }
 
+    public void offLog() {
+        Logging = false;
+    }
+
+    private void info(String msg) {
+        if (Logging) {
+            Log.info(msg);
+        }
+    }
+
+    private void addLogPath(String pat) {
         try {
             Path fileToDeletePath = Paths.get(pat);
             Files.delete(fileToDeletePath);
@@ -70,16 +83,23 @@ public class Simulator {
         }
     }
 
+    public void onRecord() {
+        Recording = false;
+    }
+
+    public void offRecord() {
+        Recording = true;
+    }
+
     public void setSeed(long seed) {
         // todo
     }
-
 
     public void simulate(IY0 y0, double fr, double to, double dt) throws JSONException {
         Time = fr;
         Model.initialise(Time, y0);
         dealWithDisclosures(fr, null);
-        if (Record) {
+        if (Recording) {
             Model.initialiseObservations(fr);
             Model.pushObservations(fr);
         }
@@ -94,7 +114,7 @@ public class Simulator {
         while (!ts.isEmpty()) {
             f = t;
             t = ts.poll();
-            if (Record) {
+            if (Recording) {
                 step(f, (f+t)/2);
                 Model.captureMidTermObservations(t);
                 step((f+t)/2, t);
@@ -118,7 +138,7 @@ public class Simulator {
                 if (ti > end) break;
 
                 tx = ti;
-                rs.forEach(req->Log.info(req.toLog()));
+                rs.forEach(req-> info(req.toLog()));
 
                 Model.fetchRequests(rs);
                 Model.synchroniseRequestTime(ti);
@@ -144,7 +164,7 @@ public class Simulator {
 
         ds.addAll(Model.collectDisclosure());
         ds = ds.stream().filter(d -> !d.getSource().equals(Model.getName())).collect(Collectors.toList());
-        ds.forEach(dis->Log.info(dis.toLog()));
+        ds.forEach(dis-> info(dis.toLog()));
 
         Map<Disclosure, AbsSimModel> dm;
         while (!ds.isEmpty()) {
@@ -155,7 +175,7 @@ public class Simulator {
             Model.fetchDisclosures(dm, ti);
             ds = Model.collectDisclosure();
             ds = ds.stream().filter(d -> !d.getSource().equals(Model.getName())).collect(Collectors.toList());
-            ds.forEach(dis->Log.info(dis.toLog()));
+            ds.forEach(dis-> info(dis.toLog()));
         }
     }
 
@@ -183,14 +203,6 @@ public class Simulator {
         }
         s.add(to);
         return s;
-    }
-
-    public void onRecord() {
-        Record = false;
-    }
-
-    public void offRecord() {
-        Record = true;
     }
 
     public static TimeSeries simulate(AbsSimModel model, IY0 y0,

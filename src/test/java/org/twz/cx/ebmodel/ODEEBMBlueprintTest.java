@@ -59,7 +59,7 @@ public class ODEEBMBlueprintTest {
 
     public void run(AbsSimModel model) throws JSONException {
         Simulator Simu = new Simulator(model);
-        Simu.addLogPath("log/ODE.txt");
+        Simu.onLog("log/ODE.txt");
         EBMY0 y0 = new EBMY0();
         y0.append("{'y': 'Sus', 'n': 900}");
         y0.append("{'y': 'Inf', 'n': 100}");

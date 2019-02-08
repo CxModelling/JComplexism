@@ -184,8 +184,10 @@ public class BayesNet implements AdapterJSONObject {
         Loci loci;
         double li = 0;
         for (String s : getOrder()) {
-            loci = DAG.getNode(s);
-            li += loci.evaluate(gene);
+            if (gene.has(s)) {
+                loci = DAG.getNode(s);
+                li += loci.evaluate(gene);
+            }
         }
         gene.setLogPriorProb(li);
     }

@@ -40,7 +40,7 @@ public class ReincarnationTest {
     @Test
     public void simulation() throws JSONException {
         Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("log/Reincarnation.txt");
+        Simu.onLog("log/Reincarnation.txt");
         StSpY0 y0 = new StSpY0();
         y0.append(1000, "Young");
         y0.append(1000, "Middle");

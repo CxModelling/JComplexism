@@ -60,7 +60,7 @@ public class MultiModelTest {
     public void simulation() throws JSONException {
         AbsSimModel Model = Ctrl.generateModel("2SIR", "MultiSIR", "pCloseSIR");
         Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("log/MM.txt");
+        Simu.onLog("log/MM.txt");
 
         Simu.simulate(Y0, 0, 10, 1);
         Model.getObserver().getObservations().print();

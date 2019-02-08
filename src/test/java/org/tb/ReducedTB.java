@@ -1,30 +1,90 @@
 package org.tb;
 
 
+import org.json.JSONException;
+import org.twz.cx.CxFitter;
 import org.twz.cx.Director;
+import org.twz.cx.ebmodel.EBMY0;
+import org.twz.cx.ebmodel.EquationBasedModel;
 import org.twz.cx.ebmodel.ODEEBMBlueprint;
-import org.twz.dag.BayesNet;
-import org.twz.dag.BayesianModel;
+import org.twz.cx.mcore.AbsSimModel;
+import org.twz.cx.mcore.IY0;
 import org.twz.dag.Gene;
+import org.twz.dag.SimulationCore;
+import org.twz.dataframe.TimeSeries;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.exception.TimeseriesException;
 
+import java.util.Map;
+
 import static org.apache.commons.math3.stat.StatUtils.sum;
 
-public class ReducedTB extends BayesianModel {
+public class ReducedTB extends CxFitter {
 
-    public ReducedTB(BayesNet bn) {
-        super(bn);
+    private double StartYear;
+    private SexDemography Demo;
+
+    public ReducedTB(SimulationCore sm, Director ctrl, SexDemography demo, double year0) {
+        super(sm, ctrl, "TB", year0, 2035, 0.5, "WarmUp", 300);
+        Demo = demo;
     }
 
     @Override
-    public Gene samplePrior() {
-        return null;
+    protected IY0 sampleY0(Gene gene) {
+        EBMY0 y0 = new EBMY0();
+        double n = 0;
+        try {
+            n = Demo.getPopulation(StartYear);
+        } catch (TimeseriesException e) {
+            e.printStackTrace();
+        }
+        try {
+            y0.append("{'y': 'Sus', 'n': "+ n*0.55 + "}");
+            y0.append("{'y': 'LatFast', 'n': "+ n*0.01 + "}");
+            y0.append("{'y': 'LatSlow', 'n': "+ n*0.214 + "}");
+            y0.append("{'y': 'InfF', 'n': "+ n*0.001/2 + "}");
+            y0.append("{'y': 'InfM', 'n': "+ n*0.001/2 + "}");
+            y0.append("{'y': 'Rec', 'n': "+ n*0.225 + "}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return y0;
     }
 
     @Override
-    public void evaluateLogLikelihood(Gene gene) {
+    protected boolean checkMidTerm(IY0 y0, Gene pars) {
+        Map<String, Double> ys = ((EBMY0) y0).toMap();
+        double act = ys.get("LatFast")*pars.get("r_act")
+                + ys.get("LatSlow")*pars.get("r_ract")
+                + ys.get("Rec")*pars.get("r_rel");
+        return act * 1e5 > 10;
+    }
 
+    @Override
+    protected IY0 transportY0(AbsSimModel model) {
+        Map<String, Double> ys = ((EquationBasedModel) model).getEquations().getDictY();
+        double scale = 1;
+        try {
+            scale *= Demo.getPopulation(StartYear);
+            scale /= ys.values().stream().mapToDouble(e->e).sum();
+        } catch (TimeseriesException e) {
+            e.printStackTrace();
+        }
+
+        EBMY0 y0 = new EBMY0();
+        for (Map.Entry<String, Double> ent : ys.entrySet()) {
+            try {
+                y0.append("{'y': '"+ ent.getKey() +"', 'n': "+ ent.getValue()*scale + "}");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return y0;
+    }
+
+    @Override
+    protected double calculateLogLikelihood(Gene gene, TimeSeries output) {
+        return 0;
     }
 
     @Override

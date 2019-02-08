@@ -46,7 +46,7 @@ public class ODEquationsTest {
     @Test
     public void simulation() throws JSONException {
         Simulator Simu = new Simulator(EBM);
-        Simu.addLogPath("log/EBM.txt");
+        Simu.onLog("log/EBM.txt");
         EBMY0 Y0 = new EBMY0();
         Y0.append("{'y': 'S', 'n': 990}");
         Y0.append("{'y': 'I', 'n': 10}");

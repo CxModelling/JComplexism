@@ -121,7 +121,7 @@ public class ModelLayoutTest {
     public void generate() throws JSONException {
         AbsSimModel Model = Ctrl.generateModel("Hybrid", "HybridSIR", "pHySIR");
         Simulator Sim = new Simulator(Model);
-        Sim.addLogPath("log/Hybrid.txt");
+        Sim.onLog("log/Hybrid.txt");
 
         Sim.simulate(Y0s, 0, 30, 1);
         Model.getObserver().getObservations().print();
