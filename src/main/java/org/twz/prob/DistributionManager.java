@@ -33,8 +33,8 @@ public class DistributionManager {
         Distributions.register("t", T.class, ags);
 
         ags = new AbsArgument[]{
-                new DoubleArg("a"),
                 new DoubleArg("m"),
+                new DoubleArg("a"),
                 new DoubleArg("b")};
         Distributions.register("triangle", Triangle.class, ags);
 

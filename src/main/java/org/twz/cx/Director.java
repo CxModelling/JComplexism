@@ -228,7 +228,7 @@ public class Director {
 
     public AbsSimModel generateMCore(String name, String type, String bn) {
         Map<String, Object> args = new HashMap<>();
-        args.put("bn", bn);
+        args.put("bn", this.getBayesNet(bn));
         args.put("da", this);
         return MCores.get(type).generate(name, args);
     }
@@ -244,10 +244,19 @@ public class Director {
         if (Layouts.containsKey(type)) {
             ModelLayout layout = Layouts.get(type);
             NodeGroup ng = layout.getParameterHierarchy(this);
-            ParameterCore pc = getBayesNet(bn).toSimulationCore(ng, true).generate("Test");
+            ParameterCore pc = getBayesNet(bn).toSimulationCore(ng, true).generate(name);
             return layout.generate(name, this, pc);
         } else {
             return generateMCore(name, type, bn);
+        }
+    }
+
+    public AbsSimModel generateModel(String name, String type, ParameterCore pc) {
+        if (Layouts.containsKey(type)) {
+            ModelLayout layout = Layouts.get(type);
+            return layout.generate(name, this, pc);
+        } else {
+            return generateMCore(name, type, pc);
         }
     }
 

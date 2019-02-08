@@ -10,7 +10,7 @@ public class Triangle implements IDistribution {
 	private double A, B, M, FM;
 	private String Name;
 
-	public Triangle(String name, Double a, Double m, Double b) {
+	public Triangle(String name, Double m, Double a, Double b) {
 		Name = name;
 		A = a;
 		B = b;
@@ -19,9 +19,9 @@ public class Triangle implements IDistribution {
 		rng = RNG;
 	}
 
-	public Triangle(double a, double m, double b) {
+	public Triangle(double m, double a, double b) {
 		this(null, a, m, b);
-		Name = String.format("triangle(%1$s,%2$s,%3$s)", A, M, B);
+		Name = String.format("triangle(%1$s,%2$s,%3$s)", M, A, B);
 	}
 
 	@Override

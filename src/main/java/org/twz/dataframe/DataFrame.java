@@ -96,11 +96,11 @@ public class DataFrame implements AdapterJSONArray {
     }
 
     public void print() {
-        print(10);
+        print("3");
     }
 
-    public void print(int n) {
-        System.out.format(getHeadingFormat(n), ColumnNames.toArray());
+    public void print(String n) {
+        System.out.format(getHeadingFormat(), ColumnNames.toArray());
         System.out.println();
 
         int size = Data.get(Key).size();
@@ -111,17 +111,18 @@ public class DataFrame implements AdapterJSONArray {
             for (int j = 0; j < ColumnNames.size(); j++) {
                 k = ColumnNames.get(j);
                 System.out.print(String.format(("%" + n + "g "), Data.get(k).get(i)));
+                System.out.print("\t");
             }
 
             System.out.println();
         }
     }
 
-    private String getHeadingFormat(int n) {
+    private String getHeadingFormat() {
         StringBuilder sb = new StringBuilder();
-        sb.append("%").append(n).append("s");
+        sb.append("%s");
         for (int i = 0; i < ColumnNames.size() - 1; i++) {
-            sb.append(" ").append("%").append(n).append("s");
+            sb.append("\t%s");
         }
         return sb.toString();
     }

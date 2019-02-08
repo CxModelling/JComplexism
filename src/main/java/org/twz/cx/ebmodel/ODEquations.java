@@ -37,6 +37,9 @@ public class ODEquations extends AbsEquations implements FirstOrderDifferentialE
         Integrator = new DormandPrince853Integrator(1.0e-8, 10.0, 1.0e-10, 1.0e-10);
     }
 
+    public void setIntegrator(FirstOrderIntegrator integrator) {
+        Integrator = integrator;
+    }
 
     @Override
     protected void goTo(double t0, double[] y0, double t1, double[] y1) {

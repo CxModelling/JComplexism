@@ -47,6 +47,6 @@ public class LifeRateTest {
         Simulator Simu = new Simulator(Model);
         Simu.addLogPath("log/LifeRate.txt");
         Simu.simulate(Y0, 0, 10, 1);
-        Model.getObserver().getObservations().print();
+        Model.print();
     }
 }

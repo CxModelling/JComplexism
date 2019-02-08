@@ -49,7 +49,7 @@ public class SimulationCore implements AdapterJSONObject, Cloneable {
         return SGs.get(sg);
     }
 
-    BayesNet getBN() {
+    public BayesNet getBN() {
         return BN;
     }
 

@@ -10,7 +10,7 @@ public abstract class AbsDemography {
     public AbsDemography(TimeSeries ts) {
         Ts = ts;
         StartTime = ts.getStartTime();
-        EndTime = ts.getEndtime();
+        EndTime = ts.getEndTime();
     }
 
     public abstract double getPopulation(double time) throws TimeseriesException;

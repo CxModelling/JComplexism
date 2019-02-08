@@ -2,6 +2,8 @@ package org.twz.cx.mcore;
 
 import org.json.JSONException;
 import org.twz.dataframe.DataFrame;
+import org.twz.dataframe.TimeSeries;
+
 import java.util.*;
 
 /**
@@ -129,8 +131,8 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         return Mid;
     }
 
-    public List<Map<String, Double>> getTimeSeries() {
-        return TimeSeries;
+    public org.twz.dataframe.TimeSeries getTimeSeries() {
+        return getObservations().toTimeSeries();
     }
 
     public List<Map<String, Double>> getAdjustedTimeSeries() {

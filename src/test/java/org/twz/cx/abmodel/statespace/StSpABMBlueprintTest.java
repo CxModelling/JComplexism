@@ -66,7 +66,7 @@ public class StSpABMBlueprintTest {
         StSpABModel Model = Bp.generate("Test", args);
 
         Simulator Simu = new Simulator(Model);
-        Simu.addLogPath("log/FDShock.txt");
+        //Simu.addLogPath("log/FDShock.txt");
 
         Simu.simulate(Y0, 0, 10, 1);
         Model.getObserver().getObservations().print();

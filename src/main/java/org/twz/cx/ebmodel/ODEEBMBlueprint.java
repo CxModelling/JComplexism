@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.Director;
 import org.twz.cx.mcore.IModelBlueprint;
+import org.twz.dag.BayesNet;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.util.NodeGroup;
 import org.twz.io.FnJSON;
@@ -86,8 +87,13 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
         if (args.containsKey("bn") && args.containsKey("da")) {
             Director da = (Director) args.get("da");
 
-            pc = da.getBayesNet((String) args.get("bn"))
-                    .toSimulationCoreNoOut(getParameterHierarchy(da), true).generate(name);
+            BayesNet bn;
+            if (args.get("bn") instanceof BayesNet) {
+                bn = (BayesNet) args.get("bn");
+            } else {
+                bn = da.getBayesNet((String) args.get("bn"));
+            }
+            pc = bn.toSimulationCoreNoOut(getParameterHierarchy(da), true).generate(name);
 
         } else if(args.containsKey("pc")) {
             pc = (ParameterCore) args.get("pc");

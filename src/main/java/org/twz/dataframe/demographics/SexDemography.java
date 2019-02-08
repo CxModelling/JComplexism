@@ -33,7 +33,7 @@ public class SexDemography extends AbsDemography {
 
     @Override
     public double getDeathRate(double time) throws TimeseriesException {
-        return Ts.getDouble(time, IDeathF) + Ts.getDouble(time, IDeathM);
+        return weighted(time, IDeathF, IDeathM);
     }
 
     public double getDeathRate(double time, String sex) throws TimeseriesException {
@@ -42,7 +42,7 @@ public class SexDemography extends AbsDemography {
 
     @Override
     public double getBirthRate(double time) throws TimeseriesException {
-        return Ts.getDouble(time, IBirthF) + Ts.getDouble(time, IBirthM);
+        return weighted(time, IBirthF, IBirthM);
     }
 
     public double getBirthRate(double time, String sex) throws TimeseriesException {
@@ -51,7 +51,7 @@ public class SexDemography extends AbsDemography {
 
     @Override
     public double getMigration(double time) throws TimeseriesException {
-        return Ts.getDouble(time, IMigF) + Ts.getDouble(time, IMigM);
+        return weighted(time, IMigF, IMigM);
     }
 
     public double getMigration(double time, String sex) throws TimeseriesException {
@@ -77,6 +77,12 @@ public class SexDemography extends AbsDemography {
             default:
                 throw new TimeseriesException("sex should be Female/Male");
         }
+    }
+
+    private double weighted(double time, String iF, String iM) throws TimeseriesException {
+        double pF = Ts.getDouble(time, IPopF);
+        double pM = Ts.getDouble(time, IPopM);
+        return (pF*Ts.getDouble(time, iF) + pM*Ts.getDouble(time, iM))/(pF + pM);
     }
 
     public static SexDemography readCSV(String file_path, String iYear,

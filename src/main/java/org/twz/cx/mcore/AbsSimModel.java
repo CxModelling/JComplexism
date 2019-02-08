@@ -10,6 +10,8 @@ import org.twz.cx.mcore.communicator.ListenerSet;
 import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.actor.Sampler;
+import org.twz.dataframe.DataFrame;
+import org.twz.dataframe.TimeSeries;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.*;
@@ -220,8 +222,12 @@ public abstract class AbsSimModel implements AdapterJSONObject{
         return Observer.getLast();
     }
 
-    public List<Map<String, Double>> output() {
+    public TimeSeries outputTS() {
         return Observer.getTimeSeries();
+    }
+
+    public DataFrame outputDF() {
+        return Observer.getObservations();
     }
 
     public Double getSnapshot(String key, double ti) throws JSONException {

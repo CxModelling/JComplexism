@@ -38,7 +38,7 @@ public class TimeSeries implements AdapterJSONArray {
         return Times.get(0);
     }
 
-    public double getEndtime() {
+    public double getEndTime() {
         return Times.get(Times.size()-1);
     }
 

@@ -373,10 +373,13 @@ public class BayesNet implements AdapterJSONObject {
         String line;
         for (int i = 1; i < row_lines.length; i++) {
             line = row_lines[i].replaceAll("\\s+", "");
-            line = line.replaceAll("#\\w*", "");
+            line = line.split("#")[0];
+
+
             if (line.startsWith("}")) {
                 break;
             }
+            if (line.isEmpty()) continue;
             bn.appendLoci(line);
         }
         return bn;

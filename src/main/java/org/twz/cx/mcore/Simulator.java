@@ -3,6 +3,7 @@ package org.twz.cx.mcore;
 import org.json.JSONException;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
+import org.twz.dataframe.TimeSeries;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 2017/2/10.
  */
 public class Simulator {
-    private class SimFormattor extends Formatter {
+    private class SimFormatter extends Formatter {
         @Override
         public String format(LogRecord record) {
             return String.format("[%s]: %s\n", record.getLevel(), record.getMessage());
@@ -62,7 +63,7 @@ public class Simulator {
 
         try {
             FileHandler fh = new FileHandler(pat, false);
-            fh.setFormatter(new SimFormattor());
+            fh.setFormatter(new SimFormatter());
             Log.addHandler(fh);
         } catch (IOException e) {
             e.printStackTrace();
@@ -111,6 +112,8 @@ public class Simulator {
             try {
                 Model.collectRequests();
                 List<Request> rs = Model.getScheduler().getRequests();
+
+                if (rs.isEmpty()) break;
                 ti = rs.get(0).getTime();
                 if (ti > end) break;
 
@@ -190,21 +193,21 @@ public class Simulator {
         Record = true;
     }
 
-    public static List<Map<String, Double>> simulate(AbsSimModel model, IY0 y0,
-                                                     double fr, double to, double dt,
-                                                     boolean rec) throws JSONException {
+    public static TimeSeries simulate(AbsSimModel model, IY0 y0,
+                                      double fr, double to, double dt,
+                                      boolean rec) throws JSONException {
         Simulator sim = new Simulator(model, rec);
         sim.simulate(y0, fr, to, dt);
-        return model.output();
+        return model.getObserver().getTimeSeries();
     }
 
-    public static List<Map<String, Double>> update(AbsSimModel model,
+    public static TimeSeries update(AbsSimModel model,
                                                    double fr, double to, double dt,
                                                    boolean rec) throws JSONException {
         Simulator sim = new Simulator(model, rec);
         sim.Time = fr;
         sim.update(to, dt);
-        return model.output();
+        return model.getObserver().getTimeSeries();
     }
 
 }

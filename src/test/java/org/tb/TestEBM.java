@@ -1,11 +1,14 @@
 package org.tb;
 
+import org.apache.commons.math3.ode.nonstiff.ClassicalRungeKuttaIntegrator;
+import org.apache.commons.math3.ode.nonstiff.EulerIntegrator;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.ebmodel.EBMY0;
-import org.twz.cx.ebmodel.ODEEBMBlueprint;
+import org.twz.cx.ebmodel.EquationBasedModel;
+import org.twz.cx.ebmodel.ODEquations;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dataframe.demographics.SexDemography;
@@ -24,47 +27,30 @@ public class TestEBM {
                 "PopF", "PopM", "DeathF", "DeathM",
                 "BirthF", "BirthM", "MigrationF", "MigrationM");
 
-        ODEEBMBlueprint bp = (ODEEBMBlueprint) Da.createSimModel("SIR", "ODEEBM");
-
-        bp.setODE((t, y0, y1, parameters, attributes) -> {
-            double beta = Math.exp(parameters.get("beta")), gamma = Math.exp(parameters.get("delay"));
-            double n = y0[0] + y0[1] + y0[2];
-            double foi = beta * y0[0] * y0[1] / n;
-            y1[0] = - foi;
-            y1[1] = foi - gamma * y0[1];
-            y1[2] = gamma * y0[1];
-        }, new String[]{"Sus", "Inf", "Rec"});
-
-        bp.addMeasurementFunction((tab, ti, ys, pc, x) -> {
-            double n = ys[0] + ys[1] + ys[2];
-            double p;
-            try {
-                p=((SexDemography) x.get("Demo")).getPopulation(ti);
-            } catch (TimeseriesException e) {
-                p=Double.NEGATIVE_INFINITY;
-            }
-            tab.put("Pop", p);
-            tab.put("Prv", ys[1]/n);
-            tab.put("N", n);
-        });
-        bp.setRequiredParameters(new String[]{"beta", "delay"});
-        bp.setObservations(new String[]{"Sus", "Inf", "Rec"});
-        bp.addExternalVariables("Demo", DemoSex);
+        ReducedTB.setUpModel(Da, DemoSex, 1990);
 
     }
 
     @Test
-    public void simulationDaBN() throws JSONException {
-        run(Da.generateMCore("model", "SIR", "pTB"));
+    public void simulationDaBN() throws NullPointerException, JSONException, TimeseriesException {
+        run(Da.generateMCore("model", "TB", "pTB"));
     }
 
-    public void run(AbsSimModel model) throws JSONException {
+    public void run(AbsSimModel model) throws JSONException, TimeseriesException {
+        //((ODEquations)((EquationBasedModel) model).getEquations())
+        //        .setIntegrator(new EulerIntegrator(3));
         Simulator Simu = new Simulator(model);
         Simu.addLogPath("log/ODE.txt");
         EBMY0 y0 = new EBMY0();
-        y0.append("{'y': 'Sus', 'n': 900}");
-        y0.append("{'y': 'Inf', 'n': 100}");
-        Simu.simulate(y0, 1998, 2000, 1);
-        model.print();
+        double n = DemoSex.getPopulation(1990);
+        y0.append("{'y': 'Sus', 'n': "+ n*0.55 + "}");
+        y0.append("{'y': 'LatFast', 'n': "+ n*0.01 + "}");
+        y0.append("{'y': 'LatSlow', 'n': "+ n*0.214 + "}");
+        y0.append("{'y': 'InfF', 'n': "+ n*0.001/2 + "}");
+        y0.append("{'y': 'InfM', 'n': "+ n*0.001/2 + "}");
+        y0.append("{'y': 'Rec', 'n': "+ n*0.225 + "}");
+
+        Simu.simulate(y0, 0, 300, 1);
+        model.getObserver().getObservations().print("4");
     }
 }

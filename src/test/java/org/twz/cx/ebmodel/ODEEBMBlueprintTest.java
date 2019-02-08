@@ -49,12 +49,12 @@ public class ODEEBMBlueprintTest {
                 .toSimulationCore(Da.getSimModel("SIR").getParameterHierarchy(Da), true)
                 .generate("Test");
 
-        run(Da.generateMCore("model", "SIR", PC));
+        run(Da.generateModel("model", "SIR", PC));
     }
 
     @Test
     public void simulationDaBN() throws JSONException {
-        run(Da.generateMCore("model", "SIR", "pCloseSIR"));
+        run(Da.generateModel("model", "SIR", "pCloseSIR"));
     }
 
     public void run(AbsSimModel model) throws JSONException {
@@ -63,7 +63,7 @@ public class ODEEBMBlueprintTest {
         EBMY0 y0 = new EBMY0();
         y0.append("{'y': 'Sus', 'n': 900}");
         y0.append("{'y': 'Inf', 'n': 100}");
-        Simu.simulate(y0, 0, 10, 1);
+        Simu.simulate(y0, 0, 5, 1);
         model.print();
     }
 }
