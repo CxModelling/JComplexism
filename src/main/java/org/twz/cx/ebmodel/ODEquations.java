@@ -16,25 +16,29 @@ import java.util.Map;
 
 public class ODEquations extends AbsEquations implements FirstOrderDifferentialEquations {
 
+    private FirstOrderIntegrator getDefaultIntegrator(double dt) {
+        return new DormandPrince853Integrator(1.0e-8, Math.max(10.0, dt), 1.0e-10, 1.0e-10);
+    }
+
     private FirstOrderIntegrator Integrator;
     private ODEFunction Function;
 
     public ODEquations(String name, ODEFunction fn, String[] y_names, double dt, Gene parameters) {
         super(name, y_names, parameters, dt);
         Function = fn;
-        Integrator = new DormandPrince853Integrator(1.0e-8, 10.0, 1.0e-10, 1.0e-10);
+        Integrator = getDefaultIntegrator(dt);
     }
 
     public ODEquations(String name, ODEFunction fn, String[] y_names, double dt, Map<String, Double> parameters) {
         super(name, y_names, parameters, dt);
         Function = fn;
-        Integrator = new DormandPrince853Integrator(1.0e-8, 10.0, 1.0e-10, 1.0e-10);
+        Integrator = getDefaultIntegrator(dt);
     }
 
     public ODEquations(String name, ODEFunction fn, String[] y_names, double dt) {
         super(name, y_names, dt);
         Function = fn;
-        Integrator = new DormandPrince853Integrator(1.0e-8, 10.0, 1.0e-10, 1.0e-10);
+        Integrator = getDefaultIntegrator(dt);
     }
 
     public void setIntegrator(FirstOrderIntegrator integrator) {

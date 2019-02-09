@@ -10,23 +10,25 @@ import org.twz.cx.ebmodel.ODEEBMBlueprint;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.dag.Gene;
-import org.twz.dag.SimulationCore;
 import org.twz.dataframe.TimeSeries;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.exception.TimeseriesException;
+import org.twz.prob.DistributionManager;
+import org.twz.prob.Poisson;
 
 import java.util.Map;
 
-import static org.apache.commons.math3.stat.StatUtils.sum;
-
 public class ReducedTB extends CxFitter {
 
-    private double StartYear;
+    private final double StartYear;
     private SexDemography Demo;
+    private TimeSeries Noti;
 
-    public ReducedTB(SimulationCore sm, Director ctrl, SexDemography demo, double year0) {
-        super(sm, ctrl, "TB", year0, 2035, 0.5, "WarmUp", 300);
+    public ReducedTB(Director ctrl, SexDemography demo, double year0, TimeSeries noti) {
+        super(ctrl, "pTB", "TB", year0, 2035, 0.5, "WarmUp", 300);
         Demo = demo;
+        StartYear = year0;
+        Noti = noti;
     }
 
     @Override
@@ -84,7 +86,25 @@ public class ReducedTB extends CxFitter {
 
     @Override
     protected double calculateLogLikelihood(Gene gene, TimeSeries output) {
-        return 0;
+        double nf, nm, hf, hm, pf, pm;
+        double li = 0;
+        for (Double time : Noti.getTimes()) {
+            try {
+                pf = Demo.getPopulation(time, "Female");
+                pm = Demo.getPopulation(time, "Male");
+                nf = Noti.getDouble(time, "NumF");
+                nm = Noti.getDouble(time, "NumM");
+                hf = output.getDouble(time, "NotiF");
+                hm = output.getDouble(time, "NotiM");
+                li += (new Poisson(hf*pf)).logpdf(nf);
+                li += (new Poisson(hm*pm)).logpdf(nm);
+            } catch (TimeseriesException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return li;
     }
 
     @Override
@@ -93,107 +113,31 @@ public class ReducedTB extends CxFitter {
     }
 
 
-    public static void setUpModel(Director da, SexDemography demo, double startYear) {
-        abstract class dT {
-            abstract double eval(double t, double t0);
-        }
+    public static void setUpModel(Director da, SexDemography demo, double startYear, String dt_type) {
 
-        dT tfn = new dT() {
-            @Override
-            double eval(double t, double t0) {
-                return t- t0;
-            }
-        };
+        String[] pars = new String[]{"beta", "partial_immune",
+                "delay", "log_sr_t", "log_sr_m",
+                "r_act", "r_ract", "r_rel", "r_cure", "r_treat", "r_slat", "r_die_tb"};
 
-        ODEEBMBlueprint bp = (ODEEBMBlueprint) da.createSimModel("TB", "ODEEBM");
+        String[] compartments = new String[]{
+                "Sus", "LatFast", "LatSlow",
+                "InfF", "InfM", "HosF", "HosM", "Rec"};
 
-        bp.setODE((t, y0, y1, pars, attributes) -> {
+        ODEEBMBlueprint bp = (ODEEBMBlueprint) da.createSimModel("WarmUp", "ODEEBM");
 
-            double sus = y0[0], flat = y0[1], slat = y0[2], inf_f = y0[3], inf_m = y0[4],
-                    hos_f = y0[5], hos_m = y0[6], rec = y0[7];
+        bp.setODE(new FnWarmUp(demo, startYear, dt_type), compartments);
 
-            double beta = expLU(pars.get("beta"), 1, 30);
-            double sr_f = expLU(pars.get("delay") +
-                    pars.get("log_sr_t")*0, 0.5, 8.902*2);
-            double sr_m = expLU(pars.get("delay") +
-                    pars.get("log_sr_t")*0 + pars.get("log_sr_m"), 0.5, 8.902*2);
-
-            double n = sum(y0);
-            double inf = inf_f + inf_m + hos_f + hos_m;
-            double foi = beta * inf / n;
-            double re_foi = foi * (1-pars.get("partial_immune"));
-
-            double act = flat*pars.get("r_act") + slat*pars.get("r_ract") + rec*pars.get("r_rel");
-
-
-            y1[0] = - sus*foi;
-            y1[1] = sus*foi + (slat + rec)*re_foi - flat*(pars.get("r_act")+pars.get("r_slat"));
-
-            y1[2] = flat*pars.get("r_slat") - slat*(pars.get("r_ract")+re_foi);
-
-            y1[3] = act*pars.get("kappa") - inf_f*(pars.get("r_cure")+sr_f);
-            y1[4] = act*(1-pars.get("kappa")) - inf_m*(pars.get("r_cure")+sr_m);
-
-
-            y1[5] = inf_f*sr_f - hos_f*(pars.get("r_cure")+pars.get("r_treat"));
-            y1[6] = inf_m*sr_m - hos_m*(pars.get("r_cure")+pars.get("r_treat"));
-
-            y1[7] = (inf_f+inf_m)*pars.get("r_cure")
-                    + (hos_f+hos_m)*(pars.get("r_cure")+pars.get("r_treat"))
-                    - rec*(pars.get("r_rel") + re_foi);
-
-            try {
-                double bir = demo.getBirthRate(startYear);
-                double out = demo.getDeathRate(startYear) - demo.getMigration(startYear);
-                double outF = demo.getDeathRate(startYear, "Female") + pars.get("r_die_tb");
-                double outM = demo.getDeathRate(startYear, "Male") + pars.get("r_die_tb");
-
-                double[] pdy = new double[] {
-                        n*bir - sus*out,
-                        -flat*out,
-                        -slat*out,
-                        -inf_f*outF,
-                        -inf_m*outM,
-                        -hos_f*outF,
-                        -hos_m*outM,
-                        -rec*out
-                };
-                double sdy = sum(pdy)/n;
-
-                for (int i = 0; i < y1.length; i++) {
-                    y1[i] += pdy[i] - y0[i]*sdy;
-                }
-
-            } catch (TimeseriesException e) {
-                e.printStackTrace();
-            }
-
-
-
-        }, new String[]{"Sus", "LatFast", "LatSlow", "InfF", "InfM", "HosF", "HosM", "Rec"});
-
-        bp.addMeasurementFunction((tab, ti, ys, pars, x) -> {
-            double n = sum(ys);
-            double inf = ys[3] + ys[4] + ys[5] + ys[6];
-            double act = ys[1]*pars.get("r_act") + ys[2]*pars.get("r_ract") + ys[7]*pars.get("r_rel");
-
-            tab.put("Inc", act/n*1e5);
-            tab.put("Prv", inf/n*1e5);
-            tab.put("N", n/1e6);
-        });
-        bp.setRequiredParameters(new String[]{"beta", "partial_immune",
-                            "delay", "log_sr_t", "log_sr_m",
-                            "r_act", "r_ract", "r_rel", "r_cure", "r_treat", "r_slat", "r_die_tb"});
-        //bp.setObservations(new String[]{"Sus", "Rec"});
+        bp.setRequiredParameters(pars);
         bp.addExternalVariables("Demo", demo);
-        bp.setDt(0.5);
+        bp.setDt(1);
 
-    }
 
-    private static double expLU(double log_rate, double lower, double upper) {
-        double exp = Math.exp(log_rate);
-        exp += lower;
-        exp = Math.min(exp, upper);
-        return exp;
+        bp = (ODEEBMBlueprint) da.createSimModel("TB", "ODEEBM");
+
+        bp.setODE(new FnTB(demo, startYear, dt_type), compartments);
+        bp.addMeasurementFunction(new FnMeasure(demo, startYear, dt_type));
+        bp.setRequiredParameters(pars);
+        bp.addExternalVariables("Demo", demo);
+        bp.setDt(1);
     }
 }

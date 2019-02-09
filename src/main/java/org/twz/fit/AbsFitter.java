@@ -4,10 +4,16 @@ import org.twz.dag.BayesianModel;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public abstract class AbsFitter {
+    private class FittingFormatter extends Formatter {
+        @Override
+        public String format(LogRecord record) {
+            return String.format("[%s]: %s\n", record.getLevel(), record.getMessage());
+        }
+    }
+
 
     protected BayesianModel Model;
     protected Map<String, Double> Options;
@@ -27,7 +33,10 @@ public abstract class AbsFitter {
     public void onLog() {
         if (Log == null) {
             Log = Logger.getLogger(this.getClass().getSimpleName());
+            Log.setUseParentHandlers(false);
             Log.setLevel(Level.INFO);
+            Log.addHandler(new ConsoleHandler());
+            //Log.addHandler(new StreamHandler(System.out, new FittingFormatter()));
         }
     }
 
@@ -36,15 +45,17 @@ public abstract class AbsFitter {
     }
 
     protected void info(String msg) {
-        Log.info(msg);
+        if (Log != null) {
+            Log.info(msg);
+        }
     }
 
     protected void warning(String msg) {
-        Log.warning(msg);
+        if (Log != null) Log.warning(msg);
     }
 
     protected void error(String msg) {
-        Log.severe(msg);
+        if (Log != null) Log.severe(msg);
     }
 
     public void setOptions(String key, double value) {

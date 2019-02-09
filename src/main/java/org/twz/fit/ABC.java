@@ -65,6 +65,7 @@ public class ABC extends BayesianFitter {
         double p = Options.get("P_test");
 
         List<Gene> xs = new ArrayList<>();
+
         for (Gene gene : getPrior()) {
             xs.add(gene);
             if (xs.size() >= n) {

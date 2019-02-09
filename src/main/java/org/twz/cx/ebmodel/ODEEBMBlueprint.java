@@ -77,7 +77,7 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
 
     @Override
     public NodeGroup getParameterHierarchy(Director dc) {
-        return new NodeGroup(getName(), Ps);
+        return new NodeGroup(getName(), new String[0]);
     }
 
     @Override

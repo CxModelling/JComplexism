@@ -90,7 +90,6 @@ public abstract class AbsEquations extends ModelAtom {
         if (t0 >= t1) return;
         goTo(t0, Ys, t1, Ys);
         Last = t1;
-
     }
 
     protected abstract void goTo(double t0, double[] y0, double t1, double[] y1);

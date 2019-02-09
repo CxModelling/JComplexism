@@ -1,0 +1,6 @@
+PCore DataTB {
+    lamF = PopF * NotiF
+    NumF ~ pois(lamF)
+    lamM = PopM * NotiM
+    NumM ~ pois(lamM)
+}

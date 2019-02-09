@@ -177,7 +177,7 @@ public class NodeGroup implements AdapterJSONObject {
     }
 
     public void allocateNodes(BayesNet bn) {
-        allocateNodes(bn, new HashSet<>(), new HashSet<>(bn.getDAG().getLeaves()));
+        allocateNodes(bn, new HashSet<>(), new HashSet<>());
     }
 
     public void allocateNodes(BayesNet bn, Set<String> random, Set<String> out) {

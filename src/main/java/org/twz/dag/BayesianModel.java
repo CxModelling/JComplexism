@@ -12,7 +12,7 @@ import java.util.*;
  */
 public abstract class BayesianModel {
 
-    private final BayesNet BN;
+    public final BayesNet BN;
 
     public BayesianModel(BayesNet bn) {
         BN = bn;

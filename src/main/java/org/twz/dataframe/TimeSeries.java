@@ -2,6 +2,8 @@ package org.twz.dataframe;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.distribution.PoissonDistribution;
+import org.apache.commons.math3.exception.OutOfRangeException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.twz.dataframe.timeseries.DoubleSeries;
@@ -42,6 +44,10 @@ public class TimeSeries implements AdapterJSONArray {
         return Times.get(Times.size()-1);
     }
 
+    public List<Double> getTimes() {
+        return Times;
+    }
+
     public Map<String, Object> get(double time) {
         double i = TimeFunction.value(time);
         i = Math.min(i, Times.size() - 1);
@@ -54,7 +60,7 @@ public class TimeSeries implements AdapterJSONArray {
             Map<String, Object> res0 = geti((int) Math.floor(i)),
                                 res1 = geti((int) Math.ceil(i));
 
-            Map<String, Object> res = new HashMap<>();
+            Map<String, Object> res = new LinkedHashMap<>();
             for (Series value : DataSeries.values()) {
                 String key = value.getName();
                 res.put(key, value.interpolate(time, t0, res0.get(key), t1, res1.get(key)));
@@ -64,7 +70,7 @@ public class TimeSeries implements AdapterJSONArray {
     }
 
     private Map<String, Object> geti(int i) {
-        Map<String, Object> res = new HashMap<>();
+        Map<String, Object> res = new LinkedHashMap<>();
         for (Series value : DataSeries.values()) {
             res.put(value.getName(), value.get(i));
         }
@@ -87,7 +93,13 @@ public class TimeSeries implements AdapterJSONArray {
     }
 
     public Double getDouble(double time, String x) throws TimeseriesException {
-        double i = TimeFunction.value(time);
+        double i;
+        try {
+            i = TimeFunction.value(time);
+        } catch (OutOfRangeException e) {
+            i = Times.size() - 1;
+        }
+
         i = Math.min(i, Times.size() - 1);
         i = Math.max(i, 0);
 
@@ -207,6 +219,21 @@ public class TimeSeries implements AdapterJSONArray {
         return null;
     }
 
+    public void toCSV(String path) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Time");
+
+        DataSeries.keySet().forEach(k->sb.append(",").append(k));
+        for (int i = 0; i < Times.size(); i++) {
+            sb.append("\n");
+            sb.append(Times.get(i));
+            geti(i).values().forEach(v->sb.append(",").append(v));
+        }
+
+        IO.writeText(sb.toString(), path);
+    }
+
     public static TimeSeries readCSV(String file_path, String i_time) {
         Map<String, List<String>> data = IO.loadCSV(file_path);
 
@@ -216,7 +243,7 @@ public class TimeSeries implements AdapterJSONArray {
             if (ent.getKey().equals(i_time)) continue;
             try {
                 ts.appendSeries(new DoubleSeries(ent.getKey(), SS2DS(ent.getValue())));
-            } catch (ClassCastException e) {
+            } catch (NumberFormatException e) {
                 ts.appendSeries(new StringSeries(ent.getKey(), ent.getValue()));
             }
         }

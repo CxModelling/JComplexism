@@ -73,7 +73,12 @@ public class ParameterCore extends Gene {
     }
 
     public ParameterCore genSibling(String nickname, Map<String, Double> exo) {
-        return Parent.breed(nickname, getGroupName(), exo);
+        if (Parent != null) {
+            return Parent.breed(nickname, getGroupName(), exo);
+        } else {
+            return SG.generate(nickname, exo, null, true);
+        }
+
     }
 
     public ParameterCore genSibling(String nickname) {
@@ -230,7 +235,7 @@ public class ParameterCore extends Gene {
     }
 
     public ParameterCore clone() {
-        return (ParameterCore) super.clone();
+        return new ParameterCore(Nickname, SG, getLocus(), getLogPriorProb());
     }
 
 

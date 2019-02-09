@@ -204,8 +204,13 @@ public class Director {
     }
 
     public NodeGroup getParameterHierarchy(String name) {
-        assert Layouts.containsKey(name);
-        return Layouts.get(name).getParameterHierarchy(this);
+        if (Layouts.containsKey(name)) {
+            return Layouts.get(name).getParameterHierarchy(this);
+        } else if (MCores.containsKey(name)) {
+            return MCores.get(name).getParameterHierarchy(this);
+        } else {
+            return new NodeGroup(name, new String[0]);
+        }
     }
 
     public ParameterCore generatePCore(String name, String bn) {

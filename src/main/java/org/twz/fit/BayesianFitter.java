@@ -15,7 +15,8 @@ public abstract class BayesianFitter extends AbsFitter {
 
     public BayesianFitter(BayesianModel model) {
         super(model);
-
+        Prior = new ArrayList<>();
+        Posterior = new ArrayList<>();
     }
 
     public abstract void update(int niter);

@@ -207,19 +207,28 @@ public class Simulator {
 
     public static TimeSeries simulate(AbsSimModel model, IY0 y0,
                                       double fr, double to, double dt,
-                                      boolean rec) throws JSONException {
+                                      boolean rec) throws Exception {
         Simulator sim = new Simulator(model, rec);
         sim.simulate(y0, fr, to, dt);
-        return model.getObserver().getTimeSeries();
+        if (rec) {
+            return model.getObserver().getTimeSeries();
+        } else {
+            return null;
+        }
+
     }
 
     public static TimeSeries update(AbsSimModel model,
                                                    double fr, double to, double dt,
-                                                   boolean rec) throws JSONException {
+                                                   boolean rec) throws Exception {
         Simulator sim = new Simulator(model, rec);
         sim.Time = fr;
         sim.update(to, dt);
-        return model.getObserver().getTimeSeries();
+        if (rec) {
+            return model.getObserver().getTimeSeries();
+        } else {
+            return null;
+        }
     }
 
 }

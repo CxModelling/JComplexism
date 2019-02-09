@@ -1,6 +1,5 @@
 package org.twz.cx;
 
-import org.json.JSONException;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.Simulator;
@@ -11,18 +10,18 @@ import org.twz.misc.NameGenerator;
 
 public abstract class CxFitter extends BayesianModel {
     private NameGenerator NG;
-    private SimulationCore SM;
+    private SimulationCore SC;
     private Director Ctrl;
     private String SimModel, WarmUpModel;
-    private double Time0, Time1, Dt, TimeWarm;
+    private final double Time0, Time1, Dt, TimeWarm;
 
-    public CxFitter(SimulationCore sm, Director ctrl, String simModel,
+    public CxFitter(Director ctrl, String bn, String simModel,
                     double t0, double t1, double dt,
                     String warmUpModel, double t_warm) {
-        super(sm.getBN());
-        this.NG = new NameGenerator("Sim");
-        this.SM = sm;
+        super(ctrl.getBayesNet(bn));
+        NG = new NameGenerator("Sim");
         Ctrl = ctrl;
+        SC = this.BN.toSimulationCore(ctrl.getParameterHierarchy(simModel), true);
         SimModel = simModel;
         Time0 = t0;
         Time1 = t1;
@@ -31,15 +30,15 @@ public abstract class CxFitter extends BayesianModel {
         WarmUpModel = warmUpModel;
     }
 
-    public CxFitter(SimulationCore sm, Director ctrl, String simModel,
+    public CxFitter(Director ctrl, String bn, String simModel,
                     double t0, double t1, double dt) {
-        this(sm, ctrl, simModel, t0, t1, dt, null, 0);
+        this(ctrl, bn, simModel, t0, t1, dt, null, 0);
     }
 
 
     @Override
     public Gene samplePrior() {
-        return SM.generate(NG.getNext());
+        return SC.generate(NG.getNext());
     }
 
     public IY0 warmUp(Gene pars) {
@@ -58,7 +57,7 @@ public abstract class CxFitter extends BayesianModel {
         AbsSimModel model = Ctrl.generateModel(pc.getName(), WarmUpModel, pc);
         try {
             Simulator.simulate(model, y0, 0, TimeWarm, 1, false);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return transportY0(model);
@@ -74,8 +73,8 @@ public abstract class CxFitter extends BayesianModel {
 
         AbsSimModel model = Ctrl.generateModel(pc.getName(), SimModel, pc);
         try {
-            Simulator.simulate(model, y0, Time0, Time1, Dt, false);
-        } catch (JSONException e) {
+            Simulator.simulate(model, y0, Time0, Time1, Dt, true);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return model.getObserver().getTimeSeries();
@@ -87,8 +86,12 @@ public abstract class CxFitter extends BayesianModel {
         if (!checkMidTerm(y0, gene)) {
             gene.setLogLikelihood(Double.NEGATIVE_INFINITY);
         } else {
-            TimeSeries ts = simulate(gene, y0);
-            gene.setLogLikelihood(calculateLogLikelihood(gene, ts));
+            try {
+                TimeSeries ts = simulate(gene, y0);
+                gene.setLogLikelihood(calculateLogLikelihood(gene, ts));
+            } catch (Exception e) {
+                gene.setLogLikelihood(Double.NEGATIVE_INFINITY);
+            }
         }
     }
 
