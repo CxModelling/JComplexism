@@ -2,7 +2,7 @@ package org.tb;
 
 
 import org.json.JSONException;
-import org.twz.cx.CxFitter;
+import org.twz.cx.CxDataModel;
 import org.twz.cx.Director;
 import org.twz.cx.ebmodel.EBMY0;
 import org.twz.cx.ebmodel.EquationBasedModel;
@@ -13,12 +13,11 @@ import org.twz.dag.Gene;
 import org.twz.dataframe.TimeSeries;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.exception.TimeseriesException;
-import org.twz.prob.DistributionManager;
 import org.twz.prob.Poisson;
 
 import java.util.Map;
 
-public class ReducedTB extends CxFitter {
+public class ReducedTB extends CxDataModel {
 
     private final double StartYear;
     private SexDemography Demo;
@@ -111,6 +110,7 @@ public class ReducedTB extends CxFitter {
     public boolean hasExactLikelihood() {
         return false;
     }
+
 
 
     public static void setUpModel(Director da, SexDemography demo, double startYear, String dt_type) {

@@ -37,10 +37,9 @@ public class TestEBM {
 
     @Test
     public void fit() {
-        ABC alg = new ABC(BM);
+        ABC alg = new ABC(300);
         alg.onLog();
-        alg.fit(100);
-        alg.summarisePosterior();
+        BM.fit(alg);
 
     }
 

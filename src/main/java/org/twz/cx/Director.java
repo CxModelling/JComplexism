@@ -19,17 +19,21 @@ import org.json.JSONObject;
 import org.twz.dag.ParameterCore;
 import org.twz.exception.ScriptException;
 import org.twz.io.IO;
+import org.twz.util.CxFormatter;
+import org.twz.util.ILogable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
  * Created by TimeWz on 2017/6/16.
  */
-public class Director {
+public class Director implements ILogable {
     private Map<String, BayesNet> BNs;
     private Map<String, IStateSpaceBlueprint> DCores;
     private Map<String, IModelBlueprint> MCores;
@@ -56,7 +60,7 @@ public class Director {
         try {
             addBayesNet(BayesNet.buildFromScript(script));
         } catch (ScriptException e) {
-            Log.warning("Invalidated script");
+            error("Invalidated script");
         }
     }
 
@@ -64,7 +68,7 @@ public class Director {
         try {
             addBayesNet(new BayesNet(js));
         } catch (ScriptException | JSONException e) {
-            Log.warning("Invalidated script");
+            error("Invalidated script");
         }
     }
 
@@ -109,7 +113,7 @@ public class Director {
         try {
             addStateSpace(StateSpaceFactory.createFromScripts(script));
         } catch (ScriptException | JSONException e) {
-            Log.warning("Invalidated script");
+            warning("Invalidated script");
         }
     }
 
@@ -117,7 +121,7 @@ public class Director {
         try {
             addStateSpace(StateSpaceFactory.createFromJSON(js));
         } catch (JSONException e) {
-            Log.warning("Invalidated format");
+            warning("Invalidated format");
         }
     }
 
@@ -140,7 +144,7 @@ public class Director {
                 ss = new CTMCBlueprint(name);
                 break;
             default:
-                Log.warning("Unknown type of state space");
+                warning("Unknown type of state space");
                 return null;
         }
 
@@ -184,7 +188,7 @@ public class Director {
                 mbp = new ODEEBMBlueprint(name);
                 break;
             default:
-                Log.warning("Unknown type of simulation model");
+                warning("Unknown type of simulation model");
                 return null;
         }
 
@@ -226,7 +230,7 @@ public class Director {
         if (bp.isCompatible(pc)) {
             return bp.generateModel(pc);
         } else {
-            Log.warning("Non-compatible bn");
+            warning("Non-compatible bn");
         }
         return null;
     }
@@ -271,5 +275,35 @@ public class Director {
         } else {
             return new LeafY0();
         }
+    }
+
+    public void onLog(Logger log) {
+        Log = log;
+    }
+
+    public void onLog() {
+        if (Log == null) {
+            Log = Logger.getLogger(this.getClass().getSimpleName());
+            Log.setLevel(Level.INFO);
+            Handler handler = new ConsoleHandler();
+            handler.setFormatter(new CxFormatter());
+            Log.addHandler(handler);
+        }
+    }
+
+    public void offLog() {
+        Log = null;
+    }
+
+    public void info(String msg) {
+        if (Log != null) Log.info(msg);
+    }
+
+    public void warning(String msg) {
+        if (Log != null) Log.warning(msg);
+    }
+
+    public void error(String msg) {
+        if (Log != null) Log.severe(msg);
     }
 }

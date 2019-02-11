@@ -2,22 +2,21 @@ package org.twz.dataframe;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
-import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.twz.dataframe.timeseries.DoubleSeries;
 import org.twz.dataframe.timeseries.ProbabilityTableSeries;
 import org.twz.dataframe.timeseries.Series;
 import org.twz.dataframe.timeseries.StringSeries;
 import org.twz.exception.TimeseriesException;
-import org.twz.io.AdapterJSONArray;
+import org.twz.io.AdapterJSONObject;
 import org.twz.io.IO;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class TimeSeries implements AdapterJSONArray {
+public class TimeSeries implements AdapterJSONObject {
     private final List<Double> Times;
     private UnivariateFunction TimeFunction;
     private Map<String, Series> DataSeries;
@@ -34,6 +33,10 @@ public class TimeSeries implements AdapterJSONArray {
 
     public int getNumColumn() {
         return DataSeries.size();
+    }
+
+    public Set<String> getColumnName() {
+        return DataSeries.keySet();
     }
 
     public double getStartTime() {
@@ -215,8 +218,13 @@ public class TimeSeries implements AdapterJSONArray {
     }
 
     @Override
-    public JSONArray toJSON() throws JSONException {
-        return null;
+    public JSONObject toJSON() throws JSONException {
+        JSONObject js = new JSONObject();
+        js.put("Time", Times);
+        for (Map.Entry<String, Series> ent : DataSeries.entrySet()) {
+            js.put(ent.getKey(), ent.getValue());
+        }
+        return js;
     }
 
     public void toCSV(String path) {
@@ -267,5 +275,25 @@ public class TimeSeries implements AdapterJSONArray {
             i[j] = j;
         }
         return (new LinearInterpolator()).interpolate(t, i);
+    }
+
+    public static Map<String, TimeSeries> transpose(Map<String, TimeSeries> timeSeriesMap) {
+        Map<String, TimeSeries> res = new LinkedHashMap<>();
+
+        TimeSeries first;
+        first = timeSeriesMap.entrySet().stream().findFirst().map(Map.Entry::getValue).orElse(null);
+        assert first != null;
+
+        List<String> cols = new ArrayList<>(first.getColumnName());
+
+        for (String col : cols) {
+            TimeSeries ts = new TimeSeries(first.Times);
+            for (Map.Entry<String, TimeSeries> ent : timeSeriesMap.entrySet()) {
+                ts.appendSeries(new Series(ent.getKey(), ent.getValue().DataSeries.get(col)));
+            }
+
+            res.put(col, ts);
+        }
+        return res;
     }
 }

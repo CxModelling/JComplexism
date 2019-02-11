@@ -8,11 +8,11 @@ import org.twz.dag.*;
 import org.twz.dataframe.TimeSeries;
 import org.twz.misc.NameGenerator;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.sql.Time;
+import java.util.*;
 
 
-public abstract class CxFitter extends BayesianModel {
+public abstract class CxDataModel extends BayesianModel {
     private NameGenerator NG;
     private SimulationCore SC;
     private Director Ctrl;
@@ -21,11 +21,11 @@ public abstract class CxFitter extends BayesianModel {
 
     private TimeSeries LastOutput;
     private ParameterCore LastPars;
-    private Map<ParameterCore, TimeSeries> Mementos;
+    private Map<String, Map<ParameterCore, TimeSeries>> Mementos;
 
-    public CxFitter(Director ctrl, String bn, String simModel,
-                    double t0, double t1, double dt,
-                    String warmUpModel, double t_warm) {
+    public CxDataModel(Director ctrl, String bn, String simModel,
+                       double t0, double t1, double dt,
+                       String warmUpModel, double t_warm) {
         super(ctrl.getBayesNet(bn));
         NG = new NameGenerator("Sim");
         Ctrl = ctrl;
@@ -36,11 +36,11 @@ public abstract class CxFitter extends BayesianModel {
         Dt = dt;
         TimeWarm = t_warm;
         WarmUpModel = warmUpModel;
-        Mementos = new LinkedHashMap<>();
+        Mementos = new HashMap<>();
     }
 
-    public CxFitter(Director ctrl, String bn, String simModel,
-                    double t0, double t1, double dt) {
+    public CxDataModel(Director ctrl, String bn, String simModel,
+                       double t0, double t1, double dt) {
         this(ctrl, bn, simModel, t0, t1, dt, null, 0);
     }
 
@@ -86,22 +86,68 @@ public abstract class CxFitter extends BayesianModel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return model.getObserver().getTimeSeries();
+        LastPars = pc;
+        LastOutput = model.getObserver().getTimeSeries();
+        return LastOutput;
     }
 
     @Override
     public void evaluateLogLikelihood(Gene gene) {
         IY0 y0 = warmUp(gene);
+        TimeSeries ts = null;
         if (!checkMidTerm(y0, gene)) {
             gene.setLogLikelihood(Double.NEGATIVE_INFINITY);
         } else {
             try {
-                TimeSeries ts = simulate(gene, y0);
+                ts = simulate(gene, y0);
                 gene.setLogLikelihood(calculateLogLikelihood(gene, ts));
             } catch (Exception e) {
                 gene.setLogLikelihood(Double.NEGATIVE_INFINITY);
             }
         }
+        if (ts != null) {
+            LastPars = (ParameterCore) gene;
+            LastOutput = ts;
+        }
+    }
+
+    @Override
+    public void keepMemento(Gene gene, String type) {
+        if (!Mementos.containsKey(type)) {
+            Mementos.put(type, new LinkedHashMap<>());
+        }
+        if (LastPars != gene) {
+            evaluateLogLikelihood(gene);
+        }
+        Mementos.get(type).put(LastPars, LastOutput);
+    }
+
+    @Override
+    public void clearMementos(String type) {
+        Mementos.get(type).clear();
+    }
+
+    @Override
+    public void clearMementos() {
+        Mementos.clear();
+    }
+
+    public void saveMementosBySimulation(String path, String type, String prefix, String suffix) {
+        Map<ParameterCore, TimeSeries> sel = Mementos.get(type);
+        NameGenerator ng = new NameGenerator(prefix);
+        Map<String, TimeSeries> ts = new LinkedHashMap<>();
+        List<Map<String, Double>> pars = new ArrayList<>();
+
+        for (Map.Entry<ParameterCore, TimeSeries> ent : sel.entrySet()) {
+            String id = ng.getNext();
+            pars.add(ent.getKey().getLocus());
+            ts.put(id, ent.getValue());
+        }
+
+    }
+
+    public void saveMementosByVariable(String path, String type, String prefix, String suffix) {
+
     }
 
     protected abstract IY0 sampleY0(Gene gene);
