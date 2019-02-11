@@ -235,7 +235,9 @@ public class ParameterCore extends Gene {
     }
 
     public ParameterCore clone() {
-        return new ParameterCore(Nickname, SG, getLocus(), getLogPriorProb());
+        ParameterCore pc = new ParameterCore(Nickname, SG, getLocus(), getLogPriorProb());
+        if (isLikelihoodEvaluated()) pc.setLogLikelihood(getLogLikelihood());
+        return pc;
     }
 
 

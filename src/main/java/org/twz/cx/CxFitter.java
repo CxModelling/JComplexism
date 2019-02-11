@@ -4,8 +4,12 @@ import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.*;
+
 import org.twz.dataframe.TimeSeries;
 import org.twz.misc.NameGenerator;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 public abstract class CxFitter extends BayesianModel {
@@ -14,6 +18,10 @@ public abstract class CxFitter extends BayesianModel {
     private Director Ctrl;
     private String SimModel, WarmUpModel;
     private final double Time0, Time1, Dt, TimeWarm;
+
+    private TimeSeries LastOutput;
+    private ParameterCore LastPars;
+    private Map<ParameterCore, TimeSeries> Mementos;
 
     public CxFitter(Director ctrl, String bn, String simModel,
                     double t0, double t1, double dt,
@@ -28,6 +36,7 @@ public abstract class CxFitter extends BayesianModel {
         Dt = dt;
         TimeWarm = t_warm;
         WarmUpModel = warmUpModel;
+        Mementos = new LinkedHashMap<>();
     }
 
     public CxFitter(Director ctrl, String bn, String simModel,

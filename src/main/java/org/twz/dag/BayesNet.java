@@ -233,7 +233,7 @@ public class BayesNet implements AdapterJSONObject {
                 imp.put(ent.getKey(), ent.getValue());
             }
         }
-        impulse(gene, exo);
+        impulse(gene, imp);
     }
 
     private List<String> toList(JSONArray ja) throws JSONException {

@@ -1,91 +1,102 @@
 package org.twz.fit;
 
+import org.json.JSONObject;
 import org.twz.dag.BayesianModel;
 import org.twz.dag.Gene;
 import org.twz.misc.Statistics;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ABC extends BayesianFitter {
 
     private double Epsilon;
 
-    public ABC(BayesianModel model) {
-        super(model);
-        Options.put("N_test", 100.0);
+    public ABC(int n_post) {
+        super();
+        Options.put("N_test", 100);
         Options.put("P_test", 0.1);
+        Options.put("N_post", n_post);
+        Options.put("N_update", 500);
+        Options.put("P_min_acc", 0.001);
         Epsilon = Double.NaN;
+    }
+
+    public ABC(int n_post, double min_acc) {
+        this(n_post);
+        setOption("P_min_acc", min_acc);
     }
 
     public void setEpsilon(double eps) {
         Epsilon = eps;
-        Posterior.clear();
         info("Reset epsilon to " + Epsilon);
-        info("Posterior erased");
     }
 
-    @Override
-    public void update(int niter) {
-        info("Collecting posterior");
-        Gene x;
-        int i = 0;
-
-        while(i < niter) {
-            x = Model.samplePrior();
-            Model.evaluateLogLikelihood(x);
-            if (x.getLogLikelihood() > Epsilon) {
-                Posterior.add(x);
-                i ++;
-                if (i % (niter /4) == 0) {
-                    info("Progress: " + 100*i/niter + "%");
-                }
-            }
-        }
-        info("Finished");
-    }
 
     @Override
-    public void fit(int niter) {
+    public List<Gene> fit(BayesianModel bm) {
         if (Double.isNaN(Epsilon)) {
-            test();
+            test(bm);
         }
-        update(niter);
+        return collectPosterior(bm, getOptionInteger("N_post"), "Posterior");
     }
 
     @Override
-    public Map<String, Double> getGoodnessOfFit() {
+    public List<Gene> update(BayesianModel bm) {
+        return collectPosterior(bm, getOptionInteger("N_update"), "Update");
+    }
+
+    @Override
+    public JSONObject getGoodnessOfFit(BayesianModel bm) {
         return null;
     }
 
-    private void test() {
+    private void test(BayesianModel bm) {
         info("Testing sample");
-        int n = Options.get("N_test").intValue();
-        double p = Options.get("P_test");
+        int n = getOptionInteger ("N_test");
+        double p = getOptionDouble("P_test");
 
         List<Gene> xs = new ArrayList<>();
 
-        for (Gene gene : getPrior()) {
-            xs.add(gene);
-            if (xs.size() >= n) {
-                break;
+        try {
+            for (Gene gene : (bm.getPriorSample())) {
+                xs.add(gene);
+                if (xs.size() >= n) {
+                    break;
+                }
             }
+        } catch (AssertionError ignored) {
+
         }
 
-        while(xs.size() < n) {
-            xs.add(Model.samplePrior());
-        }
+        appendPriorUntil(bm, n, xs);
 
-        double[] lis = new double[n];
-        for (int i = 0; i < n; i++) {
-            Gene x = xs.get(i);
-            if (!x.isLikelihoodEvaluated()) {
-                Model.evaluateLogLikelihood(x);
-            }
-            lis[i] = x.getLogLikelihood();
-        }
+        double[] lis = xs.stream()
+                .mapToDouble(Gene::getLogLikelihood).toArray();
+
         Epsilon = Statistics.quantile(lis, 1-p);
         info("Test sample suggest epi=" + Epsilon);
+    }
+
+    private List<Gene> collectPosterior(BayesianModel bm, int n, String tag) {
+        List<Gene> res = new ArrayList<>();
+        int max_iter = (int) (n / getOptionDouble("P_min_acc"));
+
+        int count = 0;
+        while (res.size() < n) {
+            count ++;
+            Gene gene = bm.samplePrior();
+            if (!gene.isPriorEvaluated()) bm.evaluateLogPrior(gene);
+            if (!gene.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(gene);
+            if (gene.getLogLikelihood() > Epsilon) {
+                res.add(gene);
+                bm.keepMemento(gene, tag);
+            }
+
+            if (count > max_iter) {
+                warning("Acceptance is small them " + getOptionDouble("P_min_acc"));
+            }
+        }
+        return res;
     }
 }

@@ -164,7 +164,9 @@ public class Gene implements AdapterJSONObject {
 
     @Override
     public Gene clone() {
-        return new Gene(Locus, LogPriorProb);
+        Gene gene =  new Gene(Locus, LogPriorProb);
+        if (!isLikelihoodEvaluated()) gene.setLogLikelihood(getLogLikelihood());
+        return gene;
     }
 
 }
