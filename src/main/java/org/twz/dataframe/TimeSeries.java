@@ -217,6 +217,10 @@ public class TimeSeries implements AdapterJSONObject {
         return sb.toString();
     }
 
+    public void toJSON(String path) throws JSONException {
+        IO.writeText(toJSON().toString(), path);
+    }
+
     @Override
     public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();

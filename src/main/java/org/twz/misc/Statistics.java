@@ -220,6 +220,10 @@ public class Statistics {
         return v/(x.length-1);
     }
 
+    public static double iqr(double[] x) {
+        return quantile(x, 0.75) - quantile(x, 0.25);
+    }
+
     public static double distance(int[] a, int[] b) {
         double x = 0, tmp;
         for (int i = 0; i < a.length; i++) {
@@ -405,7 +409,13 @@ public class Statistics {
 
     }
 
-    public double rnorm() {
+    public static double bound(double v, double l, double u) {
+        if (v < l) return l;
+        if (v > u) return u;
+        return v;
+    }
+
+    public static double rnorm() {
         double u, v, x, y, q;
         do {
             u = Math.random();

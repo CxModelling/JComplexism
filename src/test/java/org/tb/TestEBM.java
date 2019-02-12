@@ -19,6 +19,7 @@ import java.util.Map;
 public class TestEBM {
 
     private ReducedTB BM;
+    private int StartYear = 2004;
 
     @Before
     public void setUp() throws JSONException {
@@ -28,19 +29,21 @@ public class TestEBM {
                 "PopF", "PopM", "DeathF", "DeathM",
                 "BirthF", "BirthM", "MigrationF", "MigrationM");
 
-        ReducedTB.setUpModel(da, demoSex, 1990, "l");
+        ReducedTB.setUpModel(da, demoSex, StartYear, "l");
 
         TimeSeries Noti = TimeSeries.readCSV("src/test/resources/tb/NotiYear.csv", "Year");
-        BM = new ReducedTB(da, demoSex,1990, Noti);
+        BM = new ReducedTB(da, demoSex, StartYear, Noti);
 
     }
 
     @Test
     public void fit() {
-        ABC alg = new ABC(300);
+        ABC alg = new ABC(500);
         alg.onLog();
         BM.fit(alg);
-
+        BM.saveMementosByVariable("tb/L" + StartYear, "Posterior","Post_", ".csv");
+        BM.generatePrior(500);
+        BM.saveMementosByVariable("tb/L" + StartYear, "Prior", "Prior_", ".csv");
     }
 
     @Test

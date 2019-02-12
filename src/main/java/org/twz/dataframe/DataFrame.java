@@ -37,10 +37,13 @@ public class DataFrame implements AdapterJSONArray {
 
     public DataFrame(List<Map<String, Double>> dat) {
         List<String> cols = new ArrayList<>();
+        Data = new LinkedHashMap<>();
         dat.forEach(d->d.keySet().stream().filter(c->!cols.contains(c)).forEach(cols::add));
         ColumnNames = cols;
+        Key = cols.get(0);
 
-        cols.forEach(col -> Data.put(col, dat.stream()
+        cols.forEach(
+                col -> Data.put(col, dat.stream()
                         .map(e -> e.getOrDefault(col, 0.0))
                         .collect(Collectors.toList())));
     }

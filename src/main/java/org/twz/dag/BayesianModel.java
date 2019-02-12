@@ -13,7 +13,7 @@ import java.util.*;
  */
 public abstract class BayesianModel {
 
-    public final BayesNet BN;
+    protected final BayesNet BN;
     private AbsFitter Fitter;
     private List<Gene> Results, Prior;
 

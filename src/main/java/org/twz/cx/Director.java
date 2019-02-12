@@ -230,7 +230,7 @@ public class Director implements ILogable {
         if (bp.isCompatible(pc)) {
             return bp.generateModel(pc);
         } else {
-            warning("Non-compatible bn");
+            warning("The parameter model is not compatible with the state-space");
         }
         return null;
     }

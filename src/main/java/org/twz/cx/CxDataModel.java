@@ -1,11 +1,14 @@
 package org.twz.cx;
 
+import org.json.JSONException;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.*;
 
+import org.twz.dataframe.DataFrame;
 import org.twz.dataframe.TimeSeries;
+import org.twz.io.IO;
 import org.twz.misc.NameGenerator;
 
 import java.sql.Time;
@@ -124,7 +127,7 @@ public abstract class CxDataModel extends BayesianModel {
 
     @Override
     public void clearMementos(String type) {
-        Mementos.get(type).clear();
+        if (Mementos.containsKey(type)) Mementos.get(type).clear();
     }
 
     @Override
@@ -143,11 +146,47 @@ public abstract class CxDataModel extends BayesianModel {
             pars.add(ent.getKey().getLocus());
             ts.put(id, ent.getValue());
         }
-
+        IO.checkDirectory(path);
+        saveMementos(path, prefix, suffix, ts, pars);
     }
 
     public void saveMementosByVariable(String path, String type, String prefix, String suffix) {
+        Map<ParameterCore, TimeSeries> sel = Mementos.get(type);
+        NameGenerator ng = new NameGenerator(prefix);
+        Map<String, TimeSeries> ts = new LinkedHashMap<>();
+        List<Map<String, Double>> pars = new ArrayList<>();
 
+        for (Map.Entry<ParameterCore, TimeSeries> ent : sel.entrySet()) {
+            String id = ng.getNext();
+            pars.add(ent.getKey().getLocus());
+            ts.put(id, ent.getValue());
+        }
+
+        ts = TimeSeries.transpose(ts);
+        IO.checkDirectory(path);
+        saveMementos(path, prefix, suffix, ts, pars);
+    }
+
+    private void saveMementos(String path, String prefix, String suffix, Map<String, TimeSeries> ts, List<Map<String, Double>> pars) {
+        if (suffix.endsWith(".csv")) {
+            (new DataFrame(pars)).toCSV(path+"/"+prefix+"Parameters"+suffix);
+            for (Map.Entry<String, TimeSeries> ent : ts.entrySet()) {
+                ent.getValue().toCSV(path+"/"+prefix+ent.getKey()+suffix);
+            }
+        } else if (suffix.endsWith(".json")) {
+            try {
+                (new DataFrame(pars)).toJSON(path+"/"+prefix+"Parameters"+suffix);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                for (Map.Entry<String, TimeSeries> ent : ts.entrySet()) {
+                    ent.getValue().toJSON(path+"/"+prefix+ent.getKey()+suffix);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     protected abstract IY0 sampleY0(Gene gene);

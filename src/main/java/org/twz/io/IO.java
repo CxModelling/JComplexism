@@ -1,6 +1,5 @@
 package org.twz.io;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -105,6 +104,13 @@ public class IO {
             }
         }
         return csv;
+    }
+
+    public static void checkDirectory(String path) {
+        File directory = new File(path);
+        if (! directory.exists()){
+            directory.mkdir();
+        }
     }
 
 }
