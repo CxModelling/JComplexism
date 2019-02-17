@@ -13,6 +13,7 @@ import org.twz.dag.Gene;
 import org.twz.dataframe.TimeSeries;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.exception.TimeseriesException;
+import org.twz.prob.Normal;
 import org.twz.prob.Poisson;
 
 import java.util.Map;
@@ -95,6 +96,9 @@ public class ReducedTB extends CxDataModel {
                 nm = Noti.getDouble(time, "NumM");
                 hf = output.getDouble(time, "NotiF");
                 hm = output.getDouble(time, "NotiM");
+                //li += (new Normal(nf/pf, 1)).logpdf(hf/pf);
+                //li += (new Normal(nm/pm, 1)).logpdf(hm/pm);
+
                 li += (new Poisson(hf*pf)).logpdf(nf);
                 li += (new Poisson(hm*pm)).logpdf(nm);
             } catch (TimeseriesException e) {

@@ -177,7 +177,7 @@ public class ParameterCore extends Gene {
                     .filter(e->shocked.contains(e.getKey()) && e.getValue() instanceof FrozenSingleActor)
                     .map(Map.Entry::getKey).collect(Collectors.toList()));
         }
-
+        resetProbability();
         SG.setResponse(imp, shock_l, shock_a, shock_h, this);
 
         Children.values().forEach(ch->ch.setResponse(imp, shocked));

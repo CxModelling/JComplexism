@@ -18,7 +18,7 @@ public class GeneticAlgorithm extends FrequentistFitter {
     private AbsCrossover Crossover;
 
     public GeneticAlgorithm(List<ValueDomain> nodes) {
-        Selector = new ImportanceSelection();
+        Selector = new TournamentSelection();
         Mutators = new ArrayList<>();
         Crossover = new ShuffleCrossover(nodes);
 
@@ -56,6 +56,7 @@ public class GeneticAlgorithm extends FrequentistFitter {
         Gene elite = null;
         double max_fitness = Double.NEGATIVE_INFINITY, mean_fitness;
 
+        info("Genesis");
         List<Gene> population = genesis(bm);
 
         while(n_g < max_g) {
@@ -79,10 +80,7 @@ public class GeneticAlgorithm extends FrequentistFitter {
                         .mapToDouble(Gene::getLogPosterior).toArray());
             }
             mean_fitness -= Math.log(population.size());
-
-            info("Generation: " + n_g +
-                    ", Max fitness: " + max_fitness +
-                    ", Mean fitness: " + mean_fitness);
+            info(String.format("Generation: %d, Max: %g, Mean: %g", n_g, max_fitness, mean_fitness));
 
             if(canBeTerminated(n_stay)) {
                 break;
@@ -150,6 +148,7 @@ public class GeneticAlgorithm extends FrequentistFitter {
                 locus.put(mutator.Name, mutator.propose(gene.get(mutator.Name)));
             }
             gene.impulse(locus);
+            gene.resetProbability();
         }
     }
 
@@ -165,8 +164,12 @@ public class GeneticAlgorithm extends FrequentistFitter {
             p1 = population.get(2*i);
             p2 = population.get(2*i+1);
             offspring = Crossover.crossover(p1, p2);
-            population.add(2*i, offspring.getFirst());
-            population.add(2*i+1, offspring.getSecond());
+            offspring.getFirst().resetProbability();
+            offspring.getSecond().resetProbability();
+            population.remove(p1);
+            population.remove(p2);
+            population.add(offspring.getFirst());
+            population.add(offspring.getSecond());
         }
     }
 
