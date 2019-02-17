@@ -9,7 +9,7 @@ import static org.twz.misc.Statistics.*;
 public class DoubleMutator extends AbsMutator {
     private static NormalDistribution Normal = new NormalDistribution();
 
-    protected DoubleMutator(ValueDomain vd) {
+    public DoubleMutator(ValueDomain vd) {
         super(vd);
     }
 

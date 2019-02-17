@@ -11,7 +11,7 @@ import org.twz.dag.ParameterCore;
 import org.twz.dataframe.TimeSeries;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.fit.ABC;
-
+import org.twz.fit.GeneticAlgorithm;
 
 
 import java.util.Map;
@@ -44,6 +44,22 @@ public class TestEBM {
         BM.saveMementosByVariable("tb/L" + StartYear, "Posterior","Post_", ".csv");
         BM.generatePrior(500);
         BM.saveMementosByVariable("tb/L" + StartYear, "Prior", "Prior_", ".csv");
+    }
+
+    @Test
+    public void fitMLE() {
+        GeneticAlgorithm alg = new GeneticAlgorithm(BM.getMovableNodes());
+        alg.setOption("Target", "MLE");
+        alg.onLog();
+        BM.fit(alg);
+        BM.saveMementosBySimulation("tb/L" + StartYear,
+                "MLE","MLE", ".csv");
+
+        alg.setOption("Target", "MAP");
+        alg.onLog();
+        BM.fit(alg);
+        BM.saveMementosBySimulation("tb/L" + StartYear,
+                "MAP","MAP", ".csv");
     }
 
     @Test

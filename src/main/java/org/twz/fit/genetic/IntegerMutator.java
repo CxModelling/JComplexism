@@ -10,7 +10,7 @@ public class IntegerMutator extends AbsMutator {
 
     private double Scale;
 
-    protected IntegerMutator(ValueDomain vd) {
+    public IntegerMutator(ValueDomain vd) {
         super(vd);
     }
 

@@ -3,7 +3,7 @@ package org.twz.fit.genetic;
 import org.twz.fit.ValueDomain;
 
 public abstract class AbsMutator {
-    protected final String Name;
+    public final String Name;
     protected final double Lower, Upper;
     protected double Scale;
 

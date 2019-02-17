@@ -100,5 +100,15 @@ public abstract class AbsFitter implements ILogable {
         return update(bm);
     }
 
+    void appendPriorUntil(BayesianModel bm, int n, List<Gene> prior) {
+        while(prior.size() < n) {
+            Gene gene = bm.samplePrior();
+            if (!gene.isPriorEvaluated()) bm.evaluateLogPrior(gene);
+            if (!gene.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(gene);
+            if (Double.isInfinite(gene.getLogLikelihood())) continue;
+            prior.add(gene);
+        }
+    }
+
     public abstract JSONObject getGoodnessOfFit(BayesianModel bm);
 }

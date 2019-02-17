@@ -36,13 +36,4 @@ public abstract class BayesianFitter extends AbsFitter {
         return null; // todo
     }
 
-    void appendPriorUntil(BayesianModel bm, int n, List<Gene> prior) {
-        while(prior.size() < n) {
-            Gene gene = bm.samplePrior();
-            if (!gene.isPriorEvaluated()) bm.evaluateLogPrior(gene);
-            if (!gene.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(gene);
-            if (Double.isInfinite(gene.getLogLikelihood())) continue;
-            prior.add(gene);
-        }
-    }
 }

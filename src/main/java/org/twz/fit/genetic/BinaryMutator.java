@@ -8,7 +8,7 @@ import static org.twz.misc.Statistics.mean;
 public class BinaryMutator extends AbsMutator {
     private double Scale;
 
-    protected BinaryMutator(ValueDomain vd) {
+    public BinaryMutator(ValueDomain vd) {
         super(vd);
     }
 
