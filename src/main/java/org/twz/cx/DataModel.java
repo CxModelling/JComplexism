@@ -14,7 +14,7 @@ import org.twz.util.NameGenerator;
 import java.util.*;
 
 
-public abstract class CxDataModel extends BayesianModel {
+public abstract class DataModel extends BayesianModel {
     private NameGenerator NG;
     private SimulationCore SC;
     private Director Ctrl;
@@ -25,9 +25,9 @@ public abstract class CxDataModel extends BayesianModel {
     private ParameterCore LastPars;
     private Map<String, Map<ParameterCore, TimeSeries>> Mementos;
 
-    public CxDataModel(Director ctrl, String bn, String simModel,
-                       double t0, double t1, double dt,
-                       String warmUpModel, double t_warm) {
+    public DataModel(Director ctrl, String bn, String simModel,
+                     double t0, double t1, double dt,
+                     String warmUpModel, double t_warm) {
         super(ctrl.getBayesNet(bn));
         NG = new NameGenerator("Sim");
         Ctrl = ctrl;
@@ -41,8 +41,8 @@ public abstract class CxDataModel extends BayesianModel {
         Mementos = new HashMap<>();
     }
 
-    public CxDataModel(Director ctrl, String bn, String simModel,
-                       double t0, double t1, double dt) {
+    public DataModel(Director ctrl, String bn, String simModel,
+                     double t0, double t1, double dt) {
         this(ctrl, bn, simModel, t0, t1, dt, null, 0);
     }
 

@@ -75,7 +75,6 @@ public class Sample {
         return sam;
     }
 
-
     public static int[] sample(double[] prob, int n) {
         Sample s = new Sample(prob);
         return s.sample(n);

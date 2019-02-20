@@ -2,7 +2,7 @@ package org.tb;
 
 
 import org.json.JSONException;
-import org.twz.cx.CxDataModel;
+import org.twz.cx.DataModel;
 import org.twz.cx.Director;
 import org.twz.cx.ebmodel.EBMY0;
 import org.twz.cx.ebmodel.EquationBasedModel;
@@ -13,12 +13,11 @@ import org.twz.dag.Gene;
 import org.twz.dataframe.TimeSeries;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.exception.TimeseriesException;
-import org.twz.prob.Normal;
 import org.twz.prob.Poisson;
 
 import java.util.Map;
 
-public class ReducedTB extends CxDataModel {
+public class ReducedTB extends DataModel {
 
     private final double StartYear;
     private SexDemography Demo;
