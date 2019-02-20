@@ -10,7 +10,7 @@ import org.twz.exception.TimeseriesException;
 import java.util.Map;
 
 import static org.tb.FnTB.fn_dt;
-import static org.twz.misc.Statistics.sum;
+import static org.twz.util.Statistics.sum;
 
 
 public class FnMeasure implements EBMMeasurement {

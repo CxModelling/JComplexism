@@ -4,7 +4,7 @@ import org.json.JSONObject;
 import org.twz.dag.BayesianModel;
 import org.twz.dag.Gene;
 import org.twz.prob.Sample;
-import org.twz.misc.Statistics;
+import org.twz.util.Statistics;
 import java.util.*;
 
 

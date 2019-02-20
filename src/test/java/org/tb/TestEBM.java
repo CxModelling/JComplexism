@@ -19,7 +19,7 @@ import java.util.Map;
 public class TestEBM {
 
     private ReducedTB BM;
-    private int StartYear = 2004;
+    private int StartYear = 2000;
 
     @Before
     public void setUp() throws JSONException {
@@ -29,7 +29,7 @@ public class TestEBM {
                 "PopF", "PopM", "DeathF", "DeathM",
                 "BirthF", "BirthM", "MigrationF", "MigrationM");
 
-        ReducedTB.setUpModel(da, demoSex, StartYear, "l");
+        ReducedTB.setUpModel(da, demoSex, StartYear, "s");
 
         TimeSeries Noti = TimeSeries.readCSV("src/test/resources/tb/NotiYear.csv", "Year");
         BM = new ReducedTB(da, demoSex, StartYear, Noti);
@@ -41,9 +41,9 @@ public class TestEBM {
         ABC alg = new ABC(500);
         alg.onLog();
         BM.fit(alg);
-        BM.saveMementosByVariable("tb/L" + StartYear, "Posterior","Post_", ".csv");
+        BM.saveMementosByVariable("tb/S" + StartYear, "Posterior","Post_", ".csv");
         BM.generatePrior(500);
-        BM.saveMementosByVariable("tb/L" + StartYear, "Prior", "Prior_", ".csv");
+        BM.saveMementosByVariable("tb/S" + StartYear, "Prior", "Prior_", ".csv");
     }
 
     @Test
@@ -52,14 +52,14 @@ public class TestEBM {
         alg.setOption("Target", "MLE");
         alg.onLog();
         BM.fit(alg);
-        BM.saveMementosBySimulation("tb/L" + StartYear,
-                "MLE","MLE", ".csv");
+        BM.saveMementosBySimulation("tb/S" + StartYear,
+                "MLE","MLE_", ".csv");
 
         alg.setOption("Target", "MAP");
         alg.onLog();
         BM.fit(alg);
-        BM.saveMementosBySimulation("tb/L" + StartYear,
-                "MAP","MAP", ".csv");
+        BM.saveMementosBySimulation("tb/S" + StartYear,
+                "MAP","MAP_", ".csv");
     }
 
     @Test

@@ -4,7 +4,7 @@ import org.json.JSONObject;
 import org.twz.dag.BayesianModel;
 import org.twz.dag.Gene;
 import org.twz.util.ILogable;
-import org.twz.util.CxFormatter;
+import org.twz.util.LogFormatter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +30,7 @@ public abstract class AbsFitter implements ILogable {
             Log.setUseParentHandlers(false);
             Log.setLevel(Level.INFO);
             Handler handler = new ConsoleHandler();
-            handler.setFormatter(new CxFormatter());
+            handler.setFormatter(new LogFormatter());
             Log.addHandler(handler);
         }
     }

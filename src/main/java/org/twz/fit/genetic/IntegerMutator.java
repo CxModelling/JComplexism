@@ -3,7 +3,7 @@ package org.twz.fit.genetic;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.twz.fit.ValueDomain;
 
-import static org.twz.misc.Statistics.quantile;
+import static org.twz.util.Statistics.quantile;
 
 public class IntegerMutator extends AbsMutator {
     private static NormalDistribution Normal = new NormalDistribution();

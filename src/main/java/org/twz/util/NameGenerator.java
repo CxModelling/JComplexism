@@ -1,4 +1,4 @@
-package org.twz.misc;
+package org.twz.util;
 
 import org.json.JSONException;
 import org.json.JSONObject;

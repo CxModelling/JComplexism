@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import org.twz.dag.ParameterCore;
 import org.twz.exception.ScriptException;
 import org.twz.io.IO;
-import org.twz.util.CxFormatter;
+import org.twz.util.LogFormatter;
 import org.twz.util.ILogable;
 
 import java.util.HashMap;
@@ -286,7 +286,7 @@ public class Director implements ILogable {
             Log = Logger.getLogger(this.getClass().getSimpleName());
             Log.setLevel(Level.INFO);
             Handler handler = new ConsoleHandler();
-            handler.setFormatter(new CxFormatter());
+            handler.setFormatter(new LogFormatter());
             Log.addHandler(handler);
         }
     }

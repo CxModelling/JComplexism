@@ -1,7 +1,7 @@
 package org.twz.fit.genetic;
 
 import org.twz.dag.Gene;
-import org.twz.misc.Statistics;
+import org.twz.util.Statistics;
 import org.twz.prob.Sample;
 
 import java.util.ArrayList;

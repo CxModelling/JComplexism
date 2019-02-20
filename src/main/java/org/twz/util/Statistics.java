@@ -1,4 +1,4 @@
-package org.twz.misc;
+package org.twz.util;
 
 import java.util.*;
 
@@ -283,7 +283,7 @@ public class Statistics {
 
     public static double IQR(double[] arr) {
         double[] qs = quantile(arr, new double[]{0.25, 0.75});
-        return qs[1] = qs[0];
+        return qs[1] - qs[0];
     }
 
     public static double range(double[] arr) {

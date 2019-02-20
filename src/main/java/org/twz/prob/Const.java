@@ -1,6 +1,6 @@
 package org.twz.prob;
 
-import org.twz.misc.Statistics;
+import org.twz.util.Statistics;
 
 public class Const implements IDistribution {
 	private String Name;

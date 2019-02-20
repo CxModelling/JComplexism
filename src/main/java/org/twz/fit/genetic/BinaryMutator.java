@@ -2,8 +2,8 @@ package org.twz.fit.genetic;
 
 import org.twz.fit.ValueDomain;
 
-import static org.twz.misc.Statistics.bound;
-import static org.twz.misc.Statistics.mean;
+import static org.twz.util.Statistics.bound;
+import static org.twz.util.Statistics.mean;
 
 public class BinaryMutator extends AbsMutator {
     private double Scale;

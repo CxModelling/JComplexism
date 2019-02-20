@@ -1,7 +1,7 @@
 package org.twz.prob;
 
 
-import org.twz.misc.Statistics;
+import org.twz.util.Statistics;
 
 import java.util.Arrays;
 import org.junit.Test;

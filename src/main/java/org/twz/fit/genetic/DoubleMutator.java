@@ -4,7 +4,7 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.twz.fit.ValueDomain;
 
 
-import static org.twz.misc.Statistics.*;
+import static org.twz.util.Statistics.*;
 
 public class DoubleMutator extends AbsMutator {
     private static NormalDistribution Normal = new NormalDistribution();

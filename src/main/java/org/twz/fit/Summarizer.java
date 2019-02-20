@@ -9,7 +9,7 @@ import org.twz.io.IO;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.*;
-import static org.twz.misc.Statistics.*;
+import static org.twz.util.Statistics.*;
 
 public class Summarizer implements AdapterJSONObject {
 

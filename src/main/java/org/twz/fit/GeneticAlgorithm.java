@@ -5,7 +5,7 @@ import org.twz.dag.BayesianModel;
 import org.twz.dag.Gene;
 import org.twz.dataframe.Pair;
 import org.twz.fit.genetic.*;
-import org.twz.misc.Statistics;
+import org.twz.util.Statistics;
 
 import java.util.ArrayList;
 import java.util.HashMap;

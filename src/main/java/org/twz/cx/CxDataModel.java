@@ -9,9 +9,8 @@ import org.twz.dag.*;
 import org.twz.dataframe.DataFrame;
 import org.twz.dataframe.TimeSeries;
 import org.twz.io.IO;
-import org.twz.misc.NameGenerator;
+import org.twz.util.NameGenerator;
 
-import java.sql.Time;
 import java.util.*;
 
 
@@ -141,11 +140,20 @@ public abstract class CxDataModel extends BayesianModel {
         Map<String, TimeSeries> ts = new LinkedHashMap<>();
         List<Map<String, Double>> pars = new ArrayList<>();
 
-        for (Map.Entry<ParameterCore, TimeSeries> ent : sel.entrySet()) {
-            String id = ng.getNext();
-            pars.add(ent.getKey().getLocus());
-            ts.put(id, ent.getValue());
+        if (sel.size() > 1) {
+            for (Map.Entry<ParameterCore, TimeSeries> ent : sel.entrySet()) {
+                String id = ng.getNext();
+                pars.add(ent.getKey().getLocus());
+                ts.put(id, ent.getValue());
+            }
+        } else {
+            for (Map.Entry<ParameterCore, TimeSeries> ent : sel.entrySet()) {
+                String id = "Simulation";
+                pars.add(ent.getKey().getLocus());
+                ts.put(id, ent.getValue());
+            }
         }
+
         IO.checkDirectory(path);
         saveMementos(path, prefix, suffix, ts, pars);
     }
