@@ -19,11 +19,11 @@ public class ShuffleCrossover extends AbsCrossover {
         Map<String, Double> l1 = new HashMap<>(), l2 = new HashMap<>();
         for (ValueDomain vd: Nodes) {
             if (Math.random() < 0.5) {
-                l1.put(vd.Name, p2.get(vd.Name));
-                l2.put(vd.Name, p1.get(vd.Name));
+                l1.put(vd.Name, p2.getDouble(vd.Name));
+                l2.put(vd.Name, p1.getDouble(vd.Name));
             } else {
-                l1.put(vd.Name, p1.get(vd.Name));
-                l2.put(vd.Name, p2.get(vd.Name));
+                l1.put(vd.Name, p1.getDouble(vd.Name));
+                l2.put(vd.Name, p2.getDouble(vd.Name));
             }
         }
         p1.impulse(l1);

@@ -134,7 +134,7 @@ public class GeneticAlgorithm extends FrequentistFitter {
         for (AbsMutator mutator : Mutators) {
             vs = new double[population.size()];
             for (int i = 0; i < vs.length; i++) {
-                vs[i] = population.get(i).get(mutator.Name);
+                vs[i] = population.get(i).getDouble(mutator.Name);
             }
             mutator.setScale(vs);
         }
@@ -145,7 +145,7 @@ public class GeneticAlgorithm extends FrequentistFitter {
 
             locus = new HashMap<>();
             for (AbsMutator mutator : Mutators) {
-                locus.put(mutator.Name, mutator.propose(gene.get(mutator.Name)));
+                locus.put(mutator.Name, mutator.propose(gene.getDouble(mutator.Name)));
             }
             gene.impulse(locus);
             gene.resetProbability();

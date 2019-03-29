@@ -22,7 +22,7 @@ public class ODEquationsTest {
         pars.put("gamma", 0.5);
 
         ODEFunction Fn = (t, y0, y1, parameters, attributes) -> {
-            double beta = parameters.get("beta"), gamma = parameters.get("gamma");
+            double beta = parameters.getDouble("beta"), gamma = parameters.getDouble("gamma");
             double n = y0[0] + y0[1] + y0[2];
 
             y1[0] = - beta * y0[0] * y0[1] / n;
@@ -37,7 +37,7 @@ public class ODEquationsTest {
         EBM.addObservingStock("R");
 
         EBM.addObservingStockFunction((tab, ti, ys, pc, x) -> {
-            double beta = pc.get("beta");
+            double beta = pc.getDouble("beta");
             double n = ys[0] + ys[1] + ys[2];
             tab.put("FOI", beta * ys[0] * ys[1] / n);
         });

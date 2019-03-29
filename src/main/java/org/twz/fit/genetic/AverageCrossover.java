@@ -19,7 +19,7 @@ public class AverageCrossover extends AbsCrossover {
         Map<String, Double> locus = new HashMap<>();
 
         for (ValueDomain vd: Nodes) {
-            double v1 = p1.get(vd.Name), v2 = p2.get(vd.Name);
+            double v1 = p1.getDouble(vd.Name), v2 = p2.getDouble(vd.Name);
             locus.put(vd.Name, (v1+v2)/2);
         }
         p1.impulse(locus);

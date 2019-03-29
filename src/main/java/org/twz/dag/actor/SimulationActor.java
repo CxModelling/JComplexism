@@ -26,7 +26,7 @@ public abstract class SimulationActor {
     protected Map<String, Double> findParentValues(Gene gene) {
         Map<String, Double> ps = new HashMap<>();
         for (String s : getParents()) {
-            ps.put(s, gene.get(s));
+            ps.put(s, gene.getDouble(s));
         }
         return ps;
     }
@@ -34,7 +34,7 @@ public abstract class SimulationActor {
     protected Map<String, Double> findParentValues(Gene gene, Map<String, Double> exo) {
         Map<String, Double> ps = new HashMap<>();
         for (String s : getParents()) {
-            ps.put(s, exo.containsKey(s)? exo.get(s): gene.get(s));
+            ps.put(s, exo.containsKey(s)? exo.get(s): gene.getDouble(s));
         }
         return ps;
     }

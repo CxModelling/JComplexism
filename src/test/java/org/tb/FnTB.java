@@ -28,30 +28,30 @@ public class FnTB implements ODEFunction {
                 hos_f = y0[5], hos_m = y0[6],
                 rec = y0[7];
 
-        double beta = expLU(pars.get("beta"), 1, 30);
+        double beta = expLU(pars.getDouble("beta"), 1, 30);
 
         double n = sum(y0);
         double inf = inf_f + inf_m + hos_f + hos_m;
         double foi = beta * inf / n;
-        double re_foi = foi * (1-pars.get("partial_immune"));
+        double re_foi = foi * (1-pars.getDouble("partial_immune"));
 
-        double act = flat*pars.get("r_act") + slat*pars.get("r_ract") + rec*pars.get("r_rel");
+        double act = flat*pars.getDouble("r_act") + slat*pars.getDouble("r_ract") + rec*pars.getDouble("r_rel");
         Pair<Double, Double> care_seeking = getCareSeekingRate(pars, t);
         double csf = care_seeking.getFirst(), csm = care_seeking.getSecond();
 
         y1[0] = - sus*foi;
-        y1[1] = sus*foi + (slat+rec)*re_foi - flat*(pars.get("r_act")+pars.get("r_slat"));
-        y1[2] = flat*pars.get("r_slat") - slat*(pars.get("r_ract")+re_foi);
+        y1[1] = sus*foi + (slat+rec)*re_foi - flat*(pars.getDouble("r_act")+pars.getDouble("r_slat"));
+        y1[2] = flat*pars.getDouble("r_slat") - slat*(pars.getDouble("r_ract")+re_foi);
 
-        y1[3] = act*pars.get("kappa") - inf_f*(pars.get("r_cure")+csf);
-        y1[4] = act*(1-pars.get("kappa")) - inf_m*(pars.get("r_cure")+csm);
+        y1[3] = act*pars.getDouble("kappa") - inf_f*(pars.getDouble("r_cure")+csf);
+        y1[4] = act*(1-pars.getDouble("kappa")) - inf_m*(pars.getDouble("r_cure")+csm);
 
-        y1[5] = inf_f*csf - hos_f*(pars.get("r_cure")+pars.get("r_treat"));
-        y1[6] = inf_m*csm - hos_m*(pars.get("r_cure")+pars.get("r_treat"));
+        y1[5] = inf_f*csf - hos_f*(pars.getDouble("r_cure")+pars.getDouble("r_treat"));
+        y1[6] = inf_m*csm - hos_m*(pars.getDouble("r_cure")+pars.getDouble("r_treat"));
 
-        y1[7] = (inf_f+inf_m)*pars.get("r_cure")
-                + (hos_f+hos_m)*(pars.get("r_cure")+pars.get("r_treat"))
-                - rec*(pars.get("r_rel") + re_foi);
+        y1[7] = (inf_f+inf_m)*pars.getDouble("r_cure")
+                + (hos_f+hos_m)*(pars.getDouble("r_cure")+pars.getDouble("r_treat"))
+                - rec*(pars.getDouble("r_rel") + re_foi);
 
         double[] pdy = calculatePopDy(pars, y0, t);
         for (int i = 0; i < y1.length; i++) {
@@ -60,11 +60,11 @@ public class FnTB implements ODEFunction {
     }
 
     private Pair<Double, Double> getCareSeekingRate(Gene pars, double t) {
-        double sr0 = pars.get("delay") + pars.get("log_sr_t")*getDt(t);
+        double sr0 = pars.getDouble("delay") + pars.getDouble("log_sr_t")*getDt(t);
 
         return new Pair<>(
                 expLU(sr0, 0.5, 8.902*2),
-                expLU(sr0 + pars.get("log_sr_m"), 0.5, 8.902*2)
+                expLU(sr0 + pars.getDouble("log_sr_m"), 0.5, 8.902*2)
         );
     }
 
@@ -74,8 +74,8 @@ public class FnTB implements ODEFunction {
         try {
             double bir = Demo.getBirthRate(t);
             double out = Demo.getDeathRate(t) - Demo.getMigration(t);
-            double outF = Demo.getDeathRate(t, "Female") + pars.get("r_die_tb");
-            double outM = Demo.getDeathRate(t, "Male") + pars.get("r_die_tb");
+            double outF = Demo.getDeathRate(t, "Female") + pars.getDouble("r_die_tb");
+            double outM = Demo.getDeathRate(t, "Male") + pars.getDouble("r_die_tb");
 
             double n = sum(y);
             pdy[0] = n*bir - y[0]*out;

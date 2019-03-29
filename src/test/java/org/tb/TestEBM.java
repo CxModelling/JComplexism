@@ -19,7 +19,7 @@ import java.util.Map;
 public class TestEBM {
 
     private ReducedTB BM;
-    private int StartYear = 2000;
+    private int StartYear = 1990;
 
     @Before
     public void setUp() throws JSONException {

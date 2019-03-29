@@ -130,4 +130,10 @@ public class DataFrame implements AdapterJSONArray {
         return sb.toString();
     }
 
+    public static DataFrame readEntries(List<IEntries> entries) {
+        return new DataFrame(entries.stream()
+                .map(IEntries::toData)
+                .collect(Collectors.toList()));
+    }
+
 }

@@ -143,13 +143,13 @@ public abstract class DataModel extends BayesianModel {
         if (sel.size() > 1) {
             for (Map.Entry<ParameterCore, TimeSeries> ent : sel.entrySet()) {
                 String id = ng.getNext();
-                pars.add(ent.getKey().getLocus());
+                pars.add(ent.getKey().toData());
                 ts.put(id, ent.getValue());
             }
         } else {
             for (Map.Entry<ParameterCore, TimeSeries> ent : sel.entrySet()) {
                 String id = "Simulation";
-                pars.add(ent.getKey().getLocus());
+                pars.add(ent.getKey().toData());
                 ts.put(id, ent.getValue());
             }
         }
@@ -166,7 +166,7 @@ public abstract class DataModel extends BayesianModel {
 
         for (Map.Entry<ParameterCore, TimeSeries> ent : sel.entrySet()) {
             String id = ng.getNext();
-            pars.add(ent.getKey().getLocus());
+            pars.add(ent.getKey().toData());
             ts.put(id, ent.getValue());
         }
 

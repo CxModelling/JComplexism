@@ -50,11 +50,11 @@ public class ParameterCore extends Gene {
     }
 
     @Override
-    public double get(String s) {
+    public double getDouble(String s) {
         if (has(s)) {
-            return super.get(s);
+            return super.getDouble(s);
         } else {
-            return Parent.get(s);
+            return Parent.getDouble(s);
         }
     }
 

@@ -39,7 +39,7 @@ public abstract class AbsStepper implements IStepper {
 
     @Override
     public Gene step(BayesianModel bm, Gene gene) {
-        double value = gene.get(Name);
+        double value = gene.getDouble(Name);
         double proposed = proposal(value, getStepSize());
         //if (!gene.isEvaluated()) gene.setLogLikelihood(bm.evaluateLikelihood(gene));
         Gene newGene = gene.clone();

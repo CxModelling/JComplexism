@@ -15,7 +15,7 @@ import java.util.*;
 public class FunctionLoci extends Loci {
     private final List<String> Parents;
     private final String Function;
-    private final Expression E;
+    public final Expression E;
 
     public FunctionLoci(String name, String function) {
         super(name);
@@ -57,7 +57,7 @@ public class FunctionLoci extends Loci {
 
     @Override
     public double sample(Gene gene) {
-        Parents.forEach(e->E.setArgumentValue(e, gene.get(e)));
+        Parents.forEach(e->E.setArgumentValue(e, gene.getDouble(e)));
         return E.calculate();
     }
 

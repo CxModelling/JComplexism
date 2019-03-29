@@ -31,7 +31,7 @@ public class FnMeasure implements EBMMeasurement {
                 hos_f = ys[5], hos_m = ys[6],
                 rec = ys[7];
 
-        double beta = expLU(pars.get("beta"), 1, 30);
+        double beta = expLU(pars.getDouble("beta"), 1, 30);
 
         Pair<Double, Double> care_seeking = getCareSeekingRate(pars, ti);
         double csf = care_seeking.getFirst(), csm = care_seeking.getSecond();
@@ -53,10 +53,12 @@ public class FnMeasure implements EBMMeasurement {
 
         double n = sum(ys);
 
-        double act = flat*pars.get("r_act") + slat*pars.get("r_ract") + rec*pars.get("r_rel");
+        double act = flat*pars.getDouble("r_act") +
+                slat*pars.getDouble("r_ract") +
+                rec*pars.getDouble("r_rel");
 
         tab.put("Lat", (flat+slat+rec)/n);
-        tab.put("NewAct", flat*pars.get("r_act")/act);
+        tab.put("NewAct", flat*pars.getDouble("r_act")/act);
         tab.put("Inc", act/n*1e5);
         tab.put("Prv", (inf_f+inf_m+hos_f+hos_m)/n*1e5);
         tab.put("N", n/1e6);
@@ -64,11 +66,11 @@ public class FnMeasure implements EBMMeasurement {
 
 
     private Pair<Double, Double> getCareSeekingRate(Gene pars, double t) {
-        double sr0 = pars.get("delay") + pars.get("log_sr_t")*getDt(t);
+        double sr0 = pars.getDouble("delay") + pars.getDouble("log_sr_t")*getDt(t);
 
         return new Pair<>(
                 expLU(sr0, 0.5, 8.902*2),
-                expLU(sr0 + pars.get("log_sr_m"), 0.5, 8.902*2)
+                expLU(sr0 + pars.getDouble("log_sr_m"), 0.5, 8.902*2)
         );
     }
 
@@ -78,8 +80,8 @@ public class FnMeasure implements EBMMeasurement {
         try {
             double bir = Demo.getBirthRate(t);
             double out = Demo.getDeathRate(t) - Demo.getMigration(t);
-            double outF = Demo.getDeathRate(t, "Female") + pars.get("r_die_tb");
-            double outM = Demo.getDeathRate(t, "Male") + pars.get("r_die_tb");
+            double outF = Demo.getDeathRate(t, "Female") + pars.getDouble("r_die_tb");
+            double outM = Demo.getDeathRate(t, "Male") + pars.getDouble("r_die_tb");
 
             double n = StatUtils.sum(y);
             pdy[0] = n*bir - y[0]*out;

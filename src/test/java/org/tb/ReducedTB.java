@@ -55,9 +55,9 @@ public class ReducedTB extends DataModel {
     @Override
     protected boolean checkMidTerm(IY0 y0, Gene pars) {
         Map<String, Double> ys = ((EBMY0) y0).toMap();
-        double act = ys.get("LatFast")*pars.get("r_act")
-                + ys.get("LatSlow")*pars.get("r_ract")
-                + ys.get("Rec")*pars.get("r_rel");
+        double act = ys.get("LatFast")*pars.getDouble("r_act")
+                + ys.get("LatSlow")*pars.getDouble("r_ract")
+                + ys.get("Rec")*pars.getDouble("r_rel");
         return act * 1e5 > 10;
     }
 

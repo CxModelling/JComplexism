@@ -45,8 +45,8 @@ public class Summarizer implements AdapterJSONObject {
         this.DIC();
 	}
 
-    private double[] getLoci(String s, List<Gene> Chrs){
-        return Chrs.stream().mapToDouble(e->e.get(s)).toArray();
+    private double[] getLoci(String s, List<Gene> genes){
+        return genes.stream().mapToDouble(e->e.getDouble(s)).toArray();
     }
 	
 	

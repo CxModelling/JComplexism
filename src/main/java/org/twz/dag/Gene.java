@@ -2,11 +2,14 @@ package org.twz.dag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.twz.IParameters;
+import org.twz.dataframe.IEntries;
 import org.twz.io.AdapterJSONObject;
 import org.twz.io.IO;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -15,7 +18,7 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 2017/4/21.
  */
 
-public class Gene implements AdapterJSONObject {
+public class Gene implements AdapterJSONObject, IParameters {
     public static Gene NullGene = new Gene() {
         @Override
         public void put(String s, double d) {
@@ -49,7 +52,7 @@ public class Gene implements AdapterJSONObject {
         return Locus;
     }
 
-    public double get(String s) {
+    public double getDouble(String s) {
         return Locus.getOrDefault(s, Double.NaN);
     }
 
@@ -169,4 +172,12 @@ public class Gene implements AdapterJSONObject {
         return gene;
     }
 
+    @Override
+    public Map<String, Double> toData() {
+        Map<String, Double> vs = new LinkedHashMap<>(Locus);
+        vs.put("LogLikelihood", LogLikelihood);
+        vs.put("LogPrior", LogPriorProb);
+        vs.put("LogPosterior", getLogPosterior());
+        return vs;
+    }
 }

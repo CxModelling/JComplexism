@@ -20,7 +20,7 @@ import java.util.*;
  *
  * Created by TimeWz on 2017/2/10.
  */
-public abstract class AbsSimModel implements AdapterJSONObject{
+public abstract class AbsSimModel implements AdapterJSONObject {
     private final String Name;
     protected final AbsObserver Observer;
     private final IY0 ProtoY0;
@@ -82,7 +82,7 @@ public abstract class AbsSimModel implements AdapterJSONObject{
     }
 
     public double getParameter(String key) {
-        return Parameters.get(key);
+        return Parameters.getDouble(key);
     }
 
     public Sampler getSampler(String key) {

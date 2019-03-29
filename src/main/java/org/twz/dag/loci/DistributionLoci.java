@@ -46,7 +46,7 @@ public class DistributionLoci extends Loci {
 
     @Override
     public double evaluate(Gene gene) {
-        return findDistribution(gene).logpdf(gene.get(getName()));
+        return findDistribution(gene).logpdf(gene.getDouble(getName()));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class DistributionLoci extends Loci {
     public IDistribution findDistribution(Gene pas) {
         String f = Distribution;
         for (String par : Parents) {
-            f = f.replaceAll("\\b" + par + "\\b","" + pas.get(par));
+            f = f.replaceAll("\\b" + par + "\\b","" + pas.getDouble(par));
         }
 
         f = f.replaceAll("\\s+", "");

@@ -26,7 +26,7 @@ public class ODEEBMBlueprintTest {
         ODEEBMBlueprint bp = (ODEEBMBlueprint) Da.createSimModel("SIR", "ODEEBM");
 
         bp.setODE((t, y0, y1, parameters, attributes) -> {
-            double beta = parameters.get("transmission_rate"), gamma = parameters.get("rec_rate");
+            double beta = parameters.getDouble("transmission_rate"), gamma = parameters.getDouble("rec_rate");
             double n = y0[0] + y0[1] + y0[2];
             double foi = beta * y0[0] * y0[1] / n;
             y1[0] = - foi;

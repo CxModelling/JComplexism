@@ -63,7 +63,7 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
     }
 
     public double getParameter(String key) {
-        return Parameters.get(key);
+        return Parameters.getDouble(key);
     }
 
     public Gene getParameters() {
