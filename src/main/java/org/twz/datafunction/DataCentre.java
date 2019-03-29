@@ -24,19 +24,6 @@ public class DataCentre implements AdapterJSONObject {
 
     }
 
-    public void readRawCSV(String Name, String Type, String filePath) {
-        // todo
-    }
-
-    public void readRawJSON(String Name, String Type, String filePath) {
-        // todo
-    }
-
-    public void readJSON(String json) {
-        // todo
-
-    }
-
     public void put(AbsDataFunction df) {
         DataSets.put(df.getName(), df);
     }
@@ -44,7 +31,6 @@ public class DataCentre implements AdapterJSONObject {
     public void putJSON(JSONObject json) {
         // todo
     }
-
 
     @Override
     public JSONObject toJSON() throws JSONException {

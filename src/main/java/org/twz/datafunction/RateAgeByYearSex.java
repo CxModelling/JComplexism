@@ -3,6 +3,7 @@ package org.twz.datafunction;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.FunctionExtension;
+import org.twz.dataframe.Pair;
 import org.twz.io.FnJSON;
 
 import java.util.HashMap;
@@ -40,6 +41,10 @@ public class RateAgeByYearSex extends AbsDataFunction {
 
     public double[] getYears() {
         return Years;
+    }
+
+    public Pair<Double, Double> getYearRange() {
+        return new Pair<>(MinYear, MaxYear);
     }
 
     private Map<Double, Map<Integer, double[]>> reformData(JSONObject df) throws JSONException {

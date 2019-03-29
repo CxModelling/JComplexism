@@ -21,7 +21,7 @@ public class RateAgeByYearSexTest {
 
     @Test
     public void getYears() {
-        System.out.println(Arrays.toString(RateAge.getYears()));
+        System.out.println(RateAge.getYearRange());
     }
 
     @Test
