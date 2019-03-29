@@ -3,6 +3,7 @@ package org.twz.dag;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mariuszgromada.math.mxparser.FunctionExtension;
 import org.twz.dag.loci.*;
 import org.twz.dag.util.NodeGroup;
 import org.twz.exception.ScriptException;
@@ -151,6 +152,30 @@ public class BayesNet implements AdapterJSONObject {
 
     public Loci getLoci(String loc) {
         return DAG.getNode(loc);
+    }
+
+    public void linkToFunctions(Map<String, FunctionExtension> fns) {
+        List<FunctionLoci> locus = new ArrayList<>();
+        try {
+            Loci loci;
+            for (String s : DAG.getOrder()) {
+                loci = DAG.getNode(s);
+                try {
+                    locus.add((FunctionLoci) loci);
+                } catch (ClassCastException ignored) {
+
+                }
+            }
+        } catch (InvalidPropertiesFormatException e) {
+            e.printStackTrace();
+        }
+        for (FunctionLoci loci : locus) {
+            for (Map.Entry<String, FunctionExtension> entry : fns.entrySet()) {
+                if (loci.needsFunction(entry.getKey())) {
+                    loci.linkToParentFunction(entry.getKey(), entry.getValue());
+                }
+            }
+        }
     }
 
     public Gene sample() {

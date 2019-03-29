@@ -97,7 +97,7 @@ public class Director implements ILogable {
 
     private void addStateSpace(IStateSpaceBlueprint dc) {
         if(DCores.putIfAbsent(dc.getName(), dc)!=null) {
-            Log.info("New State space dynamic model " + dc.getName() + " added");
+            Log.info("New state space model " + dc.getName() + " added");
         }
     }
 

@@ -6,6 +6,7 @@ import org.mariuszgromada.math.mxparser.FunctionExtension;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -41,10 +42,10 @@ public class FunctionLociTest {
 
     @Test
     public void sample() {
+
         FunctionLoci fl =  new FunctionLoci("A", "a(4)");
-        System.out.println(fl.E.calculate());
-        fl.E.addFunctions(new Function("a", new a()));
-        System.out.println(fl.E.getFunction("a"));
-        System.out.println(fl.E.calculate());
+        fl.linkToParentFunction("a", new a());
+        System.out.println(fl.sample(new HashMap<>()));
+
     }
 }

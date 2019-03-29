@@ -3,6 +3,7 @@ package org.twz.prob;
 import org.twz.factory.Workshop;
 import org.twz.factory.arguments.AbsArgument;
 import org.twz.factory.arguments.DoubleArg;
+import org.twz.factory.arguments.IntegerArg;
 
 import java.text.DecimalFormat;
 
@@ -73,9 +74,9 @@ public class DistributionManager {
         Distributions.register("pois", Poisson.class, ags);
 
         ags = new AbsArgument[]{
-                new DoubleArg("size"),
+                new IntegerArg("size"),
                 new DoubleArg("prob")};
-        Distributions.register("binom", Beta.class, ags);
+        Distributions.register("binom", Binom.class, ags);
 
         ags = new AbsArgument[]{
                 new DoubleArg("lambda")};
