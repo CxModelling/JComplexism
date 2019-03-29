@@ -3,7 +3,6 @@ package org.twz.datafunction;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.FunctionExtension;
-import org.twz.dataframe.DataFrame;
 import org.twz.io.AdapterJSONObject;
 
 
@@ -11,13 +10,13 @@ public abstract class AbsDataFunction implements FunctionExtension, AdapterJSONO
 
     private final String Name;
     protected final String[] Selectors;
-    protected String[] Selected;
-    private DataFrame RawData;
+    protected double[] Selected;
+    private JSONObject RawData;
 
-    public AbsDataFunction(String name, String[] sel_cols, DataFrame df) {
+    public AbsDataFunction(String name, String[] sel_cols, JSONObject df) {
         Name = name;
         Selectors = sel_cols;
-        Selected = new String[sel_cols.length];
+        Selected = new double[sel_cols.length];
         RawData = df;
     }
 
@@ -41,17 +40,7 @@ public abstract class AbsDataFunction implements FunctionExtension, AdapterJSONO
 
     @Override
     public void setParameterValue(int i, double v) {
-
-    }
-
-    @Override
-    public double calculate() {
-        return 0;
-    }
-
-    @Override
-    public FunctionExtension clone() {
-        return null;
+        Selected[i] = v;
     }
 
     @Override
@@ -60,7 +49,12 @@ public abstract class AbsDataFunction implements FunctionExtension, AdapterJSONO
         js.put("Name", getName());
         js.put("Type", getType());
         js.put("Selectors", Selectors);
-        js.put("RawData", RawData.toJSON());
+        js.put("RawData", RawData);
         return js;
+    }
+
+    @Override
+    public FunctionExtension clone() {
+        return null;
     }
 }
