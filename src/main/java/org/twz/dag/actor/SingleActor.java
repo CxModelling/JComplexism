@@ -1,11 +1,9 @@
 package org.twz.dag.actor;
 
 
-import org.twz.cx.element.Disclosure;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.dag.loci.Loci;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,12 +26,12 @@ public class SingleActor extends SimulationActor {
     }
 
     @Override
-    public double sample(Gene pas) {
+    public double sample(Chromosome pas) {
         return Distribution.sample(pas);
     }
 
     @Override
-    public double sample(Gene pas, Map<String, Double> exo) {
+    public double sample(Chromosome pas, Map<String, Double> exo) {
         return Distribution.sample(findParentValues(pas, exo));
     }
 

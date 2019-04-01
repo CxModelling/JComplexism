@@ -4,9 +4,7 @@ package org.twz.prob;
  *
  * Created by TimeWz on 2017/4/17.
  */
-public interface IDistribution extends ISampler {
-    double logpdf(double rv);
-    String getDataType();
+public interface IWalkable extends ISampler {
     double getUpper();
     double getLower();
     double getMean();

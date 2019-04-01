@@ -1,6 +1,6 @@
 package org.tb;
 
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.dataframe.demographics.SexDemography;
 
 import static org.apache.commons.math3.stat.StatUtils.sum;
@@ -12,7 +12,7 @@ public class FnWarmUp extends FnTB {
     }
 
     @Override
-    protected double[] calculatePopDy(Gene pars, double[] y, double t) {
+    protected double[] calculatePopDy(Chromosome pars, double[] y, double t) {
         double[] pdy = super.calculatePopDy(pars, y, StartYear);
         double sdy = sum(pdy)/sum(y);
 

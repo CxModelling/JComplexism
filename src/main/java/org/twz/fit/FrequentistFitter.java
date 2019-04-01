@@ -1,7 +1,7 @@
 package org.twz.fit;
 
 import org.twz.dag.BayesianModel;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public abstract class FrequentistFitter extends AbsFitter {
     }
 
     @Override
-    public List<Gene> update(BayesianModel bm) {
+    public List<Chromosome> update(BayesianModel bm) {
         warning("There is no update method");
         return bm.getResults();
     }

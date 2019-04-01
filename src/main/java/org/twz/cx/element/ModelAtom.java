@@ -3,7 +3,7 @@ package org.twz.cx.element;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.mcore.AbsSimModel;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.HashMap;
@@ -13,12 +13,12 @@ import java.util.Map;
 
 public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObject {
     private final String Name;
-    protected Gene Parameters;
+    protected Chromosome Parameters;
     protected Map<String, Object> Attributes;
     private Event Next;
     private AbsScheduler Scheduler;
 
-    public ModelAtom(String name, Gene parameters) {
+    public ModelAtom(String name, Chromosome parameters) {
         Name = name;
         Parameters = parameters;
         Attributes = new HashMap<>();
@@ -26,11 +26,11 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
     }
 
     public ModelAtom(String name, Map<String, Double> parameters) {
-        this(name, new Gene(parameters));
+        this(name, new Chromosome(parameters));
     }
 
     public ModelAtom(String name) {
-        this(name, Gene.NullGene);
+        this(name, Chromosome.nullChromosome);
     }
 
     public String getName() {
@@ -58,7 +58,7 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         }
     }
 
-    public void setParameters(Gene parameters) {
+    public void setParameters(Chromosome parameters) {
         Parameters = parameters;
     }
 
@@ -66,7 +66,7 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         return Parameters.getDouble(key);
     }
 
-    public Gene getParameters() {
+    public Chromosome getParameters() {
         return Parameters;
     }
 

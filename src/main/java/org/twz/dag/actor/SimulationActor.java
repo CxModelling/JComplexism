@@ -1,6 +1,6 @@
 package org.twz.dag.actor;
 
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,22 +19,22 @@ public abstract class SimulationActor {
 
     protected abstract List<String> getParents();
 
-    public abstract double sample(Gene pas);
+    public abstract double sample(Chromosome pas);
 
-    public abstract double sample(Gene pas, Map<String, Double> exo);
+    public abstract double sample(Chromosome pas, Map<String, Double> exo);
 
-    protected Map<String, Double> findParentValues(Gene gene) {
+    protected Map<String, Double> findParentValues(Chromosome chromosome) {
         Map<String, Double> ps = new HashMap<>();
         for (String s : getParents()) {
-            ps.put(s, gene.getDouble(s));
+            ps.put(s, chromosome.getDouble(s));
         }
         return ps;
     }
 
-    protected Map<String, Double> findParentValues(Gene gene, Map<String, Double> exo) {
+    protected Map<String, Double> findParentValues(Chromosome chromosome, Map<String, Double> exo) {
         Map<String, Double> ps = new HashMap<>();
         for (String s : getParents()) {
-            ps.put(s, exo.containsKey(s)? exo.get(s): gene.getDouble(s));
+            ps.put(s, exo.containsKey(s)? exo.get(s): chromosome.getDouble(s));
         }
         return ps;
     }

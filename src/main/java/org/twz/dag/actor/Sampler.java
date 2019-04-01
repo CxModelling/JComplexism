@@ -1,6 +1,6 @@
 package org.twz.dag.actor;
 
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.prob.ISampler;
 
 import java.util.Map;
@@ -11,9 +11,9 @@ import java.util.Map;
  */
 public class Sampler implements ISampler {
     private SimulationActor Actor;
-    private Gene Loc;
+    private Chromosome Loc;
 
-    public Sampler(SimulationActor actor, Gene loc) {
+    public Sampler(SimulationActor actor, Chromosome loc) {
         Actor = actor;
         Loc = loc;
     }
@@ -29,6 +29,16 @@ public class Sampler implements ISampler {
     @Override
     public String getName() {
         return Actor.Field;
+    }
+
+    @Override
+    public String getDataType() {
+        return Actor.Field;
+    }
+
+    @Override
+    public double logProb(double rv) {
+        return 0;
     }
 
     @Override

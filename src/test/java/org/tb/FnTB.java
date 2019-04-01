@@ -1,7 +1,7 @@
 package org.tb;
 
 import org.twz.cx.ebmodel.ODEFunction;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.dataframe.Pair;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.exception.TimeseriesException;
@@ -22,7 +22,7 @@ public class FnTB implements ODEFunction {
     }
 
     @Override
-    public void call(double t, double[] y0, double[] y1, Gene pars, Map<String, Object> attributes) {
+    public void call(double t, double[] y0, double[] y1, Chromosome pars, Map<String, Object> attributes) {
         double sus = y0[0], flat = y0[1], slat = y0[2],
                 inf_f = y0[3], inf_m = y0[4],
                 hos_f = y0[5], hos_m = y0[6],
@@ -59,7 +59,7 @@ public class FnTB implements ODEFunction {
         }
     }
 
-    private Pair<Double, Double> getCareSeekingRate(Gene pars, double t) {
+    private Pair<Double, Double> getCareSeekingRate(Chromosome pars, double t) {
         double sr0 = pars.getDouble("delay") + pars.getDouble("log_sr_t")*getDt(t);
 
         return new Pair<>(
@@ -68,7 +68,7 @@ public class FnTB implements ODEFunction {
         );
     }
 
-    protected double[] calculatePopDy(Gene pars, double[] y, double t) {
+    protected double[] calculatePopDy(Chromosome pars, double[] y, double t) {
         double[] pdy = new double[y.length];
 
         try {

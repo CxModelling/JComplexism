@@ -1,6 +1,6 @@
 package org.twz.fit.genetic;
 
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.prob.Sample;
 
 import java.util.ArrayList;
@@ -8,11 +8,11 @@ import java.util.List;
 
 public class TournamentSelection extends AbsSelection {
     @Override
-    public List<Gene> select(List<Gene> population, String target) {
-        List<Gene> picked = new ArrayList<>();
+    public List<Chromosome> select(List<Chromosome> population, String target) {
+        List<Chromosome> picked = new ArrayList<>();
         int n = population.size();
 
-        Gene g1, g2;
+        Chromosome g1, g2;
         while(picked.size() < n) {
             g1 = population.get(Sample.sampleN(n));
             g2 = population.get(Sample.sampleN(n));
@@ -21,8 +21,8 @@ public class TournamentSelection extends AbsSelection {
         return picked;
     }
 
-    private Gene match(Gene g1, Gene g2, String target) {
-        Gene winner;
+    private Chromosome match(Chromosome g1, Chromosome g2, String target) {
+        Chromosome winner;
         if (target.equals("MLE")) {
             winner = (g1.getLogLikelihood()>g2.getLogLikelihood())?g1:g2;
         } else {

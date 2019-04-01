@@ -4,7 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +34,7 @@ public class PseudoLoci extends Loci {
     }
 
     @Override
-    public double evaluate(Gene gene) {
+    public double evaluate(Chromosome chromosome) {
         return 0;
     }
 
@@ -45,12 +45,12 @@ public class PseudoLoci extends Loci {
     }
 
     @Override
-    public double sample(Gene gene) {
+    public double sample(Chromosome chromosome) {
         return Double.NaN;
     }
 
     @Override
-    public void fill(Gene gene) {
+    public void fill(Chromosome chromosome) {
 
     }
 

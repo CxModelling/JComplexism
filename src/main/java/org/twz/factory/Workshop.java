@@ -65,7 +65,7 @@ public class Workshop<T> {
         }
     }
 
-    public T create(String name, String type, String[] args) throws InstantiationError {
+    public T create(String name, String type, String[] args) throws InstantiationError, NullPointerException {
         Creator<? extends T> cr = Creators.get(type);
         return cr.create(name, args, this);
     }

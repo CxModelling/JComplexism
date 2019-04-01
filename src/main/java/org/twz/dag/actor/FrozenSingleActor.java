@@ -1,11 +1,10 @@
 package org.twz.dag.actor;
 
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.dag.loci.DistributionLoci;
 import org.twz.dag.loci.Loci;
-import org.twz.prob.IDistribution;
+import org.twz.prob.IWalkable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,7 @@ import java.util.Map;
  * Created by TimeWz on 08/08/2018.
  */
 public class FrozenSingleActor extends SimulationActor {
-    private IDistribution Distribution;
+    private IWalkable Distribution;
     private DistributionLoci Loci;
 
     public FrozenSingleActor(String field, Loci di, Map<String, Double> pas) {
@@ -23,18 +22,18 @@ public class FrozenSingleActor extends SimulationActor {
         Distribution = Loci.findDistribution(pas);
     }
 
-    public FrozenSingleActor(String field, Loci di, Gene pas) {
+    public FrozenSingleActor(String field, Loci di, Chromosome pas) {
         super(field);
         Loci = (DistributionLoci) di;
         Distribution = Loci.findDistribution(pas);
     }
 
-    public void update(Gene gene) {
-       Distribution = Loci.findDistribution(gene);
+    public void update(Chromosome chromosome) {
+       Distribution = Loci.findDistribution(chromosome);
     }
 
-    public void update(Gene gene, Map<String, Double> exo) {
-        Distribution = Loci.findDistribution(findParentValues(gene, exo));
+    public void update(Chromosome chromosome, Map<String, Double> exo) {
+        Distribution = Loci.findDistribution(findParentValues(chromosome, exo));
     }
 
     @Override
@@ -43,12 +42,12 @@ public class FrozenSingleActor extends SimulationActor {
     }
 
     @Override
-    public double sample(Gene pas) {
+    public double sample(Chromosome pas) {
         return Distribution.sample();
     }
 
     @Override
-    public double sample(Gene pas, Map<String, Double> exo) {
+    public double sample(Chromosome pas, Map<String, Double> exo) {
         return Distribution.sample();
     }
 

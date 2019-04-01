@@ -8,7 +8,7 @@ import org.apache.commons.math3.distribution.AbstractIntegerDistribution;
  * An adaptor for integer distribution in Apache commons-math
  * Created by TimeWz on 2017/7/15.
  */
-public class AdaptorIntegerCommonsMath implements IDistribution {
+public class AdaptorIntegerCommonsMath implements IWalkable {
     private AbstractIntegerDistribution D;
     protected String Name;
 
@@ -39,7 +39,7 @@ public class AdaptorIntegerCommonsMath implements IDistribution {
     }
 
     @Override
-    public double logpdf(double rv) {
+    public double logProb(double rv) {
         return D.logProbability((int) rv);
     }
 

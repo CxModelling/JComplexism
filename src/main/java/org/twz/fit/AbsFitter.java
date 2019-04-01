@@ -2,7 +2,7 @@ package org.twz.fit;
 
 import org.json.JSONObject;
 import org.twz.dag.BayesianModel;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.util.ILogable;
 import org.twz.util.LogFormatter;
 
@@ -86,27 +86,27 @@ public abstract class AbsFitter implements ILogable {
         Options.forEach((k, v) -> System.out.println(k + ": " + v.toString()));
     }
 
-    public abstract List<Gene> fit(BayesianModel bm);
+    public abstract List<Chromosome> fit(BayesianModel bm);
 
-    public List<Gene> fit(BayesianModel bm, Map<String, Object> opt) {
+    public List<Chromosome> fit(BayesianModel bm, Map<String, Object> opt) {
         opt.forEach(this::setOption);
         return fit(bm);
     }
 
-    public abstract List<Gene> update(BayesianModel bm);
+    public abstract List<Chromosome> update(BayesianModel bm);
 
-    public List<Gene> update(BayesianModel bm, Map<String, Object> opt) {
+    public List<Chromosome> update(BayesianModel bm, Map<String, Object> opt) {
         opt.forEach(this::setOption);
         return update(bm);
     }
 
-    void appendPriorUntil(BayesianModel bm, int n, List<Gene> prior) {
+    void appendPriorUntil(BayesianModel bm, int n, List<Chromosome> prior) {
         while(prior.size() < n) {
-            Gene gene = bm.samplePrior();
-            if (!gene.isPriorEvaluated()) bm.evaluateLogPrior(gene);
-            if (!gene.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(gene);
-            if (Double.isInfinite(gene.getLogLikelihood())) continue;
-            prior.add(gene);
+            Chromosome chromosome = bm.samplePrior();
+            if (!chromosome.isPriorEvaluated()) bm.evaluateLogPrior(chromosome);
+            if (!chromosome.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(chromosome);
+            if (Double.isInfinite(chromosome.getLogLikelihood())) continue;
+            prior.add(chromosome);
         }
     }
 

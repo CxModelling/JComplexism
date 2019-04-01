@@ -3,7 +3,7 @@ package org.twz.dag.loci;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.exception.ScriptException;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class ValueLoci extends Loci {
     }
 
     @Override
-    public double evaluate(Gene gene) {
+    public double evaluate(Chromosome chromosome) {
         return 0;
     }
 
@@ -54,13 +54,13 @@ public class ValueLoci extends Loci {
     }
 
     @Override
-    public double sample(Gene gene) {
+    public double sample(Chromosome chromosome) {
         return Value;
     }
 
     @Override
-    public void fill(Gene gene) {
-        gene.put(getName(), Value);
+    public void fill(Chromosome chromosome) {
+        chromosome.put(getName(), Value);
     }
 
     @Override

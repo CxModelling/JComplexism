@@ -178,46 +178,46 @@ public class BayesNet implements AdapterJSONObject {
         }
     }
 
-    public Gene sample() {
-        Gene gene = new Gene();
-        fillAll(gene);
-        evaluate(gene);
-        return gene;
+    public Chromosome sample() {
+        Chromosome chromosome = new Chromosome();
+        fillAll(chromosome);
+        evaluate(chromosome);
+        return chromosome;
     }
 
-    public Gene sample(Map<String, Double> inp) {
-        Gene gene = new Gene(inp);
-        fillAll(gene);
-        evaluate(gene);
-        return gene;
+    public Chromosome sample(Map<String, Double> inp) {
+        Chromosome chromosome = new Chromosome(inp);
+        fillAll(chromosome);
+        evaluate(chromosome);
+        return chromosome;
     }
 
-    private void fillAll(Gene gene) {
+    private void fillAll(Chromosome chromosome) {
         Loci loci;
         for (String s : getOrder()) {
-            if (gene.has(s)) {
+            if (chromosome.has(s)) {
                 continue;
             }
             loci = DAG.getNode(s);
             if (!(loci instanceof ExoValueLoci)) {
-                loci.fill(gene);
+                loci.fill(chromosome);
             }
         }
     }
 
-    public void evaluate(Gene gene) {
+    public void evaluate(Chromosome chromosome) {
         Loci loci;
         double li = 0;
         for (String s : getOrder()) {
-            if (gene.has(s)) {
+            if (chromosome.has(s)) {
                 loci = DAG.getNode(s);
-                li += loci.evaluate(gene);
+                li += loci.evaluate(chromosome);
             }
         }
-        gene.setLogPriorProb(li);
+        chromosome.setLogPriorProb(li);
     }
 
-    public void impulse(Gene gene, Map<String, Double> nodes) {
+    public void impulse(Chromosome chromosome, Map<String, Double> nodes) {
         Set<String> shocked = new HashSet<>();
 
         for (String s : nodes.keySet()) {
@@ -232,33 +232,33 @@ public class BayesNet implements AdapterJSONObject {
                 if (Double.isNaN(value)) {
                     loci = DAG.getNode(s);
                     if (!(loci instanceof ExoValueLoci)) {
-                        loci.fill(gene);
+                        loci.fill(chromosome);
                     }
                 } else {
-                    gene.getLocus().put(s, value);
+                    chromosome.getLocus().put(s, value);
                 }
             }
         }
-        gene.resetProbability();
-        evaluate(gene);
+        chromosome.resetProbability();
+        evaluate(chromosome);
     }
 
-    public void impulse(Gene gene, List<String> nodes) {
+    public void impulse(Chromosome chromosome, List<String> nodes) {
         Map<String, Double> imp = new HashMap<>();
         for (String node : nodes) {
             imp.put(node, Double.NaN);
         }
-        impulse(gene, imp);
+        impulse(chromosome, imp);
     }
 
-    public void bindExogenous(Gene gene, Map<String, Double> exo) {
+    public void bindExogenous(Chromosome chromosome, Map<String, Double> exo) {
         Map<String, Double> imp = new HashMap<>();
         for (Map.Entry<String, Double> ent : exo.entrySet()) {
             if (Order.contains(ent.getKey())) {
                 imp.put(ent.getKey(), ent.getValue());
             }
         }
-        impulse(gene, imp);
+        impulse(chromosome, imp);
     }
 
     private List<String> toList(JSONArray ja) throws JSONException {

@@ -1,7 +1,7 @@
 package org.twz.fit.mcmc;
 
 import org.twz.dag.BayesianModel;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 
 /**
  *  http://probability.ca/jeff/ftpdir/adaptex.pdf
@@ -38,27 +38,27 @@ public abstract class AbsStepper implements IStepper {
     }
 
     @Override
-    public Gene step(BayesianModel bm, Gene gene) {
-        double value = gene.getDouble(Name);
+    public Chromosome step(BayesianModel bm, Chromosome chromosome) {
+        double value = chromosome.getDouble(Name);
         double proposed = proposal(value, getStepSize());
-        //if (!gene.isEvaluated()) gene.setLogLikelihood(bm.evaluateLikelihood(gene));
-        Gene newGene = gene.clone();
+        //if (!chromosome.isEvaluated()) chromosome.setLogLikelihood(bm.evaluateLikelihood(chromosome));
+        Chromosome newChromosome = chromosome.clone();
 
         if (proposed < Lower | proposed > Upper) {
-            return newGene;
+            return newChromosome;
         } else {
-            newGene.put(Name, proposed);
+            newChromosome.put(Name, proposed);
 
-            bm.evaluateLogPrior(newGene);
-            bm.evaluateLogLikelihood(newGene);
-            double p_acc = Math.exp(newGene.getLogPosterior() - gene.getLogPosterior());
+            bm.evaluateLogPrior(newChromosome);
+            bm.evaluateLogLikelihood(newChromosome);
+            double p_acc = Math.exp(newChromosome.getLogPosterior() - chromosome.getLogPosterior());
 
             if (p_acc > Math.random()) {
                 if (isAdaptive()) AcceptanceCount ++;
             } else {
-                newGene.put(Name, value);
-                newGene.setLogPriorProb(gene.getLogPriorProb());
-                newGene.setLogLikelihood(gene.getLogLikelihood());
+                newChromosome.put(Name, value);
+                newChromosome.setLogPriorProb(chromosome.getLogPriorProb());
+                newChromosome.setLogLikelihood(chromosome.getLogLikelihood());
             }
         }
 
@@ -76,7 +76,7 @@ public abstract class AbsStepper implements IStepper {
                 IterationsSinceAdaption = 0;
             }
         }
-        return newGene;
+        return newChromosome;
     }
 
     protected abstract double proposal(double v, double scale);

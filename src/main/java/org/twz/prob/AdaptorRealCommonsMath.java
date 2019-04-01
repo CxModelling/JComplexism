@@ -8,7 +8,7 @@ import org.apache.commons.math3.distribution.AbstractRealDistribution;
  * An adaptor for integer distribution in Apache commons-math
  * Created by TimeWz on 2017/7/15.
  */
-public class AdaptorRealCommonsMath implements IDistribution {
+public class AdaptorRealCommonsMath implements IWalkable {
     private AbstractRealDistribution D;
     protected String Name;
 
@@ -33,7 +33,7 @@ public class AdaptorRealCommonsMath implements IDistribution {
     }
 
     @Override
-    public double logpdf(double rv) {
+    public double logProb(double rv) {
         return D.logDensity(rv);
     }
 

@@ -1,12 +1,12 @@
 package org.twz.fit;
 
 import org.json.JSONObject;
+import org.twz.dag.Chromosome;
 import org.twz.fit.mcmc.BinaryStepper;
 import org.twz.fit.mcmc.DoubleStepper;
 import org.twz.fit.mcmc.IStepper;
 import org.twz.fit.mcmc.IntegerStepper;
 import org.twz.dag.BayesianModel;
-import org.twz.dag.Gene;
 
 import java.util.*;
 
@@ -60,8 +60,8 @@ public class MCMC extends BayesianFitter {
     }
 
     @Override
-    public List<Gene> fit(BayesianModel bm) {
-        Gene last = bm.samplePrior();
+    public List<Chromosome> fit(BayesianModel bm) {
+        Chromosome last = bm.samplePrior();
         if (!last.isPriorEvaluated()) bm.evaluateLogPrior(last);
         if (!last.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(last);
 
@@ -73,16 +73,16 @@ public class MCMC extends BayesianFitter {
     }
 
     @Override
-    public List<Gene> update(BayesianModel bm) {
+    public List<Chromosome> update(BayesianModel bm) {
         info("Reading posterior");
-        Gene last = bm.getResults().get(bm.getResults().size() - 1);
+        Chromosome last = bm.getResults().get(bm.getResults().size() - 1);
         int niter = getOptionInteger("N_update");
         return collect(bm, last, niter, "Update");
     }
 
-    private Gene burnIn(BayesianModel bm, Gene init, int burn) {
+    private Chromosome burnIn(BayesianModel bm, Chromosome init, int burn) {
         info("Burning in");
-        Gene last = init;
+        Chromosome last = init;
         while (burn > 0) {
             for (IStepper stp: Steppers) {
                 last = stp.step(bm, last);
@@ -92,10 +92,10 @@ public class MCMC extends BayesianFitter {
         return last;
     }
 
-    private List<Gene> collect(BayesianModel bm, Gene init, int n, String tag) {
+    private List<Chromosome> collect(BayesianModel bm, Chromosome init, int n, String tag) {
         info("Collecting posterior");
-        List<Gene> post = new ArrayList<>();
-        Gene last = init;
+        List<Chromosome> post = new ArrayList<>();
+        Chromosome last = init;
         int thin = getOptionInteger("N_thin");
 
         int i = 0;

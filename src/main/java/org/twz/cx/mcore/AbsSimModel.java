@@ -7,7 +7,6 @@ import org.twz.cx.element.*;
 import org.twz.cx.mcore.communicator.IChecker;
 import org.twz.cx.mcore.communicator.IResponse;
 import org.twz.cx.mcore.communicator.ListenerSet;
-import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
 import org.twz.dag.actor.Sampler;
 import org.twz.dataframe.DataFrame;

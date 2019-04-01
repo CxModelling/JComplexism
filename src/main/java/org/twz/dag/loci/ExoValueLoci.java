@@ -2,7 +2,7 @@ package org.twz.dag.loci;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +25,7 @@ public class ExoValueLoci extends Loci {
     }
 
     @Override
-    public double evaluate(Gene gene) {
+    public double evaluate(Chromosome chromosome) {
         return 0;
     }
 
@@ -35,12 +35,12 @@ public class ExoValueLoci extends Loci {
     }
 
     @Override
-    public double sample(Gene gene) {
+    public double sample(Chromosome chromosome) {
         return 0;
     }
 
     @Override
-    public void fill(Gene gene) {
+    public void fill(Chromosome chromosome) {
 
     }
 

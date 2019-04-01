@@ -3,7 +3,6 @@ package org.twz.dag;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.IParameters;
-import org.twz.dataframe.IEntries;
 import org.twz.io.AdapterJSONObject;
 import org.twz.io.IO;
 
@@ -18,8 +17,8 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 2017/4/21.
  */
 
-public class Gene implements AdapterJSONObject, IParameters {
-    public static Gene NullGene = new Gene() {
+public class Chromosome implements AdapterJSONObject, IParameters {
+    public static Chromosome nullChromosome = new Chromosome() {
         @Override
         public void put(String s, double d) {
 
@@ -29,7 +28,7 @@ public class Gene implements AdapterJSONObject, IParameters {
     private double LogPriorProb, LogLikelihood;
     private Map<String, Double> Locus;
 
-    public Gene(Map<String, Double> locus, double pp) {
+    public Chromosome(Map<String, Double> locus, double pp) {
         try {
             Locus = new HashMap<>(locus);
         } catch (NullPointerException e) {
@@ -40,11 +39,11 @@ public class Gene implements AdapterJSONObject, IParameters {
         LogLikelihood = Double.NaN;
     }
 
-    public Gene(Map<String, Double> locus) {
+    public Chromosome(Map<String, Double> locus) {
         this(locus, Double.NaN);
     }
 
-    public Gene() {
+    public Chromosome() {
         this(new HashMap<>(), Double.NaN);
     }
 
@@ -166,10 +165,10 @@ public class Gene implements AdapterJSONObject, IParameters {
     }
 
     @Override
-    public Gene clone() {
-        Gene gene =  new Gene(Locus, LogPriorProb);
-        if (!isLikelihoodEvaluated()) gene.setLogLikelihood(getLogLikelihood());
-        return gene;
+    public Chromosome clone() {
+        Chromosome chromosome =  new Chromosome(Locus, LogPriorProb);
+        if (!isLikelihoodEvaluated()) chromosome.setLogLikelihood(getLogLikelihood());
+        return chromosome;
     }
 
     @Override

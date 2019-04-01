@@ -48,11 +48,11 @@ public abstract class DataModel extends BayesianModel {
 
 
     @Override
-    public Gene samplePrior() {
+    public Chromosome samplePrior() {
         return SC.generate(NG.getNext());
     }
 
-    public IY0 warmUp(Gene pars) {
+    public IY0 warmUp(Chromosome pars) {
         IY0 y0 = sampleY0(pars);
         if (WarmUpModel == null) {
             return y0;
@@ -74,7 +74,7 @@ public abstract class DataModel extends BayesianModel {
         return transportY0(model);
     }
 
-    public TimeSeries simulate(Gene pars, IY0 y0) {
+    public TimeSeries simulate(Chromosome pars, IY0 y0) {
         ParameterCore pc;
         if (pars instanceof ParameterCore) {
             pc = (ParameterCore) pars;
@@ -94,32 +94,32 @@ public abstract class DataModel extends BayesianModel {
     }
 
     @Override
-    public void evaluateLogLikelihood(Gene gene) {
-        IY0 y0 = warmUp(gene);
+    public void evaluateLogLikelihood(Chromosome chromosome) {
+        IY0 y0 = warmUp(chromosome);
         TimeSeries ts = null;
-        if (!checkMidTerm(y0, gene)) {
-            gene.setLogLikelihood(Double.NEGATIVE_INFINITY);
+        if (!checkMidTerm(y0, chromosome)) {
+            chromosome.setLogLikelihood(Double.NEGATIVE_INFINITY);
         } else {
             try {
-                ts = simulate(gene, y0);
-                gene.setLogLikelihood(calculateLogLikelihood(gene, ts));
+                ts = simulate(chromosome, y0);
+                chromosome.setLogLikelihood(calculateLogLikelihood(chromosome, ts));
             } catch (Exception e) {
-                gene.setLogLikelihood(Double.NEGATIVE_INFINITY);
+                chromosome.setLogLikelihood(Double.NEGATIVE_INFINITY);
             }
         }
         if (ts != null) {
-            LastPars = (ParameterCore) gene;
+            LastPars = (ParameterCore) chromosome;
             LastOutput = ts;
         }
     }
 
     @Override
-    public void keepMemento(Gene gene, String type) {
+    public void keepMemento(Chromosome chromosome, String type) {
         if (!Mementos.containsKey(type)) {
             Mementos.put(type, new LinkedHashMap<>());
         }
-        if (LastPars != gene) {
-            evaluateLogLikelihood(gene);
+        if (LastPars != chromosome) {
+            evaluateLogLikelihood(chromosome);
         }
         Mementos.get(type).put(LastPars, LastOutput);
     }
@@ -197,13 +197,13 @@ public abstract class DataModel extends BayesianModel {
         }
     }
 
-    protected abstract IY0 sampleY0(Gene gene);
+    protected abstract IY0 sampleY0(Chromosome chromosome);
 
-    protected abstract boolean checkMidTerm(IY0 y0, Gene gene);
+    protected abstract boolean checkMidTerm(IY0 y0, Chromosome chromosome);
 
     protected abstract IY0 transportY0(AbsSimModel model);
 
-    protected abstract double calculateLogLikelihood(Gene gene, TimeSeries output);
+    protected abstract double calculateLogLikelihood(Chromosome chromosome, TimeSeries output);
 
     @Override
     public boolean hasExactLikelihood() {

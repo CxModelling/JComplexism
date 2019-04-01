@@ -6,7 +6,8 @@ import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import org.mariuszgromada.math.mxparser.FunctionExtension;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
+
 import java.util.*;
 
 
@@ -56,7 +57,7 @@ public class FunctionLoci extends Loci {
     }
 
     @Override
-    public double evaluate(Gene gene) {
+    public double evaluate(Chromosome chromosome) {
         return 0;
     }
 
@@ -68,14 +69,14 @@ public class FunctionLoci extends Loci {
     }
 
     @Override
-    public double sample(Gene gene) {
-        Parents.forEach(e->E.setArgumentValue(e, gene.getDouble(e)));
+    public double sample(Chromosome chromosome) {
+        Parents.forEach(e->E.setArgumentValue(e, chromosome.getDouble(e)));
         return E.calculate();
     }
 
     @Override
-    public void fill(Gene gene) {
-        gene.put(getName(), sample(gene));
+    public void fill(Chromosome chromosome) {
+        chromosome.put(getName(), sample(chromosome));
     }
 
     @Override

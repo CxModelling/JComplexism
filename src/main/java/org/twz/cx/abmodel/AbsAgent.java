@@ -1,10 +1,10 @@
 package org.twz.cx.abmodel;
 
 import org.twz.cx.element.ModelAtom;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 
 public abstract class AbsAgent extends ModelAtom {
-    public AbsAgent(String name, Gene pars) {
+    public AbsAgent(String name, Chromosome pars) {
         super(name, pars);
     }
 

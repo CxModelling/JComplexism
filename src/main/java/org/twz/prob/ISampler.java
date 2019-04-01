@@ -5,6 +5,8 @@ package org.twz.prob;
  */
 public interface ISampler {
     String getName();
+    String getDataType();
+    double logProb(double rv);
     double sample();
     double[] sample(int n);
 }

@@ -4,7 +4,6 @@ package org.twz.statespace;
 import org.json.JSONException;
 import org.twz.io.AdapterJSONObject;
 import org.json.JSONObject;
-import org.twz.prob.IDistribution;
 import org.twz.prob.ISampler;
 
 /**

@@ -2,7 +2,7 @@ package org.twz.prob;
 
 import org.twz.util.Statistics;
 
-public class Const implements IDistribution {
+public class Const implements IWalkable {
 	private String Name;
 	private final double K;
 
@@ -32,7 +32,7 @@ public class Const implements IDistribution {
 	}
 
 	@Override
-	public double logpdf(double rv) {
+	public double logProb(double rv) {
 		if (rv == K) {
 			return 0;
 		} else {

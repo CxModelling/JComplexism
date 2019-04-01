@@ -5,8 +5,7 @@ import org.twz.cx.element.ModelAtom;
 import org.twz.cx.element.Ticker.AbsTicker;
 import org.twz.cx.element.Ticker.StepTicker;
 import org.twz.cx.mcore.AbsSimModel;
-import org.twz.dag.Gene;
-import org.twz.io.FnJSON;
+import org.twz.dag.Chromosome;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +18,7 @@ public abstract class AbsEquations extends ModelAtom {
     private double Last;
     private AbsTicker Clock;
 
-    public AbsEquations(String name, String[] y_names, Gene parameters, double dt) {
+    public AbsEquations(String name, String[] y_names, Chromosome parameters, double dt) {
         super(name, parameters);
         Clock = new StepTicker(name, dt);
         YNames = y_names;

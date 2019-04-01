@@ -1,6 +1,6 @@
 package org.twz.fit.genetic;
 
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.util.Statistics;
 import org.twz.prob.Sample;
 
@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 
 public class ImportanceSelection extends AbsSelection {
     @Override
-    public List<Gene> select(List<Gene> population, String target) {
+    public List<Chromosome> select(List<Chromosome> population, String target) {
         int n = population.size();
-        List<Gene> fil = population.stream().filter(g-> Double.isFinite(g.getLogLikelihood()))
+        List<Chromosome> fil = population.stream().filter(g-> Double.isFinite(g.getLogLikelihood()))
                 .filter(g->Double.isFinite(g.getLogPriorProb())).collect(Collectors.toList());
 
         double[] wts;
@@ -26,16 +26,16 @@ public class ImportanceSelection extends AbsSelection {
         return resample(fil, wts, n);
     }
 
-    private double[] getLikelihoodArray(List<Gene> population) {
-        return population.stream().mapToDouble(Gene::getLogLikelihood).toArray();
+    private double[] getLikelihoodArray(List<Chromosome> population) {
+        return population.stream().mapToDouble(Chromosome::getLogLikelihood).toArray();
     }
 
-    private double[] getPosteriorArray(List<Gene> population) {
-        return population.stream().mapToDouble(Gene::getLogPosterior).toArray();
+    private double[] getPosteriorArray(List<Chromosome> population) {
+        return population.stream().mapToDouble(Chromosome::getLogPosterior).toArray();
     }
 
-    private List<Gene> resample(List<Gene> ps, double[] wts, int n) {
-        List<Gene> post = new ArrayList<>();
+    private List<Chromosome> resample(List<Chromosome> ps, double[] wts, int n) {
+        List<Chromosome> post = new ArrayList<>();
         for (int i : Sample.sample(wts, n)) {
             post.add(ps.get(i).clone());
         }

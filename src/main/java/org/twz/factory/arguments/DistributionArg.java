@@ -3,7 +3,7 @@ package org.twz.factory.arguments;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.prob.DistributionManager;
-import org.twz.prob.IDistribution;
+import org.twz.prob.IWalkable;
 import org.twz.factory.Workshop;
 import org.twz.io.FnJSON;
 
@@ -20,7 +20,7 @@ public class DistributionArg extends AbsArgument{
 
     @Override
     public Class getType() {
-        return IDistribution.class;
+        return IWalkable.class;
     }
 
     @Override

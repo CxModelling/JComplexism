@@ -2,14 +2,11 @@ package org.twz.fit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.twz.dag.BayesianModel;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.dataframe.DataFrame;
 
-import java.lang.reflect.Parameter;
 import java.util.*;
-import java.util.jar.JarException;
 
 public abstract class BayesianFitter extends AbsFitter {
 
@@ -23,15 +20,15 @@ public abstract class BayesianFitter extends AbsFitter {
         setOption("N_post", niter);
     }
 
-    public JSONArray parametersToJSON(List<Gene> pars) throws JSONException {
+    public JSONArray parametersToJSON(List<Chromosome> pars) throws JSONException {
         JSONArray js = new JSONArray();
-        for (Gene p: pars) {
+        for (Chromosome p: pars) {
             js.put(p.toJSON());
         }
         return js;
     }
 
-    public DataFrame summariseParameters(List<Gene> pars) {
+    public DataFrame summariseParameters(List<Chromosome> pars) {
         (new Summarizer(pars)).println();
         return null; // todo
     }

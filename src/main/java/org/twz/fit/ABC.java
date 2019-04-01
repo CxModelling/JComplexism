@@ -2,7 +2,7 @@ package org.twz.fit;
 
 import org.json.JSONObject;
 import org.twz.dag.BayesianModel;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.util.Statistics;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class ABC extends BayesianFitter {
 
 
     @Override
-    public List<Gene> fit(BayesianModel bm) {
+    public List<Chromosome> fit(BayesianModel bm) {
         if (Double.isNaN(Epsilon)) {
             test(bm);
         }
@@ -42,7 +42,7 @@ public class ABC extends BayesianFitter {
     }
 
     @Override
-    public List<Gene> update(BayesianModel bm) {
+    public List<Chromosome> update(BayesianModel bm) {
         return collectPosterior(bm, getOptionInteger("N_update"), "Update");
     }
 
@@ -56,11 +56,11 @@ public class ABC extends BayesianFitter {
         int n = getOptionInteger ("N_test");
         double p = getOptionDouble("P_test");
 
-        List<Gene> xs = new ArrayList<>();
+        List<Chromosome> xs = new ArrayList<>();
 
         try {
-            for (Gene gene : (bm.getPriorSample())) {
-                xs.add(gene);
+            for (Chromosome chromosome : (bm.getPriorSample())) {
+                xs.add(chromosome);
                 if (xs.size() >= n) {
                     break;
                 }
@@ -72,25 +72,25 @@ public class ABC extends BayesianFitter {
         appendPriorUntil(bm, n, xs);
 
         double[] lis = xs.stream()
-                .mapToDouble(Gene::getLogLikelihood).toArray();
+                .mapToDouble(Chromosome::getLogLikelihood).toArray();
 
         Epsilon = Statistics.quantile(lis, 1-p);
         info("Test sample suggest epi=" + Epsilon);
     }
 
-    private List<Gene> collectPosterior(BayesianModel bm, int n, String tag) {
-        List<Gene> res = new ArrayList<>();
+    private List<Chromosome> collectPosterior(BayesianModel bm, int n, String tag) {
+        List<Chromosome> res = new ArrayList<>();
         int max_iter = (int) (n / getOptionDouble("P_min_acc"));
 
         int count = 0;
         while (res.size() < n) {
             count ++;
-            Gene gene = bm.samplePrior();
-            if (!gene.isPriorEvaluated()) bm.evaluateLogPrior(gene);
-            if (!gene.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(gene);
-            if (gene.getLogLikelihood() > Epsilon) {
-                res.add(gene);
-                bm.keepMemento(gene, tag);
+            Chromosome chromosome = bm.samplePrior();
+            if (!chromosome.isPriorEvaluated()) bm.evaluateLogPrior(chromosome);
+            if (!chromosome.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(chromosome);
+            if (chromosome.getLogLikelihood() > Epsilon) {
+                res.add(chromosome);
+                bm.keepMemento(chromosome, tag);
             }
 
             if (count > max_iter) {

@@ -2,7 +2,7 @@ package org.tb;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.twz.cx.ebmodel.EBMMeasurement;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.dataframe.Pair;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.exception.TimeseriesException;
@@ -25,7 +25,7 @@ public class FnMeasure implements EBMMeasurement {
     }
 
     @Override
-    public void call(Map<String, Double> tab, double ti, double[] ys, Gene pars, Map<String, Object> x) {
+    public void call(Map<String, Double> tab, double ti, double[] ys, Chromosome pars, Map<String, Object> x) {
         double sus = ys[0], flat = ys[1], slat = ys[2],
                 inf_f = ys[3], inf_m = ys[4],
                 hos_f = ys[5], hos_m = ys[6],
@@ -65,7 +65,7 @@ public class FnMeasure implements EBMMeasurement {
     }
 
 
-    private Pair<Double, Double> getCareSeekingRate(Gene pars, double t) {
+    private Pair<Double, Double> getCareSeekingRate(Chromosome pars, double t) {
         double sr0 = pars.getDouble("delay") + pars.getDouble("log_sr_t")*getDt(t);
 
         return new Pair<>(
@@ -74,7 +74,7 @@ public class FnMeasure implements EBMMeasurement {
         );
     }
 
-    protected double[] calculatePopDy(Gene pars, double[] y, double t) {
+    protected double[] calculatePopDy(Chromosome pars, double[] y, double t) {
         double[] pdy = new double[y.length];
 
         try {

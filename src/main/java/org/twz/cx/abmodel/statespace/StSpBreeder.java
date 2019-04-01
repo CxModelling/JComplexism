@@ -3,7 +3,7 @@ package org.twz.cx.abmodel.statespace;
 
 import org.json.JSONException;
 import org.twz.cx.abmodel.AbsBreeder;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.dag.ParameterCore;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;
@@ -25,7 +25,7 @@ public class StSpBreeder extends AbsBreeder<StSpAgent> {
         return DCore;
     }
 
-    protected StSpAgent newAgent(String name, Gene pars, Map<String, Object> attributes) throws JSONException {
+    protected StSpAgent newAgent(String name, Chromosome pars, Map<String, Object> attributes) throws JSONException {
         Object st_def = attributes.get("st");
         State st;
         if (st_def instanceof State) {

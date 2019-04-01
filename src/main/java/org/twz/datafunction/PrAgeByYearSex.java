@@ -6,7 +6,6 @@ import org.mariuszgromada.math.mxparser.FunctionExtension;
 
 import org.twz.dataframe.Pair;
 import org.twz.io.FnJSON;
-import org.twz.prob.IDistribution;
 import org.twz.prob.Sample;
 
 import java.util.HashMap;

@@ -2,7 +2,7 @@ package org.twz.fit;
 
 import org.json.JSONObject;
 import org.twz.dag.BayesianModel;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.dataframe.Pair;
 import org.twz.fit.genetic.*;
 import org.twz.util.Statistics;
@@ -49,15 +49,15 @@ public class GeneticAlgorithm extends FrequentistFitter {
     }
 
     @Override
-    public List<Gene> fit(BayesianModel bm) {
+    public List<Chromosome> fit(BayesianModel bm) {
         int max_g = getOptionInteger("Max_generation");
         String type = getOptionString("Target");
         int n_g = 0, n_stay = 0;
-        Gene elite = null;
+        Chromosome elite = null;
         double max_fitness = Double.NEGATIVE_INFINITY, mean_fitness;
 
         info("Genesis");
-        List<Gene> population = genesis(bm);
+        List<Chromosome> population = genesis(bm);
 
         while(n_g < max_g) {
             n_g ++;
@@ -74,10 +74,10 @@ public class GeneticAlgorithm extends FrequentistFitter {
             max_fitness = li;
             if (type.equals("MLE")) {
                 mean_fitness = Statistics.lse(population.stream()
-                        .mapToDouble(Gene::getLogLikelihood).toArray());
+                        .mapToDouble(Chromosome::getLogLikelihood).toArray());
             } else {
                 mean_fitness = Statistics.lse(population.stream()
-                        .mapToDouble(Gene::getLogPosterior).toArray());
+                        .mapToDouble(Chromosome::getLogPosterior).toArray());
             }
             mean_fitness -= Math.log(population.size());
             info(String.format("Generation: %d, Max: %g, Mean: %g", n_g, max_fitness, mean_fitness));
@@ -93,7 +93,7 @@ public class GeneticAlgorithm extends FrequentistFitter {
         }
         info("Fitting completed");
         bm.keepMemento(elite, type);
-        List<Gene> res = new ArrayList<>();
+        List<Chromosome> res = new ArrayList<>();
         res.add(elite);
         return res;
 
@@ -104,14 +104,14 @@ public class GeneticAlgorithm extends FrequentistFitter {
         return null;
     }
 
-    private List<Gene> genesis(BayesianModel bm) {
+    private List<Chromosome> genesis(BayesianModel bm) {
         bm.clearMementos("Genesis");
         int n = getOptionInteger("N_population");
-        List<Gene> xs = new ArrayList<>();
+        List<Chromosome> xs = new ArrayList<>();
 
         try {
-            for (Gene gene : (bm.getPriorSample())) {
-                xs.add(gene);
+            for (Chromosome chromosome : (bm.getPriorSample())) {
+                xs.add(chromosome);
                 if (xs.size() >= n) {
                     break;
                 }
@@ -124,11 +124,11 @@ public class GeneticAlgorithm extends FrequentistFitter {
         return xs;
     }
 
-    private List<Gene> selection(List<Gene> population) {
+    private List<Chromosome> selection(List<Chromosome> population) {
         return Selector.select(population, getOptionString("Target"));
     }
 
-    private void mutation(List<Gene> population) {
+    private void mutation(List<Chromosome> population) {
         double p = getOptionDouble("P_mutation");
         double[] vs;
         for (AbsMutator mutator : Mutators) {
@@ -140,25 +140,25 @@ public class GeneticAlgorithm extends FrequentistFitter {
         }
 
         Map<String, Double> locus;
-        for (Gene gene : population) {
+        for (Chromosome chromosome : population) {
             if (Math.random() > p) continue;
 
             locus = new HashMap<>();
             for (AbsMutator mutator : Mutators) {
-                locus.put(mutator.Name, mutator.propose(gene.getDouble(mutator.Name)));
+                locus.put(mutator.Name, mutator.propose(chromosome.getDouble(mutator.Name)));
             }
-            gene.impulse(locus);
-            gene.resetProbability();
+            chromosome.impulse(locus);
+            chromosome.resetProbability();
         }
     }
 
-    private void crossover(List<Gene> population) {
+    private void crossover(List<Chromosome> population) {
         double p = getOptionDouble("P_crossover");
 
         int m = population.size()/2;
 
-        Gene p1, p2;
-        Pair<Gene, Gene> offspring;
+        Chromosome p1, p2;
+        Pair<Chromosome, Chromosome> offspring;
         for (int i = 0; i < m; i++) {
             if (Math.random() > p) continue;
             p1 = population.get(2*i);
@@ -173,15 +173,15 @@ public class GeneticAlgorithm extends FrequentistFitter {
         }
     }
 
-    private Gene findElitism(List<Gene> population) {
-        Gene elite = null;
+    private Chromosome findElitism(List<Chromosome> population) {
+        Chromosome elite = null;
         String type = getOptionString("Target");
         double max = Double.NEGATIVE_INFINITY, li;
-        for (Gene gene : population) {
-            li = type.equals("MLE")?gene.getLogLikelihood():gene.getLogPosterior();
+        for (Chromosome chromosome : population) {
+            li = type.equals("MLE")? chromosome.getLogLikelihood(): chromosome.getLogPosterior();
             if (li > max) {
                 max = li;
-                elite = gene;
+                elite = chromosome;
             }
         }
         return elite;
@@ -191,14 +191,14 @@ public class GeneticAlgorithm extends FrequentistFitter {
         return n_stay >= getOptionInteger("Max_stay");
     }
 
-    private void checkEvaluation(BayesianModel bm, Gene gene) {
-        if (!gene.isPriorEvaluated()) bm.evaluateLogPrior(gene);
-        if (!gene.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(gene);
+    private void checkEvaluation(BayesianModel bm, Chromosome chromosome) {
+        if (!chromosome.isPriorEvaluated()) bm.evaluateLogPrior(chromosome);
+        if (!chromosome.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(chromosome);
     }
 
-    private void checkEvaluation(BayesianModel bm, List<Gene> genes) {
-        for (Gene gene : genes) {
-            checkEvaluation(bm, gene);
+    private void checkEvaluation(BayesianModel bm, List<Chromosome> chromosomes) {
+        for (Chromosome chromosome : chromosomes) {
+            checkEvaluation(bm, chromosome);
         }
     }
 }

@@ -1,7 +1,7 @@
 package org.twz.cx.abmodel;
 
 import org.json.JSONException;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.dag.ParameterCore;
 import org.twz.util.NameGenerator;
 
@@ -29,7 +29,7 @@ public abstract class AbsBreeder<T extends AbsAgent> {
 
     public List<T> breed(int n, Map<String, Object> attributes) throws JSONException {
         String name;
-        Gene pars;
+        Chromosome pars;
         List<T> ags = new ArrayList<>();
         while (n > 0) {
             name = GenName.getNext();
@@ -43,5 +43,5 @@ public abstract class AbsBreeder<T extends AbsAgent> {
         return ags;
     }
 
-    protected abstract T newAgent(String name, Gene pars, Map<String, Object> attributes) throws JSONException;
+    protected abstract T newAgent(String name, Chromosome pars, Map<String, Object> attributes) throws JSONException;
 }

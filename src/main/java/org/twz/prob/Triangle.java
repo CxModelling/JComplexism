@@ -3,7 +3,7 @@ package org.twz.prob;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
 
-public class Triangle implements IDistribution {
+public class Triangle implements IWalkable {
 
 	private static RandomGenerator RNG = new MersenneTwister();
 	private RandomGenerator rng;
@@ -49,7 +49,7 @@ public class Triangle implements IDistribution {
 	}
 
 	@Override
-	public double logpdf(double rv) {
+	public double logProb(double rv) {
 		if(rv < A || rv > B){
 			return Double.NEGATIVE_INFINITY;
 		}

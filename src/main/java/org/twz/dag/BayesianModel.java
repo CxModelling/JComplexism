@@ -2,7 +2,7 @@ package org.twz.dag;
 
 import org.twz.fit.AbsFitter;
 import org.twz.fit.ValueDomain;
-import org.twz.prob.IDistribution;
+import org.twz.prob.IWalkable;
 import org.twz.dag.loci.DistributionLoci;
 
 import java.util.*;
@@ -15,17 +15,17 @@ public abstract class BayesianModel {
 
     protected final BayesNet BN;
     private AbsFitter Fitter;
-    private List<Gene> Results, Prior;
+    private List<Chromosome> Results, Prior;
 
     public BayesianModel(BayesNet bn) {
         BN = bn;
     }
 
     public List<ValueDomain> getMovableNodes() {
-        Gene p = samplePrior();
+        Chromosome p = samplePrior();
 
         List<ValueDomain> res = new ArrayList<>();
-        IDistribution d;
+        IWalkable d;
         for (String s : BN.getRVRoots()) {
             d = ((DistributionLoci) BN.getLoci(s)).findDistribution(p);
             res.add(new ValueDomain(s, d.getDataType(), d.getLower(), d.getUpper()));
@@ -33,17 +33,17 @@ public abstract class BayesianModel {
         return res;
     }
 
-    public abstract Gene samplePrior();
+    public abstract Chromosome samplePrior();
 
-    public void evaluateLogPrior(Gene gene) {
-        BN.evaluate(gene);
+    public void evaluateLogPrior(Chromosome chromosome) {
+        BN.evaluate(chromosome);
     }
 
-    public abstract void evaluateLogLikelihood(Gene gene);
+    public abstract void evaluateLogLikelihood(Chromosome chromosome);
 
     public abstract boolean hasExactLikelihood();
 
-    public abstract void keepMemento(Gene gene, String type);
+    public abstract void keepMemento(Chromosome chromosome, String type);
 
     public abstract void clearMementos(String type);
 
@@ -55,7 +55,7 @@ public abstract class BayesianModel {
         int max = 99 * n, drop = 0;
         while (Prior.size() < n) {
             try {
-                Gene p = samplePrior();
+                Chromosome p = samplePrior();
                 evaluateLogPrior(p);
                 evaluateLogLikelihood(p);
                 keepMemento(p, "Prior");
@@ -72,7 +72,7 @@ public abstract class BayesianModel {
         }
     }
 
-    public final List<Gene> getPriorSample() throws AssertionError {
+    public final List<Chromosome> getPriorSample() throws AssertionError {
         assert Prior != null;
         if (Prior.isEmpty()) {
             throw new AssertionError("Prior sample have not been generated");
@@ -80,7 +80,7 @@ public abstract class BayesianModel {
         return Prior;
     }
 
-    public final List<Gene> getResults() throws AssertionError {
+    public final List<Chromosome> getResults() throws AssertionError {
         assert Results != null;
         if (Results.isEmpty()) {
             throw new AssertionError("Model fitting have not been preceded");

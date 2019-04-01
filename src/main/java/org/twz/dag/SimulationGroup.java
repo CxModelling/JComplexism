@@ -78,7 +78,7 @@ class SimulationGroup implements AdapterJSONObject {
         return Bps;
     }
 
-    private Map<String, SimulationActor> getActors(Gene pas, boolean hoist) {
+    private Map<String, SimulationActor> getActors(Chromosome pas, boolean hoist) {
         BayesNet bn = getSC().getBN();
         Map<String, SimulationActor> res = new HashMap<>();
         SimulationActor actor;

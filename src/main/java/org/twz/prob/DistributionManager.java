@@ -84,13 +84,13 @@ public class DistributionManager {
     }
 
 
-    public static IDistribution parseDistribution(String input) {
+    public static IWalkable parseDistribution(String input) {
         String code = input.replaceAll("\\s+", "");
         code = code.replaceAll("(\\(|\\))", " ");
         String[] mat = code.split(" ");
 
         String[] args = mat[1].split(",");
-        return (IDistribution) Distributions.create(input, mat[0], args);
+        return (IWalkable) Distributions.create(input, mat[0], args);
     }
 
 }

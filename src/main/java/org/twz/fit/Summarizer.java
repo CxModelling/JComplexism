@@ -4,7 +4,7 @@ package org.twz.fit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.io.IO;
 import org.twz.io.AdapterJSONObject;
 
@@ -18,10 +18,10 @@ public class Summarizer implements AdapterJSONObject {
 	private double[] LogL;
 	private int SizeLocus;
 	
-	public Summarizer(List<Gene> genes){
-		SizeLocus = genes.get(0).getSize();
-		LogL = new double[genes.size()];
-		this.summarize(genes);
+	public Summarizer(List<Chromosome> chromosomes){
+		SizeLocus = chromosomes.get(0).getSize();
+		LogL = new double[chromosomes.size()];
+		this.summarize(chromosomes);
 	}
 	
 	public Map<String, double[]> getSummary() {
@@ -32,7 +32,7 @@ public class Summarizer implements AdapterJSONObject {
 		return Summary.keySet();
 	}
 
-	private void summarize(List<Gene> Chrs){
+	private void summarize(List<Chromosome> Chrs){
 
 		Summary = new TreeMap<>();
         Collection<String> Names = Chrs.get(0).getLocus().keySet();
@@ -45,8 +45,8 @@ public class Summarizer implements AdapterJSONObject {
         this.DIC();
 	}
 
-    private double[] getLoci(String s, List<Gene> genes){
-        return genes.stream().mapToDouble(e->e.getDouble(s)).toArray();
+    private double[] getLoci(String s, List<Chromosome> chromosomes){
+        return chromosomes.stream().mapToDouble(e->e.getDouble(s)).toArray();
     }
 	
 	

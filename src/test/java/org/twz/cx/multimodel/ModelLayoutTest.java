@@ -20,7 +20,7 @@ import org.twz.cx.mcore.communicator.IsChecker;
 import org.twz.cx.mcore.communicator.StartWithChecker;
 import org.twz.cx.mcore.communicator.ValueImpulseResponse;
 import org.twz.dataframe.Pair;
-import org.twz.prob.IDistribution;
+import org.twz.prob.IWalkable;
 import org.twz.prob.Poisson;
 
 public class ModelLayoutTest {
@@ -39,7 +39,7 @@ public class ModelLayoutTest {
                 double dt = time - Last;
                 double sus = eq.getY("S"), rec = eq.getY("R"), inf = target.getSnapshot("StInf", time);
                 double lam = source.getParameter("transmission_rate") * sus * inf * dt / (sus + rec + inf);
-                IDistribution di = new Poisson(lam);
+                IWalkable di = new Poisson(lam);
                 int n = (int) Math.min(di.sample(), sus);
                 res = new Pair<>("InfIn", new JSONObject(String.format("{'n': %d}", n)));
             }

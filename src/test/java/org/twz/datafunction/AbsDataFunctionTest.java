@@ -21,7 +21,7 @@ public class AbsDataFunctionTest {
         BN = new BayesNet("test");
         BN.appendLoci("year = 2010");
         BN.appendLoci("sex ~ binom(1, 0.1)");
-        BN.appendLoci("age = pr(year, sex)");
+        BN.appendLoci("age ~ pr(year, sex)");
         BN.appendLoci("rate = dr(year, sex, age)");
         BN.appendLoci("delay ~ exp(rate)");
 

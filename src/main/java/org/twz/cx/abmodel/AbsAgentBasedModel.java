@@ -9,10 +9,8 @@ import org.twz.cx.element.Event;
 import org.twz.cx.element.ModelAtom;
 import org.twz.cx.element.Request;
 import org.twz.cx.mcore.AbsObserver;
-import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafModel;
-import org.twz.dag.Gene;
 import org.twz.dag.ParameterCore;
 
 import java.util.*;

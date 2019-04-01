@@ -1,6 +1,6 @@
 package org.twz.dag.actor;
 
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.dag.loci.Loci;
 
 import java.util.*;
@@ -35,7 +35,7 @@ public class CompoundActor extends SimulationActor {
     }
 
     @Override
-    public double sample(Gene pas) {
+    public double sample(Chromosome pas) {
         Map<String, Double> ps = findParentValues(pas);
         for (Loci loci : Flow) {
             ps.put(loci.getName(), loci.sample(ps));
@@ -44,7 +44,7 @@ public class CompoundActor extends SimulationActor {
     }
 
     @Override
-    public double sample(Gene pas, Map<String, Double> exo) {
+    public double sample(Chromosome pas, Map<String, Double> exo) {
         Map<String, Double> ps = findParentValues(pas, exo);
         for (Loci loci : Flow) {
             ps.put(loci.getName(), loci.sample(ps));
@@ -52,9 +52,9 @@ public class CompoundActor extends SimulationActor {
         return End.sample(ps);
     }
 
-    public void fillAll(Gene gene) {
-        gene.getLocus().putAll(findParentValues(gene));
-        gene.put(Field, End.sample(gene));
+    public void fillAll(Chromosome chromosome) {
+        chromosome.getLocus().putAll(findParentValues(chromosome));
+        chromosome.put(Field, End.sample(chromosome));
     }
 
     @Override

@@ -9,7 +9,7 @@ import org.twz.cx.ebmodel.EquationBasedModel;
 import org.twz.cx.ebmodel.ODEEBMBlueprint;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.dataframe.TimeSeries;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.exception.TimeseriesException;
@@ -31,7 +31,7 @@ public class ReducedTB extends DataModel {
     }
 
     @Override
-    protected IY0 sampleY0(Gene gene) {
+    protected IY0 sampleY0(Chromosome chromosome) {
         EBMY0 y0 = new EBMY0();
         double n = 0;
         try {
@@ -53,7 +53,7 @@ public class ReducedTB extends DataModel {
     }
 
     @Override
-    protected boolean checkMidTerm(IY0 y0, Gene pars) {
+    protected boolean checkMidTerm(IY0 y0, Chromosome pars) {
         Map<String, Double> ys = ((EBMY0) y0).toMap();
         double act = ys.get("LatFast")*pars.getDouble("r_act")
                 + ys.get("LatSlow")*pars.getDouble("r_ract")
@@ -84,7 +84,7 @@ public class ReducedTB extends DataModel {
     }
 
     @Override
-    protected double calculateLogLikelihood(Gene gene, TimeSeries output) {
+    protected double calculateLogLikelihood(Chromosome chromosome, TimeSeries output) {
         double nf, nm, hf, hm, pf, pm;
         double li = 0;
         for (Double time : Noti.getTimes()) {
@@ -98,8 +98,8 @@ public class ReducedTB extends DataModel {
                 //li += (new Normal(nf/pf, 1)).logpdf(hf/pf);
                 //li += (new Normal(nm/pm, 1)).logpdf(hm/pm);
 
-                li += (new Poisson(hf*pf)).logpdf(nf);
-                li += (new Poisson(hm*pm)).logpdf(nm);
+                li += (new Poisson(hf*pf)).logProb(nf);
+                li += (new Poisson(hm*pm)).logProb(nm);
             } catch (TimeseriesException e) {
                 e.printStackTrace();
             }

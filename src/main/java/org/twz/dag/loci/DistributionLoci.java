@@ -4,9 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 import org.twz.prob.DistributionManager;
-import org.twz.prob.IDistribution;
+import org.twz.prob.IWalkable;
 import java.util.*;
 
 
@@ -41,12 +41,12 @@ public class DistributionLoci extends Loci {
 
     @Override
     public double evaluate(Map<String, Double> pas) {
-        return findDistribution(pas).logpdf(pas.get(getName()));
+        return findDistribution(pas).logProb(pas.get(getName()));
     }
 
     @Override
-    public double evaluate(Gene gene) {
-        return findDistribution(gene).logpdf(gene.getDouble(getName()));
+    public double evaluate(Chromosome chromosome) {
+        return findDistribution(chromosome).logProb(chromosome.getDouble(getName()));
     }
 
     @Override
@@ -55,19 +55,19 @@ public class DistributionLoci extends Loci {
     }
 
     @Override
-    public double sample(Gene gene) {
-        return findDistribution(gene).sample();
+    public double sample(Chromosome chromosome) {
+        return findDistribution(chromosome).sample();
     }
 
     @Override
-    public void fill(Gene gene) {
-        IDistribution dist = findDistribution(gene);
+    public void fill(Chromosome chromosome) {
+        IWalkable dist = findDistribution(chromosome);
         double v = dist.sample();
-        gene.put(getName(), v);
-        gene.addLogPriorProb(dist.logpdf(v));
+        chromosome.put(getName(), v);
+        chromosome.addLogPriorProb(dist.logProb(v));
     }
 
-    public IDistribution findDistribution(Map<String, Double> pas) {
+    public IWalkable findDistribution(Map<String, Double> pas) {
         String f = Distribution;
         for (String par : Parents) {
             f = f.replaceAll("\\b" + par + "\\b", pas.get(par).toString());
@@ -78,7 +78,7 @@ public class DistributionLoci extends Loci {
         return DistributionManager.parseDistribution(f);
     }
 
-    public IDistribution findDistribution(Gene pas) {
+    public IWalkable findDistribution(Chromosome pas) {
         String f = Distribution;
         for (String par : Parents) {
             f = f.replaceAll("\\b" + par + "\\b","" + pas.getDouble(par));

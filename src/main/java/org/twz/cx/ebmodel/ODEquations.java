@@ -9,7 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.twz.cx.mcore.AbsSimModel;
-import org.twz.dag.Gene;
+import org.twz.dag.Chromosome;
 
 import java.util.Map;
 
@@ -23,7 +23,7 @@ public class ODEquations extends AbsEquations implements FirstOrderDifferentialE
     private FirstOrderIntegrator Integrator;
     private ODEFunction Function;
 
-    public ODEquations(String name, ODEFunction fn, String[] y_names, double dt, Gene parameters) {
+    public ODEquations(String name, ODEFunction fn, String[] y_names, double dt, Chromosome parameters) {
         super(name, y_names, parameters, dt);
         Function = fn;
         Integrator = getDefaultIntegrator(dt);
