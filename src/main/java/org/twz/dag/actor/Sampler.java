@@ -1,7 +1,8 @@
 package org.twz.dag.actor;
 
 import org.twz.dag.Chromosome;
-import org.twz.prob.ISampler;
+import org.twz.exception.IncompleteConditionException;
+import org.twz.prob.IDistribution;
 
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import java.util.Map;
  *
  * Created by TimeWz on 08/08/2018.
  */
-public class Sampler implements ISampler {
+public class Sampler implements IDistribution {
     private SimulationActor Actor;
     private Chromosome Loc;
 
@@ -18,11 +19,11 @@ public class Sampler implements ISampler {
         Loc = loc;
     }
 
-    public double next() {
+    public double next() throws IncompleteConditionException {
         return Actor.sample(Loc);
     }
 
-    public double next(Map<String, Double> exo) {
+    public double next(Map<String, Double> exo) throws IncompleteConditionException {
         return Actor.sample(Loc, exo);
     }
 
@@ -42,16 +43,16 @@ public class Sampler implements ISampler {
     }
 
     @Override
-    public double sample() {
+    public double sample() throws IncompleteConditionException {
         return next();
     }
 
-    public double sample(Map<String, Double> exo) {
+    public double sample(Map<String, Double> exo) throws IncompleteConditionException {
         return next(exo);
     }
 
     @Override
-    public double[] sample(int n) {
+    public double[] sample(int n) throws IncompleteConditionException {
         n = Math.max(n, 1);
         double[] res = new double[n];
         for (int i = 0; i < n; i++) {
@@ -60,7 +61,7 @@ public class Sampler implements ISampler {
         return res;
     }
 
-    public double[] sample(int n, Map<String, Double> exo) {
+    public double[] sample(int n, Map<String, Double> exo) throws IncompleteConditionException {
         n = Math.max(n, 1);
         double[] res = new double[n];
         for (int i = 0; i < n; i++) {

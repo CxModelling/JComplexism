@@ -2,9 +2,10 @@ package org.twz.statespace;
 
 
 import org.json.JSONException;
+import org.twz.exception.IncompleteConditionException;
 import org.twz.io.AdapterJSONObject;
 import org.json.JSONObject;
-import org.twz.prob.ISampler;
+import org.twz.prob.IDistribution;
 
 /**
  *
@@ -13,16 +14,16 @@ import org.twz.prob.ISampler;
 public class Transition implements AdapterJSONObject {
     private final String Name;
     private final State State;
-    private final ISampler Dist;
+    private final IDistribution Dist;
 
-    public Transition(String name, State state, ISampler dist) {
+    public Transition(String name, State state, IDistribution dist) {
         Name = name;
         State = state;
         Dist = dist;
     }
 
-    public double rand() {
-        return Dist.sample();
+    public double rand() throws IncompleteConditionException {
+        return Dist.sample(); // todo
     }
 
     public State getState() {

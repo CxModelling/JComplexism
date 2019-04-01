@@ -3,6 +3,8 @@ package org.twz.dag.actor;
 import org.twz.dag.Chromosome;
 import org.twz.dag.loci.DistributionLoci;
 import org.twz.dag.loci.Loci;
+import org.twz.exception.IncompleteConditionException;
+import org.twz.prob.IDistribution;
 import org.twz.prob.IWalkable;
 
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.Map;
  * Created by TimeWz on 08/08/2018.
  */
 public class FrozenSingleActor extends SimulationActor {
-    private IWalkable Distribution;
+    private IDistribution Distribution;
     private DistributionLoci Loci;
 
     public FrozenSingleActor(String field, Loci di, Map<String, Double> pas) {
@@ -42,12 +44,12 @@ public class FrozenSingleActor extends SimulationActor {
     }
 
     @Override
-    public double sample(Chromosome pas) {
+    public double sample(Chromosome pas) throws IncompleteConditionException {
         return Distribution.sample();
     }
 
     @Override
-    public double sample(Chromosome pas, Map<String, Double> exo) {
+    public double sample(Chromosome pas, Map<String, Double> exo) throws IncompleteConditionException {
         return Distribution.sample();
     }
 

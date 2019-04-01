@@ -38,7 +38,7 @@ public class StSpABMBlueprintTest {
     }
 
     @Test
-    public void simulationPcDc() throws JSONException {
+    public void simulationPcDc() throws Exception {
         Map<String, Object> args = new HashMap<>();
 
         ParameterCore PC = Ctrl.getBayesNet("pCloseSIR")
@@ -53,7 +53,7 @@ public class StSpABMBlueprintTest {
     }
 
     @Test
-    public void simulationDaBN() throws JSONException {
+    public void simulationDaBN() throws Exception {
         Map<String, Object> args = new HashMap<>();
 
         args.put("bn", "pCloseSIR");
@@ -62,7 +62,7 @@ public class StSpABMBlueprintTest {
         run(args);
     }
 
-    public void run(Map<String, Object> args) throws JSONException {
+    public void run(Map<String, Object> args) throws Exception {
         StSpABModel Model = Bp.generate("Test", args);
 
         Simulator Simu = new Simulator(Model);

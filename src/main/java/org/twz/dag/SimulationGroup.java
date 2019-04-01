@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.twz.dag.actor.*;
 import org.twz.dag.loci.ExoValueLoci;
 import org.twz.dag.loci.Loci;
+import org.twz.exception.IncompleteConditionException;
 import org.twz.graph.DiGraph;
 import org.twz.io.AdapterJSONObject;
 
@@ -117,7 +118,12 @@ class SimulationGroup implements AdapterJSONObject {
         ParameterCore pc = new ParameterCore(nickname, this, exo, 0);
         pc.setParent(parent);
 
-        FixedChain.stream().filter(loci -> !(loci instanceof ExoValueLoci)).forEach(loci -> loci.fill(pc));
+        FixedChain.stream().filter(loci -> !(loci instanceof ExoValueLoci)).forEach(loci -> {
+            try {
+                loci.fill(pc);
+            } catch (IncompleteConditionException ignored) {
+            }
+        });
 
         if (actors) {
             pc.Actors = getActors(pc, SC.isHoist());
@@ -129,12 +135,15 @@ class SimulationGroup implements AdapterJSONObject {
     void setResponse(Map<String, Double> imp, List<String> fixed, List<String> actors, Map<String, List<String>> hoist, ParameterCore pc) {
         pc.resetProbability();
         for (Loci loci : FixedChain) {
-            if (imp.containsKey(loci.getName())) {
-                pc.put(loci.getName(), imp.get(loci.getName()));
-                pc.addLogPriorProb(loci.evaluate(pc));
-            } else if (fixed.contains(loci.getName())) {
-                loci.fill(pc);
-            }
+            try {
+                if (imp.containsKey(loci.getName())) {
+                    pc.put(loci.getName(), imp.get(loci.getName()));
+                    pc.addLogPriorProb(loci.evaluate(pc));
+                } else if (fixed.contains(loci.getName())) {
+                    loci.fill(pc);
+                }
+            } catch (IncompleteConditionException ignored) {}
+
         }
 
         // update frozen actors

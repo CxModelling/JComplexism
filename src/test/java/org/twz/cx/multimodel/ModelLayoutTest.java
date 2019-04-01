@@ -20,6 +20,7 @@ import org.twz.cx.mcore.communicator.IsChecker;
 import org.twz.cx.mcore.communicator.StartWithChecker;
 import org.twz.cx.mcore.communicator.ValueImpulseResponse;
 import org.twz.dataframe.Pair;
+import org.twz.exception.IncompleteConditionException;
 import org.twz.prob.IWalkable;
 import org.twz.prob.Poisson;
 
@@ -32,7 +33,7 @@ public class ModelLayoutTest {
         }
 
         @Override
-        public Pair<String, JSONObject> shock(Disclosure dis, AbsSimModel source, AbsSimModel target, double time) throws JSONException {
+        public Pair<String, JSONObject> shock(Disclosure dis, AbsSimModel source, AbsSimModel target, double time) throws JSONException, IncompleteConditionException {
             Pair<String, JSONObject> res = null;
             if (!Double.isNaN(Last)) {
                 AbsEquations eq = ((EquationBasedModel) source).getEquations();
@@ -118,7 +119,7 @@ public class ModelLayoutTest {
     }
 
     @Test
-    public void generate() throws JSONException {
+    public void generate() throws Exception {
         AbsSimModel Model = Ctrl.generateModel("Hybrid", "HybridSIR", "pHySIR");
         Simulator Sim = new Simulator(Model);
         Sim.onLog("log/Hybrid.txt");

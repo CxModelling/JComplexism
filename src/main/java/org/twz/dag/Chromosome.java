@@ -155,10 +155,10 @@ public class Chromosome implements AdapterJSONObject, IParameters {
             sb += "LogPrior:" + IO.doubleFormat(LogPriorProb);
         }
         if (isPriorEvaluated()) {
-            sb += ",LogLikelihood:" + IO.doubleFormat(LogLikelihood);
+            sb += ", LogLikelihood:" + IO.doubleFormat(LogLikelihood);
         }
         if (isEvaluated()) {
-            sb += ",LogPosterior:" + IO.doubleFormat(getLogPosterior());
+            sb += ", LogPosterior:" + IO.doubleFormat(getLogPosterior());
         }
         sb += "}";
         return sb;

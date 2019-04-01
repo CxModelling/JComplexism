@@ -5,7 +5,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Chromosome;
+import org.twz.exception.IncompleteConditionException;
 import org.twz.prob.DistributionManager;
+import org.twz.prob.IDistribution;
 import org.twz.prob.IWalkable;
 import java.util.*;
 
@@ -24,7 +26,7 @@ public class DistributionLoci extends Loci {
         super(name);
         Distribution = dist;
         DE = new Expression(Distribution);
-        Parents = Arrays.asList(DE.getMissingUserDefinedArguments());
+        Parents = parseParents(dist);
     }
 
     public DistributionLoci(String name, String dist, Collection<String> parents) {
@@ -50,19 +52,29 @@ public class DistributionLoci extends Loci {
     }
 
     @Override
-    public double sample(Map<String, Double> pas) {
+    public double render(Map<String, Double> pas) throws IncompleteConditionException {
         return findDistribution(pas).sample();
     }
 
     @Override
-    public double sample(Chromosome chromosome) {
+    public double render(Chromosome chromosome) throws IncompleteConditionException {
         return findDistribution(chromosome).sample();
     }
 
     @Override
+    public double render() throws IncompleteConditionException {
+        return Double.parseDouble(null); // todo
+    }
+
+    @Override
     public void fill(Chromosome chromosome) {
-        IWalkable dist = findDistribution(chromosome);
-        double v = dist.sample();
+        IDistribution dist = findDistribution(chromosome);
+        double v = 0;
+        try {
+            v = dist.sample();
+        } catch (IncompleteConditionException e) {
+            e.printStackTrace();
+        }
         chromosome.put(getName(), v);
         chromosome.addLogPriorProb(dist.logProb(v));
     }
@@ -78,7 +90,7 @@ public class DistributionLoci extends Loci {
         return DistributionManager.parseDistribution(f);
     }
 
-    public IWalkable findDistribution(Chromosome pas) {
+    public IDistribution findDistribution(Chromosome pas) {
         String f = Distribution;
         for (String par : Parents) {
             f = f.replaceAll("\\b" + par + "\\b","" + pas.getDouble(par));
@@ -102,7 +114,7 @@ public class DistributionLoci extends Loci {
     @Override
     public JSONObject toJSON() throws JSONException {
         JSONObject js = super.toJSON();
-        js.put("Type", "Distribution");
+        js.put("Type", "Sampler");
         js.put("Parents", new JSONArray(getParents()));
         return js;
     }

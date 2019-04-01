@@ -27,12 +27,22 @@ public class SingleActor extends SimulationActor {
 
     @Override
     public double sample(Chromosome pas) {
-        return Distribution.sample(pas);
+        try {
+            return Distribution.render(pas);
+        } catch (org.twz.exception.IncompleteConditionException e) {
+            e.printStackTrace();
+        }
+        return Double.NaN;
     }
 
     @Override
     public double sample(Chromosome pas, Map<String, Double> exo) {
-        return Distribution.sample(findParentValues(pas, exo));
+        try {
+            return Distribution.render(findParentValues(pas, exo));
+        } catch (org.twz.exception.IncompleteConditionException e) {
+            e.printStackTrace();
+        }
+        return Double.NaN;
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.twz.cx.abmodel.statespace.modifier.ModifierSet;
 import org.twz.cx.element.Event;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.dag.Chromosome;
+import org.twz.exception.IncompleteConditionException;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
@@ -58,7 +59,7 @@ public class StSpAgent extends AbsAgent {
     }
 
     @Override
-    public void updateTo(double ti) {
+    public void updateTo(double ti) throws IncompleteConditionException {
         Transitions = Transitions.entrySet().stream()
                 .filter(e-> e.getValue() > ti)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -95,13 +96,21 @@ public class StSpAgent extends AbsAgent {
     @Override
     public void initialise(double ti, AbsSimModel model) {
         Transitions.clear();
-        updateTo(ti);
+        try {
+            updateTo(ti);
+        } catch (IncompleteConditionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void reset(double ti, AbsSimModel model) {
         Transitions.clear();
-        updateTo(ti);
+        try {
+            updateTo(ti);
+        } catch (IncompleteConditionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -121,7 +130,12 @@ public class StSpAgent extends AbsAgent {
         AbsModifier mod = Mods.get(m);
         Transition tr = mod.getTarget();
         if (Transitions.containsKey(tr)) {
-            double tte = tr.rand();
+            double tte = 0;
+            try {
+                tte = tr.rand();
+            } catch (IncompleteConditionException e) {
+                e.printStackTrace();
+            }
             tte = Mods.on(tr).stream().reduce(tte, (sum, p) -> p.modify(sum), (sum1, sum2) -> sum2);
             Transitions.put(tr, tte + ti);
             dropNext();

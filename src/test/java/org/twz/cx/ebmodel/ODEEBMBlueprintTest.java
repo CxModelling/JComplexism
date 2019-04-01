@@ -44,7 +44,7 @@ public class ODEEBMBlueprintTest {
     }
 
     @Test
-    public void simulationPcDc() throws JSONException {
+    public void simulationPcDc() throws Exception {
         ParameterCore PC = Da.getBayesNet("pCloseSIR")
                 .toSimulationCore(Da.getSimModel("SIR").getParameterHierarchy(Da), true)
                 .generate("Test");
@@ -53,11 +53,11 @@ public class ODEEBMBlueprintTest {
     }
 
     @Test
-    public void simulationDaBN() throws JSONException {
+    public void simulationDaBN() throws Exception {
         run(Da.generateModel("model", "SIR", "pCloseSIR"));
     }
 
-    public void run(AbsSimModel model) throws JSONException {
+    public void run(AbsSimModel model) throws Exception {
         Simulator Simu = new Simulator(model);
         Simu.onLog("log/ODE.txt");
         EBMY0 y0 = new EBMY0();

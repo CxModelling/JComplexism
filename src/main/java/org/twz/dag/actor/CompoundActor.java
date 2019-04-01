@@ -2,6 +2,7 @@ package org.twz.dag.actor;
 
 import org.twz.dag.Chromosome;
 import org.twz.dag.loci.Loci;
+import org.twz.exception.IncompleteConditionException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,26 +36,39 @@ public class CompoundActor extends SimulationActor {
     }
 
     @Override
-    public double sample(Chromosome pas) {
+    public double sample(Chromosome pas) throws IncompleteConditionException {
         Map<String, Double> ps = findParentValues(pas);
         for (Loci loci : Flow) {
-            ps.put(loci.getName(), loci.sample(ps));
+            try {
+                ps.put(loci.getName(), loci.render(ps));
+            } catch (org.twz.exception.IncompleteConditionException e) {
+                e.printStackTrace();
+            }
         }
-        return End.sample(ps);
+        return End.render(ps);
     }
 
     @Override
-    public double sample(Chromosome pas, Map<String, Double> exo) {
+    public double sample(Chromosome pas, Map<String, Double> exo) throws IncompleteConditionException {
         Map<String, Double> ps = findParentValues(pas, exo);
         for (Loci loci : Flow) {
-            ps.put(loci.getName(), loci.sample(ps));
+            try {
+                ps.put(loci.getName(), loci.render(ps));
+            } catch (org.twz.exception.IncompleteConditionException e) {
+                e.printStackTrace();
+            }
         }
-        return End.sample(ps);
+        return End.render(ps);
+
     }
 
     public void fillAll(Chromosome chromosome) {
         chromosome.getLocus().putAll(findParentValues(chromosome));
-        chromosome.put(Field, End.sample(chromosome));
+        try {
+            chromosome.put(Field, End.render(chromosome));
+        } catch (org.twz.exception.IncompleteConditionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

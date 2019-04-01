@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
 import org.twz.dag.ParameterCore;
+import org.twz.exception.IncompleteConditionException;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -112,13 +113,13 @@ public abstract class BranchModel extends AbsSimModel {
     }
 
     @Override
-    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) throws JSONException {
+    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) throws JSONException, IncompleteConditionException {
         ds_ms.entrySet().stream()
                 .filter(e -> e.getValue() != this)
                 .forEach(e -> {
                     try {
                         triggerExternalImpulses(e.getKey(), e.getValue(), ti);
-                    } catch (JSONException e1) {
+                    } catch (JSONException | IncompleteConditionException e1) {
                         e1.printStackTrace();
                     }
                 });

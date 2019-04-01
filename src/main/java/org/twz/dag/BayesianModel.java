@@ -27,8 +27,10 @@ public abstract class BayesianModel {
         List<ValueDomain> res = new ArrayList<>();
         IWalkable d;
         for (String s : BN.getRVRoots()) {
-            d = ((DistributionLoci) BN.getLoci(s)).findDistribution(p);
-            res.add(new ValueDomain(s, d.getDataType(), d.getLower(), d.getUpper()));
+            try {
+                d = (IWalkable) ((DistributionLoci) BN.getLoci(s)).findDistribution(p);
+                res.add(new ValueDomain(s, d.getDataType(), d.getLower(), d.getUpper()));
+            } catch (ClassCastException ignored) {}
         }
         return res;
     }
@@ -75,7 +77,7 @@ public abstract class BayesianModel {
     public final List<Chromosome> getPriorSample() throws AssertionError {
         assert Prior != null;
         if (Prior.isEmpty()) {
-            throw new AssertionError("Prior sample have not been generated");
+            throw new AssertionError("Prior render have not been generated");
         }
         return Prior;
     }

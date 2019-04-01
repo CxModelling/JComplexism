@@ -1,6 +1,7 @@
 package org.twz.dag.actor;
 
 import org.twz.dag.Chromosome;
+import org.twz.exception.IncompleteConditionException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +20,9 @@ public abstract class SimulationActor {
 
     protected abstract List<String> getParents();
 
-    public abstract double sample(Chromosome pas);
+    public abstract double sample(Chromosome pas) throws IncompleteConditionException;
 
-    public abstract double sample(Chromosome pas, Map<String, Double> exo);
+    public abstract double sample(Chromosome pas, Map<String, Double> exo) throws IncompleteConditionException;
 
     protected Map<String, Double> findParentValues(Chromosome chromosome) {
         Map<String, Double> ps = new HashMap<>();

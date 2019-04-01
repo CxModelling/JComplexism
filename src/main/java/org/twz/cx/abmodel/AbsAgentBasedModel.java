@@ -12,6 +12,7 @@ import org.twz.cx.mcore.AbsObserver;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafModel;
 import org.twz.dag.ParameterCore;
+import org.twz.exception.IncompleteConditionException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -221,6 +222,8 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
                 ag.updateTo(time);
             } catch (NullPointerException ignored) {
 
+            } catch (IncompleteConditionException e) {
+                e.printStackTrace();
             }
         }
     }

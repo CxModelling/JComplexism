@@ -49,14 +49,20 @@ public class ValueLoci extends Loci {
     }
 
     @Override
-    public double sample(Map<String, Double> pas) {
-        return Value;
+    public double render(Map<String, Double> pas) {
+        return render();
     }
 
     @Override
-    public double sample(Chromosome chromosome) {
+    public double render(Chromosome chromosome) {
+        return render();
+    }
+
+    @Override
+    public double render() {
         return Value;
     }
+
 
     @Override
     public void fill(Chromosome chromosome) {

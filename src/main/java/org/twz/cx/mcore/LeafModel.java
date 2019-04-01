@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
 import org.twz.dag.ParameterCore;
+import org.twz.exception.IncompleteConditionException;
 
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,7 @@ public abstract class LeafModel extends AbsSimModel {
     }
 
     @Override
-    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) throws JSONException {
+    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) throws JSONException, IncompleteConditionException {
         for (Map.Entry<Disclosure, AbsSimModel> ent: ds_ms.entrySet()) {
             triggerExternalImpulses(ent.getKey(), ent.getValue(), ti);
         }

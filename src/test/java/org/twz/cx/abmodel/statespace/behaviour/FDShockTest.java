@@ -41,7 +41,7 @@ public class FDShockTest {
     }
 
     @Test
-    public void simulation() throws JSONException {
+    public void simulation() throws Exception {
         Simulator Simu = new Simulator(Model);
         //Simu.addLogPath("log/FDShock.txt");
         StSpY0 y0 = new StSpY0();

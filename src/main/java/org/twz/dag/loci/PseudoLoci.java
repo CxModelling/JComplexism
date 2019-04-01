@@ -1,15 +1,12 @@
 package org.twz.dag.loci;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Chromosome;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
+
+
 
 public class PseudoLoci extends Loci {
     private final List<String> Parents;
@@ -19,7 +16,7 @@ public class PseudoLoci extends Loci {
         super(name);
         Expression e = new Expression(func);
         Parents = Arrays.asList(e.getMissingUserDefinedArguments());
-        Function = "f(" + Parents.stream().collect(Collectors.joining(","));
+        Function = "f(" + String.join(",", Parents);
 
     }
 
@@ -40,12 +37,17 @@ public class PseudoLoci extends Loci {
 
 
     @Override
-    public double sample(Map<String, Double> pas) {
+    public double render(Map<String, Double> pas) {
         return Double.NaN;
     }
 
     @Override
-    public double sample(Chromosome chromosome) {
+    public double render(Chromosome chromosome) {
+        return Double.NaN;
+    }
+
+    @Override
+    public double render() {
         return Double.NaN;
     }
 

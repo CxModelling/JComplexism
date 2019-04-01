@@ -30,12 +30,17 @@ public class ExoValueLoci extends Loci {
     }
 
     @Override
-    public double sample(Map<String, Double> pas) {
+    public double render(Map<String, Double> pas) {
         return 0;
     }
 
     @Override
-    public double sample(Chromosome chromosome) {
+    public double render(Chromosome chromosome) {
+        return 0;
+    }
+
+    @Override
+    public double render() {
         return 0;
     }
 

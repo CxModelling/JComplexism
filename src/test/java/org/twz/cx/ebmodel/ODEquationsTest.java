@@ -44,7 +44,7 @@ public class ODEquationsTest {
     }
 
     @Test
-    public void simulation() throws JSONException {
+    public void simulation() throws Exception {
         Simulator Simu = new Simulator(EBM);
         Simu.onLog("log/EBM.txt");
         EBMY0 Y0 = new EBMY0();

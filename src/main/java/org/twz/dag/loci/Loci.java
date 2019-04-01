@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Chromosome;
+import org.twz.exception.IncompleteConditionException;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.Arrays;
@@ -26,12 +27,16 @@ public abstract class Loci implements AdapterJSONObject {
     }
 
     public abstract List<String> getParents();
-    public abstract double evaluate(Map<String, Double> pas);
-    public abstract double evaluate(Chromosome chromosome);
-    public abstract double sample(Map<String, Double> pas);
-    public abstract double sample(Chromosome chromosome);
-    public abstract void fill(Chromosome chromosome);
+    public abstract double evaluate(Map<String, Double> pas) throws IncompleteConditionException;
+    public abstract double evaluate(Chromosome chromosome) throws IncompleteConditionException;
+    public abstract double render(Map<String, Double> pas) throws IncompleteConditionException;
+    public abstract double render(Chromosome chromosome) throws IncompleteConditionException;
+    public abstract double render() throws IncompleteConditionException;
+    public abstract void fill(Chromosome chromosome) throws IncompleteConditionException;
+
+
     public abstract String getDefinition();
+
     public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Name", this.Name);
@@ -39,7 +44,7 @@ public abstract class Loci implements AdapterJSONObject {
         return js;
     }
 
-    public static List<String> parseParents(String fn) {
+    protected static List<String> parseParents(String fn) {
         Expression e = new Expression(fn);
         return Arrays.asList(e.getMissingUserDefinedArguments());
     }

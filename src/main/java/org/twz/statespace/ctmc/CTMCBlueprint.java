@@ -105,7 +105,7 @@ public class CTMCBlueprint implements IStateSpaceBlueprint<CTMarkovChain> {
             try {
                 pc.getSampler(ent.getValue());
             } catch (NullPointerException e) {
-                System.out.println("Distribution "+ ent.getValue() +
+                System.out.println("Sampler "+ ent.getValue() +
                         " does not exist");
                 return false;
             }

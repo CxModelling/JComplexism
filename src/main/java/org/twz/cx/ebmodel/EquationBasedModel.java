@@ -9,6 +9,7 @@ import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafModel;
 import org.twz.dag.ParameterCore;
+import org.twz.exception.IncompleteConditionException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -112,7 +113,7 @@ public class EquationBasedModel extends LeafModel {
     }
 
     @Override
-    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) throws JSONException {
+    public void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) throws JSONException, IncompleteConditionException {
         Equations.goTo(ti);
         super.fetchDisclosures(ds_ms, ti);
     }

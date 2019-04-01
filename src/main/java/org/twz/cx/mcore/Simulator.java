@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
 import org.twz.dataframe.TimeSeries;
+import org.twz.exception.IncompleteConditionException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -95,7 +96,7 @@ public class Simulator {
         // todo
     }
 
-    public void simulate(IY0 y0, double fr, double to, double dt) throws JSONException {
+    public void simulate(IY0 y0, double fr, double to, double dt) throws JSONException, IncompleteConditionException {
         Time = fr;
         Model.initialise(Time, y0);
         dealWithDisclosures(fr, null);
@@ -106,7 +107,7 @@ public class Simulator {
         update(to, dt);
     }
 
-    public void update(double forward, double dt) throws JSONException {
+    public void update(double forward, double dt) throws JSONException, IncompleteConditionException {
         dealWithDisclosures(Time, null);
 
         LinkedList<Double> ts = seq(Time, forward, dt);
@@ -145,7 +146,11 @@ public class Simulator {
                 Model.executeRequests();
                 dealWithDisclosures(tx, rs);
             } catch (Exception e) {
-                dealWithDisclosures(tx, null);
+                try {
+                    dealWithDisclosures(tx, null);
+                } catch (IncompleteConditionException ignore) {
+
+                }
             }
             Model.exitCycle();
         }
@@ -154,7 +159,7 @@ public class Simulator {
         Model.setTimeEnd(end);
     }
 
-    private void dealWithDisclosures(double ti, List<Request> requests) throws JSONException {
+    private void dealWithDisclosures(double ti, List<Request> requests) throws JSONException, IncompleteConditionException {
         List<Disclosure> ds;
         if (requests != null) {
             ds = requests.stream().map(Request::disclose).collect(Collectors.toList());

@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.dataframe.Pair;
+import org.twz.exception.IncompleteConditionException;
 import org.twz.io.AdapterJSONArray;
 import org.twz.io.AdapterJSONObject;
 
@@ -36,7 +37,7 @@ public class ListenerSet implements AdapterJSONArray {
 
     }
 
-    public boolean applyShock(Disclosure disclosure, AbsSimModel foreign, AbsSimModel local, double ti) throws JSONException {
+    public boolean applyShock(Disclosure disclosure, AbsSimModel foreign, AbsSimModel local, double ti) throws JSONException, IncompleteConditionException {
         boolean shock = false;
         Pair<String, JSONObject> action;
         for (Map.Entry<IChecker, IResponse> entry : Listeners.entrySet()) {

@@ -7,6 +7,7 @@ import org.twz.dag.actor.FrozenSingleActor;
 import org.twz.dag.actor.Sampler;
 import org.twz.dag.actor.SimulationActor;
 import org.twz.dag.loci.Loci;
+import org.twz.exception.IncompleteConditionException;
 import org.twz.graph.DiGraph;
 
 import java.util.*;
@@ -191,20 +192,24 @@ public class ParameterCore extends Chromosome {
         }
 
         for (SimulationActor act : Actors.values()) {
-            if (act instanceof CompoundActor) {
-                ((CompoundActor) act).fillAll(this);
-            } else {
-                this.put(act.Field, act.sample(this));
-            }
+            fillChd(act);
         }
 
         if (Parent != null) {
             for (SimulationActor act : Parent.ChildrenActors.get(getGroupName()).values()) {
-                if (act instanceof CompoundActor) {
-                    ((CompoundActor) act).fillAll(this);
-                } else {
-                    this.put(act.Field, act.sample(this));
-                }
+                fillChd(act);
+            }
+        }
+    }
+
+    private void fillChd(SimulationActor act) {
+        if (act instanceof CompoundActor) {
+            ((CompoundActor) act).fillAll(this);
+        } else {
+            try {
+                this.put(act.Field, act.sample(this));
+            } catch (IncompleteConditionException e) {
+                e.printStackTrace();
             }
         }
     }

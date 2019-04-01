@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.FunctionExtension;
 import org.twz.dag.loci.*;
 import org.twz.dag.util.NodeGroup;
+import org.twz.exception.IncompleteConditionException;
 import org.twz.exception.ScriptException;
 import org.twz.graph.DiGraph;
 import org.twz.io.AdapterJSONObject;
@@ -131,7 +132,7 @@ public class BayesNet implements AdapterJSONObject {
 
         Loci loci;
         switch (loc.getString("Type")) {
-            case "Distribution":
+            case "Sampler":
                 loci = new DistributionLoci(nd, loc.getString("Def"), toList(loc.getJSONArray("Parents")));
                 break;
             case "Function":
@@ -200,7 +201,11 @@ public class BayesNet implements AdapterJSONObject {
             }
             loci = DAG.getNode(s);
             if (!(loci instanceof ExoValueLoci)) {
-                loci.fill(chromosome);
+                try {
+                    loci.fill(chromosome);
+                } catch (IncompleteConditionException ignored) {
+
+                }
             }
         }
     }
@@ -211,7 +216,11 @@ public class BayesNet implements AdapterJSONObject {
         for (String s : getOrder()) {
             if (chromosome.has(s)) {
                 loci = DAG.getNode(s);
-                li += loci.evaluate(chromosome);
+                try {
+                    li += loci.evaluate(chromosome);
+                } catch (IncompleteConditionException ignored) {
+
+                }
             }
         }
         chromosome.setLogPriorProb(li);
@@ -232,7 +241,11 @@ public class BayesNet implements AdapterJSONObject {
                 if (Double.isNaN(value)) {
                     loci = DAG.getNode(s);
                     if (!(loci instanceof ExoValueLoci)) {
-                        loci.fill(chromosome);
+                        try {
+                            loci.fill(chromosome);
+                        } catch (IncompleteConditionException ignored) {
+
+                        }
                     }
                 } else {
                     chromosome.getLocus().put(s, value);

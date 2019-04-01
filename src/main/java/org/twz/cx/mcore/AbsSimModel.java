@@ -11,6 +11,7 @@ import org.twz.dag.ParameterCore;
 import org.twz.dag.actor.Sampler;
 import org.twz.dataframe.DataFrame;
 import org.twz.dataframe.TimeSeries;
+import org.twz.exception.IncompleteConditionException;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.*;
@@ -124,7 +125,7 @@ public abstract class AbsSimModel implements AdapterJSONObject {
         Listeners.defineImpulseResponse(impulse, response);
     }
 
-    boolean triggerExternalImpulses(Disclosure dis, AbsSimModel model, double ti) throws JSONException {
+    boolean triggerExternalImpulses(Disclosure dis, AbsSimModel model, double ti) throws JSONException, IncompleteConditionException {
         return Listeners.applyShock(dis, model, this, ti);
     }
 
@@ -173,7 +174,7 @@ public abstract class AbsSimModel implements AdapterJSONObject {
 
     public abstract List<Disclosure> collectDisclosure();
 
-    public abstract void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) throws JSONException;
+    public abstract void fetchDisclosures(Map<Disclosure, AbsSimModel> ds_ms, double ti) throws JSONException, IncompleteConditionException;
 
     public double getTimeEnd() {
         return TimeEnd;
@@ -229,7 +230,7 @@ public abstract class AbsSimModel implements AdapterJSONObject {
         return Observer.getObservations();
     }
 
-    public Double getSnapshot(String key, double ti) throws JSONException {
+    public Double getSnapshot(String key, double ti) {
         return Observer.getSnapshot(this, key, ti);
     }
 

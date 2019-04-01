@@ -52,7 +52,7 @@ public class ABC extends BayesianFitter {
     }
 
     private void test(BayesianModel bm) {
-        info("Testing sample");
+        info("Testing render");
         int n = getOptionInteger ("N_test");
         double p = getOptionDouble("P_test");
 
@@ -75,7 +75,7 @@ public class ABC extends BayesianFitter {
                 .mapToDouble(Chromosome::getLogLikelihood).toArray();
 
         Epsilon = Statistics.quantile(lis, 1-p);
-        info("Test sample suggest epi=" + Epsilon);
+        info("Test render suggest epi=" + Epsilon);
     }
 
     private List<Chromosome> collectPosterior(BayesianModel bm, int n, String tag) {

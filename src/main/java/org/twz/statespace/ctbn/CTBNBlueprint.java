@@ -169,7 +169,7 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
             try {
                 pc.getSampler(ent.getValue().Dist);
             } catch (NullPointerException e) {
-                System.out.println("Distribution "+ ent.getValue().Dist +
+                System.out.println("Sampler "+ ent.getValue().Dist +
                         " does not exist");
                 return false;
             }

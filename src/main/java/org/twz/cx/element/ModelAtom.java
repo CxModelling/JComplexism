@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.dag.Chromosome;
+import org.twz.exception.IncompleteConditionException;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.HashMap;
@@ -111,7 +112,7 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
         Next = evt;
     }
 
-    public abstract void updateTo(double ti);
+    public abstract void updateTo(double ti) throws IncompleteConditionException;
 
     public abstract void executeEvent();
 

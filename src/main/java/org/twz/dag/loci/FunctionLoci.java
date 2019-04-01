@@ -7,6 +7,7 @@ import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import org.mariuszgromada.math.mxparser.FunctionExtension;
 import org.twz.dag.Chromosome;
+import org.twz.exception.IncompleteConditionException;
 
 import java.util.*;
 
@@ -18,7 +19,7 @@ import java.util.*;
 public class FunctionLoci extends Loci {
     private final List<String> Parents, ParentFunctions;
     private final String Function;
-    public final Expression E;
+    private final Expression E;
 
     public FunctionLoci(String name, String function) {
         super(name);
@@ -63,20 +64,37 @@ public class FunctionLoci extends Loci {
 
 
     @Override
-    public double sample(Map<String, Double> pas) {
-        Parents.forEach(e->E.setArgumentValue(e, pas.get(e)));
+    public double render(Map<String, Double> pas) throws IncompleteConditionException {
+        for (String e : Parents) {
+            try {
+                E.setArgumentValue(e, pas.get(e));
+            } catch (NullPointerException ex) {
+                throw new IncompleteConditionException(e);
+            }
+        }
         return E.calculate();
     }
 
     @Override
-    public double sample(Chromosome chromosome) {
-        Parents.forEach(e->E.setArgumentValue(e, chromosome.getDouble(e)));
+    public double render(Chromosome chromosome) throws IncompleteConditionException {
+        for (String e : Parents) {
+            try {
+                E.setArgumentValue(e, chromosome.getDouble(e));
+            } catch (NullPointerException ex) {
+                throw new IncompleteConditionException(e);
+            }
+        }
         return E.calculate();
     }
 
     @Override
-    public void fill(Chromosome chromosome) {
-        chromosome.put(getName(), sample(chromosome));
+    public double render() throws IncompleteConditionException {
+        return E.calculate();
+    }
+
+    @Override
+    public void fill(Chromosome chromosome) throws IncompleteConditionException {
+        chromosome.put(getName(), render(chromosome));
     }
 
     @Override
