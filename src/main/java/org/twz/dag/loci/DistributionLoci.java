@@ -3,16 +3,12 @@ package org.twz.dag.loci;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Chromosome;
 import org.twz.datafunction.AbsDataFunction;
 import org.twz.datafunction.DataCentre;
 import org.twz.exception.IncompleteConditionException;
 import org.twz.prob.DistributionManager;
 import org.twz.prob.IDistribution;
-import org.twz.prob.IWalkable;
-
-import java.awt.image.ImagingOpException;
 import java.util.*;
 
 
@@ -24,25 +20,27 @@ import java.util.*;
 public class DistributionLoci extends Loci implements Bindable {
     private final List<String> Parents;
     private final String Distribution;
-    private final Expression DE;
+    private final String DistributionFunction;
     private AbsDataFunction DataFunction;
 
     public DistributionLoci(String name, String dist) {
         super(name);
         Distribution = dist;
-        DE = new Expression(Distribution);
         Parents = parseParents(dist);
-        System.out.println(DE.getFunctionsNumber());
-        System.out.println(DE.getFunction(0));
-        assert DE.getFunctionsNumber() == 1;
+
+        DistributionFunction = Distribution.replaceAll("\\s+", "")
+                .replaceAll("([()])", " ")
+                .split(" ")[0];
+
     }
 
     public DistributionLoci(String name, String dist, Collection<String> parents) {
         super(name);
         Distribution = dist;
-        DE = new Expression(Distribution);
         Parents = new ArrayList<>(parents);
-        assert DE.getFunctionsNumber() == 1;
+        DistributionFunction = Distribution.replaceAll("\\s+", "")
+                .replaceAll("([()])", " ")
+                .split(" ")[0];
     }
 
     @Override
@@ -111,11 +109,21 @@ public class DistributionLoci extends Loci implements Bindable {
     private IDistribution findDistribution(String f) {
         f = f.replaceAll("\\s+", "");
         String code = f.replaceAll("\\s+", "");
-        code = code.replaceAll("(\\(|\\))", " ");
+        code = code.replaceAll("([()])", " ");
         String[] mat = code.split(" ");
 
         String[] args = mat[1].split(",");
-        return DistributionManager.parseDistribution(f, mat[0], args);
+        if (DataFunction == null) {
+            return DistributionManager.parseDistribution(f, DistributionFunction, args);
+        } else {
+            double[] ds = new double[args.length];
+            for (int i = 0; i < args.length; i++) {
+                ds[i] = Double.parseDouble(args[i]);
+            }
+            return DataFunction.getSampler(ds);
+        }
+
+
     }
 
 
@@ -140,11 +148,17 @@ public class DistributionLoci extends Loci implements Bindable {
 
     @Override
     public void bindDataCentre(DataCentre dataCentre) {
+        try {
+            DataFunction = dataCentre.getDataFunction(DistributionFunction);
+        } catch (NullPointerException ignored) {
 
+        }
     }
 
     @Override
     public void bindDataFunction(String name, AbsDataFunction df) {
-
+        if (name.equals(DistributionFunction)) {
+            DataFunction = df;
+        }
     }
 }
