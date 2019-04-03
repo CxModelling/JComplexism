@@ -7,6 +7,8 @@ import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import org.mariuszgromada.math.mxparser.FunctionExtension;
 import org.twz.dag.Chromosome;
+import org.twz.datafunction.AbsDataFunction;
+import org.twz.datafunction.DataCentre;
 import org.twz.exception.IncompleteConditionException;
 
 import java.util.*;
@@ -16,7 +18,7 @@ import java.util.*;
  *
  * Created by TimeWz on 2017/4/16.
  */
-public class FunctionLoci extends Loci {
+public class FunctionLoci extends Loci implements Bindable {
     private final List<String> Parents, ParentFunctions;
     private final String Function;
     private final Expression E;
@@ -28,6 +30,7 @@ public class FunctionLoci extends Loci {
         Parents = Arrays.asList(E.getMissingUserDefinedArguments());
         Parents.forEach(e->E.defineArgument(e, Double.NaN));
         ParentFunctions = Arrays.asList(E.getMissingUserDefinedFunctions());
+
     }
 
     public FunctionLoci(String name, String function, Collection<String> parents) {
@@ -42,14 +45,6 @@ public class FunctionLoci extends Loci {
     @Override
     public List<String> getParents() {
         return Parents;
-    }
-
-    public boolean needsFunction(String fn) {
-        return ParentFunctions.contains(fn);
-    }
-
-    public void linkToParentFunction(String fn, FunctionExtension fe) {
-        E.addFunctions(new Function(fn, fe));
     }
 
     @Override
@@ -89,7 +84,11 @@ public class FunctionLoci extends Loci {
 
     @Override
     public double render() throws IncompleteConditionException {
-        return E.calculate();
+        double value = E.calculate();
+        if (Double.isNaN(value)) {
+            throw new IncompleteConditionException("unknown");
+        }
+        return value;
     }
 
     @Override
@@ -114,5 +113,19 @@ public class FunctionLoci extends Loci {
         js.put("Type", "Function");
         js.put("Parents", new JSONArray(getParents()));
         return js;
+    }
+
+    @Override
+    public void bindDataCentre(DataCentre dataCentre) {
+        for (String par : ParentFunctions) {
+            E.addFunctions(new Function(par, dataCentre.getDataFunction(par)));
+        }
+    }
+
+    @Override
+    public void bindDataFunction(String name, AbsDataFunction df) {
+        if (ParentFunctions.contains(name)) {
+            E.addFunctions(new Function(name, df));
+        }
     }
 }

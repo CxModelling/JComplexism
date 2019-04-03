@@ -90,7 +90,14 @@ public class DistributionManager {
         String[] mat = code.split(" ");
 
         String[] args = mat[1].split(",");
-        return (IWalkable) Distributions.create(input, mat[0], args);
+        return parseDistribution(input, mat[0], args);
     }
 
+    public static IWalkable parseDistribution(String name, String fn, String[] args) {
+        return (IWalkable) Distributions.create(name, fn, args);
+    }
+
+    public static boolean hasDitribution(String name) {
+        return Distributions.hasCreator(name);
+    }
 }

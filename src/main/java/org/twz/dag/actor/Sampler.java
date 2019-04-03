@@ -19,12 +19,20 @@ public class Sampler implements IDistribution {
         Loc = loc;
     }
 
-    public double next() throws IncompleteConditionException {
-        return Actor.sample(Loc);
+    public double next() {
+        try {
+            return Actor.sample(Loc);
+        } catch (IncompleteConditionException e) {
+            return Double.NaN;
+        }
     }
 
-    public double next(Map<String, Double> exo) throws IncompleteConditionException {
-        return Actor.sample(Loc, exo);
+    public double next(Map<String, Double> exo) {
+        try {
+            return Actor.sample(Loc, exo);
+        } catch (IncompleteConditionException e) {
+            return Double.NaN;
+        }
     }
 
     @Override
@@ -43,7 +51,7 @@ public class Sampler implements IDistribution {
     }
 
     @Override
-    public double sample() throws IncompleteConditionException {
+    public double sample() {
         return next();
     }
 
@@ -52,7 +60,7 @@ public class Sampler implements IDistribution {
     }
 
     @Override
-    public double[] sample(int n) throws IncompleteConditionException {
+    public double[] sample(int n) {
         n = Math.max(n, 1);
         double[] res = new double[n];
         for (int i = 0; i < n; i++) {

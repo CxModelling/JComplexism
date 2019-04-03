@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.FunctionExtension;
 import org.twz.io.AdapterJSONObject;
+import org.twz.prob.IDistribution;
 
 
 public abstract class AbsDataFunction implements FunctionExtension, AdapterJSONObject {
@@ -27,6 +28,8 @@ public abstract class AbsDataFunction implements FunctionExtension, AdapterJSONO
     public String getName() {
         return Name;
     }
+
+    public abstract IDistribution getSampler(double[] values);
 
     @Override
     public int getParametersNumber() {

@@ -151,7 +151,7 @@ class SimulationGroup implements AdapterJSONObject {
             try {
                 FrozenSingleActor act = (FrozenSingleActor) pc.Actors.get(actor);
                 act.update(pc);
-            } catch (ClassCastException ignored) {
+            } catch (ClassCastException | IncompleteConditionException ignored) {
 
             }
         }
@@ -161,7 +161,7 @@ class SimulationGroup implements AdapterJSONObject {
                 try {
                     FrozenSingleActor act = (FrozenSingleActor) pc.ChildrenActors.get(entry.getKey()).get(s);
                     act.update(pc);
-                } catch (ClassCastException ignored) {
+                } catch (ClassCastException | IncompleteConditionException ignored) {
 
                 }
             }

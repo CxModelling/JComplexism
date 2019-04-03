@@ -1,11 +1,14 @@
 package org.twz.dag.loci;
 
 import junit.framework.Assert;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mariuszgromada.math.mxparser.FunctionExtension;
 import org.twz.dag.Chromosome;
+import org.twz.datafunction.AbsDataFunction;
 import org.twz.exception.IncompleteConditionException;
+import org.twz.prob.IDistribution;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,8 +45,18 @@ public class FunctionLociTest {
         Assert.assertEquals("B=min(5, x)", Loci2.getDefinition());
     }
 
-    class a implements FunctionExtension {
+    class a extends AbsDataFunction {
         private double x = Double.NaN;
+
+        public a(String name) {
+            super(name, new String[] {"x"}, null);
+        }
+
+        @Override
+        public IDistribution getSampler(double[] values) {
+            return null;
+        }
+
         @Override
         public int getParametersNumber() {
             return 1;
@@ -73,7 +86,7 @@ public class FunctionLociTest {
     @Test
     public void sample() throws IncompleteConditionException{
 
-        Loci1.linkToParentFunction("a", new a());
+        Loci1.bindDataFunction("a", new a("a"));
         Assert.assertEquals(9.0, Loci1.render());
 
     }

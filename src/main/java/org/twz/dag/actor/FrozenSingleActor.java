@@ -21,21 +21,33 @@ public class FrozenSingleActor extends SimulationActor {
     public FrozenSingleActor(String field, Loci di, Map<String, Double> pas) {
         super(field);
         Loci = (DistributionLoci) di;
-        Distribution = Loci.findDistribution(pas);
+        try {
+            Distribution = Loci.findDistribution(pas);
+        } catch (IncompleteConditionException e) {
+            e.printStackTrace();
+        }
     }
 
     public FrozenSingleActor(String field, Loci di, Chromosome pas) {
         super(field);
         Loci = (DistributionLoci) di;
-        Distribution = Loci.findDistribution(pas);
+        try {
+            Distribution = Loci.findDistribution(pas);
+        } catch (IncompleteConditionException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void update(Chromosome chromosome) {
+    public void update(Chromosome chromosome) throws IncompleteConditionException {
        Distribution = Loci.findDistribution(chromosome);
     }
 
     public void update(Chromosome chromosome, Map<String, Double> exo) {
-        Distribution = Loci.findDistribution(findParentValues(chromosome, exo));
+        try {
+            Distribution = Loci.findDistribution(findParentValues(chromosome, exo));
+        } catch (IncompleteConditionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

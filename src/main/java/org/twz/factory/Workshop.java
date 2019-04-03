@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Workshop is a builder object which can build various object with (name, args)
@@ -68,6 +69,14 @@ public class Workshop<T> {
     public T create(String name, String type, String[] args) throws InstantiationError, NullPointerException {
         Creator<? extends T> cr = Creators.get(type);
         return cr.create(name, args, this);
+    }
+
+    public Set<String> getCreators() {
+        return Creators.keySet();
+    }
+
+    public boolean hasCreator(String name) {
+        return Creators.containsKey(name);
     }
 
     public void listCreators() {

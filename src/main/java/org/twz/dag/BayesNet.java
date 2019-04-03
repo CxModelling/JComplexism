@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.FunctionExtension;
 import org.twz.dag.loci.*;
 import org.twz.dag.util.NodeGroup;
+import org.twz.datafunction.AbsDataFunction;
+import org.twz.datafunction.DataCentre;
 import org.twz.exception.IncompleteConditionException;
 import org.twz.exception.ScriptException;
 import org.twz.graph.DiGraph;
@@ -34,7 +36,7 @@ public class BayesNet implements AdapterJSONObject {
         RVRoots = new ArrayList<>();
         Leaves = new ArrayList<>();
         Exogenous = new ArrayList<>();
-        frozen=false;
+        frozen = false;
     }
 
     public BayesNet(JSONObject js) throws ScriptException, JSONException {
@@ -155,28 +157,21 @@ public class BayesNet implements AdapterJSONObject {
         return DAG.getNode(loc);
     }
 
-    public void linkToFunctions(Map<String, FunctionExtension> fns) {
-        List<FunctionLoci> locus = new ArrayList<>();
+    public void bindDataFunctions(Map<String, AbsDataFunction> fns) {
+        DataCentre dc = new DataCentre(fns);
+
+        Loci loci;
         try {
-            Loci loci;
             for (String s : DAG.getOrder()) {
                 loci = DAG.getNode(s);
-                try {
-                    locus.add((FunctionLoci) loci);
-                } catch (ClassCastException ignored) {
-
+                if (loci instanceof Bindable) {
+                    ((Bindable) loci).bindDataCentre(dc);
                 }
             }
         } catch (InvalidPropertiesFormatException e) {
             e.printStackTrace();
         }
-        for (FunctionLoci loci : locus) {
-            for (Map.Entry<String, FunctionExtension> entry : fns.entrySet()) {
-                if (loci.needsFunction(entry.getKey())) {
-                    loci.linkToParentFunction(entry.getKey(), entry.getValue());
-                }
-            }
-        }
+
     }
 
     public Chromosome sample() {

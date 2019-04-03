@@ -24,6 +24,19 @@ public class DataCentre implements AdapterJSONObject {
 
     }
 
+    public DataCentre(Map<String, AbsDataFunction> dfs) {
+        this();
+        DataSets.putAll(dfs);
+    }
+
+    public Set<String> listDataFunctions() {
+        return DataSets.keySet();
+    }
+
+    public AbsDataFunction getDataFunction(String key) {
+        return DataSets.get(key);
+    }
+
     public void put(AbsDataFunction df) {
         DataSets.put(df.getName(), df);
     }

@@ -5,10 +5,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.twz.dag.Chromosome;
+import org.twz.datafunction.AbsDataFunction;
+import org.twz.datafunction.DataCentre;
 import org.twz.exception.IncompleteConditionException;
 import org.twz.prob.DistributionManager;
 import org.twz.prob.IDistribution;
 import org.twz.prob.IWalkable;
+
+import java.awt.image.ImagingOpException;
 import java.util.*;
 
 
@@ -17,16 +21,20 @@ import java.util.*;
  *
  * Created by TimeWz on 2017/4/17.
  */
-public class DistributionLoci extends Loci {
+public class DistributionLoci extends Loci implements Bindable {
     private final List<String> Parents;
     private final String Distribution;
     private final Expression DE;
+    private AbsDataFunction DataFunction;
 
     public DistributionLoci(String name, String dist) {
         super(name);
         Distribution = dist;
         DE = new Expression(Distribution);
         Parents = parseParents(dist);
+        System.out.println(DE.getFunctionsNumber());
+        System.out.println(DE.getFunction(0));
+        assert DE.getFunctionsNumber() == 1;
     }
 
     public DistributionLoci(String name, String dist, Collection<String> parents) {
@@ -34,6 +42,7 @@ public class DistributionLoci extends Loci {
         Distribution = dist;
         DE = new Expression(Distribution);
         Parents = new ArrayList<>(parents);
+        assert DE.getFunctionsNumber() == 1;
     }
 
     @Override
@@ -42,12 +51,12 @@ public class DistributionLoci extends Loci {
     }
 
     @Override
-    public double evaluate(Map<String, Double> pas) {
+    public double evaluate(Map<String, Double> pas) throws IncompleteConditionException {
         return findDistribution(pas).logProb(pas.get(getName()));
     }
 
     @Override
-    public double evaluate(Chromosome chromosome) {
+    public double evaluate(Chromosome chromosome) throws IncompleteConditionException {
         return findDistribution(chromosome).logProb(chromosome.getDouble(getName()));
     }
 
@@ -62,44 +71,54 @@ public class DistributionLoci extends Loci {
     }
 
     @Override
-    public double render() throws IncompleteConditionException {
-        return Double.parseDouble(null); // todo
+    public double render() {
+        return findDistribution(getDefinition()).sample();
     }
 
     @Override
-    public void fill(Chromosome chromosome) {
+    public void fill(Chromosome chromosome) throws IncompleteConditionException {
         IDistribution dist = findDistribution(chromosome);
-        double v = 0;
-        try {
-            v = dist.sample();
-        } catch (IncompleteConditionException e) {
-            e.printStackTrace();
-        }
+        double v = dist.sample();
         chromosome.put(getName(), v);
         chromosome.addLogPriorProb(dist.logProb(v));
     }
 
-    public IWalkable findDistribution(Map<String, Double> pas) {
+    public IDistribution findDistribution(Map<String, Double> pas) throws IncompleteConditionException {
         String f = Distribution;
         for (String par : Parents) {
-            f = f.replaceAll("\\b" + par + "\\b", pas.get(par).toString());
+            try {
+                f = f.replaceAll("\\b" + par + "\\b", pas.get(par).toString());
+            } catch (NullPointerException e) {
+                throw new IncompleteConditionException(par);
+            }
         }
-
-        f = f.replaceAll("\\s+", "");
-
-        return DistributionManager.parseDistribution(f);
+        return findDistribution(f);
     }
 
-    public IDistribution findDistribution(Chromosome pas) {
+    public IDistribution findDistribution(Chromosome pas) throws IncompleteConditionException {
         String f = Distribution;
         for (String par : Parents) {
-            f = f.replaceAll("\\b" + par + "\\b","" + pas.getDouble(par));
+            try {
+                f = f.replaceAll("\\b" + par + "\\b", "" + pas.getDouble(par));
+            } catch (NullPointerException e) {
+                throw new IncompleteConditionException(par);
+            }
         }
-
-        f = f.replaceAll("\\s+", "");
-
-        return DistributionManager.parseDistribution(f);
+        return findDistribution(f);
     }
+
+
+    private IDistribution findDistribution(String f) {
+        f = f.replaceAll("\\s+", "");
+        String code = f.replaceAll("\\s+", "");
+        code = code.replaceAll("(\\(|\\))", " ");
+        String[] mat = code.split(" ");
+
+        String[] args = mat[1].split(",");
+        return DistributionManager.parseDistribution(f, mat[0], args);
+    }
+
+
 
     @Override
     public String getDefinition() {
@@ -117,5 +136,15 @@ public class DistributionLoci extends Loci {
         js.put("Type", "Sampler");
         js.put("Parents", new JSONArray(getParents()));
         return js;
+    }
+
+    @Override
+    public void bindDataCentre(DataCentre dataCentre) {
+
+    }
+
+    @Override
+    public void bindDataFunction(String name, AbsDataFunction df) {
+
     }
 }

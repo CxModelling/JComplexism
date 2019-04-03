@@ -9,11 +9,9 @@ import org.twz.io.IO;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-
 public class AbsDataFunctionTest {
 
-    Map<String, FunctionExtension> DataSets;
+    Map<String, AbsDataFunction> DataSets;
     BayesNet BN;
 
     @Before
@@ -33,7 +31,7 @@ public class AbsDataFunctionTest {
         DataSets.put("dr", new RateAgeByYearSex("dr",
                 IO.loadJSON("src/test/resources/D_ys.json")));
 
-        BN.linkToFunctions(DataSets);
+        BN.bindDataFunctions(DataSets);
     }
 
     @Test

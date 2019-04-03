@@ -1,5 +1,6 @@
 package org.twz.dag;
 
+import org.twz.exception.IncompleteConditionException;
 import org.twz.fit.AbsFitter;
 import org.twz.fit.ValueDomain;
 import org.twz.prob.IWalkable;
@@ -30,7 +31,7 @@ public abstract class BayesianModel {
             try {
                 d = (IWalkable) ((DistributionLoci) BN.getLoci(s)).findDistribution(p);
                 res.add(new ValueDomain(s, d.getDataType(), d.getLower(), d.getUpper()));
-            } catch (ClassCastException ignored) {}
+            } catch (ClassCastException | IncompleteConditionException ignored) {}
         }
         return res;
     }
