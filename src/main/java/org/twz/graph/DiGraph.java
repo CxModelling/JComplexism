@@ -196,18 +196,18 @@ public class DiGraph<T> implements Cloneable {
         return true;
     }
 
-    public List<String> getOrder() throws InvalidPropertiesFormatException {
+    public List<String> getOrder() {
         List<String> order = new ArrayList<>();
 
-        Set<String> querying,  waiting = new HashSet<>(Nodes.keySet());
+        Set<String> querying, waiting = new HashSet<>(Nodes.keySet());
 
         while(!waiting.isEmpty()) {
-
             querying = waiting.stream()
-                    .filter(s -> order.containsAll(getParents(s))).collect(Collectors.toSet());
+                    .filter(s -> order.containsAll(getParents(s)))
+                    .collect(Collectors.toSet());
 
             if (querying.isEmpty()) {
-                throw new InvalidPropertiesFormatException("Node loops found");
+                break;
             }
             order.addAll(querying);
 

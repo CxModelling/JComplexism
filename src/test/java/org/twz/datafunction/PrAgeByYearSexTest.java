@@ -28,6 +28,7 @@ public class PrAgeByYearSexTest {
     public void calculate() {
         PrAge.setParameterValue(0, 2000);
         PrAge.setParameterValue(1, 0);
+        PrAge.setParameterValue(2, 30);
         System.out.println(PrAge.calculate());
     }
 

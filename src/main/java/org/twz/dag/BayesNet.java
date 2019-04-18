@@ -161,15 +161,12 @@ public class BayesNet implements AdapterJSONObject {
         DataCentre dc = new DataCentre(fns);
 
         Loci loci;
-        try {
-            for (String s : DAG.getOrder()) {
-                loci = DAG.getNode(s);
-                if (loci instanceof Bindable) {
-                    ((Bindable) loci).bindDataCentre(dc);
-                }
+
+        for (String s : DAG.getOrder()) {
+            loci = DAG.getNode(s);
+            if (loci instanceof Bindable) {
+                ((Bindable) loci).bindDataCentre(dc);
             }
-        } catch (InvalidPropertiesFormatException e) {
-            e.printStackTrace();
         }
 
     }
@@ -281,11 +278,7 @@ public class BayesNet implements AdapterJSONObject {
         if (isFrozen()) {
             return Order;
         } else {
-            try {
-                return DAG.getOrder();
-            } catch (InvalidPropertiesFormatException e) {
-                return null;
-            }
+            return DAG.getOrder();
         }
     }
 

@@ -41,7 +41,7 @@ public class PrAgeByYearSex  extends AbsDataFunction {
     }
 
     public PrAgeByYearSex(String name, JSONObject df) throws JSONException {
-        this(name, (new String[]{"Year", "Sex"}),
+        this(name, (new String[]{"Year", "Sex", "Age"}),
                 (new String[]{"Female", "Male"}), df);
     }
 

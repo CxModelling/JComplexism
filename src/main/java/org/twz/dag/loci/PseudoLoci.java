@@ -53,7 +53,7 @@ public class PseudoLoci extends Loci {
 
     @Override
     public void fill(Chromosome chromosome) {
-
+        chromosome.put(getName(), Double.NaN);
     }
 
     @Override

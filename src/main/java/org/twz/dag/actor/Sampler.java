@@ -22,7 +22,7 @@ public class Sampler implements IDistribution {
     public double next() {
         try {
             return Actor.sample(Loc);
-        } catch (IncompleteConditionException e) {
+        } catch (IncompleteConditionException | NullPointerException e) {
             return Double.NaN;
         }
     }

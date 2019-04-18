@@ -4,8 +4,8 @@ package org.twz.prob;
 import org.twz.util.Statistics;
 
 import java.util.Arrays;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  */
 public class StatisticsTest {
 
-    double[] arr = {1, 2, 3, 5, 6};
+    private double[] arr = {1, 2, 3, 5, 6};
 
     @Test
     public void testSeq() {
@@ -21,19 +21,10 @@ public class StatisticsTest {
         System.out.println(Arrays.toString(Statistics.seq(0, 10, 2)));
     }
 
-    @Test
-    public void testMax() {
-        assertEquals(Statistics.max(arr), 6.0);
-    }
 
     @Test
     public void testArgmax() {
         assertEquals(Statistics.argmax(arr), 4);
-    }
-
-    @Test
-    public void testMin() {
-        assertEquals(Statistics.min(arr), 1.0);
     }
 
     @Test

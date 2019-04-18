@@ -10,8 +10,8 @@ import org.twz.prob.IDistribution;
 public abstract class AbsDataFunction implements FunctionExtension, AdapterJSONObject {
 
     private final String Name;
-    protected final String[] Selectors;
-    protected double[] Selected;
+    private final String[] Selectors;
+    double[] Selected;
     private JSONObject RawData;
 
     public AbsDataFunction(String name, String[] sel_cols, JSONObject df) {

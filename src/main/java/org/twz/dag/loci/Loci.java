@@ -44,7 +44,7 @@ public abstract class Loci implements AdapterJSONObject {
         return js;
     }
 
-    protected static List<String> parseParents(String fn) {
+    static List<String> parseParents(String fn) {
         Expression e = new Expression(fn);
         return Arrays.asList(e.getMissingUserDefinedArguments());
     }

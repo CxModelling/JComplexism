@@ -3,16 +3,16 @@ package org.twz.dag.loci;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Before;
+
 import org.junit.Test;
 import org.twz.datafunction.PrAgeByYearSex;
-import org.twz.datafunction.RateAgeByYearSex;
+
 import org.twz.exception.IncompleteConditionException;
 import org.twz.io.IO;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
 
 public class DistributionLociTest {
 

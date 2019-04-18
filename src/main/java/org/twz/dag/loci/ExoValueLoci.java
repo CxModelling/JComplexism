@@ -54,6 +54,10 @@ public class ExoValueLoci extends Loci {
         return this.getName();
     }
 
+    public String toString() {
+        return this.getName();
+    }
+
     @Override
     public JSONObject toJSON() throws JSONException {
         JSONObject js = super.toJSON();
