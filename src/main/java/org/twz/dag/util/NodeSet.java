@@ -1,6 +1,5 @@
 package org.twz.dag.util;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.BayesNet;
@@ -208,7 +207,8 @@ public class NodeSet implements AdapterJSONObject {
 
     private boolean isFloating(String s) {
         if (FloatingNodes.contains(s)) return true;
-        return Parent.isFloating(s);
+        if (Parent != null)return Parent.isFloating(s);
+        return false;
     }
 
     private void locateTypes(DiGraph<Loci> dag) {
@@ -271,7 +271,7 @@ public class NodeSet implements AdapterJSONObject {
         return js;
     }
 
-    private void print(int i) {
+    private void printAll(int i) {
         String h = new String(new char[i]).replace("\0", "  ");
         System.out.println(h + "Node " + Name);
 
@@ -287,12 +287,29 @@ public class NodeSet implements AdapterJSONObject {
         System.out.println(h + "Float   : " + String.join(", ", FloatingNodes));
 
         System.out.println(h + "----");
+        Children.forEach(chd->chd.printAll(i + 2));
+    }
+
+    public void printAll() {
+        printAll(0);
+    }
+
+    private void print(int i) {
+        String h = new String(new char[i]).replace("\0", "  ");
+        System.out.println(h + "Node " + Name);
+
+        System.out.println(h + "Exo     : " + String.join(", ", ExoNodes));
+        System.out.println(h + "Fix     : " + String.join(", ", FixedNodes));
+        System.out.println(h + "Float   : " + String.join(", ", FloatingNodes));
+
+        System.out.println(h + "----");
         Children.forEach(chd->chd.print(i + 2));
     }
 
     public void print() {
         print(0);
     }
+
 
     public Set<NodeSet> getChildren() {
         return Children;

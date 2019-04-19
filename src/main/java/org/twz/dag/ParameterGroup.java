@@ -38,6 +38,10 @@ public class ParameterGroup implements AdapterJSONObject {
         return PM.getBN();
     }
 
+    Set<String> getListening() {
+        return Listening;
+    }
+
     void setParameterModel(ParameterModel pm) {
         PM = pm;
         FixedChain = PM.getBN().getOrder().stream()
@@ -182,6 +186,14 @@ public class ParameterGroup implements AdapterJSONObject {
         }
 
         return ch;
+    }
+
+    public void freeze(Parameters parameters, String loci) {
+        if (Listening.contains(loci)) {
+            parameters.put(loci, parameters.getDouble(loci));
+        } else if (BeFloating.contains(loci)) {
+            parameters.put(loci, parameters.getSampler(loci).sample());
+        }
     }
 
     @Override

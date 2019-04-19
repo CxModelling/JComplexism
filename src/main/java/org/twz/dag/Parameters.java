@@ -47,15 +47,15 @@ public class Parameters extends Chromosome {
 
     @Override
     public double getDouble(String s) {
-        double d;
         if (has(s)) {
-            d = super.getDouble(s);
+            return super.getDouble(s);
         } else {
-            d = Parent.getDouble(s);
+            try {
+                return Parent.getDouble(s);
+            } catch (NullPointerException ex) {
+                return getSampler(s).next();
+            }
         }
-        if (!Double.isNaN(d)) return d;
-
-        return getSampler(s).next();
     }
 
 
@@ -102,7 +102,9 @@ public class Parameters extends Chromosome {
 
         Parent.removeChild(NickName);
         if (collect) {
-            getLocus().putAll(Parent.getLocus());
+            for (String s : PG.getListening()) {
+                getLocus().put(s, Parent.getDouble(s));
+            }
         }
         Parent = null;
     }
@@ -182,6 +184,10 @@ public class Parameters extends Chromosome {
         PG.setResponse(imp, shock_l, shock_a, shock_h, this);
 
         Children.values().forEach(ch->ch.setResponse(imp, shocked));
+    }
+
+    private void freeze(String loci) {
+        PG.freeze(this, loci);
     }
 
     void freeze() {

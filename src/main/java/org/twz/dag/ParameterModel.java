@@ -18,7 +18,7 @@ public class ParameterModel implements AdapterJSONObject {
     private NodeSet Root;
     private Map<String, ParameterGroup> PGs;
 
-    public ParameterModel(BayesNet bn, NodeSet root) {
+    ParameterModel(BayesNet bn, NodeSet root) {
         Name = bn.getName();
         BN = bn;
         Root = root;
@@ -59,7 +59,7 @@ public class ParameterModel implements AdapterJSONObject {
         pg.setParameterModel(this);
         PGs.put(ns.getName(), pg);
 
-        Root.getChildren().forEach(d->toPG(d, g));
+        ns.getChildren().forEach(d->toPG(d, g));
     }
 
     public Parameters generate(String nickname, Map<String, Double> exo) {
