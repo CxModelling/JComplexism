@@ -3,9 +3,10 @@ package org.twz.dag;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mariuszgromada.math.mxparser.FunctionExtension;
+
 import org.twz.dag.loci.*;
 import org.twz.dag.util.NodeGroup;
+import org.twz.dag.util.NodeSet;
 import org.twz.datafunction.AbsDataFunction;
 import org.twz.datafunction.DataCentre;
 import org.twz.exception.IncompleteConditionException;
@@ -46,11 +47,11 @@ public class BayesNet implements AdapterJSONObject {
         for (int i = 0; i < nodes.length(); i++) {
             appendLoci(nodes.getJSONObject(i));
         }
-        try {
-            complete();
-        } catch (InvalidPropertiesFormatException e) {
+
+        if (!checkAcyclic()) {
             throw new ScriptException("Cyclic sub-graph found");
         }
+        complete();
     }
 
     public String getName() {
@@ -282,7 +283,13 @@ public class BayesNet implements AdapterJSONObject {
         }
     }
 
-    public void complete() throws InvalidPropertiesFormatException {
+    private boolean checkAcyclic() {
+        // todo
+
+        return true;
+    }
+
+    public void complete() {
         frozen = true;
         Order = DAG.getOrder();
         Roots = DAG.getRoots();
@@ -319,6 +326,11 @@ public class BayesNet implements AdapterJSONObject {
     public SimulationCore toSimulationCoreNoOut(NodeGroup root, boolean hoist) {
         root.allocateNodes(this, new HashSet<>(), new HashSet<>());
         return new SimulationCore(this, root, hoist);
+    }
+
+    public ParameterModel toParameterModel(NodeSet ns) {
+        ns.injectGraph(this);
+        return new ParameterModel(this, ns);
     }
 
     public boolean isFrozen() {
