@@ -4,7 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.twz.dag.util.NodeGroup;
+import org.twz.dag.util.NodeSet;
+
+import java.util.Arrays;
 
 
 /**
@@ -14,7 +16,7 @@ import org.twz.dag.util.NodeGroup;
 public class ParameterCoreTest {
 
     private BayesNet BN;
-    private NodeGroup NG;
+    private NodeSet NG;
 
     @Before
     public void setUp() {
@@ -30,25 +32,25 @@ public class ParameterCoreTest {
 
     @Test
     public void toSC_no_ng() {
-        SimulationCore sc = BN.toSimulationCore();
-        ParameterCore pc = sc.generate("X1");
+        ParameterModel pm = BN.toParameterModel();
+        Parameters pc = pm.generate("X1");
 
         System.out.println(pc);
-        assertEquals(pc.listSamplers().toArray(), new String[]{"y"});
 
-        System.out.println(sc.generate("x1"));
+        assertArrayEquals(pc.listSamplers().toArray(), new String[]{});
+
+        System.out.println(pm.generate("x1"));
     }
 
 
     @Test
     public void toSC_ng() {
-        NG = new NodeGroup("country", new String[]{"b0", "b1", "x1"});
-        NG.appendChildren(new NodeGroup("agent", new String[]{"x2", "mu", "b2"}));
-        NG.allocateNodes(BN);
-        NG.printBlueprint();
-        SimulationCore sc = BN.toSimulationCore(NG, true);
-        ParameterCore pc = sc.generate("Taiwan");
-        ParameterCore pA = pc.breed("AgA", "agent"), pB = pc.breed("AgB", "agent");
+        NG = new NodeSet("country", new String[]{"b0", "b1", "x1"});
+        NG.appendChild(new NodeSet("agent", new String[]{"x2", "mu", "b2"}, new String[]{"y"}));
+
+        ParameterModel sc = BN.toParameterModel(NG);
+        Parameters pc = sc.generate("Taiwan");
+        Parameters pA = pc.breed("AgA", "agent"), pB = pc.breed("AgB", "agent");
 
         System.out.println("Likelihood:" + pc.getDeepLogPrior());
         System.out.println(pA);

@@ -148,6 +148,14 @@ public class Parameters extends Chromosome {
         }
     }
 
+    public SimulationActor getActor(String actor) {
+        if (Actors.containsKey(actor)) {
+            return Actors.get(actor);
+        } else {
+            return Parent.ChildrenActors.get(getGroupName()).get(actor);
+        }
+    }
+
     public Parameters getChild(String chd) {
         return Children.get(chd);
     }

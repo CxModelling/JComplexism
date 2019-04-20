@@ -28,7 +28,7 @@ public class BayesNet implements AdapterJSONObject {
     private boolean frozen;
     private DiGraph<Loci> DAG;
     private List<String> Order;
-    private List<String> Roots, RVRoots, Leaves, Exogenous;
+    private List<String> Roots, RVRoots, Leaves, RVLeaves, Exogenous;
 
     public BayesNet(String name) {
         Name = name;
@@ -36,6 +36,7 @@ public class BayesNet implements AdapterJSONObject {
         Roots = new ArrayList<>();
         RVRoots = new ArrayList<>();
         Leaves = new ArrayList<>();
+        RVLeaves = new ArrayList<>();
         Exogenous = new ArrayList<>();
         frozen = false;
     }
@@ -86,6 +87,14 @@ public class BayesNet implements AdapterJSONObject {
         }
     }
 
+    public List<String> getRVLeaves() {
+        if (isFrozen()) {
+            return RVLeaves;
+        } else {
+            return findRVLeaves();
+        }
+    }
+
     public List<String> getExogenous() {
         if (isFrozen()) {
             return Exogenous;
@@ -94,7 +103,7 @@ public class BayesNet implements AdapterJSONObject {
         }
     }
 
-    public void appendLoci(String name, Loci loci) {
+    private void appendLoci(String name, Loci loci) {
         if (isFrozen()) return;
         DAG.addNode(name, loci);
         List<String> pas = loci.getParents();
@@ -161,6 +170,10 @@ public class BayesNet implements AdapterJSONObject {
     public void bindDataFunctions(Map<String, AbsDataFunction> fns) {
         DataCentre dc = new DataCentre(fns);
 
+        bindDataCentre(dc);
+    }
+
+    public void bindDataCentre(DataCentre dc) {
         Loci loci;
 
         for (String s : DAG.getOrder()) {
@@ -169,7 +182,6 @@ public class BayesNet implements AdapterJSONObject {
                 ((Bindable) loci).bindDataCentre(dc);
             }
         }
-
     }
 
     public Chromosome sample() {
@@ -296,6 +308,7 @@ public class BayesNet implements AdapterJSONObject {
         Leaves = DAG.getLeaves();
         Exogenous = findExogenous();
         RVRoots = findRVRoots();
+        RVLeaves = findRVLeaves();
     }
 
     private void defrost() {
@@ -305,27 +318,7 @@ public class BayesNet implements AdapterJSONObject {
         Leaves = null;
         Exogenous = null;
         RVRoots = null;
-    }
-
-    public SimulationCore toSimulationCore() {
-        NodeGroup ng = new NodeGroup("root", new String[]{});
-        ng.allocateNodes(this);
-        return new SimulationCore(this, ng, true);
-    }
-
-    public SimulationCore toSimulationCore(NodeGroup root, boolean hoist) {
-        root.allocateNodes(this);
-        return new SimulationCore(this, root, hoist);
-    }
-
-    public SimulationCore toSimulationCore(NodeGroup root, String[] random, String[] out, boolean hoist) {
-        root.allocateNodes(this, new HashSet<>(Arrays.asList(random)), new HashSet<>(Arrays.asList(out)));
-        return new SimulationCore(this, root, hoist);
-    }
-
-    public SimulationCore toSimulationCoreNoOut(NodeGroup root, boolean hoist) {
-        root.allocateNodes(this, new HashSet<>(), new HashSet<>());
-        return new SimulationCore(this, root, hoist);
+        RVLeaves = null;
     }
 
     public ParameterModel toParameterModel(NodeSet ns) {
@@ -334,7 +327,7 @@ public class BayesNet implements AdapterJSONObject {
     }
 
     public ParameterModel toParameterModel() {
-        NodeSet ns = new NodeSet(getName(), new String[0]);
+        NodeSet ns = new NodeSet(getName(), new String[0], getRVLeaves().toArray(new String[0]));
         return toParameterModel(ns);
     }
 
@@ -358,7 +351,7 @@ public class BayesNet implements AdapterJSONObject {
         return js;
     }
 
-    public List<String> findRVRoots() {
+    private List<String> findRVRoots() {
         List<String> rvr = new ArrayList<>();
         Loci loci;
         for (String s : getOrder()) {
@@ -377,6 +370,20 @@ public class BayesNet implements AdapterJSONObject {
             }
         }
         return rvr;
+    }
+
+    private List<String> findRVLeaves() {
+        List<String> rvl = new ArrayList<>();
+        Loci loci;
+        for (String s : getOrder()) {
+            loci = getLoci(s);
+            if (loci instanceof DistributionLoci) {
+                if (DAG.getDescendantNodes(s).isEmpty()) {
+                    rvl.add(s);
+                }
+            }
+        }
+        return rvl;
     }
 
     private List<String> findExogenous() {

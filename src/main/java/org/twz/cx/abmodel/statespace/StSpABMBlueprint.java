@@ -117,7 +117,7 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         IStateSpaceBlueprint dc = da.getStateSpace(Population.Dynamic);
         assert dc != null;
         String[] needs = dc.getRequiredDistributions();
-        ns.appendChild(new NodeSet(Population.Group, needs));
+        ns.appendChild(new NodeSet(Population.Group, new String[0], needs));
         return ns;
     }
 

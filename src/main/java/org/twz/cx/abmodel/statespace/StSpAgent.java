@@ -59,7 +59,7 @@ public class StSpAgent extends AbsAgent {
     }
 
     @Override
-    public void updateTo(double ti) throws IncompleteConditionException {
+    public void updateTo(double ti) {
         Transitions = Transitions.entrySet().stream()
                 .filter(e-> e.getValue() > ti)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -76,7 +76,7 @@ public class StSpAgent extends AbsAgent {
 
         double tte;
         for (Transition tr: add) {
-            tte = tr.rand();
+            tte = tr.rand((org.twz.dag.Parameters) getParameters());
             for (AbsModifier mod: Mods.on(tr)) {
                 tte = mod.modify(tte);
             }
@@ -96,21 +96,13 @@ public class StSpAgent extends AbsAgent {
     @Override
     public void initialise(double ti, AbsSimModel model) {
         Transitions.clear();
-        try {
-            updateTo(ti);
-        } catch (IncompleteConditionException e) {
-            e.printStackTrace();
-        }
+        updateTo(ti);
     }
 
     @Override
     public void reset(double ti, AbsSimModel model) {
         Transitions.clear();
-        try {
-            updateTo(ti);
-        } catch (IncompleteConditionException e) {
-            e.printStackTrace();
-        }
+        updateTo(ti);
     }
 
     @Override
@@ -130,12 +122,7 @@ public class StSpAgent extends AbsAgent {
         AbsModifier mod = Mods.get(m);
         Transition tr = mod.getTarget();
         if (Transitions.containsKey(tr)) {
-            double tte = 0;
-            try {
-                tte = tr.rand();
-            } catch (IncompleteConditionException e) {
-                e.printStackTrace();
-            }
+            double tte = tr.rand((org.twz.dag.Parameters) getParameters());
             tte = Mods.on(tr).stream().reduce(tte, (sum, p) -> p.modify(sum), (sum1, sum2) -> sum2);
             Transitions.put(tr, tte + ti);
             dropNext();

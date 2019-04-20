@@ -2,6 +2,9 @@ package org.twz.statespace.ctmc;
 
 import org.json.JSONException;
 import org.twz.dag.Parameters;
+import org.twz.dag.actor.Sampler;
+import org.twz.prob.DistributionManager;
+import org.twz.prob.IDistribution;
 import org.twz.statespace.IStateSpaceBlueprint;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
@@ -106,8 +109,7 @@ public class CTMCBlueprint implements IStateSpaceBlueprint<CTMarkovChain> {
             try {
                 pc.getSampler(ent.getValue());
             } catch (NullPointerException e) {
-                System.out.println("Sampler "+ ent.getValue() +
-                        " does not exist");
+                System.out.println("Sampler "+ ent.getValue() + " does not exist");
                 return false;
             }
         }
@@ -132,12 +134,22 @@ public class CTMCBlueprint implements IStateSpaceBlueprint<CTMarkovChain> {
         Map<String, Transition> trs = new HashMap<>();
         Map<State, List<Transition>> tars = new HashMap<>();
 
+
         for (Map.Entry<String, String> ent: States.entrySet()) {
             sts.put(ent.getKey(), new State(ent.getKey()));
         }
+
+        String di;
+
         for (Map.Entry<String, String> ent: TransitionTo.entrySet()) {
-            trs.put(ent.getKey(), new Transition(ent.getKey(),
-                    sts.get(ent.getValue()), pc.getSampler(TransitionBy.get(ent.getKey()))));
+            // todo to optimise
+            di = TransitionBy.get(ent.getKey());
+            if (di.contains("(")) {
+                trs.put(ent.getKey(), new Transition(ent.getKey(), sts.get(ent.getValue()),
+                        DistributionManager.parseDistribution(di)));
+            } else {
+                trs.put(ent.getKey(), new Transition(ent.getKey(), sts.get(ent.getValue()), di));
+            }
         }
         for (Map.Entry<String, List<String>> ent: Targets.entrySet()) {
             tars.put(sts.get(ent.getKey()),

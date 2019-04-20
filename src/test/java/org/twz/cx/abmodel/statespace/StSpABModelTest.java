@@ -22,7 +22,7 @@ public class StSpABModelTest {
         Ctrl.loadStateSpace("src/test/resources/script/DzAB.txt");
 
         NodeSet ns = new NodeSet("root", new String[0]);
-        ns.appendChild(new NodeSet("agent", new String[]{"ToA", "ToB","ToB_A"}));
+        ns.appendChild(new NodeSet("agent", new String[0], new String[]{"ToA", "ToB","ToB_A"}));
         Parameters PC = Ctrl.getBayesNet("pDzAB").toParameterModel(ns).generate("Test");
         AbsStateSpace DC = Ctrl.generateDCore("DzAB", PC.genPrototype("agent"));
 

@@ -9,7 +9,6 @@ import org.twz.statespace.Transition;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.twz.dag.ParameterCore;
 import org.twz.io.AdapterJSONObject;
 import org.twz.io.FnJSON;
 

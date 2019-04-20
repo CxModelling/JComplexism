@@ -9,8 +9,9 @@ import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafY0;
 import org.twz.dag.BayesNet;
 import org.twz.dag.Parameters;
-import org.twz.dag.util.NodeGroup;
 import org.twz.dag.util.NodeSet;
+import org.twz.datafunction.AbsDataFunction;
+import org.twz.datafunction.DataCentre;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.StateSpaceFactory;
 import org.twz.statespace.IStateSpaceBlueprint;
@@ -18,7 +19,6 @@ import org.twz.statespace.ctbn.CTBNBlueprint;
 import org.twz.statespace.ctmc.CTMCBlueprint;
 import org.twz.cx.multimodel.ModelLayout;
 import org.json.JSONObject;
-import org.twz.dag.ParameterCore;
 import org.twz.exception.ScriptException;
 import org.twz.io.IO;
 import org.twz.util.LogFormatter;
@@ -26,16 +26,14 @@ import org.twz.util.ILogable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 /**
  *
  * Created by TimeWz on 2017/6/16.
  */
 public class Director implements ILogable {
+    private DataCentre DC;
     private Map<String, BayesNet> BNs;
     private Map<String, IStateSpaceBlueprint> DCores;
     private Map<String, IModelBlueprint> MCores;
@@ -43,6 +41,7 @@ public class Director implements ILogable {
     private Logger Log;
 
     public Director() {
+        DC = new DataCentre();
         BNs = new HashMap<>();
         DCores = new HashMap<>();
         MCores = new HashMap<>();
@@ -51,11 +50,14 @@ public class Director implements ILogable {
         Log.addHandler(new ConsoleHandler());
     }
 
+    private void addDataFunction(AbsDataFunction df) {
+        DC.put(df);
+    }
+
     private void addBayesNet(BayesNet bn) {
         if (BNs.putIfAbsent(bn.getName(), bn) != null) {
             Log.info("New BayesNet " + bn.getName() + " added");
         }
-
     }
 
     public void readBayesNet(String script) {
@@ -94,7 +96,9 @@ public class Director implements ILogable {
     }
 
     public BayesNet getBayesNet(String name) {
-        return BNs.get(name);
+        BayesNet bn = BNs.get(name);
+        bn.bindDataCentre(DC);
+        return bn;
     }
 
     private void addStateSpace(IStateSpaceBlueprint dc) {

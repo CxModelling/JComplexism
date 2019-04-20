@@ -37,6 +37,10 @@ public class DataCentre implements AdapterJSONObject {
         return DataSets.get(key);
     }
 
+    public Map<String, AbsDataFunction> getDataSets() {
+        return DataSets;
+    }
+
     public void put(AbsDataFunction df) {
         DataSets.put(df.getName(), df);
     }
