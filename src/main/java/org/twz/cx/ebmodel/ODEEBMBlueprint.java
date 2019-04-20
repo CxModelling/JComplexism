@@ -1,15 +1,11 @@
 package org.twz.cx.ebmodel;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+
 import org.twz.cx.Director;
 import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.BayesNet;
-import org.twz.dag.ParameterCore;
-import org.twz.dag.util.NodeGroup;
-import org.twz.io.FnJSON;
-import org.twz.statespace.AbsStateSpace;
-import org.twz.statespace.IStateSpaceBlueprint;
+import org.twz.dag.Parameters;
+import org.twz.dag.util.NodeSet;
 
 import java.util.*;
 
@@ -76,13 +72,13 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
     }
 
     @Override
-    public NodeGroup getParameterHierarchy(Director dc) {
-        return new NodeGroup(getName(), new String[0]);
+    public NodeSet getParameterHierarchy(Director dc) {
+        return new NodeSet(getName(), Ps);
     }
 
     @Override
     public EquationBasedModel generate(String name, Map<String, Object> args) {
-        ParameterCore pc;
+        Parameters pc;
 
         if (args.containsKey("bn") && args.containsKey("da")) {
             Director da = (Director) args.get("da");
@@ -93,10 +89,10 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
             } else {
                 bn = da.getBayesNet((String) args.get("bn"));
             }
-            pc = bn.toSimulationCoreNoOut(getParameterHierarchy(da), true).generate(name);
+            pc = bn.toParameterModel(getParameterHierarchy(da)).generate(name);
 
         } else if(args.containsKey("pc")) {
-            pc = (ParameterCore) args.get("pc");
+            pc = (Parameters) args.get("pc");
         } else {
             assert false;
             return null;

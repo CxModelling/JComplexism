@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.twz.cx.abmodel.AbsBreeder;
 import org.twz.cx.abmodel.Population;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.statespace.AbsStateSpace;
 
 import java.util.HashMap;
@@ -14,11 +15,11 @@ public class StSpPopulation extends Population<StSpAgent> {
         super(eva);
     }
 
-    public StSpPopulation(String name, String group, AbsStateSpace dc, ParameterCore genPars, Map<String, Double> exo) {
+    public StSpPopulation(String name, String group, AbsStateSpace dc, Parameters genPars, Map<String, Double> exo) {
         super(new StSpBreeder(name, group, dc, genPars, exo));
     }
 
-    public StSpPopulation(String name, String group, AbsStateSpace dc, ParameterCore genPars) {
+    public StSpPopulation(String name, String group, AbsStateSpace dc, Parameters genPars) {
         super(new StSpBreeder(name, group, dc, genPars, new HashMap<>()));
     }
 

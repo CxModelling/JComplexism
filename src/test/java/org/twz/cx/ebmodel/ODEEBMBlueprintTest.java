@@ -7,7 +7,7 @@ import org.twz.cx.Director;
 
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.Simulator;
-import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 
 
 /**
@@ -45,8 +45,8 @@ public class ODEEBMBlueprintTest {
 
     @Test
     public void simulationPcDc() throws Exception {
-        ParameterCore PC = Da.getBayesNet("pCloseSIR")
-                .toSimulationCore(Da.getSimModel("SIR").getParameterHierarchy(Da), true)
+        Parameters PC = Da.getBayesNet("pCloseSIR")
+                .toParameterModel(Da.getSimModel("SIR").getParameterHierarchy(Da))
                 .generate("Test");
 
         run(Da.generateModel("model", "SIR", PC));

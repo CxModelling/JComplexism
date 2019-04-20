@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.exception.IncompleteConditionException;
 
 import java.util.LinkedHashMap;
@@ -16,12 +17,12 @@ import java.util.stream.Collectors;
  * Created by TimeWz on 2017/2/10.
  */
 public abstract class BranchModel extends AbsSimModel {
-    public BranchModel(String name, ParameterCore pars, AbsObserver obs, IY0 protoY0) {
+    public BranchModel(String name, Parameters pars, AbsObserver obs, IY0 protoY0) {
         super(name, pars, obs, protoY0);
     }
 
     public BranchModel(String name, Map<String, Double> pars, AbsObserver obs, IY0 protoY0) {
-        this(name, new ParameterCore(name, null, pars, 0), obs, protoY0);
+        this(name, new Parameters(name, null, pars, 0), obs, protoY0);
     }
 
     public abstract Map<String, AbsSimModel> getModels();

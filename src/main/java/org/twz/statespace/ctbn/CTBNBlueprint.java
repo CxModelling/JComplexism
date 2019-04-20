@@ -1,6 +1,7 @@
 package org.twz.statespace.ctbn;
 
 import org.json.JSONException;
+import org.twz.dag.Parameters;
 import org.twz.dag.actor.Sampler;
 import org.twz.statespace.IStateSpaceBlueprint;
 import org.twz.statespace.State;
@@ -164,7 +165,7 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
     }
 
     @Override
-    public boolean isCompatible(ParameterCore pc) {
+    public boolean isCompatible(Parameters pc) {
         for (Map.Entry<String, PseudoTransition> ent: Transitions.entrySet()) {
             try {
                 pc.getSampler(ent.getValue().Dist);
@@ -179,15 +180,12 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
 
     @Override
     public String[] getRequiredDistributions() {
-        Set<String> dis = Transitions.values().stream()
-                .map(e -> e.Dist)
-                .collect(Collectors.toSet());
-
-        return (String[]) dis.toArray();
+        return (String[]) Transitions.values().stream()
+                .map(e -> e.Dist).distinct().toArray();
     }
 
     @Override
-    public CTBayesianNetwork generateModel(ParameterCore pc) {
+    public CTBayesianNetwork generateModel(Parameters pc) {
         Map<String, MicroNode> mss = makeMicro();
 
         Map<String, List<MicroState>> stm = makeStateMap(mss);
@@ -241,7 +239,7 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
     private Map<State,List<Transition>> makeTargets(Map<String, State> sts,
                                                     Map<State, List<State>> sub, Map<String, Transition> trs) {
         Map<State, List<Transition>> tas = sub.keySet().stream()
-                .collect(Collectors.toMap(e-> e, e-> new ArrayList<Transition>()));
+                .collect(Collectors.toMap(e-> e, e-> new ArrayList<>()));
 
         for (Map.Entry<String, List<String>> ent: Targets.entrySet()) {
             sub.entrySet().stream().filter(es -> es.getValue().contains(sts.get(ent.getKey())))

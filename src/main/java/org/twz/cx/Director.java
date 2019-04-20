@@ -8,7 +8,9 @@ import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafY0;
 import org.twz.dag.BayesNet;
+import org.twz.dag.Parameters;
 import org.twz.dag.util.NodeGroup;
+import org.twz.dag.util.NodeSet;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.StateSpaceFactory;
 import org.twz.statespace.IStateSpaceBlueprint;
@@ -207,25 +209,25 @@ public class Director implements ILogable {
         return layout;
     }
 
-    public NodeGroup getParameterHierarchy(String name) {
+    public NodeSet getParameterHierarchy(String name) {
         if (Layouts.containsKey(name)) {
             return Layouts.get(name).getParameterHierarchy(this);
         } else if (MCores.containsKey(name)) {
             return MCores.get(name).getParameterHierarchy(this);
         } else {
-            return new NodeGroup(name, new String[0]);
+            return new NodeSet(name, new String[0]);
         }
     }
 
-    public ParameterCore generatePCore(String name, String bn) {
-        return getBayesNet(bn).toSimulationCore().generate(name);
+    public Parameters generatePCore(String name, String bn) {
+        return getBayesNet(bn).toParameterModel().generate(name);
     }
 
     public AbsStateSpace generateDCore(String dc, String pc) {
         return generateDCore(dc, generatePCore(dc, pc));
     }
 
-    public AbsStateSpace generateDCore(String dc, ParameterCore pc) {
+    public AbsStateSpace generateDCore(String dc, Parameters pc) {
         IStateSpaceBlueprint bp = getStateSpace(dc);
         if (bp.isCompatible(pc)) {
             return bp.generateModel(pc);
@@ -242,7 +244,7 @@ public class Director implements ILogable {
         return MCores.get(type).generate(name, args);
     }
 
-    public AbsSimModel generateMCore(String name, String type, ParameterCore pc) {
+    public AbsSimModel generateMCore(String name, String type, Parameters pc) {
         Map<String, Object> args = new HashMap<>();
         args.put("pc", pc);
         args.put("da", this);
@@ -252,15 +254,15 @@ public class Director implements ILogable {
     public AbsSimModel generateModel(String name, String type, String bn) {
         if (Layouts.containsKey(type)) {
             ModelLayout layout = Layouts.get(type);
-            NodeGroup ng = layout.getParameterHierarchy(this);
-            ParameterCore pc = getBayesNet(bn).toSimulationCore(ng, true).generate(name);
+            NodeSet ns = layout.getParameterHierarchy(this);
+            Parameters pc = getBayesNet(bn).toParameterModel(ns).generate(name);
             return layout.generate(name, this, pc);
         } else {
             return generateMCore(name, type, bn);
         }
     }
 
-    public AbsSimModel generateModel(String name, String type, ParameterCore pc) {
+    public AbsSimModel generateModel(String name, String type, Parameters pc) {
         if (Layouts.containsKey(type)) {
             ModelLayout layout = Layouts.get(type);
             return layout.generate(name, this, pc);

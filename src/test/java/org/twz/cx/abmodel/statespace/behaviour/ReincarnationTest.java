@@ -9,7 +9,9 @@ import org.twz.cx.abmodel.statespace.StSpPopulation;
 import org.twz.cx.abmodel.statespace.StSpY0;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.dag.util.NodeGroup;
+import org.twz.dag.util.NodeSet;
 import org.twz.statespace.AbsStateSpace;
 
 public class ReincarnationTest {
@@ -21,9 +23,9 @@ public class ReincarnationTest {
         ctrl.loadBayesNet("src/test/resources/script/pBAD.txt");
         ctrl.loadStateSpace("src/test/resources/script/BAD.txt");
 
-        NodeGroup NG = new NodeGroup("root", new String[0]);
-        NG.appendChildren(new NodeGroup("agent", new String[]{"ToM", "ToO", "Die"}));
-        ParameterCore PC = ctrl.getBayesNet("pBAD").toSimulationCore(NG, true).generate("Test");
+        NodeSet ns = new NodeSet("root", new String[0]);
+        ns.appendChild(new NodeSet("agent", new String[]{"ToM", "ToO", "Die"}));
+        Parameters PC = ctrl.getBayesNet("pBAD").toParameterModel(ns).generate("Test");
         AbsStateSpace DC = ctrl.generateDCore("BAD", PC.genPrototype("agent"));
 
 

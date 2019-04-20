@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.exception.IncompleteConditionException;
 
 import java.util.List;
@@ -14,16 +15,16 @@ import java.util.Map;
  * Created by TimeWz on 2017/2/10.
  */
 public abstract class LeafModel extends AbsSimModel {
-    public LeafModel(String name, ParameterCore pars, AbsObserver obs, IY0 protoY0) {
+    public LeafModel(String name, Parameters pars, AbsObserver obs, IY0 protoY0) {
         super(name, pars, obs, protoY0);
     }
 
     public LeafModel(String name, Map<String, Double> pars, AbsObserver obs, IY0 protoY0) {
-        super(name, new ParameterCore(name, null, pars, 0), obs, protoY0);
+        super(name, new Parameters(name, null, pars, 0), obs, protoY0);
     }
 
     public LeafModel(String name, AbsObserver obs, IY0 protoY0) {
-        super(name, ParameterCore.NullParameters, obs, protoY0);
+        super(name, Parameters.NullParameters, obs, protoY0);
     }
 
     @Override

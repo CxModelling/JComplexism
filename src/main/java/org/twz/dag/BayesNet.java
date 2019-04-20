@@ -333,6 +333,11 @@ public class BayesNet implements AdapterJSONObject {
         return new ParameterModel(this, ns);
     }
 
+    public ParameterModel toParameterModel() {
+        NodeSet ns = new NodeSet(getName(), new String[0]);
+        return toParameterModel(ns);
+    }
+
     public boolean isFrozen() {
         return frozen;
     }

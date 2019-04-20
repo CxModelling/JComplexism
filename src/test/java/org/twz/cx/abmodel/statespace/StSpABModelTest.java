@@ -6,7 +6,9 @@ import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.dag.util.NodeGroup;
+import org.twz.dag.util.NodeSet;
 import org.twz.statespace.AbsStateSpace;
 
 public class StSpABModelTest {
@@ -19,9 +21,9 @@ public class StSpABModelTest {
         Ctrl.loadBayesNet("src/test/resources/script/pDzAB.txt");
         Ctrl.loadStateSpace("src/test/resources/script/DzAB.txt");
 
-        NodeGroup NG = new NodeGroup("root", new String[0]);
-        NG.appendChildren(new NodeGroup("agent", new String[]{"ToA", "ToB","ToB_A"}));
-        ParameterCore PC = Ctrl.getBayesNet("pDzAB").toSimulationCore(NG, true).generate("Test");
+        NodeSet ns = new NodeSet("root", new String[0]);
+        ns.appendChild(new NodeSet("agent", new String[]{"ToA", "ToB","ToB_A"}));
+        Parameters PC = Ctrl.getBayesNet("pDzAB").toParameterModel(ns).generate("Test");
         AbsStateSpace DC = Ctrl.generateDCore("DzAB", PC.genPrototype("agent"));
 
 

@@ -16,14 +16,14 @@ import java.util.*;
 
 public abstract class DataModel extends BayesianModel {
     private NameGenerator NG;
-    private SimulationCore SC;
+    private ParameterModel SC;
     private Director Ctrl;
     private String SimModel, WarmUpModel;
     private final double Time0, Time1, Dt, TimeWarm;
 
     private TimeSeries LastOutput;
-    private ParameterCore LastPars;
-    private Map<String, Map<ParameterCore, TimeSeries>> Mementos;
+    private Parameters LastPars;
+    private Map<String, Map<Parameters, TimeSeries>> Mementos;
 
     public DataModel(Director ctrl, String bn, String simModel,
                      double t0, double t1, double dt,
@@ -31,7 +31,7 @@ public abstract class DataModel extends BayesianModel {
         super(ctrl.getBayesNet(bn));
         NG = new NameGenerator("Sim");
         Ctrl = ctrl;
-        SC = this.BN.toSimulationCore(ctrl.getParameterHierarchy(simModel), true);
+        SC = this.BN.toParameterModel(ctrl.getParameterHierarchy(simModel));
         SimModel = simModel;
         Time0 = t0;
         Time1 = t1;
@@ -58,11 +58,11 @@ public abstract class DataModel extends BayesianModel {
             return y0;
         }
 
-        ParameterCore pc;
-        if (pars instanceof ParameterCore) {
-            pc = (ParameterCore) pars;
+        Parameters pc;
+        if (pars instanceof Parameters) {
+            pc = (Parameters) pars;
         } else {
-            pc = new PseudoParameterCore(NG.getNext(), pars.getLocus());
+            pc = new PseudoParameters(NG.getNext(), pars.getLocus());
         }
 
         AbsSimModel model = Ctrl.generateModel(pc.getName(), WarmUpModel, pc);
@@ -75,11 +75,11 @@ public abstract class DataModel extends BayesianModel {
     }
 
     public TimeSeries simulate(Chromosome pars, IY0 y0) {
-        ParameterCore pc;
-        if (pars instanceof ParameterCore) {
-            pc = (ParameterCore) pars;
+        Parameters pc;
+        if (pars instanceof Parameters) {
+            pc = (Parameters) pars;
         } else {
-            pc = new PseudoParameterCore(NG.getNext(), pars.getLocus());
+            pc = new PseudoParameters(NG.getNext(), pars.getLocus());
         }
 
         AbsSimModel model = Ctrl.generateModel(pc.getName(), SimModel, pc);
@@ -108,7 +108,7 @@ public abstract class DataModel extends BayesianModel {
             }
         }
         if (ts != null) {
-            LastPars = (ParameterCore) chromosome;
+            LastPars = (Parameters) chromosome;
             LastOutput = ts;
         }
     }
@@ -135,19 +135,19 @@ public abstract class DataModel extends BayesianModel {
     }
 
     public void saveMementosBySimulation(String path, String type, String prefix, String suffix) {
-        Map<ParameterCore, TimeSeries> sel = Mementos.get(type);
+        Map<Parameters, TimeSeries> sel = Mementos.get(type);
         NameGenerator ng = new NameGenerator(prefix);
         Map<String, TimeSeries> ts = new LinkedHashMap<>();
         List<Map<String, Double>> pars = new ArrayList<>();
 
         if (sel.size() > 1) {
-            for (Map.Entry<ParameterCore, TimeSeries> ent : sel.entrySet()) {
+            for (Map.Entry<Parameters, TimeSeries> ent : sel.entrySet()) {
                 String id = ng.getNext();
                 pars.add(ent.getKey().toData());
                 ts.put(id, ent.getValue());
             }
         } else {
-            for (Map.Entry<ParameterCore, TimeSeries> ent : sel.entrySet()) {
+            for (Map.Entry<Parameters, TimeSeries> ent : sel.entrySet()) {
                 String id = "Simulation";
                 pars.add(ent.getKey().toData());
                 ts.put(id, ent.getValue());
@@ -159,12 +159,12 @@ public abstract class DataModel extends BayesianModel {
     }
 
     public void saveMementosByVariable(String path, String type, String prefix, String suffix) {
-        Map<ParameterCore, TimeSeries> sel = Mementos.get(type);
+        Map<Parameters, TimeSeries> sel = Mementos.get(type);
         NameGenerator ng = new NameGenerator(prefix);
         Map<String, TimeSeries> ts = new LinkedHashMap<>();
         List<Map<String, Double>> pars = new ArrayList<>();
 
-        for (Map.Entry<ParameterCore, TimeSeries> ent : sel.entrySet()) {
+        for (Map.Entry<Parameters, TimeSeries> ent : sel.entrySet()) {
             String id = ng.getNext();
             pars.add(ent.getKey().toData());
             ts.put(id, ent.getValue());

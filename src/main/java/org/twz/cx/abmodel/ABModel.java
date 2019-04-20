@@ -6,6 +6,7 @@ import org.twz.cx.element.ModelAtom;
 import org.twz.cx.mcore.*;
 import org.json.JSONObject;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 
 import java.util.*;
 
@@ -17,7 +18,7 @@ import java.util.*;
 public class ABModel extends AbsAgentBasedModel {
 
 
-    public ABModel(String name, ParameterCore env, org.twz.cx.abmodel.Population pop, IY0 protoY0) {
+    public ABModel(String name, Parameters env, org.twz.cx.abmodel.Population pop, IY0 protoY0) {
         super(name, env, pop, new ABMObserver(), protoY0);
     }
 

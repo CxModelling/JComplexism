@@ -8,6 +8,7 @@ import org.twz.cx.mcore.communicator.IChecker;
 import org.twz.cx.mcore.communicator.IResponse;
 import org.twz.cx.mcore.communicator.ListenerSet;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.dag.actor.Sampler;
 import org.twz.dataframe.DataFrame;
 import org.twz.dataframe.TimeSeries;
@@ -26,15 +27,15 @@ public abstract class AbsSimModel implements AdapterJSONObject {
     private final IY0 ProtoY0;
     protected final AbsScheduler Scheduler;
     private ListenerSet Listeners;
-    private ParameterCore Parameters;
+    private Parameters Pars;
     private Map<String, Object> Environment;
     private double TimeEnd;
 
 
-    public AbsSimModel(String name, ParameterCore pars, AbsObserver obs, IY0 protoY0) {
+    public AbsSimModel(String name, Parameters pars, AbsObserver obs, IY0 protoY0) {
         Name = name;
         Observer = obs;
-        Parameters = pars;
+        Pars = pars;
         Environment = new HashMap<>();
         Listeners = new ListenerSet();
 
@@ -82,15 +83,15 @@ public abstract class AbsSimModel implements AdapterJSONObject {
     }
 
     public double getParameter(String key) {
-        return Parameters.getDouble(key);
+        return Pars.getDouble(key);
     }
 
     public Sampler getSampler(String key) {
-        return Parameters.getSampler(key);
+        return Pars.getSampler(key);
     }
 
-    public ParameterCore getParameters() {
-        return Parameters;
+    public Parameters getParameters() {
+        return Pars;
     }
 
     public abstract ModelAtom getAtom(String atom);

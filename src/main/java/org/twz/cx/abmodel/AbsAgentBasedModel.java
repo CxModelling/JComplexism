@@ -11,7 +11,7 @@ import org.twz.cx.element.Request;
 import org.twz.cx.mcore.AbsObserver;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafModel;
-import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.exception.IncompleteConditionException;
 
 import java.util.*;
@@ -25,7 +25,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
     private Population<Ta> Population;
     protected Map<String, AbsBehaviour> Behaviours;
 
-    public <Tm extends AbsAgentBasedModel> AbsAgentBasedModel(String name, ParameterCore parameters,
+    public <Tm extends AbsAgentBasedModel> AbsAgentBasedModel(String name, Parameters parameters,
                                                               Population<Ta> pop, AbsObserver<Tm> obs, IY0 protoY0) {
         super(name, parameters, obs, protoY0);
         this.Population = pop;
@@ -34,7 +34,7 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
 
     public <Tm extends AbsAgentBasedModel> AbsAgentBasedModel(String name, Map<String, Double> parameters,
                                                               Population<Ta> pop, AbsObserver<Tm> obs, IY0 protoY0) {
-        this(name, new ParameterCore(name, null, parameters, 0), pop, obs, protoY0);
+        this(name, new Parameters(name, null, parameters, 0), pop, obs, protoY0);
     }
 
     public void addBehaviour(AbsBehaviour be) {

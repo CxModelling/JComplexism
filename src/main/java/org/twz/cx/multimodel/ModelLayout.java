@@ -14,7 +14,9 @@ import org.twz.cx.multimodel.entries.InteractionEntry;
 import org.twz.cx.multimodel.entries.MultipleEntry;
 import org.twz.cx.multimodel.entries.SingleEntry;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.dag.util.NodeGroup;
+import org.twz.dag.util.NodeSet;
 import org.twz.dataframe.Tuple;
 
 import java.util.*;
@@ -88,16 +90,16 @@ public class ModelLayout {
         return ModelEntries.stream().mapToInt(IModelEntry::size).sum();
     }
 
-    public NodeGroup getParameterHierarchy(Director da) {
-        NodeGroup ng = new NodeGroup(Name, null);
-        Children.values().forEach(e->ng.appendChildren(e.getParameterHierarchy(da)));
+    public NodeSet getParameterHierarchy(Director da) {
+        NodeSet ns = new NodeSet(Name, null);
+        Children.values().forEach(e->ns.appendChild(e.getParameterHierarchy(da)));
         Set<String> leaves = new HashSet<>();
         ModelEntries.forEach(e->leaves.add(e.getProtoName()));
-        leaves.forEach(e->ng.appendChildren(da.getSimModel(e).getParameterHierarchy(da)));
-        return ng;
+        leaves.forEach(e->ns.appendChild(da.getSimModel(e).getParameterHierarchy(da)));
+        return ns;
     }
 
-    public AbsSimModel generate(String name, Director da, ParameterCore pc, boolean all_observed) {
+    public AbsSimModel generate(String name, Director da, Parameters pc, boolean all_observed) {
         MultiModel model = new MultiModel(name, pc);
         AbsSimModel sub;
 
@@ -120,7 +122,7 @@ public class ModelLayout {
         return model;
     }
 
-    public AbsSimModel generate(String name, Director da, ParameterCore pc) {
+    public AbsSimModel generate(String name, Director da, Parameters pc) {
         return this.generate(name, da, pc, true);
     }
 

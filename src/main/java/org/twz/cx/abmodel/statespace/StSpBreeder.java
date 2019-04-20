@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.twz.cx.abmodel.AbsBreeder;
 import org.twz.dag.Chromosome;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;
 
@@ -15,7 +16,8 @@ public class StSpBreeder extends AbsBreeder<StSpAgent> {
     private final AbsStateSpace DCore;
     private Map<String, State> WellDefined;
 
-    public StSpBreeder(String name, String group, AbsStateSpace dc, ParameterCore genPars, Map<String, Double> exo) {
+    public StSpBreeder(String name, String group, AbsStateSpace dc,
+                       Parameters genPars, Map<String, Double> exo) {
         super(name, group, genPars, exo);
         DCore = dc;
         WellDefined = dc.getWellDefinedStateSpace();
@@ -25,7 +27,7 @@ public class StSpBreeder extends AbsBreeder<StSpAgent> {
         return DCore;
     }
 
-    protected StSpAgent newAgent(String name, Chromosome pars, Map<String, Object> attributes) throws JSONException {
+    protected StSpAgent newAgent(String name, Chromosome pars, Map<String, Object> attributes) {
         Object st_def = attributes.get("st");
         State st;
         if (st_def instanceof State) {

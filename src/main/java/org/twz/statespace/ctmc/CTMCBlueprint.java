@@ -1,6 +1,7 @@
 package org.twz.statespace.ctmc;
 
 import org.json.JSONException;
+import org.twz.dag.Parameters;
 import org.twz.statespace.IStateSpaceBlueprint;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
@@ -100,7 +101,7 @@ public class CTMCBlueprint implements IStateSpaceBlueprint<CTMarkovChain> {
     }
 
     @Override
-    public boolean isCompatible(ParameterCore pc) {
+    public boolean isCompatible(Parameters pc) {
         for (Map.Entry<String, String> ent: TransitionBy.entrySet()) {
             try {
                 pc.getSampler(ent.getValue());
@@ -126,7 +127,7 @@ public class CTMCBlueprint implements IStateSpaceBlueprint<CTMarkovChain> {
     }
 
     @Override
-    public CTMarkovChain generateModel(ParameterCore pc) {
+    public CTMarkovChain generateModel(Parameters pc) {
         Map<String, State> sts = new HashMap<>();
         Map<String, Transition> trs = new HashMap<>();
         Map<State, List<Transition>> tars = new HashMap<>();

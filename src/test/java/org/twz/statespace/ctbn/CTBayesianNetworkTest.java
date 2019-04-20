@@ -35,8 +35,8 @@ public class CTBayesianNetworkTest  {
         bn.appendLoci("gamma ~ exp(0.2)");
         bn.appendLoci("Die ~ exp(0.02)");
 
-        bp.generateModel(bn.toSimulationCore().generate(""));
-        CTBN = (CTBayesianNetwork) bp.generateModel(bn.toSimulationCore().generate(""));
+        bp.generateModel(bn.toParameterModel().generate(""));
+        CTBN = (CTBayesianNetwork) bp.generateModel(bn.toParameterModel().generate(""));
     }
 
     @Test

@@ -68,7 +68,7 @@ public class ParameterModel implements AdapterJSONObject {
     }
 
     public Parameters generate(String nickname) {
-        return PGs.get(Root).generate(nickname, null, null);
+        return PGs.get(RootPG).generate(nickname, null, null);
     }
 
     @Override

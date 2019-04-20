@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.twz.cx.Director;
 import org.twz.cx.element.Event;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.statespace.AbsStateSpace;
 
 import static org.junit.Assert.*;
@@ -20,7 +21,7 @@ public class StSpAgentTest {
         Director ctrl = new Director();
         ctrl.loadBayesNet("src/test/resources/script/pSIR.txt");
         ctrl.loadStateSpace("src/test/resources/script/SIR_BN.txt");
-        ParameterCore PC = ctrl.generatePCore("Test", "pSIR");
+        Parameters PC = ctrl.generatePCore("Test", "pSIR");
         DC = ctrl.generateDCore("SIR_bn", PC);
         Agent = new StSpAgent("Test", PC, DC.getState("Sus"));
         Agent.initialise(0, null);

@@ -9,6 +9,7 @@ import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafModel;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.exception.IncompleteConditionException;
 
 import java.util.HashMap;
@@ -18,7 +19,7 @@ public class EquationBasedModel extends LeafModel {
     private AbsEquations Equations;
     private Map<String, Double> Y;
 
-    public EquationBasedModel(String name, AbsEquations eqs, ParameterCore pars) {
+    public EquationBasedModel(String name, AbsEquations eqs, Parameters pars) {
         this(name, eqs, pars, new EBMObserver(), new EBMY0());
     }
 
@@ -26,7 +27,7 @@ public class EquationBasedModel extends LeafModel {
         this(name, eqs, pars, new EBMObserver(), new EBMY0());
     }
 
-    private EquationBasedModel(String name, AbsEquations eqs, ParameterCore pars, EBMObserver obs, IY0 protoY0) {
+    private EquationBasedModel(String name, AbsEquations eqs, Parameters pars, EBMObserver obs, IY0 protoY0) {
         super(name, pars, obs, protoY0);
         Equations = eqs;
         Y = new HashMap<>();

@@ -9,6 +9,7 @@ import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.element.ModelAtom;
 import org.twz.cx.mcore.IY0;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.io.FnJSON;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;
@@ -19,7 +20,7 @@ import java.util.Map;
 public class StSpABModel extends AbsAgentBasedModel<StSpAgent> {
     private AbsStateSpace DCore;
 
-    public StSpABModel(String name, ParameterCore parameters, StSpPopulation pop) {
+    public StSpABModel(String name, Parameters parameters, StSpPopulation pop) {
         super(name, parameters, pop, new StSpObserver(), new ABMY0());
         DCore = ((StSpBreeder) pop.getEva()).getDCore();
     }

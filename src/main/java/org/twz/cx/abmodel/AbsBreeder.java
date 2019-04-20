@@ -3,6 +3,7 @@ package org.twz.cx.abmodel;
 import org.json.JSONException;
 import org.twz.dag.Chromosome;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.util.NameGenerator;
 
 import java.util.ArrayList;
@@ -12,10 +13,10 @@ import java.util.Map;
 public abstract class AbsBreeder<T extends AbsAgent> {
     private final String Name, Group;
     private final NameGenerator GenName;
-    private final ParameterCore GenPars;
+    private final Parameters GenPars;
     private final Map<String, Double> Exo;
 
-    public AbsBreeder(String name, String group, ParameterCore genPars, Map<String, Double> exo) {
+    public AbsBreeder(String name, String group, Parameters genPars, Map<String, Double> exo) {
         Name = name;
         Group = group;
         GenName = new NameGenerator(name);

@@ -9,6 +9,7 @@ import org.twz.cx.mcore.BranchModel;
 import org.twz.cx.mcore.BranchY0;
 import org.twz.cx.mcore.IY0;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Map;
 public class MultiModel extends BranchModel {
     private Map<String, AbsSimModel> Submodels;
 
-    public MultiModel(String name, ParameterCore pars) {
+    public MultiModel(String name, Parameters pars) {
         super(name, pars, new MMObserver(), new BranchY0());
         Submodels = new HashMap<>();
     }

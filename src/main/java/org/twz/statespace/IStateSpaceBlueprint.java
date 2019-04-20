@@ -1,6 +1,7 @@
 package org.twz.statespace;
 
 import org.json.JSONException;
+import org.twz.dag.Parameters;
 import org.twz.io.AdapterJSONObject;
 import org.twz.dag.ParameterCore;
 
@@ -10,8 +11,8 @@ import org.twz.dag.ParameterCore;
  */
 public interface IStateSpaceBlueprint<M extends AbsStateSpace> extends AdapterJSONObject {
     String getName();
-    boolean isCompatible(ParameterCore pc);
+    boolean isCompatible(Parameters pc);
     String[] getRequiredDistributions();
-    M generateModel(ParameterCore pc);
+    M generateModel(Parameters pc);
     void buildJSON() throws JSONException;
 }

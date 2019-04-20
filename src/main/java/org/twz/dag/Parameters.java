@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Parameters extends Chromosome {
+    public static Parameters NullParameters = new Parameters("Null", null, new HashMap<>(), 0);
 
     private final String NickName;
     private ParameterGroup PG;
@@ -23,7 +24,7 @@ public class Parameters extends Chromosome {
     Map<String, Map<String, SimulationActor>> ChildrenActors;
     private boolean Frozen;
 
-    Parameters(String nickname, ParameterGroup sg, Map<String, Double> fixed, double prior) {
+    public Parameters(String nickname, ParameterGroup sg, Map<String, Double> fixed, double prior) {
         super(fixed, prior);
         NickName = nickname;
         PG = sg;

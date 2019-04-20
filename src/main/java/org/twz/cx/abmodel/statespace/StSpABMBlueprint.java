@@ -5,7 +5,9 @@ import org.json.JSONObject;
 import org.twz.cx.Director;
 import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.dag.util.NodeGroup;
+import org.twz.dag.util.NodeSet;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.IStateSpaceBlueprint;
 
@@ -108,30 +110,30 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
     }
 
     @Override
-    public NodeGroup getParameterHierarchy(Director da) {
-        NodeGroup ng = new NodeGroup(Name, new String[0]); // todo if behaviour needs
+    public NodeSet getParameterHierarchy(Director da) {
+        NodeSet ns = new NodeSet(Name, new String[0]);
         assert Population != null;
 
         IStateSpaceBlueprint dc = da.getStateSpace(Population.Dynamic);
         assert dc != null;
         String[] needs = dc.getRequiredDistributions();
-        ng.appendChildren(new NodeGroup(Population.Group, needs));
-        return ng;
+        ns.appendChild(new NodeSet(Population.Group, needs));
+        return ns;
     }
 
     @Override
     public StSpABModel generate(String name, Map<String, Object> args) {
-        ParameterCore pc;
+        Parameters pc;
         AbsStateSpace dc;
 
         if (args.containsKey("bn") && args.containsKey("da")) {
             Director da = (Director) args.get("da");
             IStateSpaceBlueprint dbp = da.getStateSpace(Population.Dynamic);
-            pc = da.getBayesNet((String) args.get("bn")).toSimulationCore(getParameterHierarchy(da), true).generate(name);
+            pc = da.getBayesNet((String) args.get("bn")).toParameterModel(getParameterHierarchy(da)).generate(name);
             dc = dbp.generateModel(pc.genPrototype(Population.Group));
 
         } else if(args.containsKey("pc")) {
-            pc = (ParameterCore) args.get("pc");
+            pc = (Parameters) args.get("pc");
             if (args.containsKey("dc")) {
                 dc = (AbsStateSpace) args.get("dc");
             } else {
