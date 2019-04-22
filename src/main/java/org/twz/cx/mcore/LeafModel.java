@@ -3,7 +3,6 @@ package org.twz.cx.mcore;
 import org.json.JSONException;
 import org.twz.cx.element.Disclosure;
 import org.twz.cx.element.Request;
-import org.twz.dag.ParameterCore;
 import org.twz.dag.Parameters;
 import org.twz.exception.IncompleteConditionException;
 

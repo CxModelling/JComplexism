@@ -49,6 +49,9 @@ public class StSpBehaviourFactory {
         ags = new AbsArgument[]{new OptionArg("s_birth", "States", State.class)};
         Factory.register("AgentImport", AgentImport.class, ags);
 
+        ags = new AbsArgument[]{new StringArg("key"), new PositiveDoubleArg("dt")};
+        Factory.register("TimeVaryingSS", TimeVaryingSS.class, ags);
+
     }
 
     public static void appendResource(String key, Object res) {

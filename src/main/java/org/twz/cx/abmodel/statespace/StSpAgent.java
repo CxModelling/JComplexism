@@ -61,6 +61,7 @@ public class StSpAgent extends AbsAgent {
     @Override
     public void updateTo(double ti) {
         Transitions = Transitions.entrySet().stream()
+                .filter(e-> !Double.isNaN(e.getValue()))
                 .filter(e-> e.getValue() > ti)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
@@ -111,6 +112,18 @@ public class StSpAgent extends AbsAgent {
         if (mod.update(value)) {
             modify(action, ti);
         }
+    }
+
+    public void shockTransitions(Set<Transition> transitions, double ti) {
+        for (Transition transition : transitions) {
+            Transitions.replace(transition, Double.NaN);
+        }
+        updateTo(ti);
+    }
+
+    public void shockTransitions(Transition transition, double ti) {
+        Transitions.replace(transition, Double.NaN);
+        updateTo(ti);
     }
 
     public void addMod(AbsModifier mod) {

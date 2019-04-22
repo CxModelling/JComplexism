@@ -61,6 +61,13 @@ public class Chromosome implements AdapterJSONObject, IParameters {
         LogPriorProb = Double.NaN;
     }
 
+    public void impulse(String k, double v) {
+        if (has(k)) {
+            Locus.put(k, v);
+        }
+        resetProbability();
+    }
+
     public void impulse(Map<String, Double> values) {
         for (Map.Entry<String, Double> entry : values.entrySet()) {
             if (has(entry.getKey())) {
@@ -72,12 +79,6 @@ public class Chromosome implements AdapterJSONObject, IParameters {
 
     public boolean has(String s) {
         return Locus.containsKey(s);
-    }
-
-    public void removeAll(Collection<String> ls) {
-        for (String l : ls) {
-            Locus.remove(l);
-        }
     }
 
     public double getLogPriorProb() {
@@ -146,13 +147,9 @@ public class Chromosome implements AdapterJSONObject, IParameters {
         sb += Locus.entrySet().stream()
                 .map(e -> e.getKey() + ": " + IO.doubleFormat(e.getValue()))
                 .collect(Collectors.joining(", "));
-        sb += ", ";
-        sb += "LogPrior:" + IO.doubleFormat(LogPriorProb);
-        if (isEvaluated()) {
-            sb += ",LogLikelihood:" + IO.doubleFormat(LogLikelihood);
-        }
+
         if (isLikelihoodEvaluated()) {
-            sb += "LogPrior:" + IO.doubleFormat(LogPriorProb);
+            sb += ", LogPrior:" + IO.doubleFormat(LogPriorProb);
         }
         if (isPriorEvaluated()) {
             sb += ", LogLikelihood:" + IO.doubleFormat(LogLikelihood);
@@ -166,7 +163,12 @@ public class Chromosome implements AdapterJSONObject, IParameters {
 
     @Override
     public Chromosome clone() {
-        Chromosome chromosome =  new Chromosome(Locus, LogPriorProb);
+        Chromosome chromosome;
+        try {
+            chromosome = (Chromosome) super.clone();
+        } catch (CloneNotSupportedException e) {
+            chromosome = new Chromosome();
+        }
         if (!isLikelihoodEvaluated()) chromosome.setLogLikelihood(getLogLikelihood());
         return chromosome;
     }

@@ -3,7 +3,6 @@ package org.twz.statespace;
 import org.json.JSONException;
 import org.twz.dag.Parameters;
 import org.twz.io.AdapterJSONObject;
-import org.twz.dag.ParameterCore;
 
 /**
  *

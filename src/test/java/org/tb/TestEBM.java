@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.ebmodel.EBMY0;
 import org.twz.cx.mcore.IY0;
-import org.twz.dag.ParameterCore;
+import org.twz.dag.Parameters;
 import org.twz.dataframe.TimeSeries;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.fit.ABC;
@@ -64,7 +64,7 @@ public class TestEBM {
 
     @Test
     public void simulationDaBN() throws NullPointerException {
-        ParameterCore pc = (ParameterCore) BM.samplePrior();
+        Parameters pc = (Parameters) BM.samplePrior();
         System.out.println(pc);
         IY0 y0 = BM.sampleY0(pc);
 

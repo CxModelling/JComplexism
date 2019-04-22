@@ -9,17 +9,16 @@ import java.util.List;
 public class ActorBlueprint {
     public static final String Compound = "c", Single = "s", Frozen = "f";
 
-    public final String Actor, Type, TypeH;
+    public final String Actor, Type;
     public List<String> Flow;
 
-    public ActorBlueprint(String actor, String type, String typeH, List<String> flow) {
+    public ActorBlueprint(String actor, String type, List<String> flow) {
         Actor = actor;
         Type = type;
-        TypeH = typeH;
         Flow = flow;
     }
 
-    public ActorBlueprint(String actor, String type, String typeH) {
-        this(actor, type, typeH, null);
+    public ActorBlueprint(String actor, String type) {
+        this(actor, type, null);
     }
 }

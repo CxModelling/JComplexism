@@ -1,10 +1,8 @@
 package org.twz.cx.abmodel.statespace;
 
 
-import org.json.JSONException;
 import org.twz.cx.abmodel.AbsBreeder;
 import org.twz.dag.Chromosome;
-import org.twz.dag.ParameterCore;
 import org.twz.dag.Parameters;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.State;

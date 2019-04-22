@@ -184,7 +184,7 @@ public class TimeSeries implements AdapterJSONObject {
     }
 
 
-    public void print() {
+    public void print(int i) {
         System.out.println(
                 "Timeseries [" + Times.get(0) + ", " +
                         Times.get(Times.size()-1)+ "]");
@@ -193,10 +193,15 @@ public class TimeSeries implements AdapterJSONObject {
         for (double t: Times) {
             System.out.print(t);
             for (String k : DataSeries.keySet()) {
-                System.out.print(" " + get(t, k));
+                System.out.print("\t");
+                System.out.print(String.format(("%" + i + "." + i + "g "), get(t, k)));
             }
             System.out.println();
         }
+    }
+
+    public void print() {
+        print(3);
     }
 
     public String toString() {

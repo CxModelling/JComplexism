@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.Before;
 import org.twz.cx.Director;
 import org.twz.cx.element.Event;
-import org.twz.dag.ParameterCore;
 import org.twz.dag.Parameters;
 import org.twz.statespace.AbsStateSpace;
 

@@ -6,9 +6,7 @@ import org.twz.cx.abmodel.ABMY0;
 import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
-import org.twz.cx.element.ModelAtom;
 import org.twz.cx.mcore.IY0;
-import org.twz.dag.ParameterCore;
 import org.twz.dag.Parameters;
 import org.twz.io.FnJSON;
 import org.twz.statespace.AbsStateSpace;
@@ -16,6 +14,7 @@ import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 
 import java.util.Map;
+import java.util.Set;
 
 public class StSpABModel extends AbsAgentBasedModel<StSpAgent> {
     private AbsStateSpace DCore;
@@ -28,6 +27,14 @@ public class StSpABModel extends AbsAgentBasedModel<StSpAgent> {
     public StSpABModel(String name, Map<String, Double> parameters, StSpPopulation pop) {
         super(name, parameters, pop, new StSpObserver(), new ABMY0());
         DCore = ((StSpBreeder) pop.getEva()).getDCore();
+    }
+
+    public void shockParameter(String par, double ti) {
+        Parameters AgPars = getParameters().genPrototype(getPopulation().getEva().getName());
+        Set<Transition> trs = DCore.findAffectedTransitions(AgPars.findAffectedActors(par));
+        getPopulation().getAgents()
+                .values()
+                .forEach(ag->ag.shockTransitions(trs, ti));
     }
 
     public void addObservingTransition(String transition) {

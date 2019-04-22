@@ -4,7 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.actor.*;
+
 import org.twz.dag.loci.ExoValueLoci;
+import org.twz.dag.loci.FunctionLoci;
 import org.twz.dag.loci.Loci;
 import org.twz.exception.IncompleteConditionException;
 import org.twz.graph.DiGraph;
@@ -22,12 +24,19 @@ public class ParameterGroup implements AdapterJSONObject {
     Set<String> Children;
     private List<ActorBlueprint> Bps;
 
+    private Map<String, List<String>> AffectedFixed, AffectedFloating;
+    private Map<String, Map<String, List<String>>> AffectedChildren;
+
     ParameterGroup(String name, Set<String> listening, Set<String> fixed, Set<String> random) {
         Name = name;
         Listening = listening;
         BeFixed = fixed;
         BeFloating = random;
         Children = new HashSet<>();
+
+        AffectedFixed = new HashMap<>();
+        AffectedFloating = new HashMap<>();
+        AffectedChildren = new HashMap<>();
     }
 
     public String getName() {
@@ -65,13 +74,13 @@ public class ParameterGroup implements AdapterJSONObject {
                     flow = new ArrayList<>(order);
                     flow.retainAll(g.getAncestors(act));
                     flow.retainAll(BeFloating);
-                    Bps.add(new ActorBlueprint(act, ActorBlueprint.Compound, ActorBlueprint.Compound, flow));
+                    Bps.add(new ActorBlueprint(act, ActorBlueprint.Compound, flow));
                 } else if (hasIntersection(pa, Listening)) {
-                    Bps.add(new ActorBlueprint(act, ActorBlueprint.Single, ActorBlueprint.Single, null));
+                    Bps.add(new ActorBlueprint(act, ActorBlueprint.Single));
                 } else if (hasIntersection(pa, BeFixed)) {
-                    Bps.add(new ActorBlueprint(act, ActorBlueprint.Frozen, ActorBlueprint.Single, null));
+                    Bps.add(new ActorBlueprint(act, ActorBlueprint.Single));
                 } else {
-                    Bps.add(new ActorBlueprint(act, ActorBlueprint.Frozen, ActorBlueprint.Frozen, null));
+                    Bps.add(new ActorBlueprint(act, ActorBlueprint.Frozen));
                 }
             }
         }
@@ -85,7 +94,7 @@ public class ParameterGroup implements AdapterJSONObject {
 
         for (ActorBlueprint act : getActorBlueprints()) {
             String name = act.Actor;
-            switch (act.TypeH) {
+            switch (act.Type) {
                 case ActorBlueprint.Frozen:
                     try {
                         actor = new FrozenSingleActor(name, bn.getLoci(name), pas);
@@ -131,23 +140,103 @@ public class ParameterGroup implements AdapterJSONObject {
         return pc;
     }
 
-    void setResponse(Map<String, Double> imp, List<String> fixed, List<String> actors,
-                     Map<String, List<String>> hoist, Parameters ps) {
-        ps.resetProbability();
+    public List<String> getAffectedFixed(String imp) {
+        if (!AffectedFixed.containsKey(imp)) {
+            findAffected(imp);
+        }
+        return AffectedFixed.get(imp);
+    }
+
+    public List<String> getAffectedFloating(String imp) {
+        if (!AffectedFloating.containsKey(imp)) {
+            findAffected(imp);
+        }
+        return AffectedFloating.get(imp);
+    }
+
+    public List<String> getAffectedChildren(String imp, String group) {
+        if (!AffectedChildren.containsKey(group)) {
+            AffectedChildren.put(group, new HashMap<>());
+        }
+        if (!AffectedChildren.get(group).containsKey(imp)) {
+            AffectedChildren.get(group).put(imp, PM.get(group).getAffectedFloating(imp));
+        }
+        return AffectedChildren.get(group).get(imp);
+    }
+
+    private void findAffected(String imp) {
+        DiGraph<Loci> dag = PM.getBN().getDAG();
+
+        Set<String> des = new HashSet<>(), temp;
+        List<String> querying = dag.getChildNodes(imp).stream()
+                .filter(this::canBeShocked)
+                .map(Loci::getName)
+                .collect(Collectors.toList());
+
+        while(!querying.isEmpty()) {
+            des.addAll(querying);
+            temp = new HashSet<>();
+
+            for (String l : querying) {
+                temp.addAll(dag.getChildNodes(l).stream()
+                        .filter(this::canBeShocked)
+                        .map(Loci::getName)
+                        .collect(Collectors.toList()));
+            }
+            querying = temp.stream().filter(e->!des.contains(e)).collect(Collectors.toList());
+        }
+
+        List<String> affected = new ArrayList<>(des);
+        affected.retainAll(BeFixed);
+        AffectedFixed.put(imp, affected);
+
+        affected = new ArrayList<>(des);
+        affected.retainAll(BeFloating);
+        AffectedFloating.put(imp, affected);
+    }
+
+    private boolean canBeShocked(Loci loci) {
+        if (FixedChain.contains(loci)) {
+            return loci instanceof FunctionLoci;
+        }
+        return BeFloating.contains(loci.getName());
+    }
+
+    void setResponse(Map<String, Double> imp, Parameters ps) {
+        Set<String> shocked = new HashSet<>();
+
+        // check shocked fixed nodes
+        for (String k : imp.keySet()) {
+            shocked.addAll(getAffectedFixed(k));
+        }
+        shocked.removeAll(imp.keySet());
+        for (Map.Entry<String, Double> ent : imp.entrySet()) {
+            if (Double.isNaN(ent.getValue()))
+                shocked.add(ent.getKey());
+        }
+        if (!shocked.isEmpty()) ps.resetProbability();
+
+        // update fixed nodes
         for (Loci loci : FixedChain) {
             try {
-                if (imp.containsKey(loci.getName())) {
+                if (shocked.contains(loci.getName())) {
+                    loci.fill(ps);
+                } else if (imp.containsKey(loci.getName())) {
                     ps.put(loci.getName(), imp.get(loci.getName()));
                     ps.addLogPriorProb(loci.evaluate(ps));
-                } else if (fixed.contains(loci.getName())) {
-                    loci.fill(ps);
+                } else {
+                    ps.addLogPriorProb(loci.evaluate(ps));
                 }
             } catch (IncompleteConditionException ignored) {}
-
         }
 
         // update frozen actors
-        for (String actor : actors) {
+        shocked = new HashSet<>();
+        for (String k : imp.keySet()) {
+            shocked.addAll(getAffectedFloating(k));
+        }
+
+        for (String actor : shocked) {
             try {
                 FrozenSingleActor act = (FrozenSingleActor) ps.Actors.get(actor);
                 act.update(ps);
@@ -156,23 +245,23 @@ public class ParameterGroup implements AdapterJSONObject {
             }
         }
 
-        for (Map.Entry<String, List<String>> entry : hoist.entrySet()) {
-            for (String s : entry.getValue()) {
+        Map<String, SimulationActor> chd;
+
+        for (String s : Children) {
+            shocked = new HashSet<>();
+            for (String k : imp.keySet()) {
+                shocked.addAll(getAffectedChildren(k, s));
+            }
+
+            chd = ps.ChildrenActors.get(s);
+            for (String actor : shocked) {
                 try {
-                    FrozenSingleActor act = (FrozenSingleActor) ps.ChildrenActors.get(entry.getKey()).get(s);
+                    FrozenSingleActor act = (FrozenSingleActor) chd.get(actor);
                     act.update(ps);
                 } catch (ClassCastException | IncompleteConditionException ignored) {
 
                 }
             }
-        }
-    }
-
-    Map<String, SimulationActor> setChildActors(Parameters pa, String group) {
-        if (pa.ChildrenActors.containsKey(group)) {
-            return pa.ChildrenActors.get(group);
-        } else {
-            return pa.ChildrenActors.put(group, PM.get(group).getActors(null));
         }
     }
 

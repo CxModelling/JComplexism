@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.mcore.Simulator;
-import org.twz.dag.ParameterCore;
 import org.twz.dag.Parameters;
 import org.twz.statespace.AbsStateSpace;
 

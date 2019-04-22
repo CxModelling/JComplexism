@@ -2,14 +2,11 @@ package org.twz.statespace.ctmc;
 
 import org.json.JSONException;
 import org.twz.dag.Parameters;
-import org.twz.dag.actor.Sampler;
 import org.twz.prob.DistributionManager;
-import org.twz.prob.IDistribution;
 import org.twz.statespace.IStateSpaceBlueprint;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 import org.json.JSONObject;
-import org.twz.dag.ParameterCore;
 import org.twz.io.FnJSON;
 
 import java.util.*;

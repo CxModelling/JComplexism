@@ -8,7 +8,6 @@ import org.twz.cx.element.Request;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafModel;
-import org.twz.dag.ParameterCore;
 import org.twz.dag.Parameters;
 import org.twz.exception.IncompleteConditionException;
 

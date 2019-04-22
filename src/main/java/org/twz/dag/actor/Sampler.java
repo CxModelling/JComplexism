@@ -78,6 +78,10 @@ public class Sampler implements IDistribution {
         return res;
     }
 
+    public boolean isFrozen() {
+        return Actor instanceof FrozenSingleActor;
+    }
+
     @Override
     public String toString() {
         return Actor.toString();

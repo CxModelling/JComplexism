@@ -33,6 +33,7 @@ public class LifeS extends ActiveBehaviour {
         BirthRate = rate;
         Dt = dt;
         BirthN = 0;
+        Cap = cap;
     }
 
     @Override

@@ -80,7 +80,6 @@ public class Parameters extends Chromosome {
         } else {
             return PG.generate(nickname, exo, null);
         }
-
     }
 
     public Parameters genSibling(String nickname) {
@@ -148,51 +147,24 @@ public class Parameters extends Chromosome {
         }
     }
 
-    public SimulationActor getActor(String actor) {
-        if (Actors.containsKey(actor)) {
-            return Actors.get(actor);
-        } else {
-            return Parent.ChildrenActors.get(getGroupName()).get(actor);
-        }
-    }
-
     public Parameters getChild(String chd) {
         return Children.get(chd);
     }
 
-    public SimulationActor getChildActor(String group, String name) {
-        return ChildrenActors.get(group).get(name);
+    public List<String> findAffectedActors(String imp) {
+        return PG.getAffectedFloating(imp);
+    }
+
+    public void impulse(String k, double v) {
+        Map<String, Double> imp = new HashMap<>();
+        imp.put(k, v);
+        impulse(imp);
     }
 
     public void impulse(Map<String, Double> imp) {
-        DiGraph<Loci> g = PG.getBN().getDAG();
-        Set<String> shocked = new HashSet<>();
+        PG.setResponse(imp, this);
 
-        for (String s : imp.keySet()) {
-            shocked.addAll(g.getDescendants(s));
-        }
-
-        shocked.removeAll(imp.keySet());
-        setResponse(imp, shocked);
-    }
-
-    private void setResponse(Map<String, Double> imp, Set<String> shocked) {
-        List<String> shock_l = shocked.stream().filter(this::has).collect(Collectors.toList()),
-                shock_a = Actors.entrySet().stream()
-                        .filter(e->shocked.contains(e.getKey()) && e.getValue() instanceof FrozenSingleActor)
-                        .map(Map.Entry::getKey).collect(Collectors.toList());
-
-        Map<String, List<String>> shock_h = new HashMap<>();
-
-        for (Map.Entry<String, Map<String, SimulationActor>> entry : ChildrenActors.entrySet()) {
-            shock_h.put(entry.getKey(), entry.getValue().entrySet().stream()
-                    .filter(e->shocked.contains(e.getKey()) && e.getValue() instanceof FrozenSingleActor)
-                    .map(Map.Entry::getKey).collect(Collectors.toList()));
-        }
-        resetProbability();
-        PG.setResponse(imp, shock_l, shock_a, shock_h, this);
-
-        Children.values().forEach(ch->ch.setResponse(imp, shocked));
+        Children.values().forEach(ch->ch.impulse(imp));
     }
 
     private void freeze(String loci) {

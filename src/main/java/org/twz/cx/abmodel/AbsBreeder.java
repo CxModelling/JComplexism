@@ -2,7 +2,6 @@ package org.twz.cx.abmodel;
 
 import org.json.JSONException;
 import org.twz.dag.Chromosome;
-import org.twz.dag.ParameterCore;
 import org.twz.dag.Parameters;
 import org.twz.util.NameGenerator;
 
