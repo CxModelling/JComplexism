@@ -153,5 +153,5 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
 
     public List<Disclosure> manageDisclosures(List<Disclosure> dis) {
         return dis;
-    };
+    }
 }

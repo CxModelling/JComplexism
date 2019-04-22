@@ -43,7 +43,7 @@ public class Transition implements AdapterJSONObject {
     }
 
     public boolean affected(Collection<String> pars) {
-        if (Dist == null) return false;
+        if (Dist != null) return false;
         return pars.contains(DistName);
     }
 

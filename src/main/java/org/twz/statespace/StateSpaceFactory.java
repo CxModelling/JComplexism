@@ -78,7 +78,7 @@ public class StateSpaceFactory {
                     JSONObject args = new JSONObject();
 
                     for (String s: m.group(2).split(",")) {
-                        String ss[] = s.split(":");
+                        String[] ss = s.split(":");
                         args.put(ss[0], ss[1]);
                     }
 

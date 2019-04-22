@@ -6,19 +6,21 @@ import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.abmodel.statespace.StSpABMBlueprint;
 import org.twz.cx.abmodel.statespace.StSpABModel;
+import org.twz.cx.abmodel.statespace.StSpPopulation;
 import org.twz.cx.abmodel.statespace.StSpY0;
 import org.twz.cx.element.AbsScheduler;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.BayesNet;
+import org.twz.dag.Parameters;
+import org.twz.dag.util.NodeSet;
 import org.twz.datafunction.PrAgeByYearSex;
-import org.twz.datafunction.RateAgeByYearSex;
 import org.twz.io.IO;
+import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.ctmc.CTMCBlueprint;
 
 import static org.junit.Assert.*;
 
-public class TimeVaryingSSTest {
-
+public class AgeingTest {
     private StSpABModel Model;
     private StSpY0 Y0;
 
@@ -29,15 +31,12 @@ public class TimeVaryingSSTest {
         Ctrl.addDataFunction(new PrAgeByYearSex("pr",
                 IO.loadJSON("src/test/resources/N_ys.json")));
 
-        Ctrl.addDataFunction(new RateAgeByYearSex("dr",
-                IO.loadJSON("src/test/resources/D_ys.json")));
-
         setUpBN(Ctrl);
         setUpSS(Ctrl);
         setUpModel(Ctrl);
 
-        AbsScheduler.DefaultScheduler = "ArrayList";
-        Model = (StSpABModel) Ctrl.generateModel("Test", "abm", "pTV");
+        //AbsScheduler.DefaultScheduler = "ArrayList";
+        Model = (StSpABModel) Ctrl.generateModel("Test", "abm", "pAgeing");
 
         Y0 = new StSpY0();
         Y0.append(1000, "Act");
@@ -46,12 +45,12 @@ public class TimeVaryingSSTest {
     }
 
     private void setUpBN(Director da) {
-        BayesNet bn = da.createBayesNet("pTV");
+        BayesNet bn = da.createBayesNet("pAgeing");
 
         bn.appendLoci("year = 2000");
         bn.appendLoci("sex ~ binom(1, 0.5)");
         bn.appendLoci("age ~ pr(year, sex)");
-        bn.appendLoci("delay ~ dr(year, sex, age)");
+        bn.appendLoci("delay ~ exp(0.05)");
         bn.complete();
     }
 
@@ -67,17 +66,16 @@ public class TimeVaryingSSTest {
         StSpABMBlueprint mbp = (StSpABMBlueprint) da.createSimModel("abm", "StSpABM");
         mbp.setAgent("Ag", "agent", "Ageing", new String[]{"sex", "age"});
 
-        // mbp.addBehaviour("{'Name': 'A', 'Type': 'Ageing', 'Args': {'key': 'age'}}");
-        mbp.addBehaviour("{'Name': 'TV', 'Type': 'TimeVaryingSS', 'Args': {'key': 'year', 'dt': 1}}");
+        mbp.addBehaviour("{'Name': 'A', 'Type': 'Ageing', 'Args': {'key': 'age'}}");
 
-        mbp.setObservations(new String[]{"Act"}, new String[]{"Care"}, new String[]{});
+        mbp.setObservations(new String[]{"Act"}, new String[]{"Care"}, new String[]{"A"});
 
     }
 
     @Test
     public void simulation() throws Exception {
         Simulator Simu = new Simulator(Model);
-        Simu.onLog("log/TV.txt");
+        Simu.onLog("log/Ageing.txt");
         Simu.simulate(Y0, 2000, 2010, 1);
         Model.print();
     }

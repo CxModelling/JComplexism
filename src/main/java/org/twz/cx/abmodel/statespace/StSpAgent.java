@@ -115,6 +115,7 @@ public class StSpAgent extends AbsAgent {
     }
 
     public void shockTransitions(Set<Transition> transitions, double ti) {
+        if (transitions.isEmpty()) return;
         for (Transition transition : transitions) {
             Transitions.replace(transition, Double.NaN);
         }

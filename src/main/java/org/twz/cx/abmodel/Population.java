@@ -90,6 +90,10 @@ public class Population<T extends AbsAgent> implements AdapterJSONObject {
         return Agents.size();
     }
 
+    public double averageParameter(String key) {
+        return Agents.values().stream().mapToDouble(ag->ag.getParameter(key)).average().orElse(0);
+    }
+
     @Override
     public JSONObject toJSON() {
         // todo

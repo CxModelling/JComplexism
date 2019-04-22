@@ -8,6 +8,7 @@ import org.twz.factory.arguments.*;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
 
+
 public class StSpBehaviourFactory {
     private static Workshop<AbsBehaviour> Factory = new Workshop<>();
 
@@ -51,6 +52,10 @@ public class StSpBehaviourFactory {
 
         ags = new AbsArgument[]{new StringArg("key"), new PositiveDoubleArg("dt")};
         Factory.register("TimeVaryingSS", TimeVaryingSS.class, ags);
+
+        ags = new AbsArgument[]{new StringArg("key")};
+        Factory.register("Ageing", Ageing.class, ags);
+        Factory.register("Aging", Ageing.class, ags);
 
     }
 

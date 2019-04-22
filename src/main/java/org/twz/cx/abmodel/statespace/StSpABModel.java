@@ -30,8 +30,9 @@ public class StSpABModel extends AbsAgentBasedModel<StSpAgent> {
     }
 
     public void shockParameter(String par, double ti) {
-        Parameters AgPars = getParameters().genPrototype(getPopulation().getEva().getName());
+        Parameters AgPars = getPopulation().getEva().getPrototype();
         Set<Transition> trs = DCore.findAffectedTransitions(AgPars.findAffectedActors(par));
+        if (trs.isEmpty()) return;
         getPopulation().getAgents()
                 .values()
                 .forEach(ag->ag.shockTransitions(trs, ti));

@@ -43,10 +43,6 @@ public class ParameterGroup implements AdapterJSONObject {
         return Name;
     }
 
-    BayesNet getBN() {
-        return PM.getBN();
-    }
-
     Set<String> getListening() {
         return Listening;
     }
@@ -140,21 +136,21 @@ public class ParameterGroup implements AdapterJSONObject {
         return pc;
     }
 
-    public List<String> getAffectedFixed(String imp) {
+    private List<String> getAffectedFixed(String imp) {
         if (!AffectedFixed.containsKey(imp)) {
             findAffected(imp);
         }
         return AffectedFixed.get(imp);
     }
 
-    public List<String> getAffectedFloating(String imp) {
+    List<String> getAffectedFloating(String imp) {
         if (!AffectedFloating.containsKey(imp)) {
             findAffected(imp);
         }
         return AffectedFloating.get(imp);
     }
 
-    public List<String> getAffectedChildren(String imp, String group) {
+    private List<String> getAffectedChildren(String imp, String group) {
         if (!AffectedChildren.containsKey(group)) {
             AffectedChildren.put(group, new HashMap<>());
         }
@@ -240,7 +236,7 @@ public class ParameterGroup implements AdapterJSONObject {
             try {
                 FrozenSingleActor act = (FrozenSingleActor) ps.Actors.get(actor);
                 act.update(ps);
-            } catch (ClassCastException | IncompleteConditionException ignored) {
+            } catch (NullPointerException | ClassCastException | IncompleteConditionException ignored) {
 
             }
         }

@@ -50,7 +50,7 @@ public class Director implements ILogable {
         Log.addHandler(new ConsoleHandler());
     }
 
-    private void addDataFunction(AbsDataFunction df) {
+    public void addDataFunction(AbsDataFunction df) {
         DC.put(df);
     }
 
@@ -243,7 +243,7 @@ public class Director implements ILogable {
 
     public AbsSimModel generateMCore(String name, String type, String bn) {
         Map<String, Object> args = new HashMap<>();
-        args.put("bn", this.getBayesNet(bn));
+        args.put("bn", bn);
         args.put("da", this);
         return MCores.get(type).generate(name, args);
     }

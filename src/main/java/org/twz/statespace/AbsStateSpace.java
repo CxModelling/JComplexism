@@ -72,7 +72,7 @@ public abstract class AbsStateSpace implements AdapterJSONObject {
 
     public abstract State exec(State st, Transition tr);
 
-    public Set<Transition> findAffectedTransitions(Set<String> pars) {
+    public Set<Transition> findAffectedTransitions(Collection<String> pars) {
         return getTransitionSpace().values().stream()
                 .filter(tr->tr.affected(pars))
                 .collect(Collectors.toSet());

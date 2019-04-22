@@ -3,15 +3,12 @@ package org.twz.dag;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.actor.CompoundActor;
-import org.twz.dag.actor.FrozenSingleActor;
 import org.twz.dag.actor.Sampler;
 import org.twz.dag.actor.SimulationActor;
-import org.twz.dag.loci.Loci;
 import org.twz.exception.IncompleteConditionException;
-import org.twz.graph.DiGraph;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public class Parameters extends Chromosome {
     public static Parameters NullParameters = new Parameters("Null", null, new HashMap<>(), 0);
@@ -83,7 +80,7 @@ public class Parameters extends Chromosome {
     }
 
     public Parameters genSibling(String nickname) {
-        return Parent.breed(nickname, getGroupName());
+        return Parent.breed(nickname, getGroupName(), getLocus());
     }
 
     public Parameters genPrototype(String group, Map<String, Double> exo) {

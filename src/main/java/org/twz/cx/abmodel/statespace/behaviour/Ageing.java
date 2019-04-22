@@ -9,7 +9,6 @@ import org.twz.cx.abmodel.behaviour.ActiveBehaviour;
 import org.twz.cx.abmodel.behaviour.trigger.Trigger;
 import org.twz.cx.abmodel.statespace.StSpABModel;
 import org.twz.cx.element.Event;
-import org.twz.cx.element.Ticker.AbsTicker;
 import org.twz.cx.element.Ticker.StepTicker;
 import org.twz.cx.mcore.AbsSimModel;
 
@@ -47,7 +46,7 @@ public class Ageing extends ActiveBehaviour {
 
     @Override
     public void fillData(Map<String, Double> obs, AbsAgentBasedModel model, double ti) {
-
+        obs.put("AvgAge", model.getPopulation().averageParameter(AgeKey));
     }
 
     @Override

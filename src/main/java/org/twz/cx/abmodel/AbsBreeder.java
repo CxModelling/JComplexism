@@ -10,21 +10,29 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbsBreeder<T extends AbsAgent> {
-    private final String Name, Group;
+    private final String Prefix, Group;
     private final NameGenerator GenName;
     private final Parameters GenPars;
     private final Map<String, Double> Exo;
 
-    public AbsBreeder(String name, String group, Parameters genPars, Map<String, Double> exo) {
-        Name = name;
+    public AbsBreeder(String prefix, String group, Parameters genPars, Map<String, Double> exo) {
+        Prefix = prefix;
         Group = group;
-        GenName = new NameGenerator(name);
+        GenName = new NameGenerator(prefix);
         GenPars = genPars.genPrototype(group);
         Exo = exo;
     }
 
     public String getName() {
-        return Name;
+        return Group;
+    }
+
+    public String getPrefix() {
+        return Prefix;
+    }
+
+    public Parameters getPrototype() {
+        return GenPars;
     }
 
     public List<T> breed(int n, Map<String, Object> attributes) throws JSONException {
@@ -33,7 +41,7 @@ public abstract class AbsBreeder<T extends AbsAgent> {
         List<T> ags = new ArrayList<>();
         while (n > 0) {
             name = GenName.getNext();
-            pars = GenPars.breed(name, Group, Exo);
+            pars = GenPars.genSibling(name, Exo);
 
             T ag = newAgent(name, pars, attributes);
             ag.updateAttributes(attributes);

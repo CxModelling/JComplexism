@@ -23,7 +23,7 @@ public class LifeRateTest {
         Ctrl.loadStateSpace("src/test/resources/script/BAD.txt");
 
         NodeSet ns = new NodeSet("root", new String[0]);
-        ns.appendChild(new NodeSet("agent", new String[]{"ToM", "ToO", "Die"}));
+        ns.appendChild(new NodeSet("agent", new String[0], new String[]{"ToM", "ToO", "Die"}));
         Parameters PC = Ctrl.getBayesNet("pBAD").toParameterModel(ns).generate("Test");
         AbsStateSpace DC = Ctrl.generateDCore("BAD", PC.genPrototype("agent"));
 

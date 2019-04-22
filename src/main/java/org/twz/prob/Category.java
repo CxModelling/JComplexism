@@ -30,7 +30,12 @@ public class Category implements IDistribution {
 
     @Override
     public double logProb(double rv) {
-        return Math.log(Prob[(int) rv]);
+        try {
+            return Math.log(Prob[(int) rv]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return 0;
+        }
+
     }
 
     @Override

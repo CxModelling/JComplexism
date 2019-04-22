@@ -14,7 +14,7 @@ public class BinaryMutator extends AbsMutator {
 
     @Override
     public void setScale(double[] vs) {
-        Scale = bound(mean(vs), 0, 1);;
+        Scale = bound(mean(vs), 0, 1);
     }
 
     @Override
