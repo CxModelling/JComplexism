@@ -32,7 +32,7 @@ public class TimeVaryingSS extends ActiveBehaviour {
     }
 
     @Override
-    protected void doAction(AbsSimModel model, Object todo, double ti) throws JSONException {
+    protected void doAction(AbsSimModel model, Object todo, double ti) {
         StSpABModel m = (StSpABModel) model;
 
         m.getParameters().impulse(TimeKey, ti);

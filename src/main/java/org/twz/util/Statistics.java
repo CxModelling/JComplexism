@@ -289,7 +289,7 @@ public class Statistics {
     public static double range(double[] arr) {
         return max(arr) - min(arr);
     }
-
+    
     public static double[] extend(double[] arr) {
         return new double[]{min(arr), max(arr)};
     }
@@ -332,7 +332,7 @@ public class Statistics {
             return Double.NEGATIVE_INFINITY;
         }
 
-        return Math.log(sum(exp(add(x, -m)))) + m;
+        return java.lang.Math.log(sum(exp(add(x, -m)))) + m;
     }
 
     public static double[] mul(double[] x, double a) {
@@ -358,7 +358,7 @@ public class Statistics {
     public static double[] exp(double[] x) {
         double[] y = new double[x.length];
         for (int i = 0; i < x.length; i++) {
-            y[i] = Math.exp(x[i]);
+            y[i] = java.lang.Math.exp(x[i]);
         }
         return y;
     }
@@ -366,7 +366,7 @@ public class Statistics {
     public static double[] log(double[] x) {
         double[] y = new double[x.length];
         for (int i = 0; i < x.length; i++) {
-            y[i] = Math.log(x[i]);
+            y[i] = java.lang.Math.log(x[i]);
         }
         return y;
     }
@@ -400,10 +400,10 @@ public class Statistics {
     public static double[] jitter(double[] xs) {
         double r = range(xs), amount = r/25;
         if (Double.isInfinite(r)) return xs;
-        if (Math.floor(xs[0]) == xs[0]) return xs;
+        if (java.lang.Math.floor(xs[0]) == xs[0]) return xs;
         double[] ys = new double[xs.length];
         for (int i = 0; i < xs.length; i++) {
-            ys[i] = xs[i] + (Math.random()-0.5)*amount;
+            ys[i] = xs[i] + (java.lang.Math.random()-0.5)*amount;
         }
         return ys;
 
@@ -418,10 +418,10 @@ public class Statistics {
     public static double rnorm() {
         double u, v, x, y, q;
         do {
-            u = Math.random();
-            v = 1.7156 * (Math.random() - 0.5);
+            u = java.lang.Math.random();
+            v = 1.7156 * (java.lang.Math.random() - 0.5);
             x = u - 0.449871;
-            y = Math.abs(v) + 0.386595;
+            y = java.lang.Math.abs(v) + 0.386595;
             q = x * x + y * (0.19600 * y - 0.25472 * x);
         } while (q > 0.27597 && (q > 0.27846 || v * v > -4 * Math.log(u) * u * u));
         return v / u;

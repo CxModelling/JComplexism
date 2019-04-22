@@ -35,7 +35,7 @@ public class Transition implements AdapterJSONObject {
     }
 
     public double rand() {
-        return Dist.sample(); // todo
+        return Dist.sample();
     }
 
     public double rand(Parameters pars) {

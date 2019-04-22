@@ -121,7 +121,7 @@ public class BayesNet implements AdapterJSONObject {
 
     public void appendLoci(String def) {
         def = def.replaceAll("\\s+", "");
-        // todo "\\w+="
+
         if (def.contains("=")) {
             String[] opt = def.split("=");
             Loci lo;
@@ -296,9 +296,7 @@ public class BayesNet implements AdapterJSONObject {
     }
 
     private boolean checkAcyclic() {
-        // todo
-
-        return true;
+        return DAG.isAcyclic();
     }
 
     public void complete() {

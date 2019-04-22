@@ -7,6 +7,7 @@ import org.twz.dataframe.Pair;
 import org.twz.io.FnJSON;
 import org.twz.prob.Exponential;
 import org.twz.prob.IDistribution;
+import org.twz.util.Misc;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,7 @@ import static org.apache.commons.math3.stat.StatUtils.*;
 public class RateAgeByYearSex extends AbsDataFunction {
 
     private double[] Years;
-    private double MinYear, MaxYear;
+    private double MinYear, MaxYear, MaxAge;
 
     private String[] SexLabels;
     private Map<Double, Map<Integer, double[]>> Data;
@@ -36,6 +37,7 @@ public class RateAgeByYearSex extends AbsDataFunction {
 
         Data = reformData(df);
         Samplers = formSamplers();
+        MaxAge = Data.get(MinYear).get(0).length-1;
     }
 
     public RateAgeByYearSex(String name, JSONObject df) throws JSONException {
@@ -90,17 +92,17 @@ public class RateAgeByYearSex extends AbsDataFunction {
 
     @Override
     public double calculate() {
-        double yr = Math.round(Math.max(MinYear, Math.min(MaxYear, Selected[0])));
-        int sex = (int) Math.round(Selected[1]);
+        double yr = java.lang.Math.round(java.lang.Math.max(MinYear, java.lang.Math.min(MaxYear, Selected[0])));
+        int sex = (int) java.lang.Math.round(Selected[1]);
         int age = (int) Selected[2];
         return Data.get(yr).get(sex)[age];
     }
 
     @Override
     public IDistribution getSampler(double[] values) {
-        double yr = Math.round(Math.max(MinYear, Math.min(MaxYear, Selected[0])));
-        int sex = (int) Math.round(Selected[1]);
-        int age = (int) Selected[2];
+        double yr = Misc.frame(Selected[0], MinYear, MaxYear);
+        int sex = Selected[1] > 0? 1:0;
+        int age = (int) Misc.frame(Selected[1], 0, MaxAge);
         return Samplers.get(yr).get(sex).get(age);
     }
 
