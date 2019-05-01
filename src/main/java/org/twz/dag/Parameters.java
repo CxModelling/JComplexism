@@ -15,7 +15,7 @@ public class Parameters extends Chromosome {
 
     private final String NickName;
     private ParameterGroup PG;
-    private Parameters Parent;
+    protected Parameters Parent;
     Map<String, SimulationActor> Actors;
     private Map<String, Parameters> Children;
     Map<String, Map<String, SimulationActor>> ChildrenActors;

@@ -262,12 +262,19 @@ public class ParameterGroup implements AdapterJSONObject {
     }
 
     Parameters breed(String nickname, String group, Map<String, Double> exo, Parameters parent) {
+
         ParameterGroup ch_pg = PM.get(group);
 
-        Parameters ch = ch_pg.generate(nickname, exo, parent);
+        Parameters ch;
+        if (ch_pg == null) {
+            ch = new PseudoParameters(nickname);
+            ch.setParent(parent);
+        } else {
+            ch = ch_pg.generate(nickname, exo, parent);
 
-        if (!parent.ChildrenActors.containsKey(group)) {
-            parent.ChildrenActors.put(group, ch_pg.getActors(ch));
+            if (!parent.ChildrenActors.containsKey(group)) {
+                parent.ChildrenActors.put(group, ch_pg.getActors(ch));
+            }
         }
 
         return ch;

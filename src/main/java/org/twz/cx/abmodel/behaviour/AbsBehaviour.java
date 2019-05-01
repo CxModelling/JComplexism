@@ -25,10 +25,6 @@ public abstract class AbsBehaviour extends ModelAtom {
 
     public abstract void register(AbsAgent ag, double ti);
 
-    public boolean checkEvent(AbsAgent ag, Event evt) {
-        return Tri.checkEvent(ag, evt);
-    }
-
     public boolean checkPreChange(AbsAgent ag) {
         return Tri.checkPreChange(ag);
     }

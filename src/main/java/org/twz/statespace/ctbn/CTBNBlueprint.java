@@ -179,8 +179,8 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
 
     @Override
     public String[] getRequiredDistributions() {
-        return (String[]) Transitions.values().stream()
-                .map(e -> e.Dist).distinct().toArray();
+        return Transitions.values().stream().map(tr->tr.Dist)
+                .filter(d->!d.contains("(")).distinct().toArray(String[]::new);
     }
 
     @Override

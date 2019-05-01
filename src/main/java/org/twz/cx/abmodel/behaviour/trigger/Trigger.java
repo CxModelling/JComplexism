@@ -13,10 +13,6 @@ import org.twz.cx.mcore.AbsSimModel;
 public class Trigger {
     public final static Trigger NullTrigger = new Trigger();
 
-    public boolean checkEvent(AbsAgent ag, Event evt) {
-        return false;
-    }
-
     public boolean checkPreChange(AbsAgent ag) {
         return false;
     }
