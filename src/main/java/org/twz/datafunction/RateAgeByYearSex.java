@@ -54,18 +54,7 @@ public class RateAgeByYearSex extends AbsDataFunction {
     }
 
     private Map<Double, Map<Integer, double[]>> reformData(JSONObject df) throws JSONException {
-        Map<Double, Map<Integer, double[]>> dt = new HashMap<>();
-        Map<Integer, double[]> ent;
-        JSONObject sel;
-        for (String year : FnJSON.toStringArray(df.names())) {
-            ent = new HashMap<>();
-            sel = df.getJSONObject(year);
-            for (int i = 0; i < SexLabels.length; i++) {
-                ent.put(i, FnJSON.toDoubleArray(sel.getJSONArray(SexLabels[i])));
-            }
-            dt.put(Double.parseDouble(year), ent);
-        }
-        return dt;
+        return AbsDataFunction.toTimeSexAgeData(SexLabels, df);
     }
 
     private Map<Double, Map<Integer, Map<Integer, Exponential>>> formSamplers() {

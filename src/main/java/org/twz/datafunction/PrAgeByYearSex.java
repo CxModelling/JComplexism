@@ -16,7 +16,7 @@ import static java.util.Arrays.sort;
 import static org.apache.commons.math3.stat.StatUtils.max;
 import static org.apache.commons.math3.stat.StatUtils.min;
 
-public class PrAgeByYearSex  extends AbsDataFunction {
+public class PrAgeByYearSex extends AbsDataFunction {
 
     private double[] Years;
     private double MinYear, MaxYear;
@@ -54,18 +54,7 @@ public class PrAgeByYearSex  extends AbsDataFunction {
     }
 
     private Map<Double, Map<Integer, double[]>> reformData(JSONObject df) throws JSONException {
-        Map<Double, Map<Integer, double[]>> dt = new HashMap<>();
-        Map<Integer, double[]> ent;
-        JSONObject sel;
-        for (String year : FnJSON.toStringArray(df.names())) {
-            ent = new HashMap<>();
-            sel = df.getJSONObject(year);
-            for (int i = 0; i < SexLabels.length; i++) {
-                ent.put(i, FnJSON.toDoubleArray(sel.getJSONArray(SexLabels[i])));
-            }
-            dt.put(Double.parseDouble(year), ent);
-        }
-        return dt;
+        return AbsDataFunction.toTimeSexAgeData(SexLabels, df);
     }
 
     private Map<Double, Map<Integer, Category>> formSamplers(JSONObject df) throws JSONException {

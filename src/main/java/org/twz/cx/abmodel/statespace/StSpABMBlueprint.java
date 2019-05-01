@@ -3,6 +3,7 @@ package org.twz.cx.abmodel.statespace;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.Director;
+import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.Parameters;
 import org.twz.dag.util.NodeSet;
@@ -156,8 +157,11 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         StSpBehaviourFactory.appendResource("States", dc.getStateSpace());
         StSpBehaviourFactory.appendResource("Transitions", dc.getTransitionSpace());
         StSpBehaviourFactory.appendResource("Samplers", pc.getSamplers());
+        AbsBehaviour be;
         for (JSONObject behaviour : Behaviours) {
-            model.addBehaviour(StSpBehaviourFactory.create(behaviour));
+            be = StSpBehaviourFactory.create(behaviour);
+            // be.setParameters(pc.breed(be.getName(), be.getName()));
+            model.addBehaviour(be);
         }
         StSpBehaviourFactory.clearResource();
 

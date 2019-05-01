@@ -4,7 +4,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.FunctionExtension;
 import org.twz.io.AdapterJSONObject;
+import org.twz.io.FnJSON;
 import org.twz.prob.IDistribution;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public abstract class AbsDataFunction implements FunctionExtension, AdapterJSONObject {
@@ -59,5 +63,36 @@ public abstract class AbsDataFunction implements FunctionExtension, AdapterJSONO
     @Override
     public FunctionExtension clone() {
         return null;
+    }
+
+
+    static Map<Double, Map<Integer, double[]>> toTimeSexAgeData(String[] sexes, JSONObject df) throws JSONException {
+        Map<Double, Map<Integer, double[]>> dt = new HashMap<>();
+        Map<Integer, double[]> ent;
+        JSONObject sel;
+        for (String year : FnJSON.toStringArray(df.names())) {
+            ent = new HashMap<>();
+            sel = df.getJSONObject(year);
+            for (int i = 0; i < sexes.length; i++) {
+                ent.put(i, FnJSON.toDoubleArray(sel.getJSONArray(sexes[i])));
+            }
+            dt.put(Double.parseDouble(year), ent);
+        }
+        return dt;
+    }
+
+    static Map<Double, Map<Integer, Double>> toTimeSexData(String[] sexes, JSONObject df) throws JSONException {
+        Map<Double, Map<Integer, Double>> dt = new HashMap<>();
+        Map<Integer, Double> ent;
+        JSONObject sel;
+        for (String year : FnJSON.toStringArray(df.names())) {
+            ent = new HashMap<>();
+            sel = df.getJSONObject(year);
+            for (int i = 0; i < sexes.length; i++) {
+                ent.put(i, sel.getDouble(sexes[i]));
+            }
+            dt.put(Double.parseDouble(year), ent);
+        }
+        return dt;
     }
 }
