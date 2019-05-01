@@ -216,7 +216,7 @@ public class DiGraph<T> implements Cloneable {
         return order;
     }
 
-    public List<String> sort(List<String> nodes) throws InvalidPropertiesFormatException {
+    public List<String> sort(List<String> nodes) {
         List<String> res = new ArrayList<>();
         for (String s: getOrder()) {
             if (nodes.contains(s)) {

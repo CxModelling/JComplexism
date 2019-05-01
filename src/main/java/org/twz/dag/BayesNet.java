@@ -269,16 +269,6 @@ public class BayesNet implements AdapterJSONObject {
         impulse(chromosome, imp);
     }
 
-    public void bindExogenous(Chromosome chromosome, Map<String, Double> exo) {
-        Map<String, Double> imp = new HashMap<>();
-        for (Map.Entry<String, Double> ent : exo.entrySet()) {
-            if (Order.contains(ent.getKey())) {
-                imp.put(ent.getKey(), ent.getValue());
-            }
-        }
-        impulse(chromosome, imp);
-    }
-
     private List<String> toList(JSONArray ja) throws JSONException {
         List<String> l = new ArrayList<>();
         for (int i = 0; i < ja.length(); i++) {

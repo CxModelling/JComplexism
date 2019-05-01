@@ -24,7 +24,7 @@ public class DistributionArg extends AbsArgument{
     }
 
     @Override
-    public Object correct(Object value, Workshop ws) throws NoSuchElementException{
+    public Object correct(Object value, Workshop ws) throws NoSuchElementException {
         if (value instanceof String) {
             try {
                 if (ws.hasResource((String) value)) {
