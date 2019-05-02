@@ -20,7 +20,6 @@ import java.util.Map;
 public class MultiModelTest {
 
     private Director Ctrl;
-    private MultiModel Model;
 
     private IY0 Y0;
 

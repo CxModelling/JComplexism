@@ -5,13 +5,14 @@ import org.twz.dag.Chromosome;
 import org.twz.dataframe.Pair;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.exception.TimeseriesException;
+import org.twz.util.Misc;
 
 import java.util.Map;
 
 import static org.apache.commons.math3.stat.StatUtils.sum;
 
 public class FnTB implements ODEFunction {
-    final SexDemography Demo;
+    private final SexDemography Demo;
     final double StartYear;
     private final String FnT;
 
@@ -28,7 +29,7 @@ public class FnTB implements ODEFunction {
                 hos_f = y0[5], hos_m = y0[6],
                 rec = y0[7];
 
-        double beta = expLU(pars.getDouble("beta"), 1, 30);
+        double beta = Misc.frame(pars.getDouble("beta"), 1, 30);
 
         double n = sum(y0);
         double inf = inf_f + inf_m + hos_f + hos_m;
@@ -63,8 +64,8 @@ public class FnTB implements ODEFunction {
         double sr0 = pars.getDouble("delay") + pars.getDouble("log_sr_t")*getDt(t);
 
         return new Pair<>(
-                expLU(sr0, 0.5, 8.902*2),
-                expLU(sr0 + pars.getDouble("log_sr_m"), 0.5, 8.902*2)
+                Misc.frame(sr0, 0.5, 8.902 * 2),
+                Misc.frame(sr0 + pars.getDouble("log_sr_m"), 0.5, 8.902*2)
         );
     }
 
@@ -94,13 +95,6 @@ public class FnTB implements ODEFunction {
 
     protected double getDt(double t) {
         return fn_dt(t, FnT, StartYear);
-    }
-
-    protected double expLU(double log_rate, double lower, double upper) {
-        double exp = Math.exp(log_rate);
-        exp += lower;
-        exp = Math.min(exp, upper);
-        return exp;
     }
 
     static double fn_dt(double t, String fnT, double startYear) {

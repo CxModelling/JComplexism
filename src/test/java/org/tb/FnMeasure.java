@@ -6,6 +6,7 @@ import org.twz.dag.Chromosome;
 import org.twz.dataframe.Pair;
 import org.twz.dataframe.demographics.SexDemography;
 import org.twz.exception.TimeseriesException;
+import org.twz.util.Misc;
 
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class FnMeasure implements EBMMeasurement {
                 hos_f = ys[5], hos_m = ys[6],
                 rec = ys[7];
 
-        double beta = expLU(pars.getDouble("beta"), 1, 30);
+        double beta = Misc.frame(pars.getDouble("beta"), 1, 30);
 
         Pair<Double, Double> care_seeking = getCareSeekingRate(pars, ti);
         double csf = care_seeking.getFirst(), csm = care_seeking.getSecond();
@@ -69,8 +70,8 @@ public class FnMeasure implements EBMMeasurement {
         double sr0 = pars.getDouble("delay") + pars.getDouble("log_sr_t")*getDt(t);
 
         return new Pair<>(
-                expLU(sr0, 0.5, 8.902*2),
-                expLU(sr0 + pars.getDouble("log_sr_m"), 0.5, 8.902*2)
+                Misc.frame(sr0, 0.5, 8.902 * 2),
+                Misc.frame(sr0 + pars.getDouble("log_sr_m"), 0.5, 8.902*2)
         );
     }
 
@@ -102,10 +103,4 @@ public class FnMeasure implements EBMMeasurement {
         return fn_dt(t, FnT, StartYear);
     }
 
-    protected double expLU(double log_rate, double lower, double upper) {
-        double exp = Math.exp(log_rate);
-        exp += lower;
-        exp = Math.min(exp, upper);
-        return exp;
-    }
 }
