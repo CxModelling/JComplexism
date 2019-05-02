@@ -23,30 +23,30 @@ public class SexDemographyTest {
         double  pf = Demo.getPopulation(2000, "Female"),
                 pm = Demo.getPopulation(2000, "Male"),
                 p = Demo.getPopulation(2000);
-        assertEquals(pf+pm, p);
+        assertEquals(pf+pm, p, Double.MIN_VALUE);
     }
 
     @Test
     public void getDeathRate() throws TimeseriesException {
-        double  pf = Demo.getDeathRate(2000, "Female"),
-                pm = Demo.getDeathRate(2000, "Male"),
-                p = Demo.getDeathRate(2000);
-        assertEquals(pf+pm, p);
+        double  pf = Demo.getDeathRate(2000, "Female") * Demo.getPopulation(2000, "Female"),
+                pm = Demo.getDeathRate(2000, "Male") * Demo.getPopulation(2000, "Male"),
+                p = Demo.getDeathRate(2000) * Demo.getPopulation(2000);
+        assertEquals(pf+pm, p, Double.MIN_VALUE);
     }
 
     @Test
     public void getBirth() throws TimeseriesException {
-        double  pf = Demo.getBirthRate(2000, "Female"),
-                pm = Demo.getBirthRate(2000, "Male"),
-                p = Demo.getBirthRate(2000);
-        assertEquals(pf+pm, p);
+        double  pf = Demo.getBirthRate(2000, "Female") * Demo.getPopulation(2000, "Female"),
+                pm = Demo.getBirthRate(2000, "Male") * Demo.getPopulation(2000, "Male"),
+                p = Demo.getBirthRate(2000) * Demo.getPopulation(2000);
+        assertEquals(pf+pm, p, Double.MIN_VALUE);
     }
 
     @Test
     public void getMigration() throws TimeseriesException {
-        double  pf = Demo.getMigration(2000, "Female"),
-                pm = Demo.getMigration(2000, "Male"),
-                p = Demo.getMigration(2000);
-        assertEquals(pf+pm, p);
+        double  pf = Demo.getMigration(2000, "Female") * Demo.getPopulation(2000, "Female"),
+                pm = Demo.getMigration(2000, "Male") * Demo.getPopulation(2000, "Male"),
+                p = Demo.getMigration(2000) * Demo.getPopulation(2000);
+        assertEquals(pf+pm, p, Double.MIN_VALUE);
     }
 }

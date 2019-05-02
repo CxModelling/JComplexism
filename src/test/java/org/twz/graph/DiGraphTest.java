@@ -32,12 +32,12 @@ public class DiGraphTest {
 
     @Test
     public void checkRelation() {
-        assertEquals(DG.getParents("B").toArray(), new String[]{"D"});
+        assertArrayEquals(DG.getParents("B").toArray(), new String[]{"D"});
     }
 
     @Test
     public void getOrder() throws Exception {
-        assertEquals(DAG.getOrder().toArray(), new String[]{"A", "B", "C", "D"});
+        assertArrayEquals(DAG.getOrder().toArray(), new String[]{"A", "B", "C", "D"});
     }
 
     @Test

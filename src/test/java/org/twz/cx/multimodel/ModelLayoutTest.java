@@ -15,10 +15,7 @@ import org.twz.cx.element.Disclosure;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.Simulator;
-import org.twz.cx.mcore.communicator.IResponse;
-import org.twz.cx.mcore.communicator.IsChecker;
-import org.twz.cx.mcore.communicator.StartWithChecker;
-import org.twz.cx.mcore.communicator.ValueImpulseResponse;
+import org.twz.cx.mcore.communicator.*;
 import org.twz.dataframe.Pair;
 import org.twz.exception.IncompleteConditionException;
 import org.twz.prob.IWalkable;
@@ -88,6 +85,7 @@ public class ModelLayoutTest {
             tab.put("N", n);
         });
         BpE.setObservations(new String[]{"S", "R"});
+        BpE.setDt(0.5);
 
 
         ModelLayout layout = Ctrl.createModelLayout("HybridSIR");
@@ -112,7 +110,7 @@ public class ModelLayoutTest {
                 (dis, source, target, time) -> new Pair<>("del", new JSONObject("{'y': 'S', 'n': " + dis.get("n") + "}")));
 
 
-        layout.addInteraction("I", new IsChecker("update"), new InfIn());
+        layout.addInteraction("I", new InclusionChecker(new String[] {"update", "initialise"}), new InfIn());
 
 
         Y0s = Ctrl.generateModelY0("HybridSIR");

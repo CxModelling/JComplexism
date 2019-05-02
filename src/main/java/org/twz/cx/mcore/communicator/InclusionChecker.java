@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.twz.cx.element.Disclosure;
 import org.twz.io.FnJSON;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +16,11 @@ public class InclusionChecker extends AbsChecker {
 
     public InclusionChecker(Collection<String> inclusion) {
         Inclusion = new HashSet<>(inclusion);
+    }
+
+    public InclusionChecker(String[] inclusion) {
+        Inclusion = new HashSet<>();
+        Inclusion.addAll(Arrays.asList(inclusion));
     }
 
     public InclusionChecker(JSONObject js) throws JSONException {

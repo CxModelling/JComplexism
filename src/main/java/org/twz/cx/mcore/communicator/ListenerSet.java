@@ -43,8 +43,10 @@ public class ListenerSet implements AdapterJSONArray {
         for (Map.Entry<IChecker, IResponse> entry : Listeners.entrySet()) {
             if (entry.getKey().check(disclosure)) {
                 action = entry.getValue().shock(disclosure, foreign, local, ti);
-                local.shock(ti, action.getFirst(), action.getValue());
-                shock = true;
+                if (action != null) {
+                    local.shock(ti, action.getFirst(), action.getValue());
+                    shock = true;
+                }
             }
         }
         return shock;
