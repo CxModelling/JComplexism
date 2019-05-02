@@ -61,11 +61,13 @@ public abstract class AbsEquations extends ModelAtom {
     @Override
     public void initialise(double ti, AbsSimModel model) {
         Last = ti;
+        Clock.update(ti);
     }
 
     @Override
     public void reset(double ti, AbsSimModel model) {
         Last = ti;
+        Clock.update(ti);
     }
     @Override
     protected Event findNext() {

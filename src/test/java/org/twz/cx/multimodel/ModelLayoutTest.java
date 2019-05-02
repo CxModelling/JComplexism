@@ -124,7 +124,7 @@ public class ModelLayoutTest {
         Simulator Sim = new Simulator(Model);
         Sim.onLog("log/Hybrid.txt");
 
-        Sim.simulate(Y0s, 0, 30, 1);
+        Sim.simulate(Y0s, 5, 30, 0.25);
         Model.getObserver().getObservations().print();
     }
 }

@@ -99,6 +99,7 @@ public class Simulator {
     public void simulate(IY0 y0, double fr, double to, double dt) throws JSONException, IncompleteConditionException {
         Time = fr;
         Model.initialise(Time, y0);
+        Model.getObserver().setObservationalInterval(dt);
         dealWithDisclosures(fr, null);
         if (Recording) {
             Model.initialiseObservations(fr);
@@ -109,7 +110,7 @@ public class Simulator {
 
     public void update(double forward, double dt) throws JSONException, IncompleteConditionException {
         dealWithDisclosures(Time, null);
-
+        Model.getObserver().setObservationalInterval(dt);
         LinkedList<Double> ts = seq(Time, forward, dt);
         double f, t=ts.poll();
         while (!ts.isEmpty()) {

@@ -63,7 +63,7 @@ public class ODEEBMBlueprintTest {
         EBMY0 y0 = new EBMY0();
         y0.append("{'y': 'Sus', 'n': 900}");
         y0.append("{'y': 'Inf', 'n': 100}");
-        Simu.simulate(y0, 0, 5, 1);
+        Simu.simulate(y0, 4, 8, 0.25);
         model.print();
     }
 }

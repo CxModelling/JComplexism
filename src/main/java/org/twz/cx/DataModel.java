@@ -17,8 +17,8 @@ import java.util.*;
 public abstract class DataModel extends BayesianModel {
     private NameGenerator NG;
     private ParameterModel SC;
-    private Director Ctrl;
-    private String SimModel, WarmUpModel;
+    protected Director Ctrl;
+    protected String SimModel, WarmUpModel;
     private final double Time0, Time1, Dt, TimeWarm;
 
     private TimeSeries LastOutput;
