@@ -1,6 +1,5 @@
 package org.twz.cx.abmodel;
 
-import org.json.JSONException;
 import org.twz.dag.Chromosome;
 import org.twz.dag.Parameters;
 import org.twz.util.NameGenerator;
@@ -28,7 +27,7 @@ public abstract class AbsBreeder<T extends AbsAgent> {
         return GenPars;
     }
 
-    public List<T> breed(int n, Map<String, Object> attributes) throws JSONException {
+    public List<T> breed(int n, Map<String, Object> attributes) {
         String name;
         Chromosome pars;
         List<T> ags = new ArrayList<>();
@@ -37,12 +36,25 @@ public abstract class AbsBreeder<T extends AbsAgent> {
             pars = GenPars.genSibling(name);
 
             T ag = newAgent(name, pars, attributes);
-            ag.updateAttributes(attributes);
             ags.add(ag);
             n --;
         }
         return ags;
     }
 
-    protected abstract T newAgent(String name, Chromosome pars, Map<String, Object> attributes) throws JSONException;
+    public List<T> breed(Map<String, ? extends Chromosome> kps, Map<String, Object> attributes) {
+        String name;
+        Chromosome pars;
+        List<T> ags = new ArrayList<>();
+
+        for (Map.Entry<String, ? extends Chromosome> ent : kps.entrySet()) {
+            name = ent.getKey();
+            pars = ent.getValue();
+            T ag = newAgent(name, pars, attributes);
+            ags.add(ag);
+        }
+        return ags;
+    }
+
+    protected abstract T newAgent(String name, Chromosome pars, Map<String, Object> attributes);
 }

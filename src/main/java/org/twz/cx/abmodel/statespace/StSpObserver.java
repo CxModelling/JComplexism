@@ -50,7 +50,7 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
     protected void readStatics(StSpABModel model, Map<String, Double> tab, double ti) {
         //Map<String, Object> option = new HashMap<>();
         for (State st: ObsStates) {
-            tab.put(st.getName(), 0.0 + model.getPopulation().count("st", st));
+            tab.put(st.getName(), 0.0 + model.getPopulation().count("State", st));
         }
         for (AbsBehaviour be: ObsBehaviours) {
             be.fillData(tab, model, ti);
@@ -86,7 +86,7 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
         if (LazySnapshot.containsKey(key)) {
             Pair<String, Object> ent = LazySnapshot.get(key);
             if (ent.getFirst().equals("State")) {
-                return 0.0 + model.getPopulation().count("st", ent.getValue());
+                return 0.0 + model.getPopulation().count("State", ent.getValue());
             } else {
                 Map<String, Double> temp = new HashMap<>();
                 ((AbsBehaviour) ent.getSecond()).fillData(temp, model, ti);

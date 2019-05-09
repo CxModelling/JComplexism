@@ -74,7 +74,7 @@ public class Population<T extends AbsAgent> implements AdapterJSONObject {
     public long count(String key, Object value) {
         long count = 0L;
         for (T ag : Agents.values()) {
-            if (ag.get(key) == value) {
+            if (ag.isa(key, value)) {
                 count++;
             }
         }
@@ -82,7 +82,7 @@ public class Population<T extends AbsAgent> implements AdapterJSONObject {
     }
 
     public long count(Map<String, Object> kvs) {
-        return Agents.values().stream().filter(ag -> ag.isCompatible(kvs)).count();
+        return Agents.values().stream().filter(ag -> ag.isa(kvs)).count();
     }
 
 

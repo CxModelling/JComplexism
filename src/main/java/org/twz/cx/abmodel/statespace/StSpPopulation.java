@@ -17,12 +17,5 @@ public class StSpPopulation extends Population<StSpAgent> {
         super(new StSpBreeder(name, group, dc, genPars));
     }
 
-    @Override
-    public long count(String key, Object value) {
-        if (key.equals("stat")) {
-            return ((StSpBreeder) getEva()).count(getAgents().values(), value);
-        } else {
-            return super.count(key, value);
-        }
-    }
+
 }
