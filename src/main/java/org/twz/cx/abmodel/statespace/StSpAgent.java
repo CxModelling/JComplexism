@@ -147,6 +147,15 @@ public class StSpAgent extends AbsAgent {
         return State.isa(st);
     }
 
+    public boolean isa(String k, Object v) {
+        if (k.equals("State")) {
+            State st = (State) v;
+            return isa(st);
+        } else {
+            return super.isa(k, v);
+        }
+    }
+
     public StSpAgent deepcopy(AbsStateSpace dc_new, List<String> tr_ch) {
         StSpAgent ag = new StSpAgent(getName(), Parameters, dc_new.getState(State.getName()));
         for (Map.Entry<Transition, Double> ent: Transitions.entrySet()) {

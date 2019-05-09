@@ -10,25 +10,18 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbsBreeder<T extends AbsAgent> {
-    private final String Prefix, Group;
+    private final String Group;
     private final NameGenerator GenName;
     private final Parameters GenPars;
-    private final Map<String, Double> Exo;
 
-    public AbsBreeder(String prefix, String group, Parameters genPars, Map<String, Double> exo) {
-        Prefix = prefix;
+    public AbsBreeder(String prefix, String group, Parameters genPars) {
         Group = group;
         GenName = new NameGenerator(prefix);
         GenPars = genPars.genPrototype(group);
-        Exo = exo;
     }
 
     public String getName() {
         return Group;
-    }
-
-    public String getPrefix() {
-        return Prefix;
     }
 
     public Parameters getPrototype() {
@@ -41,7 +34,7 @@ public abstract class AbsBreeder<T extends AbsAgent> {
         List<T> ags = new ArrayList<>();
         while (n > 0) {
             name = GenName.getNext();
-            pars = GenPars.genSibling(name, Exo);
+            pars = GenPars.genSibling(name);
 
             T ag = newAgent(name, pars, attributes);
             ag.updateAttributes(attributes);

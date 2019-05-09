@@ -147,6 +147,7 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
     public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Name", Name);
+        // js.put("Parameters", Parameters.getLocus()); // todo to check
         js.put("Attributes", Attributes);
         return js;
     }

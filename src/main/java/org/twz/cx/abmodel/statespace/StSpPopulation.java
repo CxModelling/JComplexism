@@ -13,17 +13,13 @@ public class StSpPopulation extends Population<StSpAgent> {
         super(eva);
     }
 
-    public StSpPopulation(String name, String group, AbsStateSpace dc, Parameters genPars, Map<String, Double> exo) {
-        super(new StSpBreeder(name, group, dc, genPars, exo));
-    }
-
     public StSpPopulation(String name, String group, AbsStateSpace dc, Parameters genPars) {
-        super(new StSpBreeder(name, group, dc, genPars, new HashMap<>()));
+        super(new StSpBreeder(name, group, dc, genPars));
     }
 
     @Override
     public long count(String key, Object value) {
-        if (key.equals("st")) {
+        if (key.equals("stat")) {
             return ((StSpBreeder) getEva()).count(getAgents().values(), value);
         } else {
             return super.count(key, value);

@@ -6,7 +6,10 @@ import org.twz.cx.abmodel.AbsAgent;
 import org.twz.cx.abmodel.AbsAgentBasedModel;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.abmodel.behaviour.PassiveBehaviour;
+import org.twz.cx.abmodel.statespace.StSpBehaviourFactory;
 import org.twz.cx.mcore.AbsSimModel;
+import org.twz.factory.arguments.AbsArgument;
+import org.twz.factory.arguments.OptionArg;
 import org.twz.statespace.State;
 
 import java.util.HashMap;

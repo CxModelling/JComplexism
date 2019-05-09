@@ -59,6 +59,10 @@ public class StSpBehaviourFactory {
 
     }
 
+    public static void register(String obj, Class<? extends AbsBehaviour> cls, AbsArgument[] ags) {
+        Factory.register(obj, cls, ags);
+    }
+
     public static void appendResource(String key, Object res) {
         Factory.appendResource(key, res);
     }

@@ -16,15 +16,13 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
     private class PopEntry {
         String Prefix, Group, Dynamic;
         String[] Attributes;
-        Map<String, Double> Exo;
         Map<String, Object> Arg;
 
-        PopEntry(String prefix, String group, String[] atr, Map<String, Double> exo, String dc, Map<String, Object> arg) {
+        PopEntry(String prefix, String group, String[] atr, String dc, Map<String, Object> arg) {
             Prefix = prefix;
             Group = group;
             Dynamic = dc;
             Attributes = atr;
-            Exo = exo;
             Arg = arg;
         }
     }
@@ -40,20 +38,20 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         Behaviours = new ArrayList<>();
     }
 
-    public void setAgent(String prefix, String group, String[] atr, Map<String, Double> exo, String dc, Map<String, Object> arg) {
-        Population = new PopEntry(prefix, group, atr, exo, dc, arg);
+    public void setAgent(String prefix, String group, String[] atr, String dc, Map<String, Object> arg) {
+        Population = new PopEntry(prefix, group, atr, dc, arg);
     }
 
     public void setAgent(String prefix, String group, String dc, Map<String, Object> arg) {
-        setAgent(prefix, group, new String[0], new HashMap<>(), dc, arg);
+        setAgent(prefix, group, new String[0], dc, arg);
     }
 
     public void setAgent(String prefix, String group, String dc, String[] atr) {
-        setAgent(prefix, group, atr, new HashMap<>(), dc, new HashMap<>());
+        setAgent(prefix, group, atr, dc, new HashMap<>());
     }
 
     public void setAgent(String prefix, String group, String dc) {
-        setAgent(prefix, group, new String[0], new HashMap<>(), dc, new HashMap<>());
+        setAgent(prefix, group, new String[0], dc, new HashMap<>());
     }
 
     public void addNetwork(String name, String type, Map<String, Object> arg) throws JSONException {
@@ -151,7 +149,7 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         }
 
 
-        StSpPopulation pop = new StSpPopulation(Population.Prefix, Population.Group, dc, pc, Population.Exo);
+        StSpPopulation pop = new StSpPopulation(Population.Prefix, Population.Group, dc, pc);
         StSpABModel model = new StSpABModel(name, pc, pop);
 
         StSpBehaviourFactory.appendResource("States", dc.getStateSpace());

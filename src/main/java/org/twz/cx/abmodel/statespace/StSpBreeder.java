@@ -10,13 +10,14 @@ import org.twz.statespace.State;
 import java.util.Collection;
 import java.util.Map;
 
+
 public class StSpBreeder extends AbsBreeder<StSpAgent> {
     private final AbsStateSpace DCore;
     private Map<String, State> WellDefined;
 
     public StSpBreeder(String name, String group, AbsStateSpace dc,
-                       Parameters genPars, Map<String, Double> exo) {
-        super(name, group, genPars, exo);
+                       Parameters genPars) {
+        super(name, group, genPars);
         DCore = dc;
         WellDefined = dc.getWellDefinedStateSpace();
     }
