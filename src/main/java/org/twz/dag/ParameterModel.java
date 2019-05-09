@@ -7,6 +7,7 @@ import org.twz.dag.util.NodeSet;
 import org.twz.exception.ScriptException;
 import org.twz.graph.DiGraph;
 import org.twz.io.AdapterJSONObject;
+import org.twz.io.FnJSON;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,6 +70,10 @@ public class ParameterModel implements AdapterJSONObject {
 
     public Parameters generate(String nickname) {
         return PGs.get(RootPG).generate(nickname, null, null);
+    }
+
+    public Parameters generate(JSONObject js) throws JSONException {
+        return generate(js.getString("Name"), FnJSON.toDoubleMap(js.getJSONObject("Values")));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.twz.io;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +34,17 @@ public class IO {
     }
 
     public static void writeJSON(JSONObject data, String file){
+        try  {
+            FileWriter f = new FileWriter(file);
+            data.write(f);
+            f.flush();
+            f.close();
+        } catch(IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeJSON(JSONArray data, String file){
         try  {
             FileWriter f = new FileWriter(file);
             data.write(f);
