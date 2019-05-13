@@ -224,7 +224,8 @@ public class BayesNet implements AdapterJSONObject {
                 try {
                     li += loci.evaluate(chromosome);
                 } catch (IncompleteConditionException | InstantiationError ignored) {
-
+                    chromosome.setLogPriorProb(Double.NEGATIVE_INFINITY);
+                    return;
                 }
             }
         }

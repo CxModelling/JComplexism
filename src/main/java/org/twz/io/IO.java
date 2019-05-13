@@ -93,6 +93,10 @@ public class IO {
         return new JSONObject(loadText(path));
     }
 
+    public static JSONArray loadJSONArray(String path) throws JSONException {
+        return new JSONArray(loadText(path));
+    }
+
     public static Map<String, List<String>> loadCSV(String path) {
         String[] texts = loadText(path).split("\n");
         int length = texts.length - 1;
