@@ -9,6 +9,7 @@ import org.twz.cx.mcore.Simulator;
 import org.twz.dag.*;
 
 import org.twz.dataframe.DataFrame;
+import org.twz.dataframe.Pair;
 import org.twz.dataframe.TimeSeries;
 import org.twz.dataframe.Tuple;
 import org.twz.io.IO;
@@ -21,8 +22,9 @@ import java.util.stream.Collectors;
 public abstract class DataModel extends BayesianModel {
     private NameGenerator NG;
     private ParameterModel SC;
-    private Director Ctrl;
-    private String SimModel, WarmUpModel;
+    protected Director Ctrl;
+    private String SimModel,WarmUpModel;
+
     private final double Time0, Time1, Dt, TimeWarm;
 
     private TimeSeries LastOutput;
@@ -57,7 +59,24 @@ public abstract class DataModel extends BayesianModel {
         return SC.generate(NG.getNext());
     }
 
-    public IY0 warmUp(Chromosome pars) {
+    public Pair<Chromosome, TimeSeries> testRun() {
+        Chromosome chromosome = samplePrior();
+        IY0 y0 = warmUp(chromosome);
+        TimeSeries ts = null;
+        if (!checkMidTerm(y0, chromosome)) {
+            chromosome.setLogLikelihood(Double.NEGATIVE_INFINITY);
+        } else {
+            try {
+                ts = simulate(chromosome, y0);
+                chromosome.setLogLikelihood(calculateLogLikelihood(chromosome, ts));
+            } catch (Exception e) {
+                chromosome.setLogLikelihood(Double.NEGATIVE_INFINITY);
+            }
+        }
+        return new Pair<>(chromosome, ts);
+    }
+
+    private IY0 warmUp(Chromosome pars) {
         IY0 y0 = sampleY0(pars);
         if (WarmUpModel == null) {
             return y0;

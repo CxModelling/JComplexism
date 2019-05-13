@@ -198,7 +198,7 @@ public class BayesNet implements AdapterJSONObject {
         return chromosome;
     }
 
-    private void fillAll(Chromosome chromosome) {
+    public void fillAll(Chromosome chromosome) {
         Loci loci;
         for (String s : getOrder()) {
             if (chromosome.has(s)) {
@@ -223,7 +223,7 @@ public class BayesNet implements AdapterJSONObject {
                 loci = DAG.getNode(s);
                 try {
                     li += loci.evaluate(chromosome);
-                } catch (IncompleteConditionException ignored) {
+                } catch (IncompleteConditionException | InstantiationError ignored) {
 
                 }
             }

@@ -305,4 +305,32 @@ public class TimeSeries implements AdapterJSONObject {
         }
         return res;
     }
+
+    public static Map<Double, Map<String, Double>> combineAllNumbers(TimeSeries ts1, TimeSeries ts2) {
+        Map<Double, Map<String, Double>> res = new HashMap<>();
+        Set<Double> times = new HashSet<>(ts1.Times);
+        times.retainAll(ts2.Times);
+
+        Map<String, Double> entry;
+
+        for (Double time : times) {
+            entry = new HashMap<>();
+            for (String s : ts1.getColumnName()) {
+                try {
+                    entry.put(s, ts1.getDouble(time, s));
+                } catch (TimeseriesException ignored) {
+
+                }
+            }
+            for (String s : ts2.getColumnName()) {
+                try {
+                    entry.put(s, ts2.getDouble(time, s));
+                } catch (TimeseriesException ignored) {
+
+                }
+            }
+            res.put(time, entry);
+        }
+        return res;
+    }
 }

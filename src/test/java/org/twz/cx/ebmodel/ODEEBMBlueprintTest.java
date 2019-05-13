@@ -34,9 +34,12 @@ public class ODEEBMBlueprintTest {
             y1[2] = gamma * y0[1];
         }, new String[]{"Sus", "Inf", "Rec"});
 
-        bp.addMeasurementFunction((tab, ti, ys, pc, x) -> {
+        bp.addMeasurementFunction((tab, ti, ys, parameters, x) -> {
             double n = ys[0] + ys[1] + ys[2];
             tab.put("Prv", ys[1]/n);
+            double beta = parameters.getDouble("transmission_rate");
+
+            tab.put("Inc", (double) Math.round(beta * ys[0] * ys[1] / n));
             tab.put("N", n);
         });
         bp.setRequiredParameters(new String[]{"transmission_rate", "rec_rate"});
@@ -63,7 +66,8 @@ public class ODEEBMBlueprintTest {
         EBMY0 y0 = new EBMY0();
         y0.append("{'y': 'Sus', 'n': 900}");
         y0.append("{'y': 'Inf', 'n': 100}");
-        Simu.simulate(y0, 4, 8, 0.25);
-        model.print();
+        Simu.simulate(y0, 0, 10, 0.5);
+        // model.outputTS().toCSV("E://SIR.csv");
+        model.outputTS().print();
     }
 }
