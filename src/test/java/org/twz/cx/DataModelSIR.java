@@ -56,9 +56,7 @@ public class DataModelSIR extends DataModel {
         Chromosome datum;
         double li = 0;
         for (Map.Entry<Double, Map<String, Double>> ent : data.entrySet()) {
-            datum = new Chromosome(ent.getValue());
-            DataDAG.fillAll(datum);
-            DataDAG.evaluate(datum);
+            datum = DataDAG.sample(ent.getValue());
             li += datum.getLogPriorProb();
         }
 
