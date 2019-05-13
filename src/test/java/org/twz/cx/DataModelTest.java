@@ -43,7 +43,7 @@ public class DataModelTest {
         Pair<Chromosome, TimeSeries> p_ts = DM.testRun();
         p_ts.getSecond().print();
 
-        System.out.println(p_ts.getFirst().toJSON().toString(4));
+        System.out.println(p_ts.getFirst().toString());
     }
 
     @Test

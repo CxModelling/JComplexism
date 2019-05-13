@@ -27,6 +27,9 @@ public abstract class DataModel extends BayesianModel {
 
     private final double Time0, Time1, Dt, TimeWarm;
 
+    private TimeSeries Data;
+    private BayesNet DataBN;
+
     private TimeSeries LastOutput;
     private Parameters LastPars;
     private IY0 LastY0;
@@ -57,6 +60,11 @@ public abstract class DataModel extends BayesianModel {
     @Override
     public Chromosome samplePrior() {
         return SC.generate(NG.getNext());
+    }
+
+    void setData(TimeSeries data, String bn) {
+        Data = data;
+        DataBN = Ctrl.getBayesNet(bn);
     }
 
     public Pair<Chromosome, TimeSeries> testRun() {
@@ -263,10 +271,21 @@ public abstract class DataModel extends BayesianModel {
 
     protected abstract IY0 transportY0(AbsSimModel model);
 
-    protected abstract double calculateLogLikelihood(Chromosome chromosome, TimeSeries output);
+    protected double calculateLogLikelihood(Chromosome chromosome, TimeSeries output) {
+        Map<Double, Map<String, Double>> data = TimeSeries.combineAllNumbers(output, Data);
+
+        Chromosome datum;
+        double li = 0;
+        for (Map.Entry<Double, Map<String, Double>> ent : data.entrySet()) {
+            datum = DataBN.sample(ent.getValue());
+            li += datum.getLogPriorProb();
+        }
+
+        return li;
+    }
 
     @Override
     public boolean hasExactLikelihood() {
-        return false;
+        return true;
     }
 }

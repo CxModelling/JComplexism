@@ -13,17 +13,8 @@ import java.util.Map;
 
 public class DataModelSIR extends DataModel {
 
-    private TimeSeries Data;
-    private BayesNet DataDAG;
-
-
     public DataModelSIR(Director ctrl, String bn, String simModel, double t0, double t1, double dt) {
         super(ctrl, bn, simModel, t0, t1, dt);
-    }
-
-    void setData(TimeSeries data, String bn) {
-        Data = data;
-        DataDAG = Ctrl.getBayesNet(bn);
     }
 
     @Override
@@ -47,20 +38,6 @@ public class DataModelSIR extends DataModel {
     @Override
     protected IY0 transportY0(AbsSimModel model) {
         return null;
-    }
-
-    @Override
-    protected double calculateLogLikelihood(Chromosome chromosome, TimeSeries output) {
-        Map<Double, Map<String, Double>> data = TimeSeries.combineAllNumbers(output, Data);
-
-        Chromosome datum;
-        double li = 0;
-        for (Map.Entry<Double, Map<String, Double>> ent : data.entrySet()) {
-            datum = DataDAG.sample(ent.getValue());
-            li += datum.getLogPriorProb();
-        }
-
-        return li;
     }
 
     static void setUpModel(Director ctrl) {

@@ -329,7 +329,6 @@ public class BayesNet implements AdapterJSONObject {
         JSONObject js = new JSONObject(), nodes = new JSONObject();
         js.put("Name", getName());
 
-
         for (String s : getOrder()) {
             nodes.put(s, DAG.getNode(s).toJSON());
         }
