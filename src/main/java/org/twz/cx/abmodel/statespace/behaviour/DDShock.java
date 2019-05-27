@@ -80,7 +80,7 @@ public class DDShock extends PassiveModBehaviour {
     }
 
     private double evaluate(StSpABModel model) throws JSONException {
-        return model.getPopulation().count("st", S_src);
+        return model.getPopulation().count("State", S_src);
     }
 
     private void shock(StSpABModel model, double ti) {
@@ -91,6 +91,6 @@ public class DDShock extends PassiveModBehaviour {
 
     @Override
     public String toString() {
-        return String.format("FDShock(%s, %s on %s, by %s)", getName(), S_src.getName(), T_tar.getName(), Value);
+        return String.format("DDShock(%s, %s on %s, by %s)", getName(), S_src.getName(), T_tar.getName(), Value);
     }
 }

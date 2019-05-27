@@ -1,0 +1,13 @@
+CTMC SIR_abm {
+    Inf
+    Rec
+    Sus
+    Dead
+
+    Sus -- Infect -> Inf
+    Inf -- Recover -> Rec
+    Sus -- Die -> Dead
+
+    Inf -- Die
+    Rec -- Die
+}

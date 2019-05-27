@@ -1,0 +1,9 @@
+PCore pSIR_abm {
+    beta = 2
+    gamma = 0.5
+    delta = 0.1
+
+    Infect ~ exp(beta)
+    Recover ~ exp(gamma)
+    Die ~ exp(delta)
+}

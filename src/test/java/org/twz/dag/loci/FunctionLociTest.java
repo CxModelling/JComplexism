@@ -13,36 +13,40 @@ import org.twz.prob.IDistribution;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class FunctionLociTest {
-    FunctionLoci Loci1, Loci2;
+    FunctionLoci Loci1, Loci2, Loci3;
 
     @Before
     public void setUp() throws Exception {
         Loci1 = new FunctionLoci("A", "a(4)");
         Loci2 = new FunctionLoci("B", "min(5, x)");
+        Loci3 = new FunctionLoci("mu", "exp(-0.4+sex*0.1)*exp(0.5)");
     }
 
     @Test
     public void getParents() {
-        Assert.assertTrue(Loci2.getParents().contains("x"));
+        assertTrue(Loci2.getParents().contains("x"));
     }
 
     @Test
     public void evaluate() {
-        Assert.assertEquals(Loci2.evaluate((Chromosome) null), 0.0);
+        assertEquals(Loci2.evaluate((Chromosome) null), 0.0, 1e-5);
     }
 
     @Test
     public void render() throws IncompleteConditionException {
-        Assert.assertEquals(Double.NaN, Loci2.render());
+        assertEquals(Double.NaN, Loci2.render(), 1e-2);
         Map<String, Double> cond = new HashMap<>();
         cond.put("x", 3.0);
-        Assert.assertEquals(3.0, Loci2.render(cond));
+        assertEquals(3.0, Loci2.render(cond), 1e-2);
     }
 
     @Test
     public void getDefinition() {
-        Assert.assertEquals("B=min(5, x)", Loci2.getDefinition());
+        assertEquals("B=min(5, x)", Loci2.getDefinition());
     }
 
     class a extends AbsDataFunction {
@@ -87,7 +91,16 @@ public class FunctionLociTest {
     public void sample() throws IncompleteConditionException{
 
         Loci1.bindDataFunction("a", new a("a"));
-        Assert.assertEquals(9.0, Loci1.render());
+        assertEquals(9.0, Loci1.render(), 1e-3);
 
+
+    }
+
+    @Test
+    public void regression() throws Exception {
+        Map<String, Double> ps = new HashMap<>();
+        ps.put("sex", 1.0);
+
+        System.out.println(Loci3.render(ps));
     }
 }

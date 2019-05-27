@@ -80,7 +80,7 @@ public class FDShock extends PassiveModBehaviour {
     }
 
     private double evaluate(StSpABModel model) throws JSONException {
-        double a = model.getPopulation().count("st", S_src);
+        double a = model.getPopulation().count("State", S_src);
         return a/model.getPopulation().count();
     }
 

@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
-import org.mariuszgromada.math.mxparser.FunctionExtension;
 import org.twz.dag.Chromosome;
 import org.twz.datafunction.AbsDataFunction;
 import org.twz.datafunction.DataCentre;

@@ -35,6 +35,14 @@ public class EBMY0 extends BranchY0 {
         }
     }
 
+    public void append(String y, double x) {
+        try {
+            append("{'y':'" + y + "', 'n': "+x+"}");
+        } catch (JSONException ignored) {
+
+        }
+    }
+
     public Map<String, Double> toMap() {
         Map<String, Double> m = new HashMap<>();
         for (JSONObject ent : getEntries()) {

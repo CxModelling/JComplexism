@@ -1,0 +1,8 @@
+CTMC SIR_hy {
+    Inf
+    Rec
+    Dead
+
+    Inf -- Recover -> Rec
+    Inf -- Die -> Dead
+}

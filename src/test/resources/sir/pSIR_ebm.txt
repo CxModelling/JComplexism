@@ -1,0 +1,5 @@
+PCore pSIR_ebm {
+    beta = 2
+    gamma = 0.5
+    delta = 0.1
+}

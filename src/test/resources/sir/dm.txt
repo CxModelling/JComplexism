@@ -1,0 +1,4 @@
+PCore DataModel {
+    lambda = inc_rate * n
+    Inc ~ pois(lambda)
+}

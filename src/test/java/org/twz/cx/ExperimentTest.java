@@ -22,7 +22,7 @@ public class ExperimentTest {
         Ctrl.loadBayesNet("src/test/resources/script/DataSIR.txt");
         TimeSeries data = TimeSeries.readCSV("src/test/resources/ToFitSIR.csv", "Time");
 
-        DataModelSIR.setUpModel(Ctrl);
+        // DataModelSIR.setUpModel(Ctrl);
 
         Exp = new ExperimentSIR(Ctrl, "pCloseSIR", "SIR", 0, 10, 1);
         Exp.loadPosterior(IO.loadJSONArray("src/test/resources/FittedSIR.json"));

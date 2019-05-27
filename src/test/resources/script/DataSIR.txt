@@ -1,4 +1,4 @@
 PCore DataSIR {
-    lambda = Sus*inc_rate
-    Inc ~ pois(lambda)
+
+    Inc ~ norm(inc_rate, inc_rate)
 }
