@@ -9,7 +9,6 @@ import org.twz.cx.mcore.Simulator;
 import org.twz.dag.Chromosome;
 import org.twz.dag.ParameterModel;
 import org.twz.dag.Parameters;
-import org.twz.dataframe.DataFrame;
 import org.twz.dataframe.Pair;
 import org.twz.dataframe.TimeSeries;
 import org.twz.io.IO;
@@ -35,7 +34,7 @@ public abstract class Experiment {
         Time0 = t0;
         Time1 = t1;
         DiffTime = dt;
-        Mementos = new HashMap<>();
+        Mementos = new LinkedHashMap<>();
     }
 
     public void loadPosterior(JSONArray js) throws JSONException {
@@ -69,6 +68,8 @@ public abstract class Experiment {
 
         if (log != null) {
             simulator.onLog(log);
+        } else {
+            simulator.offLog();
         }
 
         try {
@@ -84,44 +85,40 @@ public abstract class Experiment {
         return testRun(null);
     }
 
-    public void start(int amp) {
+    public void start(int max_iter) {
 
         Mementos.clear();
         Parameters pc;
         IY0 y0;
 
+        NameGenerator ng = new NameGenerator("Sim");
+        String name;
         AbsSimModel model;
         TimeSeries ts;
-        for (Map.Entry<String, Pair<Parameters, IY0>> ent : Inputs.entrySet()) {
-            pc = ent.getValue().getFirst();
-            y0 = ent.getValue().getSecond();
 
-            if (amp == 1) {
-                model = Ctrl.generateModel(pc.getName(), SimModel, pc);
+
+        while (true) {
+            for (Map.Entry<String, Pair<Parameters, IY0>> ent : Inputs.entrySet()) {
+                pc = ent.getValue().getFirst();
+                y0 = ent.getValue().getSecond();
+
+                name = ng.getNext();
+                model = Ctrl.generateModel(name, SimModel, pc);
                 try {
                     ts = Simulator.simulate(model, y0, Time0, Time1, DiffTime, true);
-                    Mementos.put(ent.getKey(), ts);
+                    Mementos.put(name, ts);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else {
-                for (int i = 1; i <= amp; i++) {
-                    model = Ctrl.generateModel(pc.getName(), SimModel, pc);
-                    try {
-                        ts = Simulator.simulate(model, y0, Time0, Time1, DiffTime, true);
-                        Mementos.put(ent.getKey() + ":" + i, ts);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                if (Mementos.size() >= max_iter) {
+                    return;
                 }
             }
         }
-
-
     }
 
     public void start() {
-        start(1);
+        start(Inputs.size());
     }
 
     public void saveResultsByVariable(String file_path, String prefix, String suffix) {

@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.abmodel.statespace.StSpABMBlueprint;
 import org.twz.cx.abmodel.statespace.StSpY0;
+import org.twz.cx.ebmodel.EBMY0;
 import org.twz.cx.ebmodel.ODEEBMBlueprint;
 import org.twz.cx.mcore.IY0;
 import org.twz.dag.Chromosome;
@@ -24,7 +25,6 @@ public class ModellingFlowTest {
 
     private Director Ctrl;
     private DataModelSIR DM_EBM, DM_Prior;
-    private ExperimentSIR ep;
 
     @Before
     public void setUp() throws Exception {
@@ -122,12 +122,26 @@ public class ModellingFlowTest {
 
     @Test
     public void replicateEBM() throws Exception {
-        ExperimentSIR exp = new ExperimentSIR(Ctrl, "pSIR_ebm", "EBM", 0, 10, 1);
+        Experiment exp = new Experiment(Ctrl, "pSIR_ebm", "EBM", 0, 10, 1) {
+            @Override
+            protected IY0 translateY0(JSONObject js) {
+                EBMY0 y0 = new EBMY0();
+                try {
+                    JSONArray entries = js.getJSONArray("Entries");
+                    for (int i = 0; i < entries.length(); i++) {
+                        y0.append(entries.getJSONObject(i));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return y0;
+            }
+        };
         exp.loadPosterior(IO.loadJSONArray("src/test/resources/SIR/Fitted.json"));
         Pair<Chromosome, TimeSeries> p_ts = exp.testRun();
         p_ts.getSecond().print();
-        exp.start();
-        exp.saveResultsByVariable("E://test", "ebm_", ".csv");
+        // exp.start(2000);
+        // exp.saveResultsByVariable("E://test", "ebm_", ".csv");
     }
 
     @Test
@@ -143,7 +157,6 @@ public class ModellingFlowTest {
                         ent = entries.getJSONObject(i);
                         y0.append(ent.getInt("n"), ent.getString("y"));
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -154,8 +167,8 @@ public class ModellingFlowTest {
         exp.loadPosterior(IO.loadJSONArray("src/test/resources/SIR/Fitted.json"));
         Pair<Chromosome, TimeSeries> p_ts = exp.testRun();
         p_ts.getSecond().print();
-        // exp.start();
-        // exp.saveResultsByVariable("E://test", "ebm_", ".csv");
+        // exp.start(5);
+        // exp.saveResultsByVariable("E://test", "abm_", ".csv");
     }
 
     @Test

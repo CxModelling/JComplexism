@@ -13,7 +13,7 @@ import java.util.*;
 public class Parameters extends Chromosome {
     public static Parameters NullParameters = new Parameters("Null", null, new HashMap<>(), 0);
 
-    private final String NickName;
+    private String NickName;
     private ParameterGroup PG;
     Parameters Parent;
     Map<String, SimulationActor> Actors;
@@ -37,6 +37,10 @@ public class Parameters extends Chromosome {
 
     public String getName() {
         return NickName;
+    }
+
+    public void rename(String name) {
+        NickName = name;
     }
 
     public String getGroupName() {
@@ -107,7 +111,7 @@ public class Parameters extends Chromosome {
     }
 
     public void detachFromParent() {
-        detachFromParent(false);
+        detachFromParent(true);
     }
 
     private void removeChild(String k) {

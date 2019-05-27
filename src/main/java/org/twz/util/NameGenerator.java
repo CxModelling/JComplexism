@@ -6,11 +6,12 @@ import org.twz.io.AdapterJSONObject;
 
 public class NameGenerator implements Cloneable, AdapterJSONObject {
     private String Prefix;
-    private int Ini, Step;
+    private int Initial, Current, Step;
 
     public NameGenerator(String prefix, int ini, int step) {
         Prefix = prefix;
-        Ini = ini;
+        Initial = ini;
+        Current = ini;
         Step = step;
     }
 
@@ -27,8 +28,8 @@ public class NameGenerator implements Cloneable, AdapterJSONObject {
     }
 
     public String getNext() {
-        int next = Ini;
-        Ini += Step;
+        int next = Current;
+        Current += Step;
         return Prefix + next;
     }
 
@@ -42,11 +43,15 @@ public class NameGenerator implements Cloneable, AdapterJSONObject {
         return ng;
     }
 
+    public void reset() {
+        Current = Initial;
+    }
+
     @Override
     public JSONObject toJSON() throws JSONException {
         JSONObject js = new JSONObject();
         js.put("Prefix", Prefix);
-        js.put("Ini", Ini);
+        js.put("Ini", Initial);
         js.put("Step", Step);
         return js;
     }
