@@ -62,7 +62,7 @@ public abstract class DataModel extends BayesianModel {
         return SC.generate(NG.getNext());
     }
 
-    void setData(TimeSeries data, String bn) {
+    public void setData(TimeSeries data, String bn) {
         Data = data;
         DataBN = Ctrl.getBayesNet(bn);
     }
