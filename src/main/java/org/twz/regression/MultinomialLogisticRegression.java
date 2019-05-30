@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.twz.dag.Chromosome;
 import org.twz.io.FnJSON;
 import org.twz.prob.Sample;
+import org.twz.regression.regressor.LinearCombination;
 
 public class MultinomialLogisticRegression extends AbsRegression {
 

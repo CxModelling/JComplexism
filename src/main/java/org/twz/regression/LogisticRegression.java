@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.Chromosome;
+import org.twz.regression.regressor.LinearCombination;
 
 import java.util.Map;
 

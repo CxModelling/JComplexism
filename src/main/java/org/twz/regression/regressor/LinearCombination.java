@@ -1,10 +1,11 @@
-package org.twz.regression;
+package org.twz.regression.regressor;
 
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.Chromosome;
+import org.twz.io.FnJSON;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,18 @@ public class LinearCombination {
     }
 
 
-    private IRegressor readRegressor(JSONObject reg) {
-        return null;
+    private IRegressor readRegressor(JSONObject reg) throws JSONException {
+        String type = reg.getString("Type");
+        switch (type) {
+            case "Boolean":
+                return new BooleanRegressor(reg.getString("Name"), reg.getDouble("Value"));
+            case "Categorical":
+                return new CategoricalRegressor(reg.getString("Name"),
+                        FnJSON.toDoubleArray(reg.getJSONArray("Values")),
+                        FnJSON.toStringArray(reg.getJSONArray("Labels")),
+                        reg.getString("Ref"));
+            default:
+                return new ContinuousRegressor(reg.getString("Name"), reg.getDouble("Value"));
+        }
     }
 }

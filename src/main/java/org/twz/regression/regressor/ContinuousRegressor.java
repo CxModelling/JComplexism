@@ -1,4 +1,4 @@
-package org.twz.regression;
+package org.twz.regression.regressor;
 
 public class ContinuousRegressor implements IRegressor {
     private String Name;

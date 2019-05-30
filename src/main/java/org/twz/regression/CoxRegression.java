@@ -9,6 +9,7 @@ import org.twz.regression.hazard.EmpiricalHazard;
 import org.twz.regression.hazard.ExponentialHazard;
 import org.twz.regression.hazard.IHazard;
 import org.twz.regression.hazard.WeibullHazard;
+import org.twz.regression.regressor.LinearCombination;
 
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class CoxRegression extends AbsRegression {
 
     @Override
     public double predict(Chromosome chr) {
-        double risk = -Math.log(Math.random())/LC.findPrediction(chr);
+        double risk = -Math.log(Math.random())/Math.exp(LC.findPrediction(chr));
         return Baseline.inverseCumulativeHazard(risk);
     }
 

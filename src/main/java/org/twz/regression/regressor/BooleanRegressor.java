@@ -1,4 +1,4 @@
-package org.twz.regression;
+package org.twz.regression.regressor;
 
 public class BooleanRegressor implements IRegressor {
     private String Name;
@@ -16,6 +16,6 @@ public class BooleanRegressor implements IRegressor {
 
     @Override
     public double getEffect(double x) {
-        return (x > 0)? Coefficient: 0;
+        return (x > 0)? Coefficient: 0.0;
     }
 }

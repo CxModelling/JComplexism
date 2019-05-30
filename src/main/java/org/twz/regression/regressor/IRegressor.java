@@ -1,4 +1,4 @@
-package org.twz.regression;
+package org.twz.regression.regressor;
 
 public interface IRegressor {
     String getName();
