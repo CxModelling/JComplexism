@@ -3,10 +3,13 @@ package org.twz.regression;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.twz.dag.Chromosome;
 import org.twz.io.FnJSON;
+import org.twz.prob.IDistribution;
 import org.twz.prob.Sample;
 import org.twz.regression.regressor.LinearCombination;
+
+import java.util.Map;
+
 
 public class MultinomialLogisticRegression extends AbsRegression {
 
@@ -39,14 +42,53 @@ public class MultinomialLogisticRegression extends AbsRegression {
     }
 
     @Override
-    public double predict(Chromosome xs) {
+    public double predict(Map<String, Double> xs) {
+        return Sample.sample(getProbabilities(xs));
+    }
+
+    @Override
+    public IDistribution getSampler(Map<String, Double> xs) {
+        return new IDistribution() {
+            private double[] prs = getProbabilities(xs);
+            @Override
+            public String getName() {
+                return "Multinomial";
+            }
+
+            @Override
+            public String getDataType() {
+                return "Integer";
+            }
+
+            @Override
+            public double logProb(double rv) {
+                return Math.log(prs[(int)rv]);
+            }
+
+            @Override
+            public double sample() {
+                return Sample.sample(getProbabilities(xs));
+            }
+
+            @Override
+            public double[] sample(int n) {
+                double[] ys = new double[n];
+                int[] is = Sample.sample(prs, n);
+                for (int i = 0; i < n; i++) {
+                    ys[i] = is[i];
+                }
+                return ys;
+            }
+        };
+    }
+
+    private double[] getProbabilities(Map<String, Double> xs) {
         double[] ps = new double[Labels.length];
         ps[0] = 1;
         for (int i = 1; i < Labels.length; i++) {
             ps[i] = Math.exp(Intercepts[i] + LCs[i].findPrediction(xs));
         }
-
-        return Sample.sample(ps);
+        return ps;
     }
 
     public String getLabel(double i) {

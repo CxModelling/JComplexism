@@ -122,8 +122,6 @@ public class DistributionLoci extends Loci implements Bindable {
             }
             return DataFunction.getSampler(ds);
         }
-
-
     }
 
 

@@ -1,6 +1,6 @@
 package org.twz.regression;
 
-import org.twz.dag.Chromosome;
+import org.twz.prob.IDistribution;
 
 import java.util.Map;
 
@@ -8,10 +8,7 @@ public abstract class AbsRegression {
 
     public abstract String getVariableType();
 
-    public double predict(Map<String, Double> xs) {
-        Chromosome chr = new Chromosome(xs);
-        return predict(chr);
-    }
+    public abstract double predict(Map<String, Double> xs);
 
-    public abstract double predict(Chromosome xs);
+    public abstract IDistribution getSampler(Map<String, Double> xs);
 }

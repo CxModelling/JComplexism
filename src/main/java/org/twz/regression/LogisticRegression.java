@@ -3,7 +3,8 @@ package org.twz.regression;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.twz.dag.Chromosome;
+import org.twz.prob.Binom;
+import org.twz.prob.IDistribution;
 import org.twz.regression.regressor.LinearCombination;
 
 import java.util.Map;
@@ -27,6 +28,10 @@ public class LogisticRegression extends AbsRegression {
         LC = new LinearCombination(kvs);
     }
 
+    private double getProbability(Map<String, Double> kvs) {
+        double mu = Intercept + LC.findPrediction(kvs);
+        return 1/(1+Math.exp(-mu));
+    }
 
     @Override
     public String getVariableType() {
@@ -34,12 +39,15 @@ public class LogisticRegression extends AbsRegression {
     }
 
     @Override
-    public double predict(Chromosome xs) {
-        double mu = Intercept + LC.findPrediction(xs);
-        if (Math.random() < (1/(1+Math.exp(-mu)))) {
-            return 1.0;
-        } else {
-            return 0.0;
-        }
+    public double predict(Map<String, Double> xs) {
+        return (Math.random() < getProbability(xs))? 1.0: 0.0;
     }
+
+    @Override
+    public IDistribution getSampler(Map<String, Double> xs) {
+        double p = getProbability(xs);
+        return new Binom(1, p);
+    }
+
+
 }

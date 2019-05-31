@@ -4,7 +4,6 @@ package org.twz.regression.regressor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.twz.dag.Chromosome;
 import org.twz.io.FnJSON;
 
 import java.util.ArrayList;
@@ -33,12 +32,15 @@ public class LinearCombination {
         }
     }
 
-    public double findPrediction(Chromosome chr) {
+    public double findPrediction(Map<String, Double> xs) {
         return Regressors.stream()
-                .mapToDouble(r->r.getEffect(chr.getDouble(r.getName())))
+                .mapToDouble(r->r.getEffect(xs.get(r.getName())))
                 .sum();
     }
 
+    public String[] getRegressorList() {
+        return Regressors.stream().map(IRegressor::getName).toArray(String[]::new);
+    }
 
     private IRegressor readRegressor(JSONObject reg) throws JSONException {
         String type = reg.getString("Type");

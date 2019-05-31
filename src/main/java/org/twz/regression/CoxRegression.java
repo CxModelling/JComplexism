@@ -3,12 +3,9 @@ package org.twz.regression;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.twz.dag.Chromosome;
 import org.twz.io.FnJSON;
-import org.twz.regression.hazard.EmpiricalHazard;
-import org.twz.regression.hazard.ExponentialHazard;
-import org.twz.regression.hazard.IHazard;
-import org.twz.regression.hazard.WeibullHazard;
+import org.twz.prob.IDistribution;
+import org.twz.regression.hazard.*;
 import org.twz.regression.regressor.LinearCombination;
 
 import java.util.Map;
@@ -45,12 +42,22 @@ public class CoxRegression extends AbsRegression {
     }
 
     @Override
-    public double predict(Chromosome chr) {
-        double risk = -Math.log(Math.random())/Math.exp(LC.findPrediction(chr));
+    public double predict(Map<String, Double> xs) {
+        double risk = -Math.log(Math.random())/getRiskRatio(xs);
         return Baseline.inverseCumulativeHazard(risk);
     }
 
-    private IHazard findBaseline(JSONObject js) throws JSONException {
+    @Override
+    public IDistribution getSampler(Map<String, Double> xs) {
+        double rr = getRiskRatio(xs);
+        return new HazardDist(Baseline, rr);
+    }
+
+    private double getRiskRatio(Map<String, Double> xs) {
+        return Math.exp(LC.findPrediction(xs));
+    }
+
+    static IHazard findBaseline(JSONObject js) throws JSONException {
         String type = js.getString("Type");
 
         switch (type.toLowerCase()) {
