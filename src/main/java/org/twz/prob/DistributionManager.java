@@ -81,6 +81,17 @@ public class DistributionManager {
         ags = new AbsArgument[]{
                 new DoubleArg("lambda")};
         Distributions.register("geom", Geometric.class, ags);
+
+        ags = new AbsArgument[]{
+                new DoubleArg("prob"),
+                new DoubleArg("rate")};
+        Distributions.register("ziexp", ZeroInflatedExponential.class, ags);
+
+        ags = new AbsArgument[]{
+                new DoubleArg("prob"),
+                new DoubleArg("alpha"),
+                new DoubleArg("beta")};
+        Distributions.register("ziweibull", ZeroInflatedWeibull.class, ags);
     }
 
 

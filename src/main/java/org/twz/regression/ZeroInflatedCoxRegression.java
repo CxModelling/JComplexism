@@ -1,9 +1,7 @@
 package org.twz.regression;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.twz.io.FnJSON;
 import org.twz.prob.IDistribution;
 import org.twz.regression.hazard.*;
 import org.twz.regression.regressor.LinearCombination;
@@ -33,6 +31,8 @@ public class ZeroInflatedCoxRegression  extends AbsRegression {
 
     @Override
     public double predict(Map<String, Double> xs) {
+        double pr = getProbability(xs);
+        if (Math.random() < pr) return 0;
         double risk = -Math.log(Math.random())/getRiskRatio(xs);
         return Baseline.inverseCumulativeHazard(risk);
     }
