@@ -16,7 +16,7 @@ public abstract class AbsZeroInflated extends AdaptorRealCommonsMath {
 
     @Override
     public double sample() {
-        if (Zero.sample() > 0) {
+        if (Zero.sample() ==1) {
             return 0;
         } else {
             return super.sample();

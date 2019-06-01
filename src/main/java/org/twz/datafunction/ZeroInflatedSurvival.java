@@ -13,7 +13,7 @@ public class ZeroInflatedSurvival extends AbsDataFunction {
     private ZeroInflatedCoxRegression Reg;
 
     public ZeroInflatedSurvival(String name, JSONObject df) throws JSONException {
-        super(df.getString(name), FnJSON.toStringArray(df.getJSONArray("Regressors")), df);
+        super(name, FnJSON.toStringArray(df.getJSONArray("Regressors")), df);
         Reg = new ZeroInflatedCoxRegression(df);
     }
 

@@ -6,7 +6,7 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
 public class ZeroInflatedExponential extends AbsZeroInflated {
 
     public ZeroInflatedExponential(String name, Double prob, Double rate) {
-        super(name, prob, new ExponentialDistribution(rate));
+        super(name, prob, new ExponentialDistribution(1/rate));
         Name = name;
     }
 

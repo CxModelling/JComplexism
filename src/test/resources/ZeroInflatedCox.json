@@ -4,7 +4,7 @@
     "Regressors": [{"Type": "Boolean", "Name": "Sex", "Value": 0.69}]
   },
   "PrTTE":{
-    "Baseline": {"Type": "Weibull", "Lambda": 0.02, "K": 0.5},
+    "Baseline": {"Type": "Weibull", "Lambda": 0.01, "K": 0.5},
     "Regressors": [{"Type": "Boolean", "Name": "Sex", "Value": 0.1}]
   },
   "Regressors": ["Sex"]
