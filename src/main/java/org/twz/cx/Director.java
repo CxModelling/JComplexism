@@ -101,6 +101,12 @@ public class Director implements ILogable {
         return bn;
     }
 
+    public void joinBeyesNets(String main, String sub, String newName) {
+        assert BNs.containsKey(main);
+        assert BNs.containsKey(sub);
+        addBayesNet(BayesNet.merge(newName, BNs.get(main), BNs.get(sub)));
+    }
+
     private void addStateSpace(IStateSpaceBlueprint dc) {
         if(DCores.putIfAbsent(dc.getName(), dc)!=null) {
             Log.info("New state space model " + dc.getName() + " added");

@@ -222,7 +222,7 @@ public class BayesNet implements AdapterJSONObject {
             if (chromosome.has(s)) {
                 loci = DAG.getNode(s);
                 try {
-                    li += loci.evaluate(chromosome);
+                    li += loci.evaluate(chromosome);;
                 } catch (IncompleteConditionException | InstantiationError ignored) {
                     chromosome.setLogPriorProb(Double.NEGATIVE_INFINITY);
                     return;
@@ -268,6 +268,19 @@ public class BayesNet implements AdapterJSONObject {
             imp.put(node, Double.NaN);
         }
         impulse(chromosome, imp);
+    }
+
+    public void join(BayesNet bn) {
+        this.defrost();
+        Loci loci;
+        for (String node : bn.getOrder()) {
+            loci = bn.getLoci(node);
+            if (DAG.has(node) & loci instanceof ExoValueLoci) {
+                continue;
+            }
+            appendLoci(node, loci);
+        }
+        complete();
     }
 
     private List<String> toList(JSONArray ja) throws JSONException {
@@ -374,6 +387,17 @@ public class BayesNet implements AdapterJSONObject {
         return rvl;
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder("PCore " + Name + " {\n");
+        Loci loci;
+        for (String s : getOrder()) {
+            loci = getLoci(s);
+            sb.append("\t").append(loci.getDefinition()).append("\n");
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+
     private List<String> findExogenous() {
         return getRoots().stream()
                 .filter(n -> getLoci(n) instanceof ExoValueLoci)
@@ -424,4 +448,26 @@ public class BayesNet implements AdapterJSONObject {
         }
         return bn;
     }
+
+    public static BayesNet merge(String newName, BayesNet x, BayesNet y) {
+        BayesNet bn = new BayesNet(newName);
+
+        Loci loci;
+
+        for (String node : x.getOrder()) {
+            loci = x.getLoci(node);
+            bn.appendLoci(loci.getDefinition());
+        }
+
+        for (String node : y.getOrder()) {
+            loci = y.getLoci(node);
+            if (x.DAG.has(node) & loci instanceof ExoValueLoci) {
+                continue;
+            }
+            bn.appendLoci(loci.getDefinition());
+        }
+        bn.complete();
+        return bn;
+    }
+
 }

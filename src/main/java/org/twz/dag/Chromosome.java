@@ -148,10 +148,10 @@ public class Chromosome implements AdapterJSONObject, IParameters {
                 .map(e -> e.getKey() + ": " + IO.doubleFormat(e.getValue()))
                 .collect(Collectors.joining(", "));
 
-        if (isLikelihoodEvaluated()) {
+        if (isPriorEvaluated()) {
             sb += ", LogPrior:" + IO.doubleFormat(LogPriorProb);
         }
-        if (isPriorEvaluated()) {
+        if (isLikelihoodEvaluated()) {
             sb += ", LogLikelihood:" + IO.doubleFormat(LogLikelihood);
         }
         if (isEvaluated()) {
