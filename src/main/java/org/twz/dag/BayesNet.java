@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import org.mariuszgromada.math.mxparser.FunctionExtension;
 import org.twz.dag.loci.*;
 import org.twz.dag.util.NodeGroup;
 import org.twz.dag.util.NodeSet;

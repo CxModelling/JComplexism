@@ -15,7 +15,7 @@ public abstract class AbsDataFunction implements FunctionExtension, AdapterJSONO
 
     private final String Name;
     private final String[] Selectors;
-    double[] Selected;
+    protected double[] Selected;
     private JSONObject RawData;
 
     public AbsDataFunction(String name, String[] sel_cols, JSONObject df) {
