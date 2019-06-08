@@ -101,10 +101,18 @@ public class Director implements ILogable {
         return bn;
     }
 
-    public void joinBeyesNets(String main, String sub, String newName) {
+    public void joinBayesNets(String main, String sub, String newName) {
         assert BNs.containsKey(main);
         assert BNs.containsKey(sub);
         addBayesNet(BayesNet.merge(newName, BNs.get(main), BNs.get(sub)));
+    }
+
+    public void removeBayesNet(String name) {
+        if (!BNs.containsKey(name)) {
+            Log.info("BayesNet " + name + "was not defined; Nothing removed");
+            return;
+        }
+        BNs.remove(name);
     }
 
     private void addStateSpace(IStateSpaceBlueprint dc) {
@@ -266,6 +274,17 @@ public class Director implements ILogable {
             ModelLayout layout = Layouts.get(type);
             NodeSet ns = layout.getParameterHierarchy(this);
             Parameters pc = getBayesNet(bn).toParameterModel(ns).generate(name);
+            return layout.generate(name, this, pc);
+        } else {
+            return generateMCore(name, type, bn);
+        }
+    }
+
+    public AbsSimModel generateModel(String name, String type, String bn, Map<String, Double> exo) {
+        if (Layouts.containsKey(type)) {
+            ModelLayout layout = Layouts.get(type);
+            NodeSet ns = layout.getParameterHierarchy(this);
+            Parameters pc = getBayesNet(bn).toParameterModel(ns).generate(name, exo);
             return layout.generate(name, this, pc);
         } else {
             return generateMCore(name, type, bn);

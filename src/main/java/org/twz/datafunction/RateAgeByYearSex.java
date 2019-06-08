@@ -89,9 +89,9 @@ public class RateAgeByYearSex extends AbsDataFunction {
 
     @Override
     public IDistribution getSampler(double[] values) {
-        double yr = Misc.frame(Selected[0], MinYear, MaxYear);
-        int sex = Selected[1] > 0? 1:0;
-        int age = (int) Misc.frame(Selected[1], 0, MaxAge);
+        double yr = Misc.frame(values[0], MinYear, MaxYear);
+        int sex = values[1] > 0? 1:0;
+        int age = (int) Misc.frame(values[2], 0, MaxAge);
         return Samplers.get(yr).get(sex).get(age);
     }
 

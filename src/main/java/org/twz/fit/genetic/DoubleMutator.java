@@ -24,7 +24,7 @@ public class DoubleMutator extends AbsMutator {
     public double propose(double v) {
         while (true) {
             double x = v + Normal.sample()*Scale;
-            if (x > Lower | x < Upper) return x;
+            if (x > Lower & x < Upper) return x;
         }
     }
 

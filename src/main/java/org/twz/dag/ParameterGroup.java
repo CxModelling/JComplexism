@@ -121,12 +121,15 @@ public class ParameterGroup implements AdapterJSONObject {
         Parameters pc = new Parameters(nickname, this, exo, 0);
         pc.setParent(parent);
 
-        FixedChain.stream().filter(loci -> !(loci instanceof ExoValueLoci)).forEach(loci -> {
-            try {
-                loci.fill(pc);
-            } catch (IncompleteConditionException ignored) {
-            }
-        });
+        FixedChain.stream()
+                .filter(loci -> !(loci instanceof ExoValueLoci))
+                .filter(loci -> !pc.has(loci.getName()))
+                .forEach(loci -> {
+                    try {
+                        loci.fill(pc);
+                    } catch (IncompleteConditionException ignored) {
+                    }
+                });
 
         if (parent == null) {
             pc.Actors = getActors(pc);
