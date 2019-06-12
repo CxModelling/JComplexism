@@ -52,8 +52,8 @@ public class Population<T extends AbsAgent> implements AdapterJSONObject {
         return ags;
     }
 
-    public List<T> addAgents(int n) throws JSONException {
-        return addAgents(n, new LinkedHashMap<>());
+    public boolean hasAgent(String id) {
+        return Agents.containsKey(id);
     }
 
     public AbsAgent removeAgent(String id) {

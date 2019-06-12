@@ -1,6 +1,5 @@
 package org.twz.cx.abmodel.statespace;
 
-import org.json.JSONException;
 import org.twz.cx.abmodel.*;
 import org.twz.dataframe.Pair;
 import org.twz.statespace.State;
@@ -28,7 +27,7 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
     private Set<State> ObsStates;
     private Set<Transition> ObsTransitions;
     private Set<AbsBehaviour> ObsBehaviours;
-    private Set<IObsFun<StSpABModel>> ObsFunctions;
+    private Set<IObsFun> ObsFunctions;
     private ArrayList<Record> Records;
     private Map<String, Pair<String, Object>> LazySnapshot;
 
@@ -55,7 +54,7 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
         for (AbsBehaviour be: ObsBehaviours) {
             be.fillData(tab, model, ti);
         }
-        for (IObsFun<StSpABModel> fn: ObsFunctions) {
+        for (IObsFun fn: ObsFunctions) {
             fn.call(tab, model, ti);
         }
     }
@@ -77,7 +76,7 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
         ObsBehaviours.add(be);
     }
 
-    void addObsFunction(IObsFun<StSpABModel> fn) {
+    void addObsFunction(IObsFun fn) {
         ObsFunctions.add(fn);
     }
 

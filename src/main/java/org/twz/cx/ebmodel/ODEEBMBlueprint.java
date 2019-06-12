@@ -12,6 +12,7 @@ import java.util.*;
 public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
     private final String Name;
     private double Dt;
+    private String TimeKey;
     private ODEFunction Fn;
     private String[] Ys, Ps;
     private Map<String, Object> Xs;
@@ -25,6 +26,7 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
         ObsYs = new ArrayList<>();
         Ps = new String[0];
         Measurements = new ArrayList<>();
+        TimeKey = null;
     }
 
     @Override
@@ -35,6 +37,11 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
     @Override
     public void setOption(String opt, Object value) {
 
+    }
+
+    @Override
+    public void setTimeKey(String k) {
+        TimeKey = k;
     }
 
     public void setODE(ODEFunction fn, String[] ys) {
@@ -104,7 +111,7 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
 
         ObsYs.forEach(ebm::addObservingStock);
         Measurements.forEach(ebm::addObservingStockFunction);
-
+        if (TimeKey != null) ebm.setTimeIndex(TimeKey);
         return ebm;
     }
 

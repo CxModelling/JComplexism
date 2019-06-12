@@ -28,16 +28,22 @@ public class ModelLayout {
     private List<IModelEntry> ModelEntries;
     private List<InteractionEntry> InteractionEntries;
     private Map<String, ModelLayout> Children;
+    private String TimeKey;
 
     public ModelLayout(String name) {
         Name = name;
         ModelEntries = new ArrayList<>();
         InteractionEntries = new ArrayList<>();
         Children = new HashMap<>();
+        TimeKey = null;
     }
 
     public String getName() {
         return Name;
+    }
+
+    public void setTimeKey(String timeKey) {
+        TimeKey = timeKey;
     }
 
     public void appendChild(ModelLayout ml) {
@@ -58,6 +64,14 @@ public class ModelLayout {
 
     public void addEntry(String prefix, String proto, IY0 y0, int to) {
         ModelEntries.add(new MultipleEntry(prefix, proto, y0, to));
+    }
+
+    public void addEntry(String prefix, String proto, int to) {
+        addEntry(prefix, proto, null, to);
+    }
+
+    public void addEntry(String name, String proto) {
+        ModelEntries.add(new SingleEntry(name, proto, null));
     }
 
     public void addInteraction(String sel, String checker, String response) throws JSONException {
@@ -99,6 +113,10 @@ public class ModelLayout {
 
     public AbsSimModel generate(String name, Director da, Parameters pc, boolean all_observed) {
         MultiModel model = new MultiModel(name, pc);
+        if (TimeKey != null) {
+            model.setTimeIndex(TimeKey);
+        }
+
         AbsSimModel sub;
 
         for (IModelEntry entry : ModelEntries) {
@@ -117,6 +135,7 @@ public class ModelLayout {
             }
         }
 
+        if (TimeKey != null) model.setTimeIndex(TimeKey);
         return model;
     }
 

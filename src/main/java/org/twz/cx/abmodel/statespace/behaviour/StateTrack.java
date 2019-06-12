@@ -118,7 +118,7 @@ public class StateTrack extends PassiveBehaviour {
     }
 
     private double evaluate(StSpABModel model) throws JSONException {
-        return model.getPopulation().count("st", S_src);
+        return model.getPopulation().count("State", S_src);
     }
 
     @Override

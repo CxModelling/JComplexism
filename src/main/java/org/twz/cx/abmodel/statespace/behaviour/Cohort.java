@@ -29,8 +29,12 @@ public class Cohort extends PassiveBehaviour {
 
     @Override
     public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) {
-        model.kill(ag.getName(), ti);
-        DeathN ++;
+        if (model.getPopulation().hasAgent(ag.getName())) {
+            model.kill(ag.getName(), ti);
+            DeathN ++;
+            model.disclose("remove an agent", getName());
+        }
+
     }
 
     @Override
@@ -65,7 +69,7 @@ public class Cohort extends PassiveBehaviour {
 
     @Override
     public String toString() {
-        return String.format("Reincarnation(%s, Death:%s, NDeath:%s)", getName(), S_death.getName(), DeathN);
+        return String.format("Cohort(%s, Death:%s, NDeath:%s)", getName(), S_death.getName(), DeathN);
     }
 
     @Override

@@ -31,11 +31,13 @@ public class Reincarnation extends PassiveBehaviour {
 
     @Override
     public void impulseChange(AbsAgentBasedModel model, AbsAgent ag, double ti) throws JSONException {
-        model.kill(ag.getName(), ti);
-        Map<String, Object> atr = new HashMap<>();
-        atr.put("st", S_birth);
-        model.birth(1, ti, atr);
-        BirthN ++;
+        if (model.getPopulation().hasAgent(ag.getName())) {
+            model.kill(ag.getName(), ti);
+            Map<String, Object> atr = new HashMap<>();
+            atr.put("st", S_birth);
+            model.birth(1, ti, atr);
+            BirthN ++;
+        }
     }
 
     @Override

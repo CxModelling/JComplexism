@@ -26,7 +26,7 @@ public class ABMObserver extends AbsObserver<ABModel> {
 
     private Set<AbsBehaviour> ObsBehaviours;
     private Set<Object> ObsEvents;
-    private Set<IObsFun<ABModel>> ObsFunctions;
+    private Set<IObsFun> ObsFunctions;
     private ArrayList<Record> Records;
 
     ABMObserver() {
@@ -41,7 +41,7 @@ public class ABMObserver extends AbsObserver<ABModel> {
         ObsEvents.add(evt);
     }
 
-    void addObsFunction(IObsFun<ABModel> fn) {
+    void addObsFunction(IObsFun fn) {
         ObsFunctions.add(fn);
     }
 
@@ -55,7 +55,7 @@ public class ABMObserver extends AbsObserver<ABModel> {
         for (AbsBehaviour be: ObsBehaviours) {
             be.fillData(tab, model, ti);
         }
-        for (IObsFun<ABModel> fn: ObsFunctions) {
+        for (IObsFun fn: ObsFunctions) {
             fn.call(tab, model, ti);
         }
     }

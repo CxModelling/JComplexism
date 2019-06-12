@@ -29,6 +29,7 @@ public abstract class AbsSimModel implements AdapterJSONObject {
     private Parameters Pars;
     private Map<String, Object> Environment;
     private double TimeEnd;
+    private String TimeIndex;
 
 
     public AbsSimModel(String name, Parameters pars, AbsObserver obs, IY0 protoY0) {
@@ -41,6 +42,7 @@ public abstract class AbsSimModel implements AdapterJSONObject {
         Scheduler = AbsScheduler.getScheduler(name); //new PriorityQueueScheduler(name);
         ProtoY0 = protoY0;
         TimeEnd = Double.NaN;
+        TimeIndex = null;
     }
 
     public AbsObserver getObserver() {
@@ -168,7 +170,7 @@ public abstract class AbsSimModel implements AdapterJSONObject {
         }
     }
 
-    public List<Disclosure> manageDisclosures(List<Disclosure> dis) {
+    private List<Disclosure> manageDisclosures(List<Disclosure> dis) {
         return dis;
     }
 
@@ -180,8 +182,15 @@ public abstract class AbsSimModel implements AdapterJSONObject {
         return TimeEnd;
     }
 
-    public void setTimeEnd(double timeEnd) {
+    void setTimeEnd(double timeEnd) {
         TimeEnd = timeEnd;
+        if (TimeIndex != null) {
+            Pars.impulse(TimeIndex, timeEnd);
+        }
+    }
+
+    public void setTimeIndex(String i_time) {
+        TimeIndex = i_time;
     }
 
     public void exitCycle() {
@@ -224,10 +233,6 @@ public abstract class AbsSimModel implements AdapterJSONObject {
 
     public TimeSeries outputTS() {
         return Observer.getTimeSeries();
-    }
-
-    public DataFrame outputDF() {
-        return Observer.getObservations();
     }
 
     public Double getSnapshot(String key, double ti) {
