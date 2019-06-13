@@ -233,7 +233,11 @@ public  abstract  class  AbsSimModel implements AdapterJSONObject {
     }
 
     public Map<String, Double> getLastObservations() {
-        return Observer.getLast();
+        return Observer.getLast(this, getTimeEnd());
+    }
+
+    public Map<String, Double> getMidObservations() {
+        return Observer.getMid(this, getTimeEnd());
     }
 
     public TimeSeries outputTS() {

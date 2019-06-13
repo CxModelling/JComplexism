@@ -22,22 +22,24 @@ public class MMObserver extends AbsObserver<MultiModel> {
 
     @Override
     protected void readStatics(MultiModel model, Map<String, Double> tab, double ti) {
-        if (tab == Last) {
-            for (String m : ObservingModels) {
-                model.getModel(m).getObserver().putAllLast(m, tab);
-            }
-        } else {
-            for (String m : ObservingModels) {
-                model.getModel(m).getObserver().putAllMid(m, tab);
-            }
-        }
+        Map<String, Double> obs;
 
+        for (String m : ObservingModels) {
+            if (tab == Last) {
+                obs = model.getModel(m).getLastObservations();
+            } else {
+                obs = model.getModel(m).getMidObservations();
+            }
+
+            obs.remove("Time");
+            obs.forEach((k, v) -> tab.put(m+":"+k, v));
+        }
     }
 
     @Override
     public void updateDynamicObservations(MultiModel model, Map<String, Double> flows, double ti) {
-        for (String m : ObservingModels) {
-            model.getModel(m).getObserver().putAllFlows(m, flows);
-        }
+        //for (String m : ObservingModels) {
+        //    model.getModel(m).getObserver().putAllFlows(m, flows);
+        //}
     }
 }

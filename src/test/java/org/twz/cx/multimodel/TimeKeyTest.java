@@ -60,6 +60,7 @@ public class TimeKeyTest {
         layout.addEntry("ab", "abm", y0a);
 
         layout.setTimeKey("year");
+        layout.setSummariser((tab, model, ti) -> tab.put("t", model.getParameter("year")));
         Y0s = Ctrl.generateModelY0("hybrid");
     }
 

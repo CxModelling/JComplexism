@@ -38,13 +38,13 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         Flows.forEach((k, v) -> dis.put(prefix + ":" + k, v));
     }
 
-    public void putAllLast(String prefix, Map<String, Double> dis) {
+    public void putAllLast(String prefix, T model, Map<String, Double> dis) {
         Last.forEach((k, v) -> {
             if (!k.equals("Time")) dis.put(prefix + ":" + k, v);
         });
     }
 
-    public void putAllMid(String prefix, Map<String, Double> dis) {
+    public void putAllMid(String prefix, T model, Map<String, Double> dis) {
         Mid.forEach((k, v) -> {
             if (!k.equals("Time")) dis.put(prefix + ":" + k, v);
         });
@@ -110,24 +110,28 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
     }
 
     void pushObservation(T model, double ti) {
-        Last.putAll(Flows);
-        Summariser.call(Last, model, ti);
-        Observation.add(Last);
+        Observation.add(getLast(model, ti));
         if (ExactMid) {
-            Mid.putAll(Flows);
-            Summariser.call(Mid, model, ti);
-            ObservationMid.add(Mid);
+            ObservationMid.add(getMid(model, ti));
         }
         newSession(ti);
         clearFlows();
     }
 
-    public Map<String, Double> getLast() {
-        return Last;
+    public Map<String, Double> getLast(T model, double ti) {
+        Map<String, Double> dat = new HashMap<>();
+        dat.putAll(Last);
+        dat.putAll(Flows);
+        Summariser.call(dat, model, ti);
+        return dat;
     }
 
-    public Map<String, Double> getMid() {
-        return Mid;
+    public Map<String, Double> getMid(T model, double ti) {
+        Map<String, Double> dat = new HashMap<>();
+        dat.putAll(Mid);
+        dat.putAll(Flows);
+        Summariser.call(dat, model, ti);
+        return dat;
     }
 
     public TimeSeries getTimeSeries() {

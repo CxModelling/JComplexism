@@ -31,7 +31,7 @@ public class EBMObserver extends AbsObserver<EquationBasedModel> {
     @Override
     protected void readStatics(EquationBasedModel model, Map<String, Double> tab, double ti) {
         double tiu;
-        if (tab == getMid()) {
+        if (tab == getMid(model, ti)) {
             tiu = ti - ObservationalInterval / 2;
         } else {
             tiu = ti;
