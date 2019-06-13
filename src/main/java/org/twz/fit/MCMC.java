@@ -1,5 +1,6 @@
 package org.twz.fit;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.Chromosome;
 import org.twz.fit.mcmc.BinaryStepper;
@@ -118,6 +119,10 @@ public class MCMC extends BayesianFitter {
 
     @Override
     public JSONObject getGoodnessOfFit(BayesianModel bm) {
-        return null; // todo
+        try {
+            return (new Summarizer(bm.getResults())).toJSON();
+        } catch (JSONException e) {
+            return new JSONObject();
+        }
     }
 }

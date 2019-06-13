@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.Parameters;
+import org.twz.dag.util.NodeSet;
 import org.twz.statespace.AbsStateSpace;
 
 import java.util.HashMap;
@@ -40,9 +41,10 @@ public class StSpABMBlueprintTest {
     @Test
     public void simulationPcDc() throws Exception {
         Map<String, Object> args = new HashMap<>();
+        NodeSet ns = Bp.getParameterHierarchy(Ctrl);
 
         Parameters PC = Ctrl.getBayesNet("pCloseSIR")
-                .toParameterModel(Bp.getParameterHierarchy(Ctrl))
+                .toParameterModel(ns)
                 .generate("Test");
         AbsStateSpace DC = Ctrl.generateDCore("CloseSIR", PC.genPrototype("agent"));
 

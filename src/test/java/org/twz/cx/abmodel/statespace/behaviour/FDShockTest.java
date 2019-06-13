@@ -23,7 +23,7 @@ public class FDShockTest {
         Ctrl.loadStateSpace("src/test/resources/script/CloseSIR.txt");
 
         NodeSet ns = new NodeSet("root", new String[0]);
-        ns.appendChild(new NodeSet("agent", new String[]{"beta", "gamma"}));
+        ns.appendChild(new NodeSet("agent", new String[]{}, new String[]{"beta", "gamma"}));
         Parameters PC = Ctrl.getBayesNet("pCloseSIR").toParameterModel(ns).generate("Test");
         AbsStateSpace DC = Ctrl.generateDCore("CloseSIR", PC.genPrototype("agent"));
 
@@ -45,8 +45,8 @@ public class FDShockTest {
         Simulator Simu = new Simulator(Model);
         //Simu.addLogPath("log/FDShock.txt");
         StSpY0 y0 = new StSpY0();
-        y0.append("Sus", 90);
-        y0.append("Inf", 10);
+        y0.append("Sus", 50);
+        y0.append("Inf", 50);
 
         Simu.simulate(y0, 0, 10, 1);
         Model.print();

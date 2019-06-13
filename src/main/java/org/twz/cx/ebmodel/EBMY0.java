@@ -6,18 +6,23 @@ import org.json.JSONObject;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.LeafY0;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EBMY0 extends LeafY0 {
     @Override
     public void matchModelInfo(AbsSimModel model) {
         EquationBasedModel ebm = (EquationBasedModel) model;
+        Set<String> in = new HashSet<>();
+        getEntries().forEach(j-> {
+            try {
+                in.add(j.getString("y"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
 
         for (Map.Entry<String, Double> ent: ebm.getEquations().getDictY().entrySet()) {
-            append(ent.getKey(), ent.getValue());
+            if (!in.contains(ent.getKey())) append(ent.getKey(), ent.getValue());
         }
     }
 

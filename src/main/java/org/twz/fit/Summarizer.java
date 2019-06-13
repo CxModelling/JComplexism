@@ -5,16 +5,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.Chromosome;
+import org.twz.fit.mcmc.EffectiveSampleSize;
 import org.twz.io.IO;
 import org.twz.io.AdapterJSONObject;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static org.twz.util.Statistics.*;
 
 public class Summarizer implements AdapterJSONObject {
 
-	private Map<String, double[]> Summary;
-	private double Dic;
+	private Map<String, Map<String, Double>> Summary;
+	private double DIC;
 	private double[] LogL;
 	private int SizeLocus;
 	
@@ -22,14 +25,6 @@ public class Summarizer implements AdapterJSONObject {
 		SizeLocus = chromosomes.get(0).getSize();
 		LogL = new double[chromosomes.size()];
 		this.summarize(chromosomes);
-	}
-	
-	public Map<String, double[]> getSummary() {
-		return Summary;
-	}
-
-	public Set<String> getNames() {
-		return Summary.keySet();
 	}
 
 	private void summarize(List<Chromosome> Chrs){
@@ -50,42 +45,40 @@ public class Summarizer implements AdapterJSONObject {
     }
 	
 	
-	private double[] summarizeLocus(double[] Locus){
-		Arrays.sort(Locus);
-		double[] summary = new double[7];
-		summary[0] = mean(Locus);
-		summary[1] = Math.sqrt(var(Locus));
-		summary[2] = quantile(Locus,0.025);
-		summary[3] = quantile(Locus,0.25);
-		summary[4] = quantile(Locus,0.50);
-		summary[5] = quantile(Locus,0.75);
-		summary[6] = quantile(Locus,0.975);
+	protected Map<String, Double> summarizeLocus(double[] locus){
+		double[] sorted = locus.clone();
+		Arrays.sort(sorted);
+
+		Map<String, Double> summary = new LinkedHashMap<>();
+		summary.put("Mean", mean(locus));
+		summary.put("Std", Math.sqrt(var(locus)));
+		summary.put("q025", quantile(sorted,0.025));
+		summary.put("q250", quantile(sorted,0.25));
+		summary.put("q500", quantile(sorted,0.50));
+		summary.put("q750", quantile(sorted,0.75));
+		summary.put("q975", quantile(sorted,0.975));
+		summary.put("ESS", (double) EffectiveSampleSize.calculate(locus));
+
 		return summary;
 	}
-	
-	
-	public double[] getSummary(String i) {
-		return Summary.get(i);
-	}
-
 
 	public void println(){
-		System.out.println("Name \t   mu\t   sd\t q025\t q250\t q500\t q750\t q975");
-		for (Map.Entry<String, double[]> e: Summary.entrySet()){
-            System.out.print(e.getKey()+"\t");
-            for(int j = 0 ; j < 7 ; j ++){
-                System.out.print(round(e.getValue()[j],4)+"\t");
-            }
+		IO.DoublePrecision = 3;
+		System.out.println("Name \t   mu\t   sd\t q025\t q250\t q500\t q750\t q975\t ESS");
+		for (Map.Entry<String, Map<String, Double>> e: Summary.entrySet()){
+            System.out.print(e.getKey()+"\t\t");
+			System.out.print(e.getValue().values().stream().map(d->IO.doubleFormat(d, 4))
+					.collect(Collectors.joining("\t")));
             System.out.println();
         }
 
-		System.out.println("DIC: "+ this.Dic);
+		System.out.println("DIC: "+ IO.doubleFormat(this.DIC,4));
 	}
 	
 	private void DIC(){
 		double Dbar = -2*mean(LogL);
 		double pD = var(LogL);
-		this.Dic = Dbar + pD;
+		this.DIC = Dbar + pD;
 	}
 	
 	
@@ -98,14 +91,14 @@ public class Summarizer implements AdapterJSONObject {
 		return v;
 	}
 
-	public void output(String file){
+	public void outputCSV(String file){
 		StringBuilder str = new StringBuilder();
-		str.append("Name, Mean,SD,2.5,25,50,75,97.5\n");
+		str.append("Name,Mean,SD,2.5,25,50,75,97.5,ESS\n");
 
-		for(Map.Entry<String, double[]> e:  this.Summary.entrySet()){
+		for(Map.Entry<String, Map<String, Double>> e:  this.Summary.entrySet()){
 			str.append(e.getKey());
-			for (double i: e.getValue()){
-				str.append(", "+round(i, 5));
+			for (double i: e.getValue().values()){
+				str.append(", ").append(round(i, 5));
 			}
 			str.append("\n");
 		}
@@ -120,7 +113,7 @@ public class Summarizer implements AdapterJSONObject {
 
 		JSONObject obj = new JSONObject();
 		obj.put("Summary", jsa);
-		obj.put("DIC", Dic);
+		obj.put("DIC", DIC);
 		obj.put("Size", SizeLocus);
 		IO.writeJSON(obj, file);
 	}
@@ -132,7 +125,7 @@ public class Summarizer implements AdapterJSONObject {
 
 		JSONObject obj = new JSONObject();
 		obj.put("Summary", jsa);
-		obj.put("DIC", Dic);
+		obj.put("DIC", DIC);
 		obj.put("Size", SizeLocus);
 		return obj;
 	}

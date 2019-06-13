@@ -168,8 +168,14 @@ public class Chromosome implements AdapterJSONObject, IParameters {
             chromosome = (Chromosome) super.clone();
         } catch (CloneNotSupportedException e) {
             chromosome = new Chromosome();
+            chromosome.Locus.putAll(Locus);
         }
-        if (!isLikelihoodEvaluated()) chromosome.setLogLikelihood(getLogLikelihood());
+        if (isLikelihoodEvaluated()) {
+            chromosome.setLogLikelihood(getLogLikelihood());
+        }
+        if (isPriorEvaluated()) {
+            chromosome.setLogPriorProb(getLogPriorProb());
+        }
         return chromosome;
     }
 

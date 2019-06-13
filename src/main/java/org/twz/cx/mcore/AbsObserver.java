@@ -32,6 +32,8 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         Flows = new LinkedHashMap<>();
         Snapshot = new LinkedHashMap<>();
         Snapshot.put("Time", Double.MIN_VALUE);
+
+        Summariser = (tab, model, ti) -> { };
     }
 
     public void putAllFlows(String prefix, Map<String, Double> dis) {
@@ -56,6 +58,7 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
     }
 
     public void setSummariser(FnSummary summary) {
+        if (summary == null) return;
         Summariser = summary;
     }
 

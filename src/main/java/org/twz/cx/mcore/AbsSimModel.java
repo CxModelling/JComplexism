@@ -204,10 +204,6 @@ public  abstract  class  AbsSimModel implements AdapterJSONObject {
 
     // observation
 
-    public void clearOutput() {
-        Observer.renew();
-    }
-
     public void setObservationalInteval(double dt) {
         Observer.setObservationalInterval(dt);
     }
