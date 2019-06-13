@@ -13,6 +13,7 @@ import org.twz.dataframe.DataFrame;
 import org.twz.dataframe.TimeSeries;
 import org.twz.exception.IncompleteConditionException;
 import org.twz.io.AdapterJSONObject;
+import org.twz.prob.T;
 
 import java.util.*;
 
@@ -20,9 +21,9 @@ import java.util.*;
  *
  * Created by TimeWz on 2017/2/10.
  */
-public abstract class AbsSimModel implements AdapterJSONObject {
+public  abstract  class  AbsSimModel implements AdapterJSONObject {
     private final String Name;
-    protected final AbsObserver Observer;
+    protected final  AbsObserver Observer;
     private final IY0 ProtoY0;
     protected final AbsScheduler Scheduler;
     private ListenerSet Listeners;
@@ -32,7 +33,7 @@ public abstract class AbsSimModel implements AdapterJSONObject {
     private String TimeIndex;
 
 
-    public AbsSimModel(String name, Parameters pars, AbsObserver obs, IY0 protoY0) {
+    public AbsSimModel(String name, Parameters pars, AbsObserver<? extends AbsSimModel> obs, IY0 protoY0) {
         Name = name;
         Observer = obs;
         Pars = pars;
@@ -189,7 +190,7 @@ public abstract class AbsSimModel implements AdapterJSONObject {
         }
     }
 
-    public void setTimeIndex(String i_time) {
+    public void setTimeKey(String i_time) {
         TimeIndex = i_time;
     }
 
@@ -211,6 +212,10 @@ public abstract class AbsSimModel implements AdapterJSONObject {
         Observer.setObservationalInterval(dt);
     }
 
+    public void setSummariser(FnSummary summariser) {
+        Observer.setSummariser(summariser);
+    }
+
     public void initialiseObservations(double ti) throws JSONException {
         Observer.initialiseObservations(this, ti);
     }
@@ -224,7 +229,7 @@ public abstract class AbsSimModel implements AdapterJSONObject {
     }
 
     public void pushObservations(double ti) {
-        Observer.pushObservation(ti);
+        Observer.pushObservation(this, ti);
     }
 
     public Map<String, Double> getLastObservations() {

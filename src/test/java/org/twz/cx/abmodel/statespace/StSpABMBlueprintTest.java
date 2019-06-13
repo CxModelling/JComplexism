@@ -33,8 +33,8 @@ public class StSpABMBlueprintTest {
         Bp.setObservations(new String[]{"Sus", "Inf", "Rec"}, new String[]{"Infect"}, new String[]{"FOI"});
 
         Y0 = new StSpY0();
-        Y0.append(950, "Sus");
-        Y0.append(50, "Inf");
+        Y0.append("Sus", 950);
+        Y0.append("Inf", 50);
     }
 
     @Test

@@ -36,9 +36,9 @@ public class LifeRateTest {
         Model.addObservingBehaviour("Life");
 
         Y0 = new StSpY0();
-        Y0.append(50, "Young");
-        Y0.append(50, "Middle");
-        Y0.append(50, "Old");
+        Y0.append("Young", 50);
+        Y0.append("Middle", 50);
+        Y0.append("Old", 50);
 
     }
 

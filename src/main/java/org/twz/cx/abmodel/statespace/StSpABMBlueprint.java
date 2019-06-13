@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import org.twz.cx.Director;
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.mcore.IModelBlueprint;
-import org.twz.cx.mcore.IObsFun;
+import org.twz.cx.mcore.FnSummary;
 import org.twz.dag.ParameterModel;
 import org.twz.dag.Parameters;
 import org.twz.dag.util.NodeSet;
@@ -35,14 +35,13 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
     private PopEntry Population;
     private List<JSONObject> Networks, Behaviours;
     private List<String> ObsBehaviours, ObsStates, ObsTransitions;
-    private List<IObsFun> ObsFunctions;
+    private FnSummary Summariser;
 
     public StSpABMBlueprint(String name) {
         Name = name;
         TimeKey = null;
         Networks = new ArrayList<>();
         Behaviours = new ArrayList<>();
-        ObsFunctions = new ArrayList<>();
     }
 
     public void setAgent(String prefix, String group, String[] atr, String dc, Map<String, Object> arg) {
@@ -109,10 +108,6 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         }
     }
 
-    public void addObservingFunction(IObsFun fn) {
-        ObsFunctions.add(fn);
-    }
-
     @Override
     public String getName() {
         return Name;
@@ -126,6 +121,11 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
     @Override
     public void setTimeKey(String k) {
         TimeKey = k;
+    }
+
+    @Override
+    public void setSummariser(FnSummary summariser) {
+        Summariser = summariser;
     }
 
     @Override
@@ -188,9 +188,14 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         ObsStates.forEach(model::addObservingState);
         ObsTransitions.forEach(model::addObservingTransition);
         ObsBehaviours.forEach(model::addObservingBehaviour);
-        ObsFunctions.forEach(model::addObservingFunction);
 
-        if (TimeKey != null) model.setTimeIndex(TimeKey);
+        if (Summariser != null) {
+            model.setSummariser(Summariser);
+        } else {
+            model.setSummariser((tab, model1, ti) -> {});
+        }
+
+        if (TimeKey != null) model.setTimeKey(TimeKey);
 
         return model;
     }

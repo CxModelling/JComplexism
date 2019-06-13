@@ -14,8 +14,8 @@ public interface IModelBlueprint<T extends AbsSimModel> {
     String getName();
     void setOption(String opt, Object value);
     void setTimeKey(String k);
+    void setSummariser(FnSummary summariser);
     NodeSet getParameterHierarchy(Director da);
     T generate(String name, Map<String, Object> args);
     boolean isWellDefined();
-
 }

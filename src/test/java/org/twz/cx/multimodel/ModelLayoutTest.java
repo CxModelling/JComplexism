@@ -94,7 +94,7 @@ public class ModelLayoutTest {
         layout.addEntry("SR", "ebm", y0e);
 
         StSpY0 y0a = new StSpY0();
-        y0a.append(50, "Inf");
+        y0a.append("Inf", 50);
         layout.addEntry("I", "abm", y0a);
 
         layout.addInteraction("SR",

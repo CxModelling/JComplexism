@@ -4,9 +4,7 @@ package org.twz.cx.multimodel;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.cx.Director;
-import org.twz.cx.mcore.AbsSimModel;
-import org.twz.cx.mcore.BranchY0;
-import org.twz.cx.mcore.IY0;
+import org.twz.cx.mcore.*;
 import org.twz.cx.mcore.communicator.IChecker;
 import org.twz.cx.mcore.communicator.IResponse;
 import org.twz.cx.multimodel.entries.IModelEntry;
@@ -29,6 +27,7 @@ public class ModelLayout {
     private List<InteractionEntry> InteractionEntries;
     private Map<String, ModelLayout> Children;
     private String TimeKey;
+    private FnSummary Summariser;
 
     public ModelLayout(String name) {
         Name = name;
@@ -113,9 +112,6 @@ public class ModelLayout {
 
     public AbsSimModel generate(String name, Director da, Parameters pc, boolean all_observed) {
         MultiModel model = new MultiModel(name, pc);
-        if (TimeKey != null) {
-            model.setTimeIndex(TimeKey);
-        }
 
         AbsSimModel sub;
 
@@ -123,6 +119,7 @@ public class ModelLayout {
             List<Tuple<String, String, IY0>> ms = entry.generate();
             for (Tuple<String, String, IY0> m : ms) {
                 sub = da.generateMCore(m.getFirst(), m.getSecond(), pc.breed(m.getFirst(), m.getSecond()));
+                if (TimeKey != null) sub.setTimeKey(TimeKey);
                 model.appendModel(sub);
                 if (all_observed) model.addObservingModel(m.getFirst());
             }
@@ -135,7 +132,12 @@ public class ModelLayout {
             }
         }
 
-        if (TimeKey != null) model.setTimeIndex(TimeKey);
+        if (Summariser != null) {
+            model.getObserver().setSummariser(Summariser);
+        } else {
+            model.getObserver().setSummariser((tab, m, ti) -> {});
+        }
+        if (TimeKey != null) model.setTimeKey(TimeKey);
         return model;
     }
 
@@ -153,5 +155,9 @@ public class ModelLayout {
 
         }
         return y0;
+    }
+
+    public void setSummariser(FnSummary summariser) {
+        Summariser = summariser;
     }
 }

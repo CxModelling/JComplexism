@@ -42,7 +42,7 @@ public class StSpABModelTest {
         Simulator Simu = new Simulator(Model);
         Simu.onLog("log/DzAB.txt");
         StSpY0 y0 = new StSpY0();
-        y0.append(200, "ab");
+        y0.append("ab", 200);
 
 
         Simu.simulate(y0, 0, 10, 1);

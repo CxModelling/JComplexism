@@ -9,7 +9,6 @@ import org.twz.cx.element.Event;
 import org.twz.cx.element.ModelAtom;
 import org.twz.cx.element.Request;
 import org.twz.cx.mcore.AbsObserver;
-import org.twz.cx.mcore.IObsFun;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafModel;
 import org.twz.dag.Parameters;
@@ -237,10 +236,6 @@ public abstract class AbsAgentBasedModel<Ta extends AbsAgent> extends LeafModel 
         } catch (NullPointerException | JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    public void addObservingFunction(IObsFun fn) {
-        ((ABMObserver) Observer).addObsFunction(fn);
     }
 
     protected abstract void record(AbsAgent ag, Object todo, double time);

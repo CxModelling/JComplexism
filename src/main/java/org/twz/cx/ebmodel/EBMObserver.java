@@ -1,7 +1,6 @@
 package org.twz.cx.ebmodel;
 
 import org.twz.cx.mcore.AbsObserver;
-import org.twz.cx.mcore.IObsFun;
 
 import java.util.ArrayList;
 import java.util.List;

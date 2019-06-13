@@ -40,7 +40,7 @@ public class TimeVaryingSSTest {
         Model = (StSpABModel) Ctrl.generateModel("Test", "abm", "pTV");
 
         Y0 = new StSpY0();
-        Y0.append(1000, "Act");
+        Y0.append("Act", 1000);
 
 
     }

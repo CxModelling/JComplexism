@@ -155,7 +155,7 @@ public class ModellingFlowTest {
                     JSONObject ent;
                     for (int i = 0; i < entries.length(); i++) {
                         ent = entries.getJSONObject(i);
-                        y0.append(ent.getInt("n"), ent.getString("y"));
+                        y0.append(ent.getString("y"), ent.getInt("n"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

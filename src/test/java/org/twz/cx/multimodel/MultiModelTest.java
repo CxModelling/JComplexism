@@ -44,8 +44,8 @@ public class MultiModelTest {
         ModelLayout lyo = Ctrl.createModelLayout("MultiSIR");
 
         StSpY0 y0 = new StSpY0();
-        y0.append(950, "Sus");
-        y0.append(50, "Inf");
+        y0.append("Sus", 950);
+        y0.append("Inf", 50);
         lyo.addEntry("M", "abm", y0, 1, 2);
 
         Y0 = Ctrl.generateModelY0("MultiSIR");

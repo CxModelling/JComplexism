@@ -39,7 +39,7 @@ public class AgeingTest {
         Model = (StSpABModel) Ctrl.generateModel("Test", "abm", "pAgeing");
 
         Y0 = new StSpY0();
-        Y0.append(1000, "Act");
+        Y0.append("Act", 1000);
 
 
     }

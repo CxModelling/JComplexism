@@ -2,6 +2,7 @@ package org.twz.cx.ebmodel;
 
 
 import org.twz.cx.Director;
+import org.twz.cx.mcore.FnSummary;
 import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.BayesNet;
 import org.twz.dag.Parameters;
@@ -18,6 +19,7 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
     private Map<String, Object> Xs;
     private List<String> ObsYs;
     private List<EBMMeasurement> Measurements;
+    private FnSummary Summariser;
 
     public ODEEBMBlueprint(String name) {
         Name = name;
@@ -42,6 +44,11 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
     @Override
     public void setTimeKey(String k) {
         TimeKey = k;
+    }
+
+    @Override
+    public void setSummariser(FnSummary summariser) {
+        Summariser = summariser;
     }
 
     public void setODE(ODEFunction fn, String[] ys) {
@@ -111,7 +118,13 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
 
         ObsYs.forEach(ebm::addObservingStock);
         Measurements.forEach(ebm::addObservingStockFunction);
-        if (TimeKey != null) ebm.setTimeIndex(TimeKey);
+        if (Summariser == null) {
+            ebm.getObserver().setSummariser((tab, model, ti) -> {});
+        } else {
+            ebm.getObserver().setSummariser(Summariser);
+        }
+
+        if (TimeKey != null) ebm.setTimeKey(TimeKey);
         return ebm;
     }
 

@@ -60,7 +60,7 @@ public class StSpZeroInflatedTest {
         Bp.setObservations(new String[]{"A", "B"}, new String[]{"ToB"}, new String[]{});
 
         Y0 = new StSpY0();
-        Y0.append(1000, "A");
+        Y0.append("A", 1000);
 
         Ctrl.addDataFunction(new ZeroInflatedSurvival("wei",
                 IO.loadJSON("src/test/resources/ZeroInflatedCox.json")));

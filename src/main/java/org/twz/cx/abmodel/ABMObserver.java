@@ -2,7 +2,6 @@ package org.twz.cx.abmodel;
 
 import org.twz.cx.abmodel.behaviour.AbsBehaviour;
 import org.twz.cx.mcore.AbsObserver;
-import org.twz.cx.mcore.IObsFun;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -26,23 +25,17 @@ public class ABMObserver extends AbsObserver<ABModel> {
 
     private Set<AbsBehaviour> ObsBehaviours;
     private Set<Object> ObsEvents;
-    private Set<IObsFun> ObsFunctions;
     private ArrayList<Record> Records;
 
     ABMObserver() {
         ObsBehaviours = new LinkedHashSet<>();
         Records = new ArrayList<>();
-        ObsFunctions = new LinkedHashSet<>();
         ObsEvents = new LinkedHashSet<>();
     }
 
 
     void addObsEvent(Object evt) {
         ObsEvents.add(evt);
-    }
-
-    void addObsFunction(IObsFun fn) {
-        ObsFunctions.add(fn);
     }
 
     void addObsBehaviour(AbsBehaviour be) {
@@ -54,9 +47,6 @@ public class ABMObserver extends AbsObserver<ABModel> {
     protected void readStatics(ABModel model, Map<String, Double> tab, double ti) {
         for (AbsBehaviour be: ObsBehaviours) {
             be.fillData(tab, model, ti);
-        }
-        for (IObsFun fn: ObsFunctions) {
-            fn.call(tab, model, ti);
         }
     }
 

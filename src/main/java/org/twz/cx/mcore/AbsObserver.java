@@ -13,20 +13,23 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
     protected LinkedHashMap<String, Double> Last;
     private LinkedHashMap<String, Double> Mid;
     private LinkedHashMap<String, Double> Flows;
-    private LinkedHashMap<String, Double> Snapshot;
+    private FnSummary Summariser;
+
     private List<Map<String, Double>> Observation, ObservationMid;
     private List<String> StockNames, FlowNames;
+    private LinkedHashMap<String, Double> Snapshot;
+
     protected double ObservationalInterval;
     private boolean ExactMid;
 
     protected AbsObserver(){
         Observation = new LinkedList<>();
         ObservationMid = new LinkedList<>();
-        Flows = new LinkedHashMap<>();
         ObservationalInterval = 1;
         ExactMid = true;
         Last = new LinkedHashMap<>();
         Mid = new LinkedHashMap<>();
+        Flows = new LinkedHashMap<>();
         Snapshot = new LinkedHashMap<>();
         Snapshot.put("Time", Double.MIN_VALUE);
     }
@@ -47,28 +50,20 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         });
     }
 
-    protected boolean isMid(Map<String, Double> tab) {
-        return tab == Mid;
-    }
-
     public void setObservationalInterval(double odt) {
         assert odt > 0;
         ObservationalInterval = odt;
+    }
+
+    public void setSummariser(FnSummary summary) {
+        Summariser = summary;
     }
 
     public void setExactMid(boolean ex) {
         ExactMid = ex;
     }
 
-    public double get(String s) {
-        try {
-            return Last.get(s);
-        } catch (NullPointerException e) {
-            return 0;
-        }
-    }
-
-    public void renew(){
+    void renew(){
         Observation.clear();
         ObservationMid.clear();
     }
@@ -114,11 +109,13 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
         Flows.clear();
     }
 
-    public void pushObservation(double ti) {
+    void pushObservation(T model, double ti) {
         Last.putAll(Flows);
+        Summariser.call(Last, model, ti);
         Observation.add(Last);
         if (ExactMid) {
             Mid.putAll(Flows);
+            Summariser.call(Mid, model, ti);
             ObservationMid.add(Mid);
         }
         newSession(ti);

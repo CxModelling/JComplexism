@@ -118,10 +118,6 @@ public class EquationBasedModel extends LeafModel {
         super.fetchDisclosures(ds_ms, ti);
     }
 
-    public void measure(Map<String, Double> tab, EBMMeasurement measurement) {
-        Equations.measure(tab, measurement);
-    }
-
     @Override
     public JSONObject toJSON() {
         return null;

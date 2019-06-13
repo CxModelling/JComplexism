@@ -27,7 +27,6 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
     private Set<State> ObsStates;
     private Set<Transition> ObsTransitions;
     private Set<AbsBehaviour> ObsBehaviours;
-    private Set<IObsFun> ObsFunctions;
     private ArrayList<Record> Records;
     private Map<String, Pair<String, Object>> LazySnapshot;
 
@@ -35,7 +34,6 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
         ObsStates = new LinkedHashSet<>();
         ObsTransitions = new LinkedHashSet<>();
         ObsBehaviours = new LinkedHashSet<>();
-        ObsFunctions = new LinkedHashSet<>();
         Records = new ArrayList<>();
     }
 
@@ -54,9 +52,7 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
         for (AbsBehaviour be: ObsBehaviours) {
             be.fillData(tab, model, ti);
         }
-        for (IObsFun fn: ObsFunctions) {
-            fn.call(tab, model, ti);
-        }
+
     }
 
     @Override
@@ -74,10 +70,6 @@ public class StSpObserver extends AbsObserver<StSpABModel> {
 
     void addObsBehaviour(AbsBehaviour be) {
         ObsBehaviours.add(be);
-    }
-
-    void addObsFunction(IObsFun fn) {
-        ObsFunctions.add(fn);
     }
 
     @Override
