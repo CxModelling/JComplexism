@@ -219,9 +219,4 @@ public class ModellingFlowTest {
         // exp.start(5);
         // exp.saveResultsByVariable("E://test", "abm_", ".csv");
     }
-
-    @Test
-    public void replicateHybrid() throws Exception {
-
-    }
 }

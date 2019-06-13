@@ -194,7 +194,12 @@ public class TimeSeries implements AdapterJSONObject {
             System.out.print(t);
             for (String k : DataSeries.keySet()) {
                 System.out.print("\t");
-                System.out.print(String.format(("%" + i + "." + i + "g "), get(t, k)));
+                try {
+                    System.out.print(String.format(("%" + i + "." + i + "g "), get(t, k)));
+                } catch (IllegalFormatConversionException e) {
+                    System.out.print("[" + get(t, k) + "]");
+                }
+
             }
             System.out.println();
         }

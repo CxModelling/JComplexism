@@ -37,7 +37,7 @@ public class ParameterCoreTest {
 
         System.out.println(pc);
 
-        assertArrayEquals(pc.listSamplers().toArray(), new String[]{});
+        assertArrayEquals(pc.listSamplers().toArray(), new String[]{"y"});
 
         System.out.println(pm.generate("x1"));
     }
