@@ -29,6 +29,6 @@ public class BinaryMutator extends AbsMutator {
 
     @Override
     public double calculateLogKernel(double v1, double v2) {
-        return 0;
+        return (v1 == v2)?0:Double.NEGATIVE_INFINITY;
     }
 }

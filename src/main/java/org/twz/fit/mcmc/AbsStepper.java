@@ -47,7 +47,7 @@ public abstract class AbsStepper implements IStepper {
         if (proposed < Lower | proposed > Upper) {
             return newChromosome;
         } else {
-            newChromosome.put(Name, proposed);
+            newChromosome.impulse(Name, proposed);
 
             bm.evaluateLogPrior(newChromosome);
             bm.evaluateLogLikelihood(newChromosome);
@@ -56,7 +56,7 @@ public abstract class AbsStepper implements IStepper {
             if (p_acc > Math.random()) {
                 if (isAdaptive()) AcceptanceCount ++;
             } else {
-                newChromosome.put(Name, value);
+                newChromosome.impulse(Name, value);
                 newChromosome.setLogPriorProb(chromosome.getLogPriorProb());
                 newChromosome.setLogLikelihood(chromosome.getLogLikelihood());
             }

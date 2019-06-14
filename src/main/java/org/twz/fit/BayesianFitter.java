@@ -18,11 +18,11 @@ public abstract class BayesianFitter extends AbsFitter {
         setOption("N_post", niter);
     }
 
-    protected OutputSummary getSummary(BayesianModel bm, boolean seq) {
+    OutputSummary getSummary(BayesianModel bm, boolean seq) {
         return new OutputSummary(bm, seq);
     }
 
-    public abstract OutputSummary getSummary(BayesianModel bm);
+
 
     @Override
     public JSONObject getGoodnessOfFit(BayesianModel bm) {

@@ -1,5 +1,7 @@
 package org.twz.util;
 
+import org.apache.commons.math3.stat.StatUtils;
+
 import java.util.*;
 
 /**
@@ -307,6 +309,10 @@ public class Statistics {
         summ.put("Max", qs[4]);
 
         return summ;
+    }
+
+    public static double ess(double[] x) {
+        return Math.round(Math.pow(StatUtils.sum(x), 2)/StatUtils.sumSq(x));
     }
 
 

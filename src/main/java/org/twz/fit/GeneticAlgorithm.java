@@ -32,9 +32,6 @@ public class GeneticAlgorithm extends FrequentistFitter {
         AbsMutator mut;
         for (ValueDomain node : nodes) {
             switch (node.Type) {
-                case "Double":
-                    mut = new DoubleMutator(node);
-                    break;
                 case "Integer":
                     mut = new IntegerMutator(node);
                     break;
@@ -70,6 +67,8 @@ public class GeneticAlgorithm extends FrequentistFitter {
             double li = type.equals("MLE")?elite.getLogLikelihood():elite.getLogPosterior();
             if (li == max_fitness) {
                 n_stay ++;
+            } else {
+                n_stay = 0;
             }
             max_fitness = li;
             if (type.equals("MLE")) {
@@ -97,6 +96,11 @@ public class GeneticAlgorithm extends FrequentistFitter {
         res.add(elite);
         return res;
 
+    }
+
+    @Override
+    public OutputSummary getSummary(BayesianModel bm) {
+        return null; // todo
     }
 
     @Override

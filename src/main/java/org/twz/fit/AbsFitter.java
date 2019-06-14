@@ -110,5 +110,7 @@ public abstract class AbsFitter implements ILogable {
         }
     }
 
+    public abstract OutputSummary getSummary(BayesianModel bm);
+
     public abstract JSONObject getGoodnessOfFit(BayesianModel bm);
 }

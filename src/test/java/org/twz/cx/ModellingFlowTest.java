@@ -16,6 +16,7 @@ import org.twz.cx.mcore.IY0;
 import org.twz.dag.Chromosome;
 import org.twz.dataframe.Pair;
 import org.twz.dataframe.TimeSeries;
+import org.twz.fit.ABCSMC;
 import org.twz.fit.BayesianFitter;
 import org.twz.fit.MCMC;
 import org.twz.io.IO;
@@ -163,9 +164,10 @@ public class ModellingFlowTest {
 
     @Test
     public void fit() throws Exception {
-        BayesianFitter fitter = new MCMC(1000, 1000, 3, DM_Prior.getMovableNodes());
+        BayesianFitter fitter = new ABCSMC(100, DM_Prior.getMovableNodes());
+        fitter.onLog();
         DM_Prior.fit(fitter);
-        fitter.getSummary(DM_Prior).println();
+        DM_Prior.getSummary().println();
         // DM_Prior.saveMementosJSON("src/test/resources/SIR/Fitted.json", "Posterior");
     }
 

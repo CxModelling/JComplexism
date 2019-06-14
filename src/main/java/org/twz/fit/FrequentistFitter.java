@@ -16,4 +16,5 @@ public abstract class FrequentistFitter extends AbsFitter {
         warning("There is no update method");
         return bm.getResults();
     }
+
 }

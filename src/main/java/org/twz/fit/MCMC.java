@@ -141,7 +141,6 @@ public class MCMC extends BayesianFitter {
         }
     }
 
-
     @Override
     public OutputSummary getSummary(BayesianModel bm) {
         return getSummary(bm, true);

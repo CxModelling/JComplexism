@@ -46,7 +46,7 @@ public class OutputSummary {
 	}
 
 	private Map<String, Double> summariseNode(double[] vs) {
-		int ess = (SequentialData)? essSeq(vs): essPara(vs);
+		int ess = (SequentialData)? essSeq(vs): 0;
 
 		double[] sorted = vs.clone();
 		Arrays.sort(sorted);
@@ -61,6 +61,11 @@ public class OutputSummary {
 		summary.put("ESS", (double) ess);
 
 		return summary;
+	}
+
+	public void setESS(int ess) {
+
+		Summary.values().forEach(v->v.replace("ESS", (double) ess));
 	}
 
 	private Chromosome meanNodes(List<Chromosome> posterior, List<String> nodes, BayesianModel bm) {

@@ -2,6 +2,7 @@ package org.twz.dag;
 
 import org.twz.exception.IncompleteConditionException;
 import org.twz.fit.AbsFitter;
+import org.twz.fit.OutputSummary;
 import org.twz.fit.ValueDomain;
 import org.twz.prob.IWalkable;
 import org.twz.dag.loci.DistributionLoci;
@@ -89,6 +90,15 @@ public abstract class BayesianModel {
             throw new AssertionError("Model fitting have not been preceded");
         }
         return Results;
+    }
+
+    public OutputSummary getSummary() throws AssertionError {
+        assert Results != null;
+        if (Results.isEmpty()) {
+            throw new AssertionError("Model fitting have not been preceded");
+        }
+        assert Fitter != null;
+        return Fitter.getSummary(this);
     }
 
     public final void fit(AbsFitter fitter) {

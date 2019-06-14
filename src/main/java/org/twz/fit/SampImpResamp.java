@@ -1,5 +1,6 @@
 package org.twz.fit;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.BayesianModel;
 import org.twz.dag.Chromosome;
@@ -8,12 +9,13 @@ import org.twz.util.Statistics;
 import java.util.*;
 
 
-
 /**
  * Sampling importance resampling
  * Created by TimeWz on 2017/4/25.
  */
 public class SampImpResamp extends BayesianFitter {
+    private double[] Weight;
+
     public SampImpResamp(int n_post) {
         super();
         setOption("N_post", n_post);
@@ -25,6 +27,7 @@ public class SampImpResamp extends BayesianFitter {
         int n = getOptionInteger("N_post");
         List<Chromosome> prior = sampling(bm, n);
         double[] imp = importance(bm, prior);
+        Weight = imp;
         return resampling(bm, prior, imp, n);
     }
 
@@ -36,11 +39,18 @@ public class SampImpResamp extends BayesianFitter {
 
     @Override
     public OutputSummary getSummary(BayesianModel bm) {
-        return getSummary(bm, false);
+        OutputSummary summary = getSummary(bm, false);
+        summary.setESS((int) Statistics.ess(Weight));
+        return summary;
     }
 
     @Override
     public JSONObject getGoodnessOfFit(BayesianModel bm) {
+        try {
+            return getSummary(bm).outputGoodnessOfFit();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

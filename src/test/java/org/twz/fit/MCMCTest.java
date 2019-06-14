@@ -62,15 +62,23 @@ public class MCMCTest {
         fitter.setOption("N_burn_in", 3000);
         fitter.onLog();
         BM.fit(fitter);
-
-        fitter.getSummary(BM).println();
+        BM.getSummary().println();
     }
 
     @Test
-    public void fitsir() {
+    public void fitABCSMC() {
+        ABCSMC fitter = new ABCSMC(100, BM.getMovableNodes());
+
+        fitter.onLog();
+        BM.fit(fitter);
+        BM.getSummary().println();
+    }
+
+    @Test
+    public void fitSIR() {
         SampImpResamp fitter = new SampImpResamp(1000);
 
         BM.fit(fitter);
-        fitter.getSummary(BM).println();
+        BM.getSummary().println();
     }
 }
