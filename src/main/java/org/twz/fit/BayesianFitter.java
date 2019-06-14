@@ -1,10 +1,8 @@
 package org.twz.fit;
 
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.twz.dag.BayesianModel;
-import org.twz.dag.Chromosome;
-import org.twz.dataframe.DataFrame;
 
 import java.util.*;
 
@@ -20,17 +18,19 @@ public abstract class BayesianFitter extends AbsFitter {
         setOption("N_post", niter);
     }
 
-    public JSONArray parametersToJSON(List<Chromosome> pars) throws JSONException {
-        JSONArray js = new JSONArray();
-        for (Chromosome p: pars) {
-            js.put(p.toJSON());
+    protected OutputSummary getSummary(BayesianModel bm, boolean seq) {
+        return new OutputSummary(bm, seq);
+    }
+
+    public abstract OutputSummary getSummary(BayesianModel bm);
+
+    @Override
+    public JSONObject getGoodnessOfFit(BayesianModel bm) {
+        try {
+            return getSummary(bm).outputGoodnessOfFit();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return js;
+        return new JSONObject();
     }
-
-    public DataFrame summariseParameters(List<Chromosome> pars) {
-        (new Summarizer(pars)).println();
-        return null; // todo
-    }
-
 }

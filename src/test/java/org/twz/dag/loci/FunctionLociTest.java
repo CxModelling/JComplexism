@@ -1,7 +1,5 @@
 package org.twz.dag.loci;
 
-import junit.framework.Assert;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mariuszgromada.math.mxparser.FunctionExtension;

@@ -47,6 +47,11 @@ public class ABC extends BayesianFitter {
     }
 
     @Override
+    public OutputSummary getSummary(BayesianModel bm) {
+        return getSummary(bm, false);
+    }
+
+    @Override
     public JSONObject getGoodnessOfFit(BayesianModel bm) {
         return null;
     }

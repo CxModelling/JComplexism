@@ -165,7 +165,7 @@ public class ModellingFlowTest {
     public void fit() throws Exception {
         BayesianFitter fitter = new MCMC(1000, 1000, 3, DM_Prior.getMovableNodes());
         DM_Prior.fit(fitter);
-        fitter.summariseParameters(DM_Prior.getResults());
+        fitter.getSummary(DM_Prior).println();
         // DM_Prior.saveMementosJSON("src/test/resources/SIR/Fitted.json", "Posterior");
     }
 

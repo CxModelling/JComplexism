@@ -30,6 +30,7 @@ public class MCMC extends BayesianFitter {
         Options.put("N_burn_in", burn_in);
         Options.put("N_thin", thin);
         Options.put("N_update", n_post);
+        Options.put("N_max_drop", 100);
         Steppers = new ArrayList<>();
 
         IStepper stp;
@@ -62,16 +63,39 @@ public class MCMC extends BayesianFitter {
 
     @Override
     public List<Chromosome> fit(BayesianModel bm) {
-        Chromosome last = bm.samplePrior();
-        if (!last.isPriorEvaluated()) bm.evaluateLogPrior(last);
-        if (!last.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(last);
-
         int burn = getOptionInteger("N_burn_in");
         int niter = getOptionInteger("N_post");
 
+
+        Chromosome last = initialise(bm);
         last = burnIn(bm, last, burn);
         return collect(bm, last, niter, "Posterior");
     }
+
+
+    private Chromosome initialise(BayesianModel bm) {
+        info("Initialising");
+        int niter = getOptionInteger("N_max_drop");
+        int k = 1;
+        while(true) {
+            Chromosome last = bm.samplePrior();
+            if (!last.isPriorEvaluated()) bm.evaluateLogPrior(last);
+            if (!last.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(last);
+
+            if (last.isLikelihoodEvaluated() & Double.isFinite(last.getLogLikelihood())) {
+                return last;
+            }
+
+            if (k > niter) {
+                error("likelihoods are always infinite");
+            }
+            k ++;
+        }
+
+
+
+    }
+
 
     @Override
     public List<Chromosome> update(BayesianModel bm) {
@@ -117,12 +141,9 @@ public class MCMC extends BayesianFitter {
         }
     }
 
+
     @Override
-    public JSONObject getGoodnessOfFit(BayesianModel bm) {
-        try {
-            return (new Summarizer(bm.getResults())).toJSON();
-        } catch (JSONException e) {
-            return new JSONObject();
-        }
+    public OutputSummary getSummary(BayesianModel bm) {
+        return getSummary(bm, true);
     }
 }

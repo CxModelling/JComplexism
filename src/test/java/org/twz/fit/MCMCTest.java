@@ -60,8 +60,10 @@ public class MCMCTest {
     public void fit() {
         MCMC fitter = new MCMC(1000, BM.getMovableNodes());
         fitter.setOption("N_burn_in", 3000);
+        fitter.onLog();
         BM.fit(fitter);
-        fitter.summariseParameters(BM.getResults());
+
+        fitter.getSummary(BM).println();
     }
 
     @Test
@@ -69,6 +71,6 @@ public class MCMCTest {
         SampImpResamp fitter = new SampImpResamp(1000);
 
         BM.fit(fitter);
-        fitter.summariseParameters(BM.getResults());
+        fitter.getSummary(BM).println();
     }
 }
