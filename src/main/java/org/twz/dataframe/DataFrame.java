@@ -98,34 +98,30 @@ public class DataFrame implements AdapterJSONArray {
         return js;
     }
 
-    public void print() {
-        print("3");
+    public void println() {
+        println("7");
     }
 
-    public void print(String n) {
-        System.out.format(getHeadingFormat(), ColumnNames.toArray());
+    public void println(String n) {
+        System.out.format(getHeadingFormat(n), ColumnNames.toArray());
         System.out.println();
 
         int size = Data.get(Key).size();
 
-        String k;
-
         for (int i=0; i < size; i++) {
-            for (int j = 0; j < ColumnNames.size(); j++) {
-                k = ColumnNames.get(j);
-                System.out.print(String.format(("%" + n + "g "), Data.get(k).get(i)));
-                System.out.print("\t");
+            for (String k : ColumnNames) {
+                System.out.printf("%" + n + "g ", Data.get(k).get(i));
             }
 
             System.out.println();
         }
     }
 
-    private String getHeadingFormat() {
+    private String getHeadingFormat(String n) {
         StringBuilder sb = new StringBuilder();
-        sb.append("%s");
+        sb.append("%").append(n).append("s");
         for (int i = 0; i < ColumnNames.size() - 1; i++) {
-            sb.append("\t%s");
+            sb.append(" %").append(n).append("s");
         }
         return sb.toString();
     }

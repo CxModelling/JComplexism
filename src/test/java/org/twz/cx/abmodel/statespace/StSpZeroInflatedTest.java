@@ -7,14 +7,9 @@ import org.twz.cx.Director;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.BayesNet;
-import org.twz.dag.Parameters;
 import org.twz.datafunction.ZeroInflatedSurvival;
 import org.twz.io.IO;
-import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.ctmc.CTMCBlueprint;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class StSpZeroInflatedTest {
     private Director Ctrl;
@@ -73,7 +68,7 @@ public class StSpZeroInflatedTest {
         Simulator Simu = new Simulator(Model);
 
         Simu.simulate(Y0, 0, 10, 1);
-        Model.getObserver().getObservations().print();
+        Model.getObserver().getObservations().println();
     }
 
     @Test
@@ -83,7 +78,7 @@ public class StSpZeroInflatedTest {
         Simulator Simu = new Simulator(Model);
         // Simu.onLog("log/Zi.txt");
         Simu.simulate(Y0, 0, 10, 1);
-        Model.getObserver().getObservations().print();
+        Model.getObserver().getObservations().println();
     }
 
     @Test
@@ -93,7 +88,7 @@ public class StSpZeroInflatedTest {
         Simulator Simu = new Simulator(Model);
         // Simu.onLog("log/Zi.txt");
         Simu.simulate(Y0, 0, 10, 1);
-        Model.getObserver().getObservations().print();
+        Model.getObserver().getObservations().println();
     }
 
     @Test
@@ -103,6 +98,6 @@ public class StSpZeroInflatedTest {
         Simulator Simu = new Simulator(Model);
         // Simu.onLog("log/Zi.txt");
         Simu.simulate(Y0, 0, 10, 1);
-        Model.getObserver().getObservations().print();
+        Model.getObserver().getObservations().println();
     }
 }

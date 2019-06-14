@@ -1,26 +1,16 @@
 package org.twz.cx.multimodel;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.abmodel.statespace.StSpABMBlueprint;
 import org.twz.cx.abmodel.statespace.StSpY0;
-import org.twz.cx.ebmodel.AbsEquations;
 import org.twz.cx.ebmodel.EBMY0;
-import org.twz.cx.ebmodel.EquationBasedModel;
 import org.twz.cx.ebmodel.ODEEBMBlueprint;
-import org.twz.cx.element.Disclosure;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.Simulator;
 import org.twz.cx.mcore.communicator.*;
-import org.twz.dataframe.Pair;
-import org.twz.datafunction.AbsDataFunction;
-import org.twz.exception.IncompleteConditionException;
-import org.twz.prob.IWalkable;
-import org.twz.prob.Poisson;
 
 public class ModelAgentExportTest {
     private Director Ctrl;
@@ -86,7 +76,7 @@ public class ModelAgentExportTest {
         Sim.onLog("log/Hybrid.txt");
 
         Sim.simulate(Y0s, 5, 30, 0.25);
-        Model.getObserver().getObservations().print();
+        Model.getObserver().getObservations().println();
     }
 
     @Test

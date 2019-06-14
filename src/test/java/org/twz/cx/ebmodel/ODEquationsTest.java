@@ -1,6 +1,5 @@
 package org.twz.cx.ebmodel;
 
-import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.cx.mcore.Simulator;
@@ -52,7 +51,7 @@ public class ODEquationsTest {
         Y0.append("{'y': 'I', 'n': 10}");
 
         Simu.simulate(Y0, 0, 15, 1);
-        EBM.getObserver().getObservations().print();
+        EBM.getObserver().getObservations().println();
     }
 
 }

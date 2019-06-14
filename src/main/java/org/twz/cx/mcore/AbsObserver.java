@@ -193,6 +193,6 @@ public abstract class AbsObserver<T extends AbsSimModel> implements Cloneable{
 
 
     public void print(){
-        getObservations().print();
+        getObservations().println();
     }
 }

@@ -71,6 +71,6 @@ public class StSpABMBlueprintTest {
         //Simu.addLogPath("log/FDShock.txt");
 
         Simu.simulate(Y0, 0, 10, 1);
-        Model.getObserver().getObservations().print();
+        Model.getObserver().getObservations().println();
     }
 }

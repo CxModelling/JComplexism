@@ -15,6 +15,7 @@ import org.twz.io.AdapterJSONObject;
 import org.twz.io.IO;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TimeSeries implements AdapterJSONObject {
     private final List<Double> Times;
@@ -184,18 +185,21 @@ public class TimeSeries implements AdapterJSONObject {
     }
 
 
-    public void print(int i) {
+    public void print() {
         System.out.println(
                 "Timeseries [" + Times.get(0) + ", " +
                         Times.get(Times.size()-1)+ "]");
-        System.out.println("Time " + String.join("\t", DataSeries.keySet()));
+        System.out.println(String.format("%7s", "Time") + "  " +
+                        DataSeries.keySet().stream()
+                                .map(d->String.format("%7s", d))
+                                .collect(Collectors.joining("  ")));
 
         for (double t: Times) {
-            System.out.print(t);
+            System.out.printf("%7f", t);
             for (String k : DataSeries.keySet()) {
-                System.out.print("\t");
+                System.out.print("  ");
                 try {
-                    System.out.print(String.format(("%" + i + "." + i + "g "), get(t, k)));
+                    System.out.printf("%7g", (Double) get(t, k));
                 } catch (IllegalFormatConversionException e) {
                     System.out.print("[" + get(t, k) + "]");
                 }
@@ -203,10 +207,6 @@ public class TimeSeries implements AdapterJSONObject {
             }
             System.out.println();
         }
-    }
-
-    public void print() {
-        print(3);
     }
 
     public String toString() {

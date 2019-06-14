@@ -46,6 +46,6 @@ public class StSpABModelTest {
 
 
         Simu.simulate(y0, 0, 10, 1);
-        Model.getObserver().getObservations().print();
+        Model.getObserver().getObservations().println();
     }
 }
