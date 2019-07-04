@@ -61,7 +61,7 @@ public class ModelLayoutTest {
         BpA.setAgent("Ag", "agent", "HySIR");
 
         BpA.addBehaviour("{'Name': 'Recovery', 'Type': 'Cohort', 'Args': {'s_death': 'Rec'}}");
-        BpA.addBehaviour("{'Name': 'StInf', 'Type': 'StateTrack', 'Args': {'s_src': 'Inf'}}");
+        BpA.addBehaviour("{'Name': 'StInf', 'Type': 'StateTrackApprox', 'Args': {'s_src': 'Inf', 'dt': 0.5}}");
         BpA.addBehaviour("{'Name': 'InfIn', 'Type': 'AgentImport', 'Args': {'s_birth': 'Inf'}}");
         BpA.setObservations(new String[]{"Inf"}, new String[]{"Recov"}, new String[]{"InfIn", "StInf"});
 
@@ -85,20 +85,20 @@ public class ModelLayoutTest {
             tab.put("N", n);
         });
         BpE.setObservations(new String[]{"S", "R"});
-        BpE.setDt(0.5);
+        BpE.setDt(0.1);
 
 
         ModelLayout layout = Ctrl.createModelLayout("HybridSIR");
         EBMY0 y0e = new EBMY0();
-        y0e.append("{'y': 'S', 'n': 950}");
+        y0e.append("{'y': 'S', 'n': 30}");
         layout.addEntry("SR", "ebm", y0e);
 
         StSpY0 y0a = new StSpY0();
-        y0a.append("Inf", 50);
+        y0a.append("Inf", 20);
         layout.addEntry("I", "abm", y0a);
 
         layout.addInteraction("SR",
-                new StartWithChecker("update value"),
+                new WhoStartWithChecker("StInf", "update value"),
                 new ValueImpulseResponse("Inf"));
 
         layout.addInteraction("SR",
@@ -122,7 +122,7 @@ public class ModelLayoutTest {
         Simulator Sim = new Simulator(Model);
         Sim.onLog("log/Hybrid.txt");
 
-        Sim.simulate(Y0s, 5, 30, 0.25);
+        Sim.simulate(Y0s, 5, 30, 1);
         Model.getObserver().getObservations().println();
     }
 }

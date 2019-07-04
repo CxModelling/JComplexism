@@ -67,7 +67,14 @@ public class MCMC extends BayesianFitter {
         int niter = getOptionInteger("N_post");
 
 
-        Chromosome last = initialise(bm);
+        Chromosome last;
+
+        try {
+            last = bm.getResults().get(0);
+        } catch (AssertionError | IndexOutOfBoundsException e) {
+            last = initialise(bm);
+        }
+
         last = burnIn(bm, last, burn);
         return collect(bm, last, niter, "Posterior");
     }

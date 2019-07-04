@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.twz.dag.BayesNet;
+import org.twz.dag.NodeSet;
 
 public class NodeSetTest {
 

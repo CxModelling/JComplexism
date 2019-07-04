@@ -49,7 +49,7 @@ public class Parameters extends Chromosome {
 
     @Override
     public double getDouble(String s) {
-        if (has(s)) {
+        if (super.has(s)) {
             return super.getDouble(s);
         } else {
             try {
@@ -60,6 +60,18 @@ public class Parameters extends Chromosome {
         }
     }
 
+    @Override
+    public boolean has(String s) {
+        if (super.has(s)) {
+            return true;
+        } else {
+            try {
+                return Parent.has(s);
+            } catch (NullPointerException ex) {
+                return false;
+            }
+        }
+    }
 
     public Parameters breed(String nickname, String group, Map<String, Double> exo) {
         if (Children.containsKey(nickname)) {
@@ -84,7 +96,7 @@ public class Parameters extends Chromosome {
     }
 
     public Parameters genSibling(String nickname) {
-        return Parent.breed(nickname, getGroupName(), getLocus());
+        return Parent.breed(nickname, getGroupName(), null);
     }
 
     public Parameters genPrototype(String group, Map<String, Double> exo) {

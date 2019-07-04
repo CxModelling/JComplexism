@@ -36,7 +36,7 @@ public class EBMObserver extends AbsObserver<EquationBasedModel> {
         } else {
             tiu = ti;
         }
-        model.goTo(tiu);
+        //model.goTo(tiu);
         AbsEquations Eq = model.getEquations();
         Stocks.forEach(s->tab.put(s, Eq.getY(s)));
         StockFns.forEach(sf->Eq.measure(tab, sf));

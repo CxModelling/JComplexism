@@ -1,5 +1,5 @@
 PCore pSIR_prior {
-    beta ~ unif(1, 5)
+    beta ~ triangle(3, 1, 5)
     gamma = 0.5
     delta = 0.1
 }

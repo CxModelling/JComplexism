@@ -24,14 +24,14 @@ public class AdaptorIntegerCommonsMath implements IWalkable {
 
     @Override
     public double sample() {
-        return D.sample();
+        return (double) D.sample();
     }
 
     @Override
     public double[] sample(int n) {
         double[] res = new double[n];
         int i = 0;
-        for (double s: D.sample(n)) {
+        for (int s: D.sample(n)) {
             res[i] = s;
             i ++;
         }

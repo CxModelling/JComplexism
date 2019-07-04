@@ -6,7 +6,7 @@ import org.twz.cx.mcore.FnSummary;
 import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.BayesNet;
 import org.twz.dag.Parameters;
-import org.twz.dag.util.NodeSet;
+import org.twz.dag.NodeSet;
 
 import java.util.*;
 

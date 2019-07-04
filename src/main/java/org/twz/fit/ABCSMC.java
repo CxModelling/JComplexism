@@ -1,7 +1,6 @@
 package org.twz.fit;
 
 
-import org.apache.commons.math3.stat.StatUtils;
 import org.twz.dag.BayesianModel;
 import org.twz.dag.Chromosome;
 import org.twz.dataframe.Pair;
@@ -19,17 +18,20 @@ public class ABCSMC extends BayesianFitter {
     private List<AbsMutator> Mutators;
     private double Epsilon;
     private double[] Weights;
+    private boolean OnAdaptive;
 
     public ABCSMC(int n_post, List<ValueDomain> nodes) {
         Mutators = new ArrayList<>();
 
         Options.put("N_test", 100);
-        Options.put("P_test", 0.5);
-        Options.put("N_population", n_post);
-        Options.put("Max_generation", 10);
-        Options.put("Max_stay", 5);
-        Options.put("P_eps", 0.70);
+        Options.put("P_test", 0.8);
+        Options.put("N_post", n_post);
+        Options.put("Max_generation", 15);
+        Options.put("Max_stay", 7);
+        Options.put("P_eps", 0.80);
+        Options.put("P_tol", 0.005);
         Epsilon = Double.NaN;
+        OnAdaptive = true;
 
         AbsMutator mut;
         for (ValueDomain node : nodes) {
@@ -47,6 +49,13 @@ public class ABCSMC extends BayesianFitter {
         }
     }
 
+    public void adaptationOn() {
+        OnAdaptive = true;
+    }
+
+    public void adaptationOff() {
+        OnAdaptive = false;
+    }
 
     @Override
     public List<Chromosome> fit(BayesianModel bm) {
@@ -61,7 +70,6 @@ public class ABCSMC extends BayesianFitter {
 
         info("Genesis");
 
-
         Pair<double[], List<Chromosome>> population = genesis(bm);
 
         eps0 = Statistics.max(getLikelihood(population.getSecond()));
@@ -70,14 +78,14 @@ public class ABCSMC extends BayesianFitter {
             n_g ++;
             population = reproduce(bm, population);
 
-            if (Math.abs(eps0 - Epsilon) < 0.05*Math.abs(Epsilon)) {
+            if (Math.abs(eps0 - Epsilon) < getOptionDouble("P_tol")*Math.abs(Epsilon)) {
                 n_stay ++;
             } else {
-
                 n_stay = 0;
             }
             eps0 = Epsilon;
-            info(String.format("Generation: %d, Eps: %g, ESS: %d", n_g, Epsilon, (int) Statistics.ess(population.getFirst())));
+            double best = Statistics.max(getLikelihood(population.getSecond()));
+            info(String.format("Generation: %d, Eps: %g, Best: %g, ESS: %d", n_g, Epsilon, best, (int) Statistics.ess(population.getFirst())));
 
             if(canBeTerminated(n_stay)) {
                 break;
@@ -98,18 +106,13 @@ public class ABCSMC extends BayesianFitter {
 
         List<Chromosome> xs = new ArrayList<>();
 
-        try {
-            for (Chromosome chromosome : (bm.getPriorSample())) {
-                xs.add(chromosome);
-                if (xs.size() >= n) {
-                    break;
-                }
-            }
-        } catch (AssertionError ignored) {
-
+        Chromosome chr;
+        while (xs.size() < n) {
+            chr = bm.samplePrior();
+            if (!chr.isPriorEvaluated()) bm.evaluateLogPrior(chr);
+            if (!chr.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(chr);
+            if (Double.isFinite(chr.getLogPosterior())) xs.add(chr);
         }
-
-        appendPriorUntil(bm, n, xs);
 
         double[] lis = getLikelihood(xs);
 
@@ -119,19 +122,18 @@ public class ABCSMC extends BayesianFitter {
 
     private Pair<double[], List<Chromosome>> genesis(BayesianModel bm) {
         bm.clearMementos("Genesis");
-        int n = getOptionInteger("N_population");
+        int n = getOptionInteger("N_post");
         List<Chromosome> xs = new ArrayList<>();
 
-        Chromosome chromosome;
+        Chromosome chr;
         while (xs.size() < n) {
-            chromosome = bm.samplePrior();
-            if (!chromosome.isPriorEvaluated()) bm.evaluateLogPrior(chromosome);
-            if (!chromosome.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(chromosome);
-            if (chromosome.getLogLikelihood() > Epsilon) {
-                xs.add(chromosome);
-                bm.keepMemento(chromosome, "Genesis");
-            }
+            chr = bm.samplePrior();
+            if (!chr.isPriorEvaluated()) bm.evaluateLogPrior(chr);
+            if (!chr.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(chr);
+            if (chr.getLogLikelihood() > Epsilon) xs.add(chr);
         }
+        xs.forEach(d->bm.keepMemento(d, "Genesis"));
+
         double[] wts = new double[n];
         for (int i = 0; i < n; i++) {
             wts[i] = 1.0/n;
@@ -158,7 +160,6 @@ public class ABCSMC extends BayesianFitter {
             if (!chr.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(chr);
             xs.add(chr);
         }
-
         Epsilon = Math.max(Epsilon, Statistics.quantile(getLikelihood(xs), 1-getOptionDouble("P_eps")));
         xs.removeIf(d->d.getLogLikelihood() < Epsilon);
         while (xs.size() > n) {
@@ -172,7 +173,7 @@ public class ABCSMC extends BayesianFitter {
             if (chr.getLogLikelihood() > Epsilon) xs.add(chr);
         }
         double[] wts = calculateWts(population.getFirst(), p0, xs);
-        updateMutators(xs);
+        if (OnAdaptive) updateMutators(xs);
         return new Pair<>(wts, xs);
     }
 
@@ -211,9 +212,10 @@ public class ABCSMC extends BayesianFitter {
                 base += distance(p0.get(j), chr1)*wts0[j];
             }
 
-            wts[i] = Math.exp(chr1.getLogPriorProb())/base;
+            wts[i] = chr1.getLogPriorProb() - Math.log(base);
         }
-        wts = Statistics.mul(wts, 1/Statistics.sum(wts));
+        wts = Statistics.add(wts, -Statistics.lse(wts));
+        wts = Statistics.exp(wts);
         return wts;
     }
 

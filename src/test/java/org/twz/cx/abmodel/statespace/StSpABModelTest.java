@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.Parameters;
-import org.twz.dag.util.NodeSet;
+import org.twz.dag.NodeSet;
 import org.twz.statespace.AbsStateSpace;
 
 public class StSpABModelTest {

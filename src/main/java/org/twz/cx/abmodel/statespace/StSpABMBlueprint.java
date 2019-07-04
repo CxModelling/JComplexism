@@ -8,7 +8,7 @@ import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.cx.mcore.FnSummary;
 import org.twz.dag.ParameterModel;
 import org.twz.dag.Parameters;
-import org.twz.dag.util.NodeSet;
+import org.twz.dag.NodeSet;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.IStateSpaceBlueprint;
 
@@ -33,6 +33,7 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
     private final String Name;
     private String TimeKey;
     private PopEntry Population;
+    private String[] FixVars, FloatVars;
     private List<JSONObject> Networks, Behaviours;
     private List<String> ObsBehaviours, ObsStates, ObsTransitions;
     private FnSummary Summariser;
@@ -42,6 +43,8 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
         TimeKey = null;
         Networks = new ArrayList<>();
         Behaviours = new ArrayList<>();
+        FixVars = new String[0];
+        FloatVars = new String[0];
     }
 
     public void setAgent(String prefix, String group, String[] atr, String dc, Map<String, Object> arg) {
@@ -58,6 +61,11 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
 
     public void setAgent(String prefix, String group, String dc) {
         setAgent(prefix, group, new String[0], dc, new HashMap<>());
+    }
+
+    public void setPars(String[] fx, String[] fl) {
+        FixVars = fx;
+        FloatVars = fl;
     }
 
     public void addNetwork(String name, String type, Map<String, Object> arg) throws JSONException {
@@ -130,7 +138,7 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
 
     @Override
     public NodeSet getParameterHierarchy(Director da) {
-        NodeSet ns = new NodeSet(Name, new String[0]);
+        NodeSet ns = new NodeSet(Name, FixVars, FloatVars);
         assert Population != null;
 
         IStateSpaceBlueprint dc = da.getStateSpace(Population.Dynamic);

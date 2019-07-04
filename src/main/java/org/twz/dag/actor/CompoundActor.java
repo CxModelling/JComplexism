@@ -22,7 +22,11 @@ public class CompoundActor extends SimulationActor {
         End = loci;
         AllParents = new HashSet<>();
         for (Loci loc: Flow) {
-            AllParents.addAll(loc.getParents());
+            try {
+                AllParents.addAll(loc.getParents());
+            } catch (NullPointerException ignored) {
+
+            }
         }
         AllParents.addAll(End.getParents());
         for (Loci loc: Flow) {
@@ -38,11 +42,17 @@ public class CompoundActor extends SimulationActor {
     @Override
     public double sample(Chromosome pas) throws IncompleteConditionException {
         Map<String, Double> ps = findParentValues(pas);
+        double v;
         for (Loci loci : Flow) {
-            try {
-                ps.put(loci.getName(), loci.render(ps));
-            } catch (org.twz.exception.IncompleteConditionException e) {
-                e.printStackTrace();
+            v = pas.getDouble(loci.getName());
+            if (Double.isNaN(v)) {
+                try {
+                    ps.put(loci.getName(), loci.render(ps));
+                } catch (org.twz.exception.IncompleteConditionException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                ps.put(loci.getName(), v);
             }
         }
         return End.render(ps);

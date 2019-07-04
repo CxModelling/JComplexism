@@ -66,9 +66,23 @@ public class MCMCTest {
     }
 
     @Test
+    public void fitTwo() {
+        GeneticAlgorithm ga = new GeneticAlgorithm(BM.getMovableNodes());
+        ga.onLog();
+        BM.fit(ga);
+
+        MCMC mcmc = new MCMC(1000, BM.getMovableNodes());
+        mcmc.setOption("N_burn_in", 1000);
+        mcmc.onLog();
+
+        BM.fit(mcmc);
+        BM.getSummary().println();
+    }
+
+    @Test
     public void fitABCSMC() {
         ABCSMC fitter = new ABCSMC(100, BM.getMovableNodes());
-
+        fitter.printOptions();
         fitter.onLog();
         BM.fit(fitter);
         BM.getSummary().println();

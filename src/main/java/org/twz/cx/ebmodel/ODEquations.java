@@ -2,6 +2,7 @@ package org.twz.cx.ebmodel;
 
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.exception.MaxCountExceededException;
+import org.apache.commons.math3.exception.NumberIsTooSmallException;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.nonstiff.DormandPrince853Integrator;
@@ -47,7 +48,13 @@ public class ODEquations extends AbsEquations implements FirstOrderDifferentialE
 
     @Override
     protected void goTo(double t0, double[] y0, double t1, double[] y1) {
-        Integrator.integrate(this, t0, y0, t1, y1);
+
+        try {
+            Integrator.integrate(this, t0, y0, t1, y1);
+        } catch (NumberIsTooSmallException ignored) {
+
+        }
+
     }
 
     @Override

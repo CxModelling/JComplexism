@@ -4,16 +4,15 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.twz.dag.util.NodeSet;
-
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
  *
  * Created by TimeWz on 07/08/2018.
  */
-public class ParameterCoreTest {
+public class ParameterTest {
 
     private BayesNet BN;
     private NodeSet NG;
@@ -28,6 +27,7 @@ public class ParameterCoreTest {
         BN.appendLoci("x2 ~ binom(3, 0.5)");
         BN.appendLoci("mu = b0 + b1*x1 + b2*x2");
         BN.appendLoci("y ~ norm(mu, 1)");
+        BN.appendLoci("z = if(x1>10, 1, -1)");
     }
 
     @Test
@@ -46,7 +46,7 @@ public class ParameterCoreTest {
     @Test
     public void toSC_ng() {
         NG = new NodeSet("country", new String[]{"b0", "b1", "x1"});
-        NG.appendChild(new NodeSet("agent", new String[]{"x2", "mu", "b2"}, new String[]{"y"}));
+        NG.appendChild(new NodeSet("agent", new String[]{"x2", "mu", "b2"}, new String[]{"y", "z"}));
 
         ParameterModel sc = BN.toParameterModel(NG);
         Parameters pc = sc.generate("Taiwan");
@@ -70,5 +70,19 @@ public class ParameterCoreTest {
         pB.freeze();
         System.out.println(pA);
         System.out.println(pB);
+    }
+
+    @Test
+    public void SC_exo() {
+        NG = new NodeSet("country", new String[]{"b0", "b1", "x1"});
+        NG.appendChild(new NodeSet("agent", new String[]{"x2", "mu", "b2"}, new String[]{"y"}));
+
+        ParameterModel sc = BN.toParameterModel(NG);
+        Map<String, Double> exo = new HashMap<>();
+        exo.put("x2", 2.0);
+        Parameters pc = sc.generate("Taiwan", exo);
+        assertEquals(pc.getDouble("x2"), 2.0, 1e-5);
+        Parameters ag = pc.breed("ag", "agent");
+        assertEquals(ag.getDouble("x2"), 2.0, 1e-5);
     }
 }

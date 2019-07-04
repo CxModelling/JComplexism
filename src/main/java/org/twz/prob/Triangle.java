@@ -15,7 +15,7 @@ public class Triangle implements IWalkable {
 		A = a;
 		B = b;
 		M = m;
-		FM = (M-A)*(M-A)/(B-A)/(B-M);
+		FM = (M-A)/(B-A);
 		rng = RNG;
 	}
 

@@ -11,6 +11,7 @@ import org.twz.dag.ParameterModel;
 import org.twz.dag.Parameters;
 import org.twz.dataframe.Pair;
 import org.twz.dataframe.TimeSeries;
+import org.twz.dataframe.Tuple;
 import org.twz.io.IO;
 import org.twz.util.NameGenerator;
 
@@ -18,7 +19,7 @@ import java.util.*;
 
 public abstract class Experiment {
 
-    private Map<String, Pair<Parameters, IY0>> Inputs;
+    private List<Tuple<String, Parameters, IY0>> Inputs;
 
     private ParameterModel SC;
     protected Director Ctrl;
@@ -38,7 +39,7 @@ public abstract class Experiment {
     }
 
     public void loadPosterior(JSONArray js) throws JSONException {
-        Inputs = new LinkedHashMap<>();
+        Inputs = new ArrayList<>();
 
         JSONObject obj;
         NameGenerator NG = new NameGenerator("Sim");
@@ -50,7 +51,7 @@ public abstract class Experiment {
             name = NG.getNext();
             pars = SC.generate(obj.getJSONObject("Parameters"));
             y0 = translateY0(obj.getJSONObject("Y0"));
-            Inputs.put(name, new Pair<>(pars, y0));
+            Inputs.add(new Tuple<>(name, pars, y0));
         }
     }
 
@@ -59,11 +60,10 @@ public abstract class Experiment {
 
 
     public Pair<Chromosome, TimeSeries> testRun(String log) {
-        String key = (new ArrayList<>(Inputs.keySet()).get(0));
-        Parameters pc = Inputs.get(key).getFirst();
-        IY0 y0 = Inputs.get(key).getSecond();
+        Parameters pars = Inputs.get(0).getSecond();
+        IY0 y0 = Inputs.get(0).getThird();
 
-        AbsSimModel model = Ctrl.generateModel(pc.getName(), SimModel, pc);
+        AbsSimModel model = Ctrl.generateModel(pars.getName(), SimModel, pars);
         Simulator simulator = new Simulator(model);
 
         if (log != null) {
@@ -78,7 +78,7 @@ public abstract class Experiment {
             e.printStackTrace();
         }
 
-        return new Pair<>(pc, model.outputTS());
+        return new Pair<>(pars, model.outputTS());
     }
 
     public Pair<Chromosome, TimeSeries> testRun() {
@@ -98,9 +98,9 @@ public abstract class Experiment {
 
 
         while (true) {
-            for (Map.Entry<String, Pair<Parameters, IY0>> ent : Inputs.entrySet()) {
-                pc = ent.getValue().getFirst();
-                y0 = ent.getValue().getSecond();
+            for (Tuple<String, Parameters, IY0> ent : Inputs) {
+                pc = ent.getSecond();
+                y0 = ent.getThird();
 
                 name = ng.getNext();
                 model = Ctrl.generateModel(name, SimModel, pc);
@@ -117,27 +117,81 @@ public abstract class Experiment {
         }
     }
 
-    public void start() {
-        start(Inputs.size());
+    public void run(String path, String prefix, String suffix) {
+        run(0, Inputs.size(), path, prefix, suffix);
+    }
+
+    public void run(int to, String path, String prefix, String suffix) {
+        run(0, to, path, prefix, suffix);
+    }
+
+    public void run(int from, int to, String path, String prefix, String suffix) {
+        to = Math.max(Math.min(Inputs.size(), to), from + 1);
+
+        Parameters pars;
+        IY0 y0;
+
+        IO.checkDirectory(path);
+
+        AbsSimModel model;
+        TimeSeries ts;
+
+
+        for (int i = from; i < to; i++) {
+            pars = Inputs.get(i).getSecond();
+            y0 = Inputs.get(i).getThird();
+
+            model = Ctrl.generateModel(Inputs.get(i).getFirst(), SimModel, pars);
+            try {
+                ts = Simulator.simulate(model, y0, Time0, Time1, DiffTime, true);
+                saveResults(path, prefix, String.format("%06d", i), suffix, ts);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void saveResultsByVariable(String file_path, String prefix, String suffix) {
-            Map<String, TimeSeries> ts = TimeSeries.transpose(Mementos);
-            IO.checkDirectory(file_path);
+        Map<String, TimeSeries> ts = TimeSeries.transpose(Mementos);
+        IO.checkDirectory(file_path);
         saveResults(file_path, prefix, suffix, ts);
     }
 
     private void saveResults(String path, String prefix, String suffix, Map<String, TimeSeries> ts) {
-
+        String file_path;
         if (suffix.endsWith(".csv")) {
             for (Map.Entry<String, TimeSeries> ent : ts.entrySet()) {
-                ent.getValue().toCSV(path+"/"+prefix+ent.getKey()+suffix);
+                file_path = prefix+ent.getKey()+suffix;
+                file_path = file_path.replaceAll(":", "_");
+                file_path = path + "/" + file_path;
+                ent.getValue().toCSV(file_path);
             }
         } else if (suffix.endsWith(".json")) {
             try {
                 for (Map.Entry<String, TimeSeries> ent : ts.entrySet()) {
-                    ent.getValue().toJSON(path+"/"+prefix+ent.getKey()+suffix);
+                    file_path = prefix+ent.getKey()+suffix;
+                    file_path = file_path.replaceAll(":", "_");
+                    file_path = path + "/" + file_path;
+                    ent.getValue().toJSON(file_path);
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void saveResults(String path, String prefix, String name, String suffix, TimeSeries ts) {
+        String file_path;
+
+        file_path = prefix+name+suffix;
+        file_path = file_path.replaceAll(":", "_");
+        file_path = path + "/" + file_path;
+
+        if (suffix.endsWith(".csv")) {
+            ts.toCSV(file_path);
+        } else if (suffix.endsWith(".json")) {
+            try {
+            ts.toJSON(file_path);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

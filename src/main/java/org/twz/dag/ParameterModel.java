@@ -3,7 +3,6 @@ package org.twz.dag;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.loci.Loci;
-import org.twz.dag.util.NodeSet;
 import org.twz.exception.ScriptException;
 import org.twz.graph.DiGraph;
 import org.twz.io.AdapterJSONObject;
@@ -43,10 +42,6 @@ public class ParameterModel implements AdapterJSONObject {
 
     public BayesNet getBN() {
         return BN;
-    }
-
-    private Map<String, ParameterGroup> getPGs() {
-        return PGs;
     }
 
     private void findPGs() {

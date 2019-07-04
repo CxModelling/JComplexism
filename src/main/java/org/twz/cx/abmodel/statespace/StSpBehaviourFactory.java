@@ -47,15 +47,22 @@ public class StSpBehaviourFactory {
         ags = new AbsArgument[]{new OptionArg("s_src", "States", State.class)};
         Factory.register("StateTrack", StateTrack.class, ags);
 
+        ags = new AbsArgument[]{new OptionArg("s_src", "States", State.class),
+                new PositiveDoubleArg("dt")};
+        Factory.register("StateTrackApprox", StateTrackApprox.class, ags);
+
+
         ags = new AbsArgument[]{new OptionArg("s_birth", "States", State.class)};
         Factory.register("AgentImport", AgentImport.class, ags);
 
-        ags = new AbsArgument[]{new StringArg("key"), new PositiveDoubleArg("dt")};
-        Factory.register("TimeVaryingSS", TimeVaryingSS.class, ags);
 
         ags = new AbsArgument[]{new StringArg("key")};
         Factory.register("Ageing", Ageing.class, ags);
         Factory.register("Aging", Ageing.class, ags);
+
+        ags = new AbsArgument[]{new OptionArg("s_src", "States", State.class),
+                new StringArg("key")};
+        Factory.register("CumAttribute", CumAttribute.class, ags);
 
     }
 

@@ -9,7 +9,7 @@ import org.twz.cx.abmodel.statespace.StSpPopulation;
 import org.twz.cx.abmodel.statespace.StSpY0;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.Parameters;
-import org.twz.dag.util.NodeSet;
+import org.twz.dag.NodeSet;
 import org.twz.statespace.AbsStateSpace;
 
 public class FDShockTest {

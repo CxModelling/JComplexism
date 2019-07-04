@@ -39,7 +39,10 @@ public abstract class ModelAtom implements Comparable<ModelAtom>, AdapterJSONObj
     }
 
     public Object get(String s) {
-        return Attributes.get(s);
+        if (Attributes.containsKey(s)) {
+            return Attributes.get(s);
+        }
+        return Parameters.getDouble(s);
     }
 
     public String getString(String s) {

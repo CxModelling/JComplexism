@@ -1,7 +1,7 @@
 package org.twz.cx.mcore;
 
 import org.twz.cx.Director;
-import org.twz.dag.util.NodeSet;
+import org.twz.dag.NodeSet;
 
 import java.util.Map;
 

@@ -105,7 +105,7 @@ public abstract class AbsFitter implements ILogable {
             Chromosome chromosome = bm.samplePrior();
             if (!chromosome.isPriorEvaluated()) bm.evaluateLogPrior(chromosome);
             if (!chromosome.isLikelihoodEvaluated()) bm.evaluateLogLikelihood(chromosome);
-            if (Double.isInfinite(chromosome.getLogLikelihood())) continue;
+            if (Double.isInfinite(chromosome.getLogPosterior())) continue;
             prior.add(chromosome);
         }
     }

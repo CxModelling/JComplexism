@@ -6,19 +6,12 @@ import org.junit.Test;
 import org.twz.cx.Director;
 import org.twz.cx.abmodel.statespace.StSpABMBlueprint;
 import org.twz.cx.abmodel.statespace.StSpABModel;
-import org.twz.cx.abmodel.statespace.StSpPopulation;
 import org.twz.cx.abmodel.statespace.StSpY0;
-import org.twz.cx.element.AbsScheduler;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.BayesNet;
-import org.twz.dag.Parameters;
-import org.twz.dag.util.NodeSet;
 import org.twz.datafunction.PrAgeByYearSex;
 import org.twz.io.IO;
-import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.ctmc.CTMCBlueprint;
-
-import static org.junit.Assert.*;
 
 public class AgeingTest {
     private StSpABModel Model;

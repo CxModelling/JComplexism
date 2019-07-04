@@ -159,6 +159,10 @@ public class GeneticAlgorithm extends FrequentistFitter {
     private void crossover(List<Chromosome> population) {
         double p = getOptionDouble("P_crossover");
 
+        GeneticAlgorithm.crossover(population, p, Crossover);
+    }
+
+    static void crossover(List<Chromosome> population, double p, AbsCrossover crossover) {
         int m = population.size()/2;
 
         Chromosome p1, p2;
@@ -167,7 +171,7 @@ public class GeneticAlgorithm extends FrequentistFitter {
             if (Math.random() > p) continue;
             p1 = population.get(2*i);
             p2 = population.get(2*i+1);
-            offspring = Crossover.crossover(p1, p2);
+            offspring = crossover.crossover(p1, p2);
             offspring.getFirst().resetProbability();
             offspring.getSecond().resetProbability();
             population.remove(p1);
@@ -176,6 +180,7 @@ public class GeneticAlgorithm extends FrequentistFitter {
             population.add(offspring.getSecond());
         }
     }
+
 
     private Chromosome findElitism(List<Chromosome> population) {
         Chromosome elite = null;

@@ -12,7 +12,7 @@ import org.twz.dag.Parameters;
 import org.twz.dag.NodeSet;
 import org.twz.statespace.AbsStateSpace;
 
-public class LifeRateTest {
+public class StateTrackTest {
     private StSpABModel Model;
     private StSpY0 Y0;
 
@@ -30,11 +30,13 @@ public class LifeRateTest {
         StSpPopulation Pop = new StSpPopulation("Ag", "agent", DC, PC);
         Model = new StSpABModel("Test", PC, Pop);
 
-        Model.addBehaviour(new LifeRate("Life", DC.getState("Dead"), DC.getState("Young"), 0.5, 0.1));
+        Model.addBehaviour(new StateTrack("Mid", DC.getState("Middle")));
+        Model.addBehaviour(new StateTrackApprox("MidApp", DC.getState("Middle"), 0.1));
 
-        Model.addObservingState("Alive");
-        Model.addObservingBehaviour("Life");
 
+        Model.addObservingState("Middle");
+        Model.addObservingBehaviour("Mid");
+        Model.addObservingBehaviour("MidApp");
         Y0 = new StSpY0();
         Y0.append("Young", 50);
         Y0.append("Middle", 50);
@@ -45,7 +47,7 @@ public class LifeRateTest {
     @Test
     public void simulation() throws Exception {
         Simulator Simu = new Simulator(Model);
-        Simu.onLog("log/LifeRate.txt");
+        Simu.onLog("log/StateTrack.txt");
         Simu.simulate(Y0, 0, 10, 1);
         Model.print();
     }

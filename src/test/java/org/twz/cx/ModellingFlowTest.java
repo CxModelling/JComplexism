@@ -164,8 +164,9 @@ public class ModellingFlowTest {
 
     @Test
     public void fit() throws Exception {
-        BayesianFitter fitter = new ABCSMC(100, DM_Prior.getMovableNodes());
+        ABCSMC fitter = new ABCSMC(100, DM_Prior.getMovableNodes());
         fitter.onLog();
+        fitter.adaptationOff();
         DM_Prior.fit(fitter);
         DM_Prior.getSummary().println();
         // DM_Prior.saveMementosJSON("src/test/resources/SIR/Fitted.json", "Posterior");
@@ -191,6 +192,7 @@ public class ModellingFlowTest {
         exp.loadPosterior(IO.loadJSONArray("src/test/resources/SIR/Fitted.json"));
         Pair<Chromosome, TimeSeries> p_ts = exp.testRun();
         p_ts.getSecond().print();
+        exp.run(3, "E://Source/JCx/output", "T", ".csv");
         // exp.start(2000);
         // exp.saveResultsByVariable("E://test", "ebm_", ".csv");
     }

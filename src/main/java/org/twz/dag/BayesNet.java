@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.twz.dag.loci.*;
-import org.twz.dag.util.NodeSet;
 import org.twz.datafunction.AbsDataFunction;
 import org.twz.datafunction.DataCentre;
 import org.twz.exception.IncompleteConditionException;

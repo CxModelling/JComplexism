@@ -53,6 +53,20 @@ public class ParameterGroup implements AdapterJSONObject {
                 .filter(d->BeFixed.contains(d))
                 .map(d->PM.getBN().getLoci(d))
                 .collect(Collectors.toList());
+        updateListening(PM.getBN());
+    }
+
+    private void updateListening(BayesNet bn) {
+        Set<String> parents = new HashSet<>();
+        for (String s : BeFixed) {
+            parents.addAll(bn.getDAG().getAncestors(s));
+        }
+        for (String s : BeFloating) {
+            parents.addAll(bn.getDAG().getAncestors(s));
+        }
+        parents.removeAll(BeFloating);
+        parents.removeAll(BeFixed);
+        Listening.retainAll(parents);
     }
 
     private List<ActorBlueprint> getActorBlueprints() {
@@ -69,7 +83,7 @@ public class ParameterGroup implements AdapterJSONObject {
                 if (hasIntersection(pa, BeFloating)) {
                     flow = new ArrayList<>(order);
                     flow.retainAll(g.getAncestors(act));
-                    flow.retainAll(BeFloating);
+                    //flow.retainAll(BeFloating);
                     Bps.add(new ActorBlueprint(act, ActorBlueprint.Compound, flow));
                 } else if (hasIntersection(pa, Listening)) {
                     Bps.add(new ActorBlueprint(act, ActorBlueprint.Single));

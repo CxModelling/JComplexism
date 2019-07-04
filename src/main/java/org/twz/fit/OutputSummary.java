@@ -63,8 +63,7 @@ public class OutputSummary {
 		return summary;
 	}
 
-	public void setESS(int ess) {
-
+	void setESS(int ess) {
 		Summary.values().forEach(v->v.replace("ESS", (double) ess));
 	}
 

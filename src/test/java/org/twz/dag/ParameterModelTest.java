@@ -3,12 +3,9 @@ package org.twz.dag;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
-import org.twz.dag.util.NodeSet;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class ParameterModelTest {
     private BayesNet BN;

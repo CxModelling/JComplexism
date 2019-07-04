@@ -9,7 +9,7 @@ import org.twz.cx.mcore.IY0;
 import org.twz.cx.mcore.LeafY0;
 import org.twz.dag.BayesNet;
 import org.twz.dag.Parameters;
-import org.twz.dag.util.NodeSet;
+import org.twz.dag.NodeSet;
 import org.twz.datafunction.AbsDataFunction;
 import org.twz.datafunction.DataCentre;
 import org.twz.statespace.AbsStateSpace;

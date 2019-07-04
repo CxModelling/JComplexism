@@ -1,8 +1,7 @@
-package org.twz.dag.util;
+package org.twz.dag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.twz.dag.BayesNet;
 import org.twz.dag.loci.ExoValueLoci;
 import org.twz.dag.loci.Loci;
 import org.twz.graph.DiGraph;

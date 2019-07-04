@@ -12,7 +12,7 @@ import org.twz.cx.multimodel.entries.InteractionEntry;
 import org.twz.cx.multimodel.entries.MultipleEntry;
 import org.twz.cx.multimodel.entries.SingleEntry;
 import org.twz.dag.Parameters;
-import org.twz.dag.util.NodeSet;
+import org.twz.dag.NodeSet;
 import org.twz.dataframe.Tuple;
 
 import java.util.*;
