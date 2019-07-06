@@ -11,7 +11,7 @@ import org.twz.statespace.AbsStateSpace;
 public class StSpBehaviourFactoryTest {
 
     @Before
-    public void setUp() throws JSONException {
+    public void setUp() throws Exception {
         Director ctrl = new Director();
         ctrl.loadBayesNet("src/test/resources/script/pBAD.txt");
         ctrl.loadStateSpace("src/test/resources/script/BAD.txt");

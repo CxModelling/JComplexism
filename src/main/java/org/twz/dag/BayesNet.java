@@ -9,8 +9,10 @@ import org.twz.datafunction.AbsDataFunction;
 import org.twz.datafunction.DataCentre;
 import org.twz.exception.IncompleteConditionException;
 import org.twz.exception.ScriptException;
+import org.twz.exception.ValidationException;
 import org.twz.graph.DiGraph;
 import org.twz.io.AdapterJSONObject;
+import org.twz.io.FnJSON;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -143,10 +145,12 @@ public class BayesNet implements AdapterJSONObject {
         Loci loci;
         switch (loc.getString("Type")) {
             case "Sampler":
-                loci = new DistributionLoci(nd, loc.getString("Def"), toList(loc.getJSONArray("Parents")));
+                loci = new DistributionLoci(nd, loc.getString("Def"),
+                        FnJSON.toStringList(loc.getJSONArray("Parents")));
                 break;
             case "Function":
-                loci = new FunctionLoci(nd, loc.getString("Def"), toList(loc.getJSONArray("Parents")));
+                loci = new FunctionLoci(nd, loc.getString("Def"),
+                        FnJSON.toStringList(loc.getJSONArray("Parents")));
                 break;
             case "Value":
                 loci = new ValueLoci(nd, loc.getDouble("Def"));
@@ -281,14 +285,6 @@ public class BayesNet implements AdapterJSONObject {
         complete();
     }
 
-    private List<String> toList(JSONArray ja) throws JSONException {
-        List<String> l = new ArrayList<>();
-        for (int i = 0; i < ja.length(); i++) {
-            l.add(ja.getString(i));
-        }
-        return l;
-    }
-
     public List<String> getOrder() {
         if (isFrozen()) {
             return Order;
@@ -321,12 +317,12 @@ public class BayesNet implements AdapterJSONObject {
         RVLeaves = null;
     }
 
-    public ParameterModel toParameterModel(NodeSet ns) {
+    public ParameterModel toParameterModel(NodeSet ns) throws ValidationException {
         ns.injectGraph(this);
         return new ParameterModel(this, ns);
     }
 
-    public ParameterModel toParameterModel() {
+    public ParameterModel toParameterModel() throws ValidationException {
         NodeSet ns = new NodeSet(getName(), new String[0], getRVLeaves().toArray(new String[0]));
         return toParameterModel(ns);
     }

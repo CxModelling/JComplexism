@@ -2,6 +2,7 @@ package org.twz.cx.mcore;
 
 import org.twz.cx.Director;
 import org.twz.dag.NodeSet;
+import org.twz.exception.ValidationException;
 
 import java.util.Map;
 
@@ -15,6 +16,6 @@ public interface IModelBlueprint<T extends AbsSimModel> {
     void setTimeKey(String k);
     void setSummariser(FnSummary summariser);
     NodeSet getParameterHierarchy(Director da);
-    T generate(String name, Map<String, Object> args);
+    T generate(String name, Map<String, Object> args) throws ValidationException;
     boolean isWellDefined();
 }

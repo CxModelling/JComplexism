@@ -85,6 +85,42 @@ public class DiGraph<T> implements Cloneable {
         return getDescendants(node).stream().map(e->Nodes.get(e)).collect(Collectors.toList());
     }
 
+    public DiGraph<T> getMinimalDAG(Collection<String> nodes) {
+        DiGraph<T> sub = this.clone();
+        sub.removeUpstream(nodes);
+        sub.removeDownstream(nodes);
+        return sub;
+
+    }
+
+    public List<String> getMediators(String node, Collection<String> source) {
+        List<String> anc = getAncestors(node);
+        DiGraph<T> sub = getMinimalDAG(anc);
+        anc.retainAll(source);
+        sub.removeUpstream(anc);
+        List<String> res = new ArrayList<>(sub.Nodes.keySet());
+        res.removeAll(source);
+        return res;
+    }
+
+    public List<String> getMinimalRequirement(String node, Collection<String> given) {
+        List<String> anc = getAncestors(node);
+        for (String s : given) {
+            if (anc.contains(s)) {
+                anc.removeAll(getAncestors(s));
+            }
+        }
+        return sort(anc);
+    }
+
+    public List<String> getMinimalRequirement(Collection<String> nodes, Collection<String> given) {
+        Set<String> req = new HashSet<>();
+        for (String node : nodes) {
+            req.addAll(getMinimalRequirement(node, given));
+        }
+        return sort(req);
+    }
+
     public List<String> getLeaves() {
         return Successor.entrySet().stream()
                 .filter(ent -> ent.getValue().isEmpty())
@@ -119,6 +155,22 @@ public class DiGraph<T> implements Cloneable {
         removeOutEdge(node);
         Successor.remove(node);
         Predecessor.remove(node);
+    }
+
+    public void removeUpstream(Collection<String> nodes) {
+        List<String> ord = getOrder();
+        for (String s : ord) {
+            if (nodes.contains(s)) continue;
+            if (getAncestors(s).stream().noneMatch(nodes::contains)) removeNode(s);
+        }
+    }
+
+    public void removeDownstream(Collection<String> nodes) {
+        List<String> ord = getOrder();
+        for (String s : ord) {
+            if (nodes.contains(s)) continue;
+            if (getDescendants(s).stream().noneMatch(nodes::contains)) removeNode(s);
+        }
     }
 
     public void addEdge(String source, String target) {
@@ -216,13 +268,9 @@ public class DiGraph<T> implements Cloneable {
         return order;
     }
 
-    public List<String> sort(List<String> nodes) {
-        List<String> res = new ArrayList<>();
-        for (String s: getOrder()) {
-            if (nodes.contains(s)) {
-                res.add(s);
-            }
-        }
+    public List<String> sort(Collection<String> nodes) {
+        List<String> res = getOrder();
+        res.retainAll(nodes);
         return res;
     }
 

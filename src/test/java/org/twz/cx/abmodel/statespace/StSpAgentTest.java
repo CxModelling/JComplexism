@@ -16,7 +16,7 @@ public class StSpAgentTest {
     private AbsStateSpace DC;
 
     @Before
-    public void setUp() throws JSONException {
+    public void setUp() throws Exception {
         Director ctrl = new Director();
         ctrl.loadBayesNet("src/test/resources/script/pSIR.txt");
         ctrl.loadStateSpace("src/test/resources/script/SIR_BN.txt");

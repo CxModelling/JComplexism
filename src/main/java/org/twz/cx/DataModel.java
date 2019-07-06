@@ -12,6 +12,7 @@ import org.twz.dataframe.DataFrame;
 import org.twz.dataframe.Pair;
 import org.twz.dataframe.TimeSeries;
 import org.twz.dataframe.Tuple;
+import org.twz.exception.ValidationException;
 import org.twz.io.IO;
 import org.twz.util.NameGenerator;
 
@@ -37,7 +38,7 @@ public abstract class DataModel extends BayesianModel {
 
     public DataModel(Director ctrl, String bn, String simModel,
                      double t0, double t1, double dt,
-                     String warmUpModel, double t_warm) {
+                     String warmUpModel, double t_warm) throws ValidationException {
         super(ctrl.getBayesNet(bn));
         NG = new NameGenerator("Sim");
         Ctrl = ctrl;
@@ -52,7 +53,7 @@ public abstract class DataModel extends BayesianModel {
     }
 
     public DataModel(Director ctrl, String bn, String simModel,
-                     double t0, double t1, double dt) {
+                     double t0, double t1, double dt) throws ValidationException {
         this(ctrl, bn, simModel, t0, t1, dt, null, 0);
     }
 
@@ -97,8 +98,9 @@ public abstract class DataModel extends BayesianModel {
             pc = new PseudoParameters(NG.getNext(), pars.getLocus());
         }
 
-        AbsSimModel model = Ctrl.generateModel(pc.getName(), WarmUpModel, pc);
+        AbsSimModel model = null;
         try {
+            model = Ctrl.generateModel(pc.getName(), WarmUpModel, pc);
             Simulator.simulate(model, y0, 0, TimeWarm, 1, false);
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,7 +108,7 @@ public abstract class DataModel extends BayesianModel {
         return transportY0(model);
     }
 
-    public TimeSeries simulate(Chromosome pars, IY0 y0) {
+    public TimeSeries simulate(Chromosome pars, IY0 y0) throws ValidationException {
         Parameters pc;
         if (pars instanceof Parameters) {
             pc = (Parameters) pars;

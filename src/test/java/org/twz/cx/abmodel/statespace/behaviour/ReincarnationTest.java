@@ -16,7 +16,7 @@ public class ReincarnationTest {
     private StSpABModel Model;
 
     @Before
-    public void setUp() throws JSONException {
+    public void setUp() throws Exception {
         Director ctrl = new Director();
 
         ctrl.loadBayesNet("src/test/resources/script/pBAD.txt");

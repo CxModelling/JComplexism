@@ -18,7 +18,7 @@ public class AgeingTest {
     private StSpY0 Y0;
 
     @Before
-    public void setUp() throws JSONException {
+    public void setUp() throws Exception {
         Director Ctrl = new Director();
 
         Ctrl.addDataFunction(new PrAgeByYearSex("pr",

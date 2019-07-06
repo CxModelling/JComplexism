@@ -14,6 +14,7 @@ import org.twz.cx.multimodel.entries.SingleEntry;
 import org.twz.dag.Parameters;
 import org.twz.dag.NodeSet;
 import org.twz.dataframe.Tuple;
+import org.twz.exception.ValidationException;
 
 import java.util.*;
 
@@ -110,7 +111,7 @@ public class ModelLayout {
         return ns;
     }
 
-    public AbsSimModel generate(String name, Director da, Parameters pc, boolean all_observed) {
+    public AbsSimModel generate(String name, Director da, Parameters pc, boolean all_observed) throws ValidationException {
         MultiModel model = new MultiModel(name, pc);
 
         AbsSimModel sub;
@@ -141,7 +142,7 @@ public class ModelLayout {
         return model;
     }
 
-    public AbsSimModel generate(String name, Director da, Parameters pc) {
+    public AbsSimModel generate(String name, Director da, Parameters pc) throws ValidationException {
         return this.generate(name, da, pc, true);
     }
 

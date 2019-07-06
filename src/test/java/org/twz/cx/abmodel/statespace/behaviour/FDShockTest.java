@@ -17,7 +17,7 @@ public class FDShockTest {
     private StSpABModel Model;
 
     @Before
-    public void setUp() throws JSONException {
+    public void setUp() throws Exception {
         Director Ctrl = new Director();
         Ctrl.loadBayesNet("src/test/resources/script/pCloseSIR.txt");
         Ctrl.loadStateSpace("src/test/resources/script/CloseSIR.txt");

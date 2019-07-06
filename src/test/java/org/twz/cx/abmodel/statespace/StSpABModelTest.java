@@ -14,7 +14,7 @@ public class StSpABModelTest {
     private StSpABModel Model;
 
     @Before
-    public void setUp() throws JSONException {
+    public void setUp() throws Exception {
         Director Ctrl = new Director();
         Ctrl.loadBayesNet("src/test/resources/script/pDzAB.txt");
         Ctrl.loadStateSpace("src/test/resources/script/DzAB.txt");

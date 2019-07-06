@@ -17,7 +17,7 @@ public class StateTrackTest {
     private StSpY0 Y0;
 
     @Before
-    public void setUp() throws JSONException {
+    public void setUp() throws Exception {
         Director Ctrl = new Director();
         Ctrl.loadBayesNet("src/test/resources/script/pBAD.txt");
         Ctrl.loadStateSpace("src/test/resources/script/BAD.txt");

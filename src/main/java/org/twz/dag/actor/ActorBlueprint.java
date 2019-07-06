@@ -7,9 +7,9 @@ import java.util.List;
  * Created by TimeWz on 08/08/2018.
  */
 public class ActorBlueprint {
-    public static final String Compound = "c", Single = "s", Frozen = "f";
+    public static final String Compound = "c", Single = "s", Frozen = "f", None = "n";
 
-    public final String Actor, Type;
+    public String Actor, Type;
     public List<String> Flow;
 
     public ActorBlueprint(String actor, String type, List<String> flow) {
@@ -20,5 +20,19 @@ public class ActorBlueprint {
 
     public ActorBlueprint(String actor, String type) {
         this(actor, type, null);
+    }
+
+    public void setType(String type) {
+        Type = type;
+    }
+
+    @Override
+    public String toString() {
+        if (Flow.size() > 0) {
+            return String.format("%s, %s, %s", Actor, Type, String.join("|", Flow));
+        } else {
+            return String.format("%s, %s", Actor, Type);
+        }
+
     }
 }

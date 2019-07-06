@@ -1,0 +1,12 @@
+CTBN DzA {
+
+    DzA[Yes | No]
+
+
+    a{DzA:No}
+    A{DzA:Yes}
+
+    a -- dA -> A
+    A -- da -> a
+
+}

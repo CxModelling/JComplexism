@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import org.twz.dag.BayesNet;
 import org.twz.dag.NodeSet;
+import org.twz.exception.ValidationException;
 
 public class NodeSetTest {
 
@@ -22,7 +23,7 @@ public class NodeSetTest {
     }
 
     @Test
-    public void collectMinimal() {
+    public void collectMinimal() throws ValidationException {
         NodeSet NS = new NodeSet("Area", new String[]{});
         NS.appendChild(
                 new NodeSet("Agent", new String[]{"Age", "x"}));

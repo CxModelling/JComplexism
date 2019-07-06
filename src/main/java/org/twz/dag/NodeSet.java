@@ -2,13 +2,18 @@ package org.twz.dag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.twz.dag.actor.ActorBlueprint;
+import org.twz.dag.loci.DistributionLoci;
 import org.twz.dag.loci.ExoValueLoci;
+import org.twz.dag.loci.FunctionLoci;
 import org.twz.dag.loci.Loci;
+import org.twz.exception.ValidationException;
 import org.twz.graph.DiGraph;
 import org.twz.io.AdapterJSONObject;
 import org.twz.io.FnJSON;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class NodeSet implements AdapterJSONObject {
     private final String Name;
@@ -17,7 +22,9 @@ public class NodeSet implements AdapterJSONObject {
     private Set<NodeSet> Children;
     private Set<String> AsFixed, AsFloating;
     private Set<String> Par, Med, Chd, ToCheck;
+    private Set<String> AllFixed, AvailableFixed;
     private Set<String> ExoNodes, FixedNodes, FloatingNodes;
+    private Set<ActorBlueprint> Bps;
 
     public NodeSet(String name, String[] as_fixed, String[] as_float) {
         Name = name;
@@ -35,6 +42,10 @@ public class NodeSet implements AdapterJSONObject {
         ExoNodes = new HashSet<>();
         FixedNodes = new HashSet<>();
         FloatingNodes = new HashSet<>();
+
+        AllFixed = new HashSet<>();
+        AvailableFixed = new HashSet<>();
+        Bps = new HashSet<>();
     }
 
     public NodeSet(String name, String[] fixed) {
@@ -73,7 +84,153 @@ public class NodeSet implements AdapterJSONObject {
         return FloatingNodes;
     }
 
-    public void injectGraph(BayesNet bn) {
+    public void injectGraph(BayesNet bn) throws ValidationException {
+        FixedNodes.addAll(locateFixed(bn));
+
+        Set<String> all_fixed = getAllFixed();
+        Loci loci;
+        for (String s : bn.getOrder()) {
+            loci = bn.getLoci(s);
+            if (all_fixed.containsAll(loci.getParents())) {
+                FixedNodes.add(s);
+                all_fixed.add(s);
+            }
+        }
+
+        AllFixed = getAllFixed();
+        AvailableFixed = getAvailableFixed();
+
+        locateFloating(bn);
+
+        if (validateFloating()) {
+            throw new ValidationException("floating node condition");
+        }
+    }
+
+    private Set<String> locateFixed(BayesNet bn) {
+        // find necessary mediators
+        // expose required upstream variables
+        Set<String> des = new HashSet<>(AsFixed);
+        for (String s : AsFixed) {
+            des.addAll(bn.getDAG().getDescendants(s));
+        }
+
+        Set<String> req = new HashSet<>();
+
+        for (NodeSet chd : Children)
+            req.addAll(chd.locateFixed(bn));
+
+        Set<String> toExpose = req.stream().filter(d->!des.contains(d)).collect(Collectors.toSet());
+        req.removeAll(toExpose);
+
+        ExoNodes = toExpose;
+        DiGraph<Loci> sub = bn.getDAG().getMinimalDAG(req);
+        FixedNodes = new HashSet<>(sub.getOrder());
+        return toExpose;
+    }
+
+    private void locateFloating(BayesNet bn) {
+        List<String> flt = bn.getOrder();
+        flt.removeAll(getAllFixed());
+        flt = flt.stream().filter(d-> {
+                    Loci loci = bn.getLoci(d);
+                    return loci instanceof FunctionLoci | loci instanceof DistributionLoci;
+                }).collect(Collectors.toList());
+
+        for (String actor : flt) {
+            passDownFloating(actor, bn);
+        }
+    }
+
+    private void passDownFloating(String node, BayesNet bn) {
+        for (NodeSet chd : Children) {
+            chd.passDownFloating(node, bn);
+        }
+
+        ActorBlueprint bp;
+
+        List<String> pars;
+        if (canExactlyTake(node, bn)) {
+            pars = bn.getLoci(node).getParents();
+            if (FixedNodes.stream().noneMatch(pars::contains)) {
+                bp = new ActorBlueprint(node, ActorBlueprint.Frozen, pars);
+            } else {
+                bp = new ActorBlueprint(node, ActorBlueprint.Single, pars);
+            }
+            Bps.add(bp);
+        } else if (canTake(node, bn)) {
+            pars = bn.getDAG().getMinimalRequirement(node, AvailableFixed);
+            bp = new ActorBlueprint(node, ActorBlueprint.Compound, pars);
+            Bps.add(bp);
+        }
+        //else {
+        //    bp = new ActorBlueprint(node, ActorBlueprint.None, bn.getDAG().getParents(node));
+        //}
+    }
+
+    private Set<String> getAllFixed() {
+        Set<String> fixed = new HashSet<>(FixedNodes);
+        Children.forEach(chd->fixed.addAll(chd.getAllFixed()));
+        return fixed;
+    }
+
+    private Set<String> getAvailableFixed() {
+        Set<String> fixed = new HashSet<>(FixedNodes);
+        try {
+            fixed.addAll(Parent.getAvailableFixed());
+        } catch (NullPointerException ignored) {
+
+        }
+        return fixed;
+    }
+
+
+    private boolean canTake(String node, BayesNet bn) {
+        List<String> chain = bn.getDAG().getMinimalRequirement(node, AvailableFixed);
+        chain.removeAll(AvailableFixed);
+
+        DiGraph<Loci> sub = bn.getDAG().getMinimalDAG(chain);
+        for (String root : sub.getRoots()) {
+            if (! (bn.getLoci(root) instanceof DistributionLoci)) return false;
+        }
+        return true;
+    }
+
+    private boolean canExactlyTake(String node, BayesNet bn) {
+        return AvailableFixed.containsAll(bn.getLoci(node).getParents());
+    }
+
+
+    public boolean hasFixed(String s) {
+        if (FixedNodes.contains(s)) return true;
+        try {
+            return Parent.hasFixed(s);
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
+
+    public boolean hasFloating(String s) {
+        if (FloatingNodes.contains(s)) return true;
+        try {
+            return Parent.hasFloating(s);
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
+
+    public boolean validateFloating() {
+        for (String s : AsFloating) {
+            if (!hasFloating(s)) return false;
+        }
+        for (NodeSet chd : Children) {
+            if (!chd.validateFloating()) return false;
+        }
+        return true;
+    }
+
+
+    public void injectBN(BayesNet bn) {
         collectMediators(bn.getDAG());
         for (NodeSet chd : Children)
             chd.collectMediators(bn.getDAG());

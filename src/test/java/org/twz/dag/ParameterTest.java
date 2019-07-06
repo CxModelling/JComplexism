@@ -2,6 +2,8 @@ package org.twz.dag;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.twz.exception.ValidationException;
+
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
@@ -31,7 +33,7 @@ public class ParameterTest {
     }
 
     @Test
-    public void toSC_no_ng() {
+    public void toSC_no_ng() throws ValidationException {
         ParameterModel pm = BN.toParameterModel();
         Parameters pc = pm.generate("X1");
 
@@ -44,7 +46,7 @@ public class ParameterTest {
 
 
     @Test
-    public void toSC_ng() {
+    public void toSC_ng() throws ValidationException {
         NG = new NodeSet("country", new String[]{"b0", "b1", "x1"});
         NG.appendChild(new NodeSet("agent", new String[]{"x2", "mu", "b2"}, new String[]{"y", "z"}));
 
@@ -73,7 +75,7 @@ public class ParameterTest {
     }
 
     @Test
-    public void SC_exo() {
+    public void SC_exo() throws ValidationException {
         NG = new NodeSet("country", new String[]{"b0", "b1", "x1"});
         NG.appendChild(new NodeSet("agent", new String[]{"x2", "mu", "b2"}, new String[]{"y"}));
 

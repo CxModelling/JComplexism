@@ -4,11 +4,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.twz.dag.Chromosome;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class ExoValueLoci extends Loci {
-
+    private final static List<String> Parents = new ArrayList<>();
 
     public ExoValueLoci(String name) {
         super(name);
@@ -16,7 +17,7 @@ public class ExoValueLoci extends Loci {
 
     @Override
     public List<String> getParents() {
-        return null;
+        return Parents;
     }
 
     @Override

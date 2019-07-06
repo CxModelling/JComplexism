@@ -3,6 +3,7 @@ package org.twz.dag;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
+import org.twz.exception.ValidationException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,7 @@ public class ParameterModelTest {
     private NodeSet NS;
     private Map<String, Double> Exo;
     @Before
-    public void setUp() {
+    public void setUp() throws ValidationException {
         BN = new BayesNet("Test1");
         BN.appendLoci("Region");
         BN.appendLoci("Age = 15");
@@ -37,14 +38,14 @@ public class ParameterModelTest {
     }
 
     @Test
-    public void toPM() throws JSONException {
+    public void toPM() throws Exception {
         ParameterModel pm = BN.toParameterModel(NS);
 
         System.out.println(pm.toJSON().toString(2));
     }
 
     @Test
-    public void generate() {
+    public void generate() throws ValidationException {
         ParameterModel pm = BN.toParameterModel(NS);
         Parameters ps = pm.generate("A", Exo);
         ps.breed("B1", "Ag1");

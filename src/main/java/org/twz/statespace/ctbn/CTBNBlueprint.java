@@ -3,6 +3,7 @@ package org.twz.statespace.ctbn;
 import org.json.JSONException;
 import org.twz.dag.Parameters;
 import org.twz.dag.actor.Sampler;
+import org.twz.prob.DistributionManager;
 import org.twz.statespace.IStateSpaceBlueprint;
 import org.twz.statespace.State;
 import org.twz.statespace.Transition;
@@ -201,10 +202,15 @@ public class CTBNBlueprint implements IStateSpaceBlueprint<CTBayesianNetwork> {
         Map<State, List<State>> sub = makeSubsets(stm, sts, sts);
 
         Map<String, Transition> trs = new HashMap<>();
-        for (Map.Entry<String, PseudoTransition> entry : Transitions.entrySet()) {
-            Sampler sam = pc.getSampler(entry.getValue().Dist);
-            Transition tr = new Transition(entry.getKey(), sts.get(entry.getValue().To), sam);
-            trs.put(tr.getName(), tr);
+        for (Map.Entry<String, PseudoTransition> ent : Transitions.entrySet()) {
+            String di = ent.getValue().Dist;
+
+            if (di.contains("(")) {
+                trs.put(ent.getKey(), new Transition(ent.getKey(), sts.get(ent.getValue().To),
+                        DistributionManager.parseDistribution(di)));
+            } else {
+                trs.put(ent.getKey(), new Transition(ent.getKey(), sts.get(ent.getValue().To), di));
+            }
         }
 
         Map<State, List<Transition>> tas = makeTargets(sts, sub, trs);

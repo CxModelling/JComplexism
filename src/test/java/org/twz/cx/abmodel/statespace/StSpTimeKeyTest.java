@@ -7,6 +7,7 @@ import org.twz.cx.Director;
 import org.twz.cx.mcore.AbsSimModel;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.BayesNet;
+import org.twz.statespace.ctbn.CTBNBlueprint;
 import org.twz.statespace.ctmc.CTMCBlueprint;
 
 public class StSpTimeKeyTest {
@@ -20,19 +21,13 @@ public class StSpTimeKeyTest {
 
         BayesNet bn = Ctrl.createBayesNet("pA");
         bn.appendLoci("year = 0");
-        bn.appendLoci("sex~binom(1, 0.5)");
+
         bn.appendLoci("dA ~ exp(1)");
         bn.appendLoci("da1 ~ exp(1)");
-        bn.appendLoci("da2 ~ exp(sex)");
+        bn.appendLoci("da2 ~ k(1)");
         bn.appendLoci("da = if(year < 5, da1, da2)");
 
-        CTMCBlueprint ssbp = (CTMCBlueprint) Ctrl.createStateSpace("DzA", "CTMC");
-        ssbp.addState("A");
-        ssbp.addState("a");
-        ssbp.addTransition("dA", "a");
-        ssbp.addTransition("da", "A");
-        ssbp.linkStateTransition("A", "dA");
-        ssbp.linkStateTransition("a", "da");
+        Ctrl.loadStateSpace("src/test/resources/script/DzA.txt");
 
         Bp = (StSpABMBlueprint) Ctrl.createSimModel("DzA", "StSpABM");
         Bp.setAgent("Ag", "agent", "DzA");

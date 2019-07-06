@@ -7,6 +7,7 @@ import org.twz.cx.mcore.IModelBlueprint;
 import org.twz.dag.BayesNet;
 import org.twz.dag.Parameters;
 import org.twz.dag.NodeSet;
+import org.twz.exception.ValidationException;
 
 import java.util.*;
 
@@ -91,7 +92,7 @@ public class ODEEBMBlueprint implements IModelBlueprint<EquationBasedModel> {
     }
 
     @Override
-    public EquationBasedModel generate(String name, Map<String, Object> args) {
+    public EquationBasedModel generate(String name, Map<String, Object> args) throws ValidationException {
         Parameters pc;
 
         if (args.containsKey("bn") && args.containsKey("da")) {

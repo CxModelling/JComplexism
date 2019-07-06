@@ -12,6 +12,7 @@ import org.twz.dag.Parameters;
 import org.twz.dag.NodeSet;
 import org.twz.datafunction.AbsDataFunction;
 import org.twz.datafunction.DataCentre;
+import org.twz.exception.ValidationException;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.StateSpaceFactory;
 import org.twz.statespace.IStateSpaceBlueprint;
@@ -237,11 +238,11 @@ public class Director implements ILogable {
         }
     }
 
-    public Parameters generatePCore(String name, String bn) {
+    public Parameters generatePCore(String name, String bn) throws ValidationException {
         return getBayesNet(bn).toParameterModel().generate(name);
     }
 
-    public AbsStateSpace generateDCore(String dc, String pc) {
+    public AbsStateSpace generateDCore(String dc, String pc) throws ValidationException {
         return generateDCore(dc, generatePCore(dc, pc));
     }
 
@@ -255,21 +256,21 @@ public class Director implements ILogable {
         return null;
     }
 
-    public AbsSimModel generateMCore(String name, String type, String bn) {
+    public AbsSimModel generateMCore(String name, String type, String bn) throws ValidationException {
         Map<String, Object> args = new HashMap<>();
         args.put("bn", bn);
         args.put("da", this);
         return MCores.get(type).generate(name, args);
     }
 
-    public AbsSimModel generateMCore(String name, String type, Parameters pc) {
+    public AbsSimModel generateMCore(String name, String type, Parameters pc) throws ValidationException {
         Map<String, Object> args = new HashMap<>();
         args.put("pc", pc);
         args.put("da", this);
         return MCores.get(type).generate(name, args);
     }
 
-    public AbsSimModel generateModel(String name, String type, String bn) {
+    public AbsSimModel generateModel(String name, String type, String bn) throws ValidationException {
         if (Layouts.containsKey(type)) {
             ModelLayout layout = Layouts.get(type);
             NodeSet ns = layout.getParameterHierarchy(this);
@@ -280,7 +281,7 @@ public class Director implements ILogable {
         }
     }
 
-    public AbsSimModel generateModel(String name, String type, String bn, Map<String, Double> exo) {
+    public AbsSimModel generateModel(String name, String type, String bn, Map<String, Double> exo) throws ValidationException {
         if (Layouts.containsKey(type)) {
             ModelLayout layout = Layouts.get(type);
             NodeSet ns = layout.getParameterHierarchy(this);
@@ -291,7 +292,7 @@ public class Director implements ILogable {
         }
     }
 
-    public AbsSimModel generateModel(String name, String type, Parameters pc) {
+    public AbsSimModel generateModel(String name, String type, Parameters pc) throws ValidationException {
         if (Layouts.containsKey(type)) {
             ModelLayout layout = Layouts.get(type);
             return layout.generate(name, this, pc);

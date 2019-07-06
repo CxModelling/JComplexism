@@ -9,6 +9,7 @@ import org.twz.cx.mcore.FnSummary;
 import org.twz.dag.ParameterModel;
 import org.twz.dag.Parameters;
 import org.twz.dag.NodeSet;
+import org.twz.exception.ValidationException;
 import org.twz.statespace.AbsStateSpace;
 import org.twz.statespace.IStateSpaceBlueprint;
 
@@ -149,7 +150,7 @@ public class StSpABMBlueprint implements IModelBlueprint<StSpABModel> {
     }
 
     @Override
-    public StSpABModel generate(String name, Map<String, Object> args) {
+    public StSpABModel generate(String name, Map<String, Object> args) throws ValidationException {
         Parameters pc;
         AbsStateSpace dc;
 

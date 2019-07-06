@@ -19,7 +19,7 @@ import java.util.List;
 public class DBNCreateTest {
 
     @Test
-    public void testBuildCTBN() throws JSONException {
+    public void testBuildCTBN() throws Exception {
         Director da = new Director();
 
 
@@ -60,7 +60,7 @@ public class DBNCreateTest {
     }
 
     @Test
-    public void testLoadCTBN() throws JSONException {
+    public void testLoadCTBN() throws Exception {
         Director da = new Director();
 
         da.loadBayesNet("src/test/resources/script/pSIR.txt");
@@ -81,7 +81,7 @@ public class DBNCreateTest {
     }
 
     @Test
-    public void testJosnifyCTBN() throws JSONException {
+    public void testJosnifyCTBN() throws Exception {
         Director da = new Director();
 
         da.loadBayesNet("src/test/resources/script/pSIR.txt");

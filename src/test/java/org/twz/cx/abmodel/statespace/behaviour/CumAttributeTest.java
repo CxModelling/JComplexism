@@ -18,7 +18,7 @@ public class CumAttributeTest {
     private StSpY0 Y0;
 
     @Before
-    public void setUp() throws JSONException {
+    public void setUp() throws Exception {
         Director Ctrl = new Director();
 
         setUpBN(Ctrl);

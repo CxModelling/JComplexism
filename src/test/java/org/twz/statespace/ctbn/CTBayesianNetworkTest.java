@@ -22,7 +22,7 @@ public class CTBayesianNetworkTest  {
 
 
     @Before
-    public void setUp() throws JSONException {
+    public void setUp() throws Exception {
         IStateSpaceBlueprint bp;
         try {
             bp = StateSpaceFactory.createFromScripts(IO.loadText("src/test/resources/script/SIR_BN.txt"));

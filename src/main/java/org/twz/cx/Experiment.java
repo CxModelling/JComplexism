@@ -12,6 +12,7 @@ import org.twz.dag.Parameters;
 import org.twz.dataframe.Pair;
 import org.twz.dataframe.TimeSeries;
 import org.twz.dataframe.Tuple;
+import org.twz.exception.ValidationException;
 import org.twz.io.IO;
 import org.twz.util.NameGenerator;
 
@@ -27,7 +28,7 @@ public abstract class Experiment {
     private double Time0, Time1, DiffTime;
     private Map<String, TimeSeries> Mementos;
 
-    public Experiment(Director ctrl, String bn, String simModel, double t0, double t1, double dt) {
+    public Experiment(Director ctrl, String bn, String simModel, double t0, double t1, double dt) throws ValidationException {
 
         Ctrl = ctrl;
         SC = ctrl.getBayesNet(bn).toParameterModel(ctrl.getParameterHierarchy(simModel));
@@ -59,7 +60,7 @@ public abstract class Experiment {
     protected abstract IY0 translateY0(JSONObject js);
 
 
-    public Pair<Chromosome, TimeSeries> testRun(String log) {
+    public Pair<Chromosome, TimeSeries> testRun(String log) throws ValidationException {
         Parameters pars = Inputs.get(0).getSecond();
         IY0 y0 = Inputs.get(0).getThird();
 
@@ -81,7 +82,7 @@ public abstract class Experiment {
         return new Pair<>(pars, model.outputTS());
     }
 
-    public Pair<Chromosome, TimeSeries> testRun() {
+    public Pair<Chromosome, TimeSeries> testRun() throws ValidationException {
         return testRun(null);
     }
 
@@ -103,8 +104,9 @@ public abstract class Experiment {
                 y0 = ent.getThird();
 
                 name = ng.getNext();
-                model = Ctrl.generateModel(name, SimModel, pc);
+
                 try {
+                    model = Ctrl.generateModel(name, SimModel, pc);
                     ts = Simulator.simulate(model, y0, Time0, Time1, DiffTime, true);
                     Mementos.put(name, ts);
                 } catch (Exception e) {
@@ -141,8 +143,8 @@ public abstract class Experiment {
             pars = Inputs.get(i).getSecond();
             y0 = Inputs.get(i).getThird();
 
-            model = Ctrl.generateModel(Inputs.get(i).getFirst(), SimModel, pars);
             try {
+                model = Ctrl.generateModel(Inputs.get(i).getFirst(), SimModel, pars);
                 ts = Simulator.simulate(model, y0, Time0, Time1, DiffTime, true);
                 saveResults(path, prefix, String.format("%06d", i), suffix, ts);
             } catch (Exception e) {

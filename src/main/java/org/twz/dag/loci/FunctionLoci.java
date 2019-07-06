@@ -57,7 +57,6 @@ public class FunctionLoci extends Loci implements Bindable {
         return 0;
     }
 
-
     @Override
     public double render(Map<String, Double> pas) throws IncompleteConditionException {
         for (String e : Parents) {
@@ -127,5 +126,13 @@ public class FunctionLoci extends Loci implements Bindable {
         if (ParentFunctions.contains(name)) {
             E.addFunctions(new Function(name, df));
         }
+    }
+
+    public void bindFunction(String fn) {
+        E.addFunctions(new Function(fn));
+    }
+
+    public void bindFunction(String name, FunctionExtension fn) {
+        E.addFunctions(new Function(name, fn));
     }
 }

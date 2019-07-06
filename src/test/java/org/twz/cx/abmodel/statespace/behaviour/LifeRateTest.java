@@ -10,6 +10,7 @@ import org.twz.cx.abmodel.statespace.StSpY0;
 import org.twz.cx.mcore.Simulator;
 import org.twz.dag.Parameters;
 import org.twz.dag.NodeSet;
+import org.twz.exception.ValidationException;
 import org.twz.statespace.AbsStateSpace;
 
 public class LifeRateTest {
@@ -17,7 +18,7 @@ public class LifeRateTest {
     private StSpY0 Y0;
 
     @Before
-    public void setUp() throws JSONException {
+    public void setUp() throws JSONException, ValidationException {
         Director Ctrl = new Director();
         Ctrl.loadBayesNet("src/test/resources/script/pBAD.txt");
         Ctrl.loadStateSpace("src/test/resources/script/BAD.txt");

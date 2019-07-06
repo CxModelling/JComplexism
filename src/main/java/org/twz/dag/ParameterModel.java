@@ -54,7 +54,6 @@ public class ParameterModel implements AdapterJSONObject {
         pg.Children.addAll(ns.getChildren().stream().map(NodeSet::getName).collect(Collectors.toSet()));
         pg.setParameterModel(this);
         PGs.put(ns.getName(), pg);
-
         ns.getChildren().forEach(d->toPG(d, g));
     }
 

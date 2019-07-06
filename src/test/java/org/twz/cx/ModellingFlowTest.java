@@ -16,6 +16,7 @@ import org.twz.cx.mcore.IY0;
 import org.twz.dag.Chromosome;
 import org.twz.dataframe.Pair;
 import org.twz.dataframe.TimeSeries;
+import org.twz.exception.ValidationException;
 import org.twz.fit.ABCSMC;
 import org.twz.fit.BayesianFitter;
 import org.twz.fit.MCMC;
@@ -26,7 +27,7 @@ public class ModellingFlowTest {
     class DataModelSIR extends DataModel {
 
         DataModelSIR(Director ctrl, String bn, String simModel, double t0, double t1, double dt,
-                     String warm_up, double t_warm_up) {
+                     String warm_up, double t_warm_up) throws ValidationException {
             super(ctrl, bn, simModel, t0, t1, dt, warm_up, t_warm_up);
         }
 
