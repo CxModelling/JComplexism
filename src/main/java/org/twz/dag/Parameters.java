@@ -16,9 +16,8 @@ public class Parameters extends Chromosome {
     private String NickName;
     private ParameterGroup PG;
     Parameters Parent;
-    Map<String, SimulationActor> Actors;
+    Map<String, Sampler> Samplers;
     private Map<String, Parameters> Children;
-    Map<String, Map<String, SimulationActor>> ChildrenActors;
     private boolean Frozen;
 
     public Parameters(String nickname, ParameterGroup sg, Map<String, Double> fixed, double prior) {
@@ -26,8 +25,7 @@ public class Parameters extends Chromosome {
         NickName = nickname;
         PG = sg;
         Children = new HashMap<>();
-        Actors = new HashMap<>();
-        ChildrenActors = new HashMap<>();
+        Samplers = new HashMap<>();
         Frozen = false;
     }
 
@@ -49,11 +47,15 @@ public class Parameters extends Chromosome {
 
     @Override
     public double getDouble(String s) {
-        if (super.has(s)) {
-            return super.getDouble(s);
+        if (has(s)) {
+            double v = super.getDouble(s);
+            if (Double.isNaN(v)) {
+                v = Parent.getDouble(s);
+            }
+            return v;
         } else {
             try {
-                return Parent.getDouble(s);
+                return Parent.getSampler(s).next();
             } catch (NullPointerException ex) {
                 return getSampler(s).next();
             }
@@ -72,6 +74,7 @@ public class Parameters extends Chromosome {
             }
         }
     }
+
 
     public Parameters breed(String nickname, String group, Map<String, Double> exo) {
         if (Children.containsKey(nickname)) {
@@ -111,15 +114,31 @@ public class Parameters extends Chromosome {
         if (Parent == null) {
             return;
         }
-        Actors.putAll(Parent.ChildrenActors.get(getGroupName()));
+        for (String s : PG.getActorList()) {
+            getSampler(s);
+        }
 
         Parent.removeChild(NickName);
         if (collect) {
-            for (String s : PG.getListening()) {
-                getLocus().put(s, Parent.getDouble(s));
-            }
+            collectLocus(getLocus());
+            //for (String s : PG.getAvailableFixed()) {
+            //    if (!super.has(s)) {
+            //getLocus().put(s, Parent.getDouble(s));
+            //    }
+            //}
         }
         Parent = null;
+    }
+
+    private void collectLocus(Map<String, Double> end) {
+        try {
+            for (Map.Entry<String, Double> ent : Parent.getLocus().entrySet()) {
+                end.putIfAbsent(ent.getKey(), ent.getValue());
+            }
+            Parent.collectLocus(end);
+        } catch (NullPointerException ignored) {
+
+        }
     }
 
     public void detachFromParent() {
@@ -131,33 +150,19 @@ public class Parameters extends Chromosome {
     }
 
     public List<String> listSamplers() {
-        List<String> li = new ArrayList<>(Actors.keySet());
-        if (Parent != null) {
-            li.addAll(Parent.ChildrenActors.get(getGroupName()).keySet());
-        }
-        return li;
+        return PG.getActorList();
     }
 
     public Map<String, Sampler> getSamplers() {
-        Map<String, Sampler> li = new HashMap<>();
-        for (Map.Entry<String, SimulationActor> entry : Actors.entrySet()) {
-            li.put(entry.getKey(), new Sampler(entry.getValue(), this));
+        for (String s : PG.getActorList()) {
+            getSampler(s);
         }
-
-        if (Parent != null) {
-            for (Map.Entry<String, SimulationActor> entry : Parent.ChildrenActors.get(getGroupName()).entrySet()) {
-                li.put(entry.getKey(), new Sampler(entry.getValue(), this));
-            }
-        }
-        return li;
+        return Samplers;
     }
 
     public Sampler getSampler(String sampler) {
-        if (Actors.containsKey(sampler)) {
-            return new Sampler(Actors.get(sampler), this);
-        } else {
-            return new Sampler(Parent.ChildrenActors.get(getGroupName()).get(sampler), this);
-        }
+        SimulationActor actor = PG.getActor(sampler, this);
+        return new Sampler(actor, this);
     }
 
     public Parameters getChild(String chd) {
@@ -191,27 +196,7 @@ public class Parameters extends Chromosome {
             Frozen = true;
         }
 
-        for (SimulationActor act : Actors.values()) {
-            fillChd(act);
-        }
-
-        if (Parent != null) {
-            for (SimulationActor act : Parent.ChildrenActors.get(getGroupName()).values()) {
-                fillChd(act);
-            }
-        }
-    }
-
-    private void fillChd(SimulationActor act) {
-        if (act instanceof CompoundActor) {
-            ((CompoundActor) act).fillAll(this);
-        } else {
-            try {
-                this.put(act.Field, act.sample(this));
-            } catch (IncompleteConditionException e) {
-                e.printStackTrace();
-            }
-        }
+        getSamplers();
     }
 
     void resetPM(ParameterModel pm) {

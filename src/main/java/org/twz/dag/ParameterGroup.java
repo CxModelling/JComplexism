@@ -19,19 +19,26 @@ import java.util.stream.Collectors;
 public class ParameterGroup implements AdapterJSONObject {
     private final String Name;
     private ParameterModel PM;
+    private NodeSet Structure;
     private Set<String> Listening, BeFixed, BeFloating;
     private List<Loci> FixedChain;
     Set<String> Children;
-    private List<ActorBlueprint> Bps;
+
+    private Map<String, ActorBlueprint> ActorBlueprints;
+    private Map<String, SimulationActor> Actors;
 
     private Map<String, List<String>> AffectedFixed, AffectedFloating;
     private Map<String, Map<String, List<String>>> AffectedChildren;
 
-    ParameterGroup(String name, Set<String> listening, Set<String> fixed, Set<String> random) {
-        Name = name;
-        Listening = listening;
-        BeFixed = fixed;
-        BeFloating = random;
+    ParameterGroup(NodeSet ns) {
+        Name = ns.getName();
+        Structure = ns;
+        Listening = ns.getExoNodes();
+        BeFixed = ns.getFixedNodes();
+        BeFloating = ns.getFloatingNodes();
+
+        ActorBlueprints = ns.getFloatingBlueprints();
+
         Children = new HashSet<>();
 
         AffectedFixed = new HashMap<>();
@@ -53,83 +60,49 @@ public class ParameterGroup implements AdapterJSONObject {
                 .filter(d->BeFixed.contains(d))
                 .map(d->PM.getBN().getLoci(d))
                 .collect(Collectors.toList());
-        updateListening(PM.getBN());
+        findActors();
     }
 
-    private void updateListening(BayesNet bn) {
-        Set<String> parents = new HashSet<>();
-        for (String s : BeFixed) {
-            parents.addAll(bn.getDAG().getAncestors(s));
-        }
-        for (String s : BeFloating) {
-            parents.addAll(bn.getDAG().getAncestors(s));
-        }
-        parents.removeAll(BeFloating);
-        parents.removeAll(BeFixed);
-        Listening.retainAll(parents);
-    }
-
-    private List<ActorBlueprint> getActorBlueprints() {
-        if (Bps == null) {
-            Bps = new ArrayList<>();
-            BayesNet bn = PM.getBN();
-            DiGraph<Loci> g = bn.getDAG();
-
-            List<String> order = bn.getOrder(), flow;
-
-            for (String act : BeFloating) {
-                Set<String> pa = new HashSet<>(g.getParents(act));
-
-                if (hasIntersection(pa, BeFloating)) {
-                    flow = new ArrayList<>(order);
-                    flow.retainAll(g.getAncestors(act));
-                    //flow.retainAll(BeFloating);
-                    Bps.add(new ActorBlueprint(act, ActorBlueprint.Compound, flow));
-                } else if (hasIntersection(pa, Listening)) {
-                    Bps.add(new ActorBlueprint(act, ActorBlueprint.Single));
-                } else if (hasIntersection(pa, BeFixed)) {
-                    Bps.add(new ActorBlueprint(act, ActorBlueprint.Single));
-                } else {
-                    Bps.add(new ActorBlueprint(act, ActorBlueprint.Frozen));
-                }
-            }
-        }
-        return Bps;
-    }
-
-    private Map<String, SimulationActor> getActors(Chromosome pas) {
+    private void findActors() {
+        Actors = new HashMap<>();
         BayesNet bn = PM.getBN();
-        Map<String, SimulationActor> res = new HashMap<>();
         SimulationActor actor;
 
-        for (ActorBlueprint act : getActorBlueprints()) {
-            String name = act.Actor;
+        for (Map.Entry<String, ActorBlueprint> ent : ActorBlueprints.entrySet()) {
+            String name = ent.getKey();
+            ActorBlueprint act = ent.getValue();
             switch (act.Type) {
-                case ActorBlueprint.Frozen:
-                    try {
-                        actor = new FrozenSingleActor(name, bn.getLoci(name), pas);
-                    } catch (ClassCastException e) {
-                        continue;
-                    }
-                    break;
                 case ActorBlueprint.Single:
                     actor = new SingleActor(name, bn.getLoci(name));
+                    Actors.put(name, actor);
                     break;
-                default:
+                case ActorBlueprint.Compound:
                     actor = new CompoundActor(name,
                             act.Flow.stream().map(bn::getLoci).collect(Collectors.toList()), bn.getLoci(name));
+                    Actors.put(name, actor);
                     break;
             }
-            res.put(name, actor);
+
         }
-        return res;
     }
 
-    private boolean hasIntersection(Set<String> a, Set<String> b) {
-        Set<String> temp = new HashSet<>(a);
-        temp.retainAll(b);
-        return !temp.isEmpty();
+
+    SimulationActor getActor(String act, Chromosome pars) {
+        if (!ActorBlueprints.containsKey(act)) {
+            return null;
+        }
+        if (Actors.containsKey(act)) {
+            return Actors.get(act);
+        } else {
+            return new FrozenSingleActor(act, PM.getBN().getLoci(act), pars);
+        }
     }
+
+    List<String> getActorList() {
+        return new ArrayList<>(ActorBlueprints.keySet());
+    }
+
+    Set<String> getAvailableFixed() { return Structure.getAvailableFixed(); }
 
     Parameters generate(String nickname, Map<String, Double> exo, Parameters parent) {
         Parameters pc = new Parameters(nickname, this, exo, 0);
@@ -144,10 +117,6 @@ public class ParameterGroup implements AdapterJSONObject {
                     } catch (IncompleteConditionException ignored) {
                     }
                 });
-
-        if (parent == null) {
-            pc.Actors = getActors(pc);
-        }
 
         PM.getBN().evaluate(pc);
         return pc;
@@ -251,29 +220,16 @@ public class ParameterGroup implements AdapterJSONObject {
 
         for (String actor : shocked) {
             try {
-                FrozenSingleActor act = (FrozenSingleActor) ps.Actors.get(actor);
-                act.update(ps);
-            } catch (NullPointerException | ClassCastException | IncompleteConditionException ignored) {
+                ps.Samplers.get(actor).update();
+            } catch (NullPointerException | ClassCastException ignored) {
 
             }
         }
-
-        Map<String, SimulationActor> chd;
 
         for (String s : Children) {
             shocked = new HashSet<>();
             for (String k : imp.keySet()) {
                 shocked.addAll(getAffectedChildren(k, s));
-            }
-
-            chd = ps.ChildrenActors.get(s);
-            for (String actor : shocked) {
-                try {
-                    FrozenSingleActor act = (FrozenSingleActor) chd.get(actor);
-                    act.update(ps);
-                } catch (ClassCastException | IncompleteConditionException ignored) {
-
-                }
             }
         }
     }
@@ -289,9 +245,9 @@ public class ParameterGroup implements AdapterJSONObject {
         } else {
             ch = ch_pg.generate(nickname, exo, parent);
 
-            if (!parent.ChildrenActors.containsKey(group)) {
-                parent.ChildrenActors.put(group, ch_pg.getActors(ch));
-            }
+            //if (!parent.ChildrenActors.containsKey(group)) {
+            //    parent.ChildrenActors.put(group, ch_pg.getActors(ch));
+            //}
         }
 
         return ch;

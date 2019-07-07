@@ -19,6 +19,16 @@ public class Sampler implements IDistribution {
         Loc = loc;
     }
 
+    public void update() {
+        if (Actor instanceof FrozenSingleActor) {
+            try {
+                ((FrozenSingleActor) Actor).update(Loc);
+            } catch (IncompleteConditionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public double next() {
         try {
             return Actor.sample(Loc);

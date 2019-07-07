@@ -21,10 +21,10 @@ public class NodeSet implements AdapterJSONObject {
     private NodeSet Parent;
     private Set<NodeSet> Children;
     private Set<String> AsFixed, AsFloating;
-    private Set<String> Par, Med, Chd, ToCheck;
+    //private Set<String> Par, Med, Chd, ToCheck;
     private Set<String> AllFixed, AvailableFixed;
     private Set<String> ExoNodes, FixedNodes, FloatingNodes;
-    private Set<ActorBlueprint> Bps;
+    private Map<String, ActorBlueprint> Bps;
 
     public NodeSet(String name, String[] as_fixed, String[] as_float) {
         Name = name;
@@ -34,10 +34,10 @@ public class NodeSet implements AdapterJSONObject {
         AsFixed = (as_fixed != null)? new HashSet<>(Arrays.asList(as_fixed)): new HashSet<>();
         AsFixed.removeAll(AsFloating);
 
-        Par = new HashSet<>();
-        Med = new HashSet<>();
-        Chd = new HashSet<>();
-        ToCheck = new HashSet<>();
+        //Par = new HashSet<>();
+        //Med = new HashSet<>();
+        //Chd = new HashSet<>();
+        //ToCheck = new HashSet<>();
 
         ExoNodes = new HashSet<>();
         FixedNodes = new HashSet<>();
@@ -45,7 +45,7 @@ public class NodeSet implements AdapterJSONObject {
 
         AllFixed = new HashSet<>();
         AvailableFixed = new HashSet<>();
-        Bps = new HashSet<>();
+        Bps = new HashMap<>();
     }
 
     public NodeSet(String name, String[] fixed) {
@@ -65,12 +65,12 @@ public class NodeSet implements AdapterJSONObject {
         return Name;
     }
 
-    private boolean needs(String s) {
+    /*private boolean needs(String s) {
         return AsFloating.contains(s) ||
                 AsFixed.contains(s) ||
                 Med.contains(s) ||
                 Chd.contains(s);
-    }
+    }*/
 
     public Set<String> getExoNodes() {
         return ExoNodes;
@@ -84,25 +84,31 @@ public class NodeSet implements AdapterJSONObject {
         return FloatingNodes;
     }
 
+    public Map<String, ActorBlueprint> getFloatingBlueprints() {
+        return Bps;
+    }
+
     public void injectGraph(BayesNet bn) throws ValidationException {
-        FixedNodes.addAll(locateFixed(bn));
+        Loci loci;
+        locateFixed(bn);
 
         Set<String> all_fixed = getAllFixed();
-        Loci loci;
+
         for (String s : bn.getOrder()) {
             loci = bn.getLoci(s);
-            if (all_fixed.containsAll(loci.getParents())) {
+            if (loci instanceof DistributionLoci) continue;
+            if (loci instanceof ExoValueLoci) continue;
+            if (FixedNodes.containsAll(loci.getParents()) & !all_fixed.contains(s)) {
                 FixedNodes.add(s);
                 all_fixed.add(s);
             }
         }
-
-        AllFixed = getAllFixed();
-        AvailableFixed = getAvailableFixed();
+        ExoNodes.removeAll(FixedNodes);
+        pinFixed();
 
         locateFloating(bn);
 
-        if (validateFloating()) {
+        if (!validateFloating()) {
             throw new ValidationException("floating node condition");
         }
     }
@@ -115,23 +121,32 @@ public class NodeSet implements AdapterJSONObject {
             des.addAll(bn.getDAG().getDescendants(s));
         }
 
-        Set<String> req = new HashSet<>();
+        Set<String> req = new HashSet<>(AsFixed);
 
         for (NodeSet chd : Children)
             req.addAll(chd.locateFixed(bn));
 
         Set<String> toExpose = req.stream().filter(d->!des.contains(d)).collect(Collectors.toSet());
+        toExpose.removeAll(AsFixed);
         req.removeAll(toExpose);
 
-        ExoNodes = toExpose;
+
         DiGraph<Loci> sub = bn.getDAG().getMinimalDAG(req);
         FixedNodes = new HashSet<>(sub.getOrder());
+
+
+        for (String node : FixedNodes) {
+            toExpose.addAll(bn.getDAG().getParents(node));
+        }
+        toExpose.removeAll(FixedNodes);
+
+        ExoNodes = toExpose;
         return toExpose;
     }
 
     private void locateFloating(BayesNet bn) {
         List<String> flt = bn.getOrder();
-        flt.removeAll(getAllFixed());
+        //flt.removeAll(getAllFixed());
         flt = flt.stream().filter(d-> {
                     Loci loci = bn.getLoci(d);
                     return loci instanceof FunctionLoci | loci instanceof DistributionLoci;
@@ -143,29 +158,42 @@ public class NodeSet implements AdapterJSONObject {
     }
 
     private void passDownFloating(String node, BayesNet bn) {
+
         for (NodeSet chd : Children) {
             chd.passDownFloating(node, bn);
         }
-
+        if (AvailableFixed.contains(node)) {
+            return;
+        }
         ActorBlueprint bp;
 
         List<String> pars;
+        Loci loci = bn.getLoci(node);
         if (canExactlyTake(node, bn)) {
-            pars = bn.getLoci(node).getParents();
-            if (FixedNodes.stream().noneMatch(pars::contains)) {
-                bp = new ActorBlueprint(node, ActorBlueprint.Frozen, pars);
-            } else {
+            pars = loci.getParents();
+            if (FixedNodes.stream().anyMatch(pars::contains) | !(loci instanceof DistributionLoci)) {
                 bp = new ActorBlueprint(node, ActorBlueprint.Single, pars);
+            } else {
+                bp = new ActorBlueprint(node, ActorBlueprint.Frozen, pars);
             }
-            Bps.add(bp);
-        } else if (canTake(node, bn)) {
+        } else { //if (canTake(node, bn)) {
             pars = bn.getDAG().getMinimalRequirement(node, AvailableFixed);
             bp = new ActorBlueprint(node, ActorBlueprint.Compound, pars);
-            Bps.add(bp);
         }
+        Bps.put(node, bp);
+        FloatingNodes.add(node);
+
         //else {
         //    bp = new ActorBlueprint(node, ActorBlueprint.None, bn.getDAG().getParents(node));
         //}
+    }
+
+    private void pinFixed() {
+        AvailableFixed = getAvailableFixed();
+        AllFixed = getAllFixed();
+        for (NodeSet chd : Children) {
+            chd.pinFixed();
+        }
     }
 
     private Set<String> getAllFixed() {
@@ -174,7 +202,8 @@ public class NodeSet implements AdapterJSONObject {
         return fixed;
     }
 
-    private Set<String> getAvailableFixed() {
+    Set<String> getAvailableFixed() {
+        if (!AvailableFixed.isEmpty()) return AvailableFixed;
         Set<String> fixed = new HashSet<>(FixedNodes);
         try {
             fixed.addAll(Parent.getAvailableFixed());
@@ -187,9 +216,11 @@ public class NodeSet implements AdapterJSONObject {
 
     private boolean canTake(String node, BayesNet bn) {
         List<String> chain = bn.getDAG().getMinimalRequirement(node, AvailableFixed);
-        chain.removeAll(AvailableFixed);
 
         DiGraph<Loci> sub = bn.getDAG().getMinimalDAG(chain);
+        for (String s : AvailableFixed) {
+            sub.removeNode(s);
+        }
         for (String root : sub.getRoots()) {
             if (! (bn.getLoci(root) instanceof DistributionLoci)) return false;
         }
@@ -201,33 +232,16 @@ public class NodeSet implements AdapterJSONObject {
     }
 
 
-    public boolean hasFixed(String s) {
-        if (FixedNodes.contains(s)) return true;
-        try {
-            return Parent.hasFixed(s);
-        } catch (NullPointerException e) {
-            return false;
-        }
-    }
-
-    public boolean hasFloating(String s) {
-        if (FloatingNodes.contains(s)) return true;
-        try {
-            return Parent.hasFloating(s);
-        } catch (NullPointerException e) {
-            return false;
-        }
-    }
-
     public boolean validateFloating() {
         for (String s : AsFloating) {
-            if (!hasFloating(s)) return false;
+            if (!FloatingNodes.contains(s)) return false;
         }
         for (NodeSet chd : Children) {
             if (!chd.validateFloating()) return false;
         }
         return true;
     }
+/*
 
 
     public void injectBN(BayesNet bn) {
@@ -379,13 +393,15 @@ public class NodeSet implements AdapterJSONObject {
             } else if (AsFixed.contains(s) || ToCheck.contains(s)) {
                 loci = dag.getNode(s);
                 pars = loci.getParents();
+*/
 /*                if (pars.isEmpty()) {
                     if (loci instanceof DistributionLoci) {
                         FloatingNodes.add(s);
                     } else {
                         FixedNodes.add(s);
                     }
-                }*/
+                }*//*
+
                 boolean flo = false;
                 for (String par : pars) {
                     flo |= isFloating(par);
@@ -402,6 +418,7 @@ public class NodeSet implements AdapterJSONObject {
         ExoNodes.addAll(Par);
         Children.forEach(chd->chd.locateTypes(dag));
     }
+*/
 
     public void appendChild(NodeSet chd) {
         Children.add(chd);
@@ -434,9 +451,9 @@ public class NodeSet implements AdapterJSONObject {
         System.out.println(h + "As Fixed: " + String.join(", ", AsFixed));
         System.out.println(h + "As Float: " + String.join(", ", AsFloating));
 
-        System.out.println(h + "Med     : " + String.join(", ", Med));
-        System.out.println(h + "Chd     : " + String.join(", ", Chd));
-        System.out.println(h + "To check: " + String.join(", ", ToCheck));
+        //System.out.println(h + "Med     : " + String.join(", ", Med));
+        //System.out.println(h + "Chd     : " + String.join(", ", Chd));
+        //System.out.println(h + "To check: " + String.join(", ", ToCheck));
 
         System.out.println(h + "Exo     : " + String.join(", ", ExoNodes));
         System.out.println(h + "Fix     : " + String.join(", ", FixedNodes));

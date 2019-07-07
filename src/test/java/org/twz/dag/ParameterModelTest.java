@@ -1,6 +1,6 @@
 package org.twz.dag;
 
-import org.json.JSONException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.twz.exception.ValidationException;
@@ -21,6 +21,7 @@ public class ParameterModelTest {
         BN.appendLoci("beta = 0.5");
         BN.appendLoci("mu = 0.5 * Region + beta*Age + Rain");
         BN.appendLoci("x ~ norm(mu, 0.01)");
+        BN.appendLoci("z = x/2");
 
         NS = new NodeSet("Area", new String[]{});
         NS.appendChild(
@@ -42,6 +43,7 @@ public class ParameterModelTest {
         ParameterModel pm = BN.toParameterModel(NS);
 
         System.out.println(pm.toJSON().toString(2));
+
     }
 
     @Test
@@ -55,7 +57,9 @@ public class ParameterModelTest {
         System.out.println(c1.getDouble("x"));
 
         Parameters c2 = ps.breed("C2", "Ag2");
+        c2.deepPrint();
         c2.detachFromParent(true);
         c2.deepPrint();
+        System.out.println(c1.getDouble("z"));
     }
 }

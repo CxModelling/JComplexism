@@ -27,7 +27,7 @@ public class ParameterModel implements AdapterJSONObject {
         findPGs();
     }
 
-    public ParameterModel(JSONObject js) throws ScriptException, JSONException {
+    public ParameterModel(JSONObject js) throws Exception {
         this(new BayesNet(js.getJSONObject("BayesianNetwork")),
                 new NodeSet(js.getJSONObject("Blueprint")));
     }
@@ -50,7 +50,7 @@ public class ParameterModel implements AdapterJSONObject {
     }
 
     private void toPG(NodeSet ns, DiGraph<Loci> g) {
-        ParameterGroup pg = new ParameterGroup(ns.getName(), ns.getExoNodes(), ns.getFixedNodes(), ns.getFloatingNodes());
+        ParameterGroup pg = new ParameterGroup(ns);
         pg.Children.addAll(ns.getChildren().stream().map(NodeSet::getName).collect(Collectors.toSet()));
         pg.setParameterModel(this);
         PGs.put(ns.getName(), pg);
