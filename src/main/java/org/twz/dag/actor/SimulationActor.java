@@ -1,11 +1,13 @@
 package org.twz.dag.actor;
 
+import org.twz.dag.BayesNet;
 import org.twz.dag.Chromosome;
 import org.twz.exception.IncompleteConditionException;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -38,6 +40,10 @@ public abstract class SimulationActor {
             ps.put(s, exo.containsKey(s)? exo.get(s): chromosome.getDouble(s));
         }
         return ps;
+    }
+
+    public List<String> getRequirement(BayesNet bn) {
+        return bn.getDAG().getMinimalRequirement(Field, getParents());
     }
 
 }

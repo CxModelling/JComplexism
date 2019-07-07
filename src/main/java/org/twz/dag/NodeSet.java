@@ -92,21 +92,24 @@ public class NodeSet implements AdapterJSONObject {
         Loci loci;
         locateFixed(bn);
 
-        Set<String> all_fixed = getAllFixed();
+        AllFixed = getAllFixed();
 
         for (String s : bn.getOrder()) {
             loci = bn.getLoci(s);
             if (loci instanceof DistributionLoci) continue;
-            if (loci instanceof ExoValueLoci) continue;
-            if (FixedNodes.containsAll(loci.getParents()) & !all_fixed.contains(s)) {
+            //if (loci instanceof ExoValueLoci) continue;
+            if (FixedNodes.containsAll(loci.getParents()) & !AllFixed.contains(s)) {
                 FixedNodes.add(s);
-                all_fixed.add(s);
+                AllFixed.add(s);
             }
         }
         ExoNodes.removeAll(FixedNodes);
         pinFixed();
-
         locateFloating(bn);
+        hoistFixed();
+        pinFixed();
+
+
 
         if (!validateFloating()) {
             throw new ValidationException("floating node condition");
@@ -144,6 +147,33 @@ public class NodeSet implements AdapterJSONObject {
         return toExpose;
     }
 
+    private void hoistFixed() {
+        long count;
+        for (String s : AllFixed) {
+            count = Children.stream().filter(d->d.need(s)).count();
+            if (count > 1) {
+                FixedNodes.add(s);
+            }
+        }
+    }
+
+
+    private boolean need(String s) {
+        if (FixedNodes.contains(s) | ExoNodes.contains(s)) {
+            return true;
+        }
+        for (String f : AsFloating) {
+            try {
+                if (Bps.get(f).Requirement.contains(s)) return true;
+            } catch (NullPointerException ignored){}
+        }
+
+        for (NodeSet chd : Children) {
+            if (chd.need(s)) return true;
+        }
+        return false;
+    }
+
     private void locateFloating(BayesNet bn) {
         List<String> flt = bn.getOrder();
         //flt.removeAll(getAllFixed());
@@ -167,18 +197,19 @@ public class NodeSet implements AdapterJSONObject {
         }
         ActorBlueprint bp;
 
-        List<String> pars;
+        List<String> pars, req;
         Loci loci = bn.getLoci(node);
         if (canExactlyTake(node, bn)) {
             pars = loci.getParents();
+            req = bn.getDAG().getMinimalRequirement(node, pars);
             if (FixedNodes.stream().anyMatch(pars::contains) | !(loci instanceof DistributionLoci)) {
-                bp = new ActorBlueprint(node, ActorBlueprint.Single, pars);
+                bp = new ActorBlueprint(node, ActorBlueprint.Single, pars, req);
             } else {
-                bp = new ActorBlueprint(node, ActorBlueprint.Frozen, pars);
+                bp = new ActorBlueprint(node, ActorBlueprint.Frozen, pars, req);
             }
         } else { //if (canTake(node, bn)) {
             pars = bn.getDAG().getMinimalRequirement(node, AvailableFixed);
-            bp = new ActorBlueprint(node, ActorBlueprint.Compound, pars);
+            bp = new ActorBlueprint(node, ActorBlueprint.Compound, pars, pars);
         }
         Bps.put(node, bp);
         FloatingNodes.add(node);

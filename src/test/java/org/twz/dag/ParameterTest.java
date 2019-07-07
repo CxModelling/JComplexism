@@ -29,7 +29,7 @@ public class ParameterTest {
         BN.appendLoci("x2 ~ binom(3, 0.5)");
         BN.appendLoci("mu = b0 + b1*x1 + b2*x2");
         BN.appendLoci("y ~ norm(mu, 1)");
-        BN.appendLoci("z = if(x1>10, 1, -1)");
+        BN.appendLoci("z = if(y>0, 1, -1)");
     }
 
     @Test
@@ -39,8 +39,6 @@ public class ParameterTest {
 
         System.out.println(pc);
 
-        assertArrayEquals(pc.listSamplers().toArray(), new String[]{"y"});
-
         System.out.println(pm.generate("x1"));
     }
 
@@ -48,8 +46,8 @@ public class ParameterTest {
     @Test
     public void toSC_ng() throws ValidationException {
         NG = new NodeSet("country", new String[]{"b0", "b1", "x1"});
-        NG.appendChild(new NodeSet("agent", new String[]{"x2", "mu", "b2"}, new String[]{"y", "z"}));
-
+        NG.appendChild(new NodeSet("agent", new String[]{"x2", "b2"}, new String[]{"y", "z"}));
+        NG.printAll();
         ParameterModel sc = BN.toParameterModel(NG);
         Parameters pc = sc.generate("Taiwan");
         Parameters pA = pc.breed("AgA", "agent"), pB = pc.breed("AgB", "agent");

@@ -7,9 +7,11 @@ import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import org.mariuszgromada.math.mxparser.FunctionExtension;
 import org.twz.dag.Chromosome;
+import org.twz.dag.Parameters;
 import org.twz.datafunction.AbsDataFunction;
 import org.twz.datafunction.DataCentre;
 import org.twz.exception.IncompleteConditionException;
+import org.twz.util.StepFunction;
 
 import java.util.*;
 
@@ -30,7 +32,7 @@ public class FunctionLoci extends Loci implements Bindable {
         Parents = Arrays.asList(E.getMissingUserDefinedArguments());
         Parents.forEach(e->E.defineArgument(e, Double.NaN));
         ParentFunctions = Arrays.asList(E.getMissingUserDefinedFunctions());
-
+        if (ParentFunctions.contains("step")) bindFunction("step", new StepFunction());
     }
 
     public FunctionLoci(String name, String function, Collection<String> parents) {

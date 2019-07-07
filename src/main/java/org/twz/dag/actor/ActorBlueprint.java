@@ -10,16 +10,17 @@ public class ActorBlueprint {
     public static final String Compound = "c", Single = "s", Frozen = "f", None = "n";
 
     public String Actor, Type;
-    public List<String> Flow;
+    public List<String> Flow, Requirement;
 
-    public ActorBlueprint(String actor, String type, List<String> flow) {
+    public ActorBlueprint(String actor, String type, List<String> flow, List<String> requirement) {
         Actor = actor;
         Type = type;
         Flow = flow;
+        Requirement = requirement;
     }
 
     public ActorBlueprint(String actor, String type) {
-        this(actor, type, null);
+        this(actor, type, null, null);
     }
 
     public void setType(String type) {
